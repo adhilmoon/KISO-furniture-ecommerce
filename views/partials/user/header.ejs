@@ -22,25 +22,33 @@
     <li><a href="#" class="hover:text-black transition-colors">Office</a></li>
   </ul>
 
-  <div class="flex items-center gap-2 md:gap-4">
+<div class="flex items-center gap-2 md:gap-4">
     <button class="hidden sm:block p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
       </svg>
     </button>
     
-    <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all relative">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-      </svg>
-    </button>
+    <% if (locals.user) { %>
+        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all relative">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+        </button>
 
-    <div class="w-9 h-9 md:w-10 md:h-10 bg-indigo-100 rounded-full flex items-center justify-center overflow-hidden cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 md:w-8 md:h-8 text-indigo-500 mt-2">
-        <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
-      </svg>
-    </div>
-  </div>
+        <a href="/profile" class="w-9 h-9 md:w-10 md:h-10 bg-indigo-100 rounded-full flex items-center justify-center overflow-hidden cursor-pointer border border-indigo-200">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 md:w-8 md:h-8 text-indigo-500 mt-2">
+            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+          </svg>
+        </a>
+
+<% } else { %>
+    <a href="user/login" class="flex items-center justify-center bg-black hover:bg-zinc-900 text-white font-bold tracking-widest uppercase rounded-none transition-all duration-300 active:scale-95 text-[11px] md:text-[13px] px-6 md:px-10 h-10 md:h-11 min-w-[100px] md:min-w-[140px]">
+        Log In
+    </a>
+<% } %>
+   
+</div>
 </nav>
 
 <div id="mobile-sidebar" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity duration-300">
