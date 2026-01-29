@@ -1,10 +1,10 @@
-<main class="flex-grow flex flex-col items-center justify-center px-4 py-12">
+<div class="flex-grow flex flex-col items-center justify-center px-4 py
     <div class="w-full max-w-md text-center">
         <p class="text-sm text-gray-500 mb-8 font-light">Please enter your credentials to access the admin panel.</p>
 
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12">Welcome Back, Admin</h1>
 
-        <form action="/admin/login" method="POST" class="space-y-6">
+      <form action="/admin/login" method="POST" onsubmit="return Validation(event)" class="space-y-6" novalidate>
             <div class="relative">
                 <input type="email" id="email" name="email" placeholder="Email" 
                     class="w-full px-6 py-4 bg-[#F2F0EE] border-none rounded-xl text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-gray-200 transition-all outline-none">
@@ -31,11 +31,7 @@
                     </svg>
                 </button>
             </div>
-             <div. class="relative" id="err-pass">
-                <% if (locals.message) {%>
-                    <%= message %>
-                <%} %>
-            </div>
+           
 
             <button type="submit"
                 class="w-32 py-3 mt-6 bg-[#A67C61] hover:bg-[#8B6751] text-white font-medium rounded-xl shadow-lg shadow-brown-100 transition-all transform active:scale-95">
@@ -52,6 +48,7 @@
             Need access? Contact system administrator
         </p>
     </div>
-    
-</main>
-<script src="/public/js/validation.js"></script>
+ </div>
+
+<script src="/js/admin.js"></script>
+<script src="/js/validation.js"></script>

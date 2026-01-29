@@ -3,19 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KISO - Admin</title>
-  
-    <link href="/css/output.css" rel="stylesheet">
-
+    <title>Admin Login - KISO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex flex-col bg-white">
-
+<body class="h-screen flex flex-col bg-white overflow-hidden">
     <%- include('../partials/admin/header') %>
 
-    <!-- ✅ Page content will come here -->
-    <%- body %>
+    <div class="flex flex-1 overflow-hidden">
+        <% if (typeof showSidebar !== 'undefined' && showSidebar) { %>
+            <%- include('../partials/admin/side-bar') %>
+        <% } %>
 
-    <%- include('../partials/admin/footer') %>
-
+        <main class="flex-1 bg-gray-50 overflow-y-auto flex flex-col">
+            
+            <div class="flex-grow p-8">
+                <div class="max-w-7xl mx-auto"> <%- body %>
+                </div>
+            </div>
+            
+            <footer class="w-full">
+                <%- include('../partials/admin/footer') %>
+            </footer>
+            
+        </main>
+    </div>
 </body>
 </html>

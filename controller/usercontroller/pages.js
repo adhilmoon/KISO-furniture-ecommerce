@@ -5,3 +5,7 @@ export const load_Home = (req, res) => {
         body: "/user/homepage" 
     });
 };
+
+export const login_page=(req,res)=>{
+    res.render('user/login');
+}
