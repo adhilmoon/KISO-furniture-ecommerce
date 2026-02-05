@@ -3,12 +3,15 @@ dotenv.config()
 
 import express from 'express';
 import session from 'express-session';
-import expressLayouts from 'express-ejs-layouts';
+import expressLayouts from 'express-ejs-layouts'; 
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
 import { fileURLToPath } from 'url';
 import path from 'path';
 import connectDB from './config/connectDB.js'
+import './config/passport.js'
+import passport from 'passport'; 
+
 
 const app = express();
 
@@ -17,7 +20,7 @@ const __dirname = path.dirname(__filename)
 
 connectDB()
 
-// ✅ ADD THIS (BODY PARSER) 🔥🔥🔥
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -30,6 +33,9 @@ app.use(session({
         secure: false
     }
 }));
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.set('view engine', 'ejs');
 app.set('views', './views'); 

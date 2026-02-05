@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-
+const DEFAULT_USER_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 const Usersceama = new mongoose.Schema({
     name: {
         type: String,
@@ -14,7 +14,9 @@ const Usersceama = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: function() {
+            return !this.googleId; 
+        }
     },
     isBlock: {
         type: Boolean,
@@ -22,14 +24,15 @@ const Usersceama = new mongoose.Schema({
     },
     refferalCode: {
         type: String,
-        unique: ture
+        unique: true,
+        sparse: true
     },
     googleId: {
         type: String,
         unique: true,
         sparse: true,
     },
-    avatar: {type: String, default: DEFAULT_USER_AVATAR},
+    avatar: {type: String, default:DEFAULT_USER_AVATAR},
     isBlocked: {
         type: Boolean,
         default: false,
@@ -48,4 +51,5 @@ const Usersceama = new mongoose.Schema({
 
 )
 
-export default mongoose.model('User',Usersceama)
+const User= mongoose.model('User',Usersceama);
+export default User
