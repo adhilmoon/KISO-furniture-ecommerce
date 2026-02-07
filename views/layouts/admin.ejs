@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - KISO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen flex flex-col bg-white overflow-hidden">
+    <%- include('../partials/admin/header') %>
+
+    <div class="flex flex-1 overflow-hidden">
+        <% if (typeof showSidebar !== 'undefined' && showSidebar) { %>
+            <%- include('../partials/admin/side-bar') %>
+        <% } %>
+
+        <main class="flex-1 bg-gray-50 overflow-y-auto flex flex-col">
+            
+            <div class="flex-grow p-8">
+                <div class="max-w-7xl mx-auto"> <%- body %>
+                </div>
+            </div>
+            
+            <footer class="w-full">
+                <%- include('../partials/admin/footer') %>
+            </footer>
+            
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+
+</body>
+</html>

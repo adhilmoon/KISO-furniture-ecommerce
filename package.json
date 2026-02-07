@@ -1,0 +1,42 @@
+{
+  "name": "kiso",
+  "version": "1.0.0",
+  "description": "KISO – Foundation, essentials",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adhilmoon/KISO-furniture-ecommerce.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/adhilmoon/KISO-furniture-ecommerce/issues"
+  },
+  "homepage": "https://github.com/adhilmoon/KISO-furniture-ecommerce#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.23",
+    "nodemon": "^3.1.11",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19"
+  },
+  "dependencies": {
+    "axios": "^1.13.4",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.1.5",
+    "nodemailer": "^7.0.13",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "session": "^0.1.0"
+  }
+}
