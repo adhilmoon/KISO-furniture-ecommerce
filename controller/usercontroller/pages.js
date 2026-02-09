@@ -1,3 +1,5 @@
+import User from "../../model/User.js";
+import Address from "../../model/Address.js";
 
 export const load_Home = (req, res) => {
     res.render("user/layout", {
@@ -21,17 +23,39 @@ export const login_page = (req, res) => {
         title: 'Login'
     });
 }
-export const user_profiel = (req, res) => {
+export const user_profiel = async(req, res) => {
     const currentUser = req.session.user;
+    const user = await User.findById(currentUser)
     res.render('user/profile', {
-        user: currentUser
+        user: user,
+        isProfilePage:true,
+        title:"My Profile"
     })
 }
 export const user_singup = (req, res) => {
     res.render('user/signup', {
         title: "Sign Up - Kiso",
-        user: req.session.user || null
+        user: req.session.user || null,
+    
     });
 }
 
+export const user_address=async(req,res)=>{
+    
+    const userId=req.session.user._id;
+     const addresses = await Address.findById(userId);
 
+    const user=await User.findById(userId)
+    res.render('user/address',{
+        addresses:addresses , 
+        title:"addresses",
+        isProfilePage: true,
+        user:user
+    })
+
+}
+export const page_notfound=(req,res)=>{
+    res.render('user/pagenotfont',{
+        title:"pagenotfor"
+    })
+}
