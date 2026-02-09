@@ -19,18 +19,19 @@ export const userauth = (req, res, next) => {
     }
 
 }
-export const isUser=(req,res,next)=>{
-     try {
-       if(!req.session.user.role==="user"){
-          return res.redirect('user/login')
-       }
-       next()
-       
-     } catch (error) {
-        console.log("user chekking midilware error");
-     }
-}
 
+export const isUser = (req, res, next) => {
+    try {
+        
+        if (req.session.user && req.session.user.role === "user") {
+            return next();
+        }
+        return res.redirect('/user/login'); 
+    } catch (error) {
+        console.log("User checking middleware error", error);
+        res.status(500).send("Internal Server Error");
+    }
+}
 export const noCache = (req, res, next) => {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');

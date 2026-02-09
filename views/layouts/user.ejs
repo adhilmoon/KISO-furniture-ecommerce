@@ -3,18 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KISO - Modern Furniture</title>
-   <link href="/css/output.css" rel="stylesheet">
+    <title><%= title %> - KISO</title>
+    <link href="/css/output.css" rel="stylesheet">
 </head>
 <body class="bg-white flex flex-col min-h-screen">
-
+    
     <%- include('../partials/user/header') %>
-
-    <!-- ✅ Page Content Will Come Here -->
-    <%- body %>
-
+    
+    <% if(locals.isProfilePage) { %>
+        <!-- Profile Layout with Sidebar -->
+        <div class="flex-grow flex bg-kiso-bg">
+            <!-- Desktop Sidebar (Hidden on Mobile) -->
+            <aside class="hidden md:block w-64 bg-white border-r border-gray-200">
+                <%- include('../partials/user/profile-sidebar') %>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <div class="max-w-5xl mx-auto px-4 py-8 md:py-12">
+                    <%- body %>
+                </div>
+            </main>
+        </div>
+    <% } else { %>
+        <!-- Regular Layout (No Sidebar) -->
+        <div class="flex-grow">
+            <%- body %>
+        </div>
+    <% } %>
+    
     <%- include('../partials/user/footer') %>
-<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
-
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
 </body>
 </html>

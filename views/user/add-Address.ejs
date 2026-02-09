@@ -1,0 +1,27 @@
+<div id="addressModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-lg shadow-xl transform transition-all">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-gray-900">Add New Address</h3>
+            <button onclick="toggleAddressModal()" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <form id="addressForm" onsubmit="handleAddressSubmit(event)" class="p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="addrName" placeholder="Full Name" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-[#9A7556] outline-none">
+                <input type="tel" id="addrMobile" placeholder="10-digit Mobile" required class="w-full p-3 border rounded-xl">
+            </div>
+            <input type="text" id="addrHouse" placeholder="House Name / Area" required class="w-full p-3 border rounded-xl">
+            <div class="grid grid-cols-2 gap-4">
+                <input type="text" id="addrCity" placeholder="City" required class="w-full p-3 border rounded-xl">
+                <input type="text" id="addrPincode" placeholder="Pincode" required class="w-full p-3 border rounded-xl">
+            </div>
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="toggleAddressModal()" class="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-[#9A7556] text-white rounded-lg hover:bg-[#876649]">Save Address</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/js/address_add.js"></script>

@@ -1,80 +1,115 @@
-<nav class="flex items-center justify-between px-4 md:px-8 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
+<nav
+  class="flex items-center justify-between px-4 md:px-8 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
   <div class="flex items-center gap-4">
-    <button id="mobile-menu-btn" class="md:hidden p-1 text-gray-600">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-      </svg>
-    </button>
+    <!-- Mobile Profile Sidebar Toggle (Profile Pages Only) -->
+    <% if(locals.isProfilePage) { %>
+      <button id="mobile-profile-sidebar-toggle"
+        class="md:hidden p-1 text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+      </button>
+      <% } else { %>
+        <!-- Regular Mobile Menu Toggle (Non-Profile Pages) -->
+        <button id="mobile-menu-btn" class="md:hidden p-1 text-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-7 h-7">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+        <% } %>
 
-    <a href="/" class="flex items-center gap-2">
-      <div class="w-6 h-6 bg-black flex items-end p-1">
-          <div class="w-full h-1/2 bg-white"></div>
-      </div>
-      <span class="text-xl font-bold tracking-tight text-gray-900">KISO</span>
-    </a>
+          <a href="/" class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-black flex items-end p-1">
+              <div class="w-full h-1/2 bg-white"></div>
+            </div>
+            <span class="text-xl font-bold tracking-tight text-gray-900">KISO</span>
+          </a>
   </div>
 
   <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-    <li><a href="#" class="hover:text-black transition-colors">Store</a></li>
-    <li><a href="#" class="hover:text-black transition-colors">Dining</a></li>
-    <li><a href="#" class="hover:text-black transition-colors">Living</a></li>
-    <li><a href="#" class="hover:text-black transition-colors">Bedroom</a></li>
-    <li><a href="#" class="hover:text-black transition-colors">Office</a></li>
+    <li><a href="/store" class="hover:text-black transition-colors">Store</a></li>
+    <li><a href="/dining" class="hover:text-black transition-colors">Dining</a></li>
+    <li><a href="/living" class="hover:text-black transition-colors">Living</a></li>
+    <li><a href="/bedroom" class="hover:text-black transition-colors">Bedroom</a></li>
+    <li><a href="/office" class="hover:text-black transition-colors">Office</a></li>
   </ul>
 
-<div class="flex items-center gap-2 md:gap-4">
+  <div class="flex items-center gap-2 md:gap-4">
     <button class="hidden sm:block p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
       </svg>
     </button>
-    
+
     <% if (locals.user) { %>
-        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all relative">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-          </svg>
-        </button>
+      <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all relative">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+        </svg>
+      </button>
+      <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all relative">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+      </button>
 
-        <a href="/user/profile" class="w-9 h-9 md:w-10 md:h-10 bg-indigo-100 rounded-full flex items-center justify-center overflow-hidden cursor-pointer border border-indigo-200">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 md:w-8 md:h-8 text-indigo-500 mt-2">
-            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
-          </svg>
+      <a href="/user/profile"
+        class="w-9 h-9 md:w-10 md:h-10 bg-indigo-100 rounded-full flex items-center justify-center overflow-hidden cursor-pointer border border-indigo-200">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+          class="w-7 h-7 md:w-8 md:h-8 text-indigo-500 mt-2">
+          <path fill-rule="evenodd"
+            d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
+      <% } else if (locals.title && locals.title !=='Login' ) { %>
+        <a href="/user/login"
+          class="flex items-center justify-center bg-black hover:bg-zinc-900 text-white font-bold tracking-widest uppercase rounded-none transition-all duration-300 active:scale-95 text-[11px] md:text-[13px] px-6 md:px-10 h-10 md:h-11 min-w-[100px] md:min-w-[140px]">
+          Log In
         </a>
-
-<% } else if (locals.title && locals.title !== 'Login') { %>
-    <a href="user/login" class="flex items-center justify-center bg-black hover:bg-zinc-900 text-white font-bold tracking-widest uppercase rounded-none transition-all duration-300 active:scale-95 text-[11px] md:text-[13px] px-6 md:px-10 h-10 md:h-11 min-w-[100px] md:min-w-[140px]">
-        Log In
-    </a>
-<% } %>
-   
-</div>
+        <% } %>
+  </div>
 </nav>
 
-<div id="mobile-sidebar" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity duration-300">
-    <div class="bg-white w-64 h-full p-6 flex flex-col gap-6">
-        <div class="flex justify-between items-center">
-            <span class="font-bold text-xl uppercase">Menu</span>
-            <button id="close-sidebar" class="text-gray-500">&times;</button>
+<!-- Regular Mobile Sidebar (Non-Profile Pages) -->
+<% if(!locals.isProfilePage) { %>
+<div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity duration-300"></div>
+<div id="mobile-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl overflow-y-auto">
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-8">
+            <span class="font-bold text-xl tracking-tight">MENU</span>
+            <button id="close-sidebar" class="p-2 text-gray-500 text-2xl">&times;</button>
         </div>
-        <ul class="flex flex-col gap-4 font-medium text-gray-700">
-            <li><a href="#" class="block py-2 border-b border-gray-50">Store</a></li>
-            <li><a href="#" class="block py-2 border-b border-gray-50">Dining</a></li>
-            <li><a href="#" class="block py-2 border-b border-gray-50">Living</a></li>
-            <li><a href="#" class="block py-2 border-b border-gray-50">Bedroom</a></li>
-            <li><a href="#" class="block py-2 border-b border-gray-50">Office</a></li>
+        <ul class="space-y-4 font-medium text-gray-700">
+            <li><a href="/store" class="block py-2 border-b border-gray-50">Store</a></li>
+            <li><a href="/dining" class="block py-2 border-b border-gray-50">Dining</a></li>
+            <li><a href="/living" class="block py-2 border-b border-gray-50">Living</a></li>
         </ul>
     </div>
 </div>
+<% } %>
 
-<script>
-    const btn = document.getElementById('mobile-menu-btn');
-    const sidebar = document.getElementById('mobile-sidebar');
-    const closeBtn = document.getElementById('close-sidebar');
-
-    btn.addEventListener('click', () => sidebar.classList.remove('hidden'));
-    closeBtn.addEventListener('click', () => sidebar.classList.add('hidden'));
-    sidebar.addEventListener('click', (e) => {
-        if(e.target === sidebar) sidebar.classList.add('hidden');
-    });
-</script>
+<% if(locals.isProfilePage) { %>
+<div id="profile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[90] hidden md:hidden transition-opacity duration-300"></div>
+<div id="profile-sidebar-menu" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl">
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-bold">Profile Menu</h2>
+            <button id="close-profile-sidebar" class="p-2 text-gray-400 text-3xl hover:text-black">&times;</button>
+        </div>
+        <nav class="space-y-2">
+            <a href="/user/profile" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'profile' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Personal Info</a>
+            <a href="/user/orders" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'orders' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">My Orders</a>
+            <a href="/user/address" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'address' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Address</a>
+            <a href="/user/wallet" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'wallet' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Wallet</a>
+        </nav>
+    </div>
+</div>
+<% } %>
