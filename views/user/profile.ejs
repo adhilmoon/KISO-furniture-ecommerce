@@ -1,142 +1,104 @@
-<div class="flex-grow flex items-center justify-center px-4 py-12 bg-kiso-bg">
+<div class="w-full max-w-4xl mx-auto px-4">
+    <div class="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white border-r border-gray-200 p-6 space-y-2">
-        <a href="/user/profile" class="block px-4 py-3 bg-[#E8E0D5] text-gray-900 font-medium rounded-lg">
-            Personal Info
-        </a>
-        <a href="/user/orders" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-            My Orders
-        </a>
-        <a href="/user/address" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-            Address
-        </a>
-        <a href="/user/wallet" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-            Wallet
-        </a>
-    </aside>
+        <div class="flex flex-row justify-between items-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Personal Information</h1>
+            <button type="button" id="toggleEditBtn" onclick="toggleEditMode()"
+                class="px-6 py-2.5 text-sm font-semibold bg-[#B89968] hover:bg-[#A38659] text-black rounded-lg transition-all shadow-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                    </path>
+                </svg>
+                Edit
+            </button>
+        </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 bg-gray-50 p-8">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-4xl font-bold text-gray-900 mb-8">Personal Information</h1>
+        <form id="profileForm" onsubmit="handleProfileUpdate(event)" class="max-w-3xl mx-auto">
+            
+            <div class="flex flex-col items-center mb-10">
+                <div class="relative group">
+                    <div class="w-32 h-32 rounded-full bg-[#8B7355] flex items-center justify-center border-4 border-gray-200 overflow-hidden">
+                        <% if(user.avatar) { %>
+                            <img id="profilePreview" src="<%= user.avatar %>" alt="Profile" class="w-full h-full object-cover">
+                        <% } else { %>
+                            <span class="text-5xl font-bold text-white" id="avatarLetter">
+                                <%= user.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+                            </span>
+                            <img id="profilePreview" src="" alt="Profile" class="w-full h-full object-cover hidden">
+                        <% } %>
+                    </div>
 
-            <!-- Profile Section -->
-            <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm">
-                <!-- Profile Picture -->
-                <div class="flex flex-col items-center mb-8">
-                    <div class="relative">
-                        <img src="<%= user.avatar %>" alt="Profile" class="w-32 h-32 rounded-full object-cover bg-[#F5D4BA]">
-                        <label for="profileImageInput" class="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition cursor-pointer">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                            </svg>
-                        </label>
+                    <label for="profileImageInput" id="imageUploadLabel"
+                        class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
                         <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="handleProfileImageChange(event)">
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900 mt-4"><%= user.name || 'User Name' %></h2>
-                    <p class="text-sm text-gray-500 mt-1">Click to upload or change your profile picture</p>
-                    <button type="button" onclick="document.getElementById('profileImageInput').click()" class="text-sm text-[#9A7556] hover:text-[#876649] mt-1 font-medium">
-                        Edit Profile Image
-                    </button>
+                    </label>
                 </div>
-
-                <!-- Form Fields -->
-                <form id="profileForm" onsubmit="handleProfileUpdate(event)" class="space-y-6">
-                    <!-- Name -->
-                    <div>
-                        <label for="name" class="block text-sm font-semibold text-gray-900 mb-2">Name</label>
-                        <input 
-                            type="text" 
-                            id="name" 
-                            name="name"
-                            value="<%= user.name || '' %>"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9A7556] focus:border-transparent outline-none transition"
-                        >
-                    </div>
-
-                    <!-- Email -->
-                    <div>
-                        <label for="email" class="block text-sm font-semibold text-gray-900 mb-2">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email"
-                            value="<%= user.email %>"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed outline-none"
-                            readonly
-                        >
-                        <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
-                    </div>
-
-                
-
-                    <!-- Referral Program -->
-                    <div class="mt-8 pt-8 border-t border-gray-200">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Referral Program</h3>
-                        <p class="text-sm text-gray-600 mb-4">Share this code and both of you will receive wallet credit.</p>
-                        
-                        <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
-                            <div class="flex-1 w-full md:max-w-xs">
-                                <div class="flex gap-2">
-                                    <input 
-                                        type="text" 
-                                        id="referralCode"
-                                        value="<%= user.referralCode || 'N/A' %>"
-                                        readonly
-                                        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 outline-none font-mono"
-                                    >
-                                    <button 
-                                        type="button"
-                                        onclick="copyReferralCode()"
-                                        class="px-6 py-3 bg-[#E8E0D5] hover:bg-[#D9CFC0] text-gray-900 font-medium rounded-lg transition flex items-center gap-2 whitespace-nowrap"
-                                    >
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                        </svg>
-                                        Copy
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Referral Image -->
-                            <div class="hidden lg:block flex-shrink-0">
-                                <div class="w-64 h-32 bg-gradient-to-r from-[#C9A87C] to-[#E8D5B7] rounded-lg flex items-center justify-center overflow-hidden">
-                                    <div class="bg-white rounded-full p-8">
-                                        <svg class="w-16 h-16 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Error/Success Message -->
-                    <div id="profile-message" class="text-center mt-4 min-h-[20px] font-medium"></div>
-                </form>
             </div>
 
-            <!-- Logout and Save Buttons -->
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-                <a href="/user/logout" class="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Logout
-                </a>
-                
-                <button 
-                    type="submit"
-                    form="profileForm"
-                    class="w-full sm:w-auto px-8 py-3 bg-[#9A7556] hover:bg-[#876649] text-white font-semibold rounded-lg transition transform hover:scale-105 active:scale-95"
-                >
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label for="name" class="block text-sm font-semibold text-gray-700">Full Name</label>
+                    <input type="text" id="name" name="name" value="<%= user.name %>" disabled
+                        class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none transition-all disabled:bg-gray-50/50 disabled:text-gray-500 disabled:cursor-not-allowed">
+                </div>
+
+                <div class="space-y-2">
+                    <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
+                    <input type="email" id="email" value="<%= user.email %>" disabled
+                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-400 cursor-not-allowed">
+                </div>
+
+                <div class="space-y-2">
+                    <label for="phone" class="block text-sm font-semibold text-gray-700">Phone</label>
+                    <input type="tel" id="phone" name="phone" value="<%= user.phone? user.phone : '' %>"
+                        placeholder="Not added" disabled
+                        class="w-full px-5 py-4 bg-white border-gray-200 <%= user.phone? 'border-gray-200' : 'border-dashed border-gray-300' %> rounded-xl text-gray-900 placeholder:text-gray-400 placeholder:font-normal transition-all disabled:bg-gray-50/80 disabled:cursor-not-allowed">
+                    
+                    <% if(!user.phoneNumber) { %>
+                        <button type="button" onclick="toggleEditMode()" class="text-xs font-medium text-[#B89968] hover:underline" id="addPhoneText">+ Add phone number</button>
+                    <% } %>
+                </div>
+            </div>
+
+            <div id="profile-message" class="text-center mt-4 min-h-[20px] font-medium text-sm"></div>
+
+            <div id="formActions" class="hidden flex items-center justify-end gap-3 pt-8 mt-6 border-t border-gray-100">
+                <button type="button" onclick="cancelEdit()"
+                    class="px-6 py-2.5 text-gray-700 font-medium bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-all">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="px-8 py-2.5 bg-[#9A7556] hover:bg-[#876649] text-white font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
                     Save Changes
                 </button>
             </div>
-        </div>
-    </main>
+        </form>
 
-</div>
+        <div class="pt-8 mt-12 border-t border-gray-200">
+            <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Referral Code</p>
+                        <p class="text-xl font-mono font-bold text-gray-900" id="referralText">
+                            <%= user.referralCode || 'KISO-NEW' %>
+                        </p>
+                    </div>
+                    <button type="button" onclick="copyReferralCode()"
+                        class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-all shadow-sm">
+                        Copy Code
+                    </button>
+                    <input type="hidden" id="referralCode" value="<%= user.referralCode || 'KISO-NEW' %>">
+                </div>
+            </div>
+        </div>
+
+    </div> 
+</div> 
+
+
+<script src="/js/userProfile.js"></script>

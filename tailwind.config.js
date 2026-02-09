@@ -14,6 +14,7 @@ module.exports = {
         'kiso-brown-dark': '#75614a',
         'kiso-text': '#2c2c2c',
         'kiso-placeholder': '#9b8f82',
+        'kiso-primary': '#A67B5B'
       }
     }
   },

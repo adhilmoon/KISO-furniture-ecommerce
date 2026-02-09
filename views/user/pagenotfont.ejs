@@ -1,0 +1,99 @@
+<div class="min-h-screen bg-[#F5F0EB] flex flex-col items-center justify-center p-4 overflow-hidden relative">
+    
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" 
+         style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');">
+    </div>
+
+    <div class="relative z-10 max-w-2xl w-full text-center space-y-8">
+        
+        <div class="relative mx-auto w-64 h-64 md:w-80 md:h-80 mb-6">
+            <div class="w-full h-full object-contain mix-blend-multiply opacity-90 grayscale hover:grayscale-0 transition-all duration-700">
+                <img src="https://media.giphy.com/media/l2Je3qSgD6IpaEuPk/giphy.gif" alt="Broken Chair Loop" class="w-full h-full object-cover rounded-full mask-image-fade">
+            </div>
+
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full">
+                <h1 class="text-[120px] md:text-[180px] font-black text-black leading-none tracking-tighter glitch-wrapper" data-text="404">
+                    404
+                </h1>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-[#2c2c2c] uppercase tracking-widest">
+                System Failure
+            </h2>
+            <p class="text-[#75614a] text-sm md:text-base max-w-md mx-auto leading-relaxed">
+                Oops! It seems the furniture broke. The page you are looking for has been moved, removed, or crushed into pieces.
+            </p>
+        </div>
+
+        <div>
+            <a href="/" 
+               class="group relative inline-flex items-center justify-center px-8 py-3 bg-black text-white font-bold text-xs uppercase tracking-[0.2em] overflow-hidden transition-all hover:bg-[#A67B5B]">
+                <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
+                <span class="relative flex items-center gap-2">
+                    <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    Back to Safety
+                </span>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Glitch Effect Logic */
+    .glitch-wrapper {
+        position: relative;
+        color: black;
+    }
+    
+    .glitch-wrapper::before,
+    .glitch-wrapper::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #F5F0EB; /* Matches background to hide main text parts */
+    }
+
+    .glitch-wrapper::before {
+        left: 2px;
+        text-shadow: -1px 0 #A67B5B;
+        clip-path: inset(24% 0 29% 0);
+        animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+    }
+
+    .glitch-wrapper::after {
+        left: -2px;
+        text-shadow: -1px 0 #ff0000;
+        clip-path: inset(54% 0 21% 0);
+        animation: glitch-anim-2 3s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim-1 {
+        0% { clip-path: inset(80% 0 2% 0); }
+        20% { clip-path: inset(20% 0 60% 0); }
+        40% { clip-path: inset(50% 0 10% 0); }
+        60% { clip-path: inset(10% 0 80% 0); }
+        80% { clip-path: inset(90% 0 5% 0); }
+        100% { clip-path: inset(30% 0 40% 0); }
+    }
+
+    @keyframes glitch-anim-2 {
+        0% { clip-path: inset(10% 0 80% 0); }
+        20% { clip-path: inset(80% 0 10% 0); }
+        40% { clip-path: inset(40% 0 50% 0); }
+        60% { clip-path: inset(20% 0 20% 0); }
+        80% { clip-path: inset(5% 0 90% 0); }
+        100% { clip-path: inset(60% 0 30% 0); }
+    }
+
+    /* Soft Mask for Image */
+    .mask-image-fade {
+        mask-image: radial-gradient(circle, black 50%, transparent 100%);
+        -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%);
+    }
+</style>
