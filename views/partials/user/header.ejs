@@ -61,13 +61,24 @@
       </button>
 
       <a href="/user/profile"
-        class="w-9 h-9 md:w-10 md:h-10 bg-indigo-100 rounded-full flex items-center justify-center overflow-hidden cursor-pointer border border-indigo-200">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-          class="w-7 h-7 md:w-8 md:h-8 text-indigo-500 mt-2">
-          <path fill-rule="evenodd"
-            d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-            clip-rule="evenodd" />
-        </svg>
+        class="w-9 h-9 md:w-10 md:h-10 bg-[#8B7355] rounded-full flex items-center justify-center overflow-hidden cursor-pointer border-2 border-red-400 shadow-sm hover:scale-105 transition-transform">
+
+        <% if(user && user.avatar) { %>
+          <img src="<%= user.avatar %>" alt="Profile" class="w-full h-full object-cover">
+
+          <% } else if(user && (user.name || user.username)) { %>
+            <span class="text-white font-bold text-xs leading-none">
+              <%= (user.name || user.username).charAt(0).toUpperCase() %>
+            </span>
+
+            <% } else { %>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="w-7 h-7 text-white mt-1">
+                <path fill-rule="evenodd"
+                  d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                  clip-rule="evenodd" />
+              </svg>
+              <% } %>
       </a>
       <% } else if (locals.title && locals.title !=='Login' ) { %>
         <a href="/user/login"
@@ -80,36 +91,46 @@
 
 <!-- Regular Mobile Sidebar (Non-Profile Pages) -->
 <% if(!locals.isProfilePage) { %>
-<div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity duration-300"></div>
-<div id="mobile-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl overflow-y-auto">
+  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity duration-300">
+  </div>
+  <div id="mobile-sidebar"
+    class="fixed inset-y-0 left-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl overflow-y-auto">
     <div class="p-6">
-        <div class="flex justify-between items-center mb-8">
-            <span class="font-bold text-xl tracking-tight">MENU</span>
-            <button id="close-sidebar" class="p-2 text-gray-500 text-2xl">&times;</button>
-        </div>
-        <ul class="space-y-4 font-medium text-gray-700">
-            <li><a href="/store" class="block py-2 border-b border-gray-50">Store</a></li>
-            <li><a href="/dining" class="block py-2 border-b border-gray-50">Dining</a></li>
-            <li><a href="/living" class="block py-2 border-b border-gray-50">Living</a></li>
-        </ul>
+      <div class="flex justify-between items-center mb-8">
+        <span class="font-bold text-xl tracking-tight">MENU</span>
+        <button id="close-sidebar" class="p-2 text-gray-500 text-2xl">&times;</button>
+      </div>
+      <ul class="space-y-4 font-medium text-gray-700">
+        <li><a href="/store" class="block py-2 border-b border-gray-50">Store</a></li>
+        <li><a href="/dining" class="block py-2 border-b border-gray-50">Dining</a></li>
+        <li><a href="/living" class="block py-2 border-b border-gray-50">Living</a></li>
+      </ul>
     </div>
-</div>
-<% } %>
+  </div>
+  <% } %>
 
-<% if(locals.isProfilePage) { %>
-<div id="profile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[90] hidden md:hidden transition-opacity duration-300"></div>
-<div id="profile-sidebar-menu" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl">
-    <div class="p-6">
-        <div class="flex justify-between items-center mb-8">
+    <% if(locals.isProfilePage) { %>
+      <div id="profile-sidebar-overlay"
+        class="fixed inset-0 bg-black/50 z-[90] hidden md:hidden transition-opacity duration-300"></div>
+      <div id="profile-sidebar-menu"
+        class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-8">
             <h2 class="text-xl font-bold">Profile Menu</h2>
             <button id="close-profile-sidebar" class="p-2 text-gray-400 text-3xl hover:text-black">&times;</button>
+          </div>
+          <nav class="space-y-2">
+            <a href="/user/profile"
+              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'profile' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Personal
+              Info</a>
+            <a href="/user/orders"
+              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'orders' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">My
+              Orders</a>
+            <a href="/user/address"
+              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'address' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Address</a>
+            <a href="/user/wallet"
+              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'wallet' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Wallet</a>
+          </nav>
         </div>
-        <nav class="space-y-2">
-            <a href="/user/profile" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'profile' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Personal Info</a>
-            <a href="/user/orders" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'orders' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">My Orders</a>
-            <a href="/user/address" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'address' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Address</a>
-            <a href="/user/wallet" class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'wallet' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Wallet</a>
-        </nav>
-    </div>
-</div>
-<% } %>
+      </div>
+      <% } %>

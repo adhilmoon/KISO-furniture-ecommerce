@@ -1,9 +1,14 @@
 
     let isEditMode = false;
-    let originalData = {
-        name: '<%= user.name %>',
-        phone: '<%= user.phone || "" %>'
-    };
+    let originalData = {};
+
+    // Initialize original data from input fields
+    window.addEventListener('DOMContentLoaded', function() {
+        originalData = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value
+        };
+    });
 
     // Toggle Edit Mode
     function toggleEditMode() {
