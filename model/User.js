@@ -14,7 +14,7 @@ const Usersceama = new mongoose.Schema({
     },
     phone: {
         type: Number,
-        unique: true,
+        default: null,
         sparse: true
 
     },
@@ -48,6 +48,10 @@ const Usersceama = new mongoose.Schema({
         ref: "User",
         default: null,
     },
+    isActive: {
+        type: Boolean,
+        default: true 
+    }
 
 },
     {

@@ -1,9 +1,9 @@
 function adminauth(req, res, next) {
     if(req.session.Admin && req.session.Admin.role === 'admin') {
         next()
-    } else {
-       return res.redirect('admin/login')
-    }
+     } else {
+         return res.redirect('/admin/login')
+     }
 
 
 }
@@ -23,9 +23,9 @@ const isLogin = (req, res, next) => {
 function isAdmin(req, res, next) {
     if(req.session.Admin && req.session.Admin.role != 'user') {
         next()
-    } else {
-       return res.redirect('admin/login')
-    }
+     } else {
+         return res.redirect('/admin/login')
+     }
 }
  const noCache = (req, res, next) => {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
