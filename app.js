@@ -1,6 +1,4 @@
-import dotenv from 'dotenv'
-dotenv.config()
-
+import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import expressLayouts from 'express-ejs-layouts'; 
@@ -36,6 +34,7 @@ app.use(session({
 
 app.use(passport.initialize())
 app.use(passport.session())
+
 
 app.set('view engine', 'ejs');
 app.set('views', './views'); 

@@ -3,23 +3,24 @@
 
 let timerInterval;
 function startTimer() {
-    let timeLeft = 30; 
+    let timeLeft = 120;
     const timerDisplay = document.getElementById('timer');
     const resendBtn = document.getElementById('resendBtn');
+    const timerContainer = document.getElementById('timerContainer');
 
     clearInterval(timerInterval);
-    resendBtn.classList.add('hidden'); 
+    if(resendBtn) resendBtn.classList.remove('hidden');
+    if(timerContainer) timerContainer.classList.remove('hidden');
 
     timerInterval = setInterval(() => {
         let minutes = Math.floor(timeLeft / 60);
         let seconds = timeLeft % 60;
-        
+
         timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
         if(timeLeft <= 0) {
             clearInterval(timerInterval);
-            timerDisplay.innerText = "OTP Expired!"; 
-            resendBtn.classList.remove('hidden'); 
+            timerDisplay.innerText = "00:00";
         }
         timeLeft--;
     }, 1000);
@@ -28,6 +29,9 @@ function startTimer() {
 
 function showOTPModal() {
     document.getElementById('otpModal').classList.remove('hidden');
+    const modalError = document.getElementById('modal-error');
+    modalError.innerText = "";
+    modalError.classList.remove('text-red-500', 'text-green-500');
     startTimer();
 }
 
@@ -57,8 +61,7 @@ async function signup_handle(event) {
 
     if(!emailRegex.test(email)) {
         event.preventDefault();
-        errorDisplay.innerText = 'Enter a valid email address';
-        return false;
+        return showError('Please enter a valid email address');
     }
     const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
@@ -83,25 +86,36 @@ async function signup_handle(event) {
         console.error("Login error:", error);
     }
 }
+  document.getElementById('verifyBtn').addEventListener('click', () => {
+       verifyOTP()
+    });
 
 async function verifyOTP() {
-    const otp = document.getElementById('otpInput').value;
-    const errorDisplay = document.getElementById('local-error')
-    if(!otp) {
-        errorDisplay.innerText = "Please enter the OTP";
-        errorDisplay.classList.add('text-red-500');
+    const otp = document.getElementById('otpInput').value.trim();
+    const modalError = document.getElementById('modal-error')
+    console.log(otp)
+    modalError.innerText = "";
+    modalError.classList.add('hidden');
+
+    if(!otp || otp.length !== 4) {
+        modalError.innerText = "Please enter a valid 4-digit OTP";
+        modalError.classList.remove('hidden');
+        modalError.style.color = "red";
         return;
     }
     try {
-        const response = await axios.post('/user/veryfy-otp', {entereOtp: otp});
+        const response = await axios.post('/user/veryfy-otp', {otp: otp});
         if(response.data.success) {
-            window.location.href = response.data.redirectUrl || '/user/login'
+
+            window.location.replace(response.data.redirectUrl || '/user/login')
         }
     } catch(error) {
         const message = error.response?.data?.message || "Invalid OTP. Please try again.";
-        errorDisplay.innerText = message;
-        errorDisplay.classList.add('text-red-500');
+        modalError.innerText = message;
+        modalError.classList.remove('hidden');;
+        modalError.style.color = "red";
         console.error("Verification Error:", error);
+       
     }
 }
 function togglePasswordVisibility() {
@@ -124,20 +138,23 @@ function togglePasswordVisibility() {
         confirmPasswordInput.type = 'password';
     }
 }
-function toggleVerifyButton() {
-    const otpInput = document.getElementById('otpInput');
-    const verifyBtn = document.getElementById('verifyBtn');
 
-
-    if(otpInput.value.length === 4) {
-        verifyBtn.classList.remove('hidden');
-    } else {
-        verifyBtn.classList.add('hidden');
-    }
-}
 async function resendOTP() {
     const email = document.getElementById('email').value.trim();
     const name = document.getElementById('name').value.trim();
+    const otpInput = document.getElementById('otpInput');
+    const modalError = document.getElementById('modal-error');
+
+    if(modalError) {
+        modalError.innerText = "";
+        modalError.classList.add('hidden');
+        modalError.style.color = "";
+        modalError.classList.remove('text-red-500', 'text-green-500');
+    }
+
+    if(otpInput) {
+        otpInput.value = "";
+    }
 
 
     try {
@@ -148,13 +165,25 @@ async function resendOTP() {
         });
 
         if(response.data.success) {
-            otpInput.value = ""; 
-            verifyBtn.classList.add('hidden');
-            alert("New OTP sent to " + email);
             startTimer();
         }
     } catch(error) {
+        const message = error.response?.data?.message || "Failed to resend OTP";
+        if(modalError) {
+            modalError.innerText = message;
+            modalError.classList.remove('hidden');
+            modalError.style.color = 'red';
+        }
         console.error("Resend error", error);
-        alert(error.response?.data?.message || "Failed to resend OTP");
     }
+}
+function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    const otpInput = document.getElementById('otpInput');
+
+    errorDiv.textContent = message;
+    errorDiv.classList.remove('hidden');
+
+
+    otpInput.classList.add('border-red-400');
 }

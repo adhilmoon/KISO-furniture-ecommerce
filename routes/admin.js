@@ -7,6 +7,9 @@ router.use(adminauth.noCache)
 router.get("/login", adminauth.isLogin, adminpages.adminlogin);
 router.post('/login', admController.auth);
 router.get('/dashboard', adminauth.isAdmin, adminpages.admindash);
+router.get('/customers',adminauth.isAdmin,adminpages.users_mange)
+router.patch('/user/:id/block', adminauth.isAdmin, adminpages.toggleBlock);
+router.get("/users/search",adminauth.isAdmin,admController.load_data)
 router.get('/logout', admController.logout);
 
 export default router

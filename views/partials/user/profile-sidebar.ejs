@@ -1,0 +1,38 @@
+<div class="p-6 sticky top-0 h-screen flex flex-col">
+    <nav class="space-y-2">
+        <a 
+            href="/user/profile" 
+            class="<%= locals.currentPage === 'profile' ? 'bg-[#E8E0D5] text-gray-900' : 'text-gray-700 hover:bg-gray-50' %> block px-4 py-3 font-medium rounded-lg transition-colors"
+        >
+            Personal Info
+        </a>
+        <a 
+            href="/user/orders" 
+            class="<%= locals.currentPage === 'orders' ? 'bg-[#E8E0D5] text-gray-900' : 'text-gray-700 hover:bg-gray-50' %> block px-4 py-3 font-medium rounded-lg transition-colors"
+        >
+            My Orders
+        </a>
+        <a 
+            href="/user/address" 
+            class="<%= locals.currentPage === 'address' ? 'bg-[#E8E0D5] text-gray-900' : 'text-gray-700 hover:bg-gray-50' %> block px-4 py-3 font-medium rounded-lg transition-colors"
+        >
+            Address
+        </a>
+        <a 
+            href="/user/wallet" 
+            class="<%= locals.currentPage === 'wallet' ? 'bg-[#E8E0D5] text-gray-900' : 'text-gray-700 hover:bg-gray-50' %> block px-4 py-3 font-medium rounded-lg transition-colors"
+        >
+            Wallet
+        </a>
+
+    </nav>
+
+
+    <div class="mt-auto pt-10">
+        <button onclick="handleLogout()" class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 font-medium rounded-lg transition-all w-full">
+            <span class="mr-3">🚪</span> Logout
+        </button>
+    </div>
+    
+
+</div>
