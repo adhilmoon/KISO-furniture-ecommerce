@@ -25,8 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
         close.onclick = hide;
         overlay.onclick = hide;
     }
-
-    // Initialize both based on availability
     setupSidebar('mobile-menu-btn', 'mobile-sidebar', 'mobile-sidebar-overlay', 'close-sidebar');
     setupSidebar('mobile-profile-sidebar-toggle', 'profile-sidebar-menu', 'profile-sidebar-overlay', 'close-profile-sidebar');
 });
