@@ -5,7 +5,6 @@ import * as Pages from "../controller/usercontroller/pages.js";
 import * as userController from "../controller/usercontroller/authContro.js"
 import * as profileCtr from "../controller/usercontroller/profileCtr.js"
 import {upload} from '../config/cloudinary.js'
-
 import passport from "passport";
 
 // Multer error handling middleware
@@ -40,7 +39,7 @@ router.get('/logout', userController.logout)
 
 
 router.patch('/update-profile', userauth.userauth, userauth.isUser, profileCtr.profiel_Update)
-router.patch('/upload-profile-image', userauth.userauth, userauth.isUser, upload.single('profileImage'), handleUploadErrors, profileCtr.uploadProfilePic)
+router.patch('/upload-profile-image', userauth.userauth, userauth.isUser, upload.single('profileImage'),handleUploadErrors, profileCtr.uploadProfilePic)
 router.patch('/address/add',userauth.userauth, userauth.isUser,profileCtr.addAddress)
 router.get('/address/get/:id',userauth.userauth,userauth.isUser,profileCtr.getAddress)
 router.patch('/address/update/:id',userauth.userauth,userauth.isUser,profileCtr.updateAddress)
