@@ -1,76 +1,58 @@
-let resetTimerInterval;
 
-async function handleForgotPassword(event, prefilledEmail = null) {
-    if (event) event.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+    const forgotLink = document.getElementById("forgotPasswordLink");
 
+    if (forgotLink) {
+        forgotLink.addEventListener("click", handleForgotPassword);
+    }
+});
+async function handleForgotPassword(event) {
+    event.preventDefault()
+     console.log("Forgot password clicked");
+   
     const emailInput = document.getElementById('email');
-    const emailText = document.getElementById('email-display')?.innerText?.trim();
-    const email = (prefilledEmail ?? emailInput?.value ?? emailText ?? '').trim();
-    const errorDisplay = document.getElementById('forgot-error');
-    errorDisplay.innerText = "";
-    
-    if (!email) {
-        errorDisplay.innerText = "Please enter your email";
-        return;
+    const email = emailInput.value.trim();
+    const errorDisplay = document.getElementById('local-error');
+     errorDisplay.innerText = "";
+     errorDisplay.style.color = "";
+
+    const showError = (msg) => {
+        errorDisplay.innerText = msg;
+        errorDisplay.style.color = "red";
+        return false;
     }
 
-    if (emailInput) emailInput.value = email;
-    
-    try {
-        const response = await axios.post('/user/forgot-password', { email });
-        
-        if (response.data.success) {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.remove('hidden');
-            document.getElementById('email-display').innerText = email;
-            document.getElementById('otp-error').innerText = '';
-            document.getElementById('reset-error').innerText = '';
-            document.getElementById('resetOtp').value = '';
-            startResetTimer();
-        }
-    } catch (error) {
-        const message = error.response?.data?.message || "Failed to send recovery code";
-        const otpErrorDisplay = document.getElementById('otp-error');
+    if(!email) {
+       showError("Please enter your email");
+        return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)) {
+      showError('Please enter a valid email address')
+        return
+    }
 
-        if (!document.getElementById('step1').classList.contains('hidden')) {
-            errorDisplay.innerText = message;
-        } else if (otpErrorDisplay) {
-            otpErrorDisplay.innerText = message;
+    try {
+        const response = await axios.post('/user/forgot-password', {email});
+
+        if(response.data.success) {
+          showOTPModal()
+
         }
+    } catch(error) {
+        const message = error.response?.data?.message || "Something went wrong";
+        errorDisplay.innerText = message;
     }
 }
 
-async function handleVerifyResetOtp(event) {
-    event.preventDefault();
-    
-    const otp = document.getElementById('resetOtp').value.trim();
-    const errorDisplay = document.getElementById('otp-error');
-    errorDisplay.innerText = "";
-    
-    if (!otp || otp.length !== 4) {
-        errorDisplay.innerText = "Please enter a valid 4-digit code";
-        return;
-    }
-    
-    try {
-        const response = await axios.post('/user/veryfy-otp', { otp });
-        
-        if (response.data.success) {
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step3').classList.remove('hidden');
-            clearInterval(resetTimerInterval);
-        }
-    } catch (error) {
-        errorDisplay.innerText = error.response?.data?.message || "Invalid recovery code";
-    }
-}
+
 
 function toggleResetPasswordVisibility() {
     const toggle = document.getElementById('showResetPasswordToggle');
-    const newPasswordInput = document.getElementById('newPassword');
-    const confirmPasswordInput = document.getElementById('confirmNewPassword');
+    const newPasswordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
 
-    if (!toggle || !newPasswordInput || !confirmPasswordInput) return;
+    if(!toggle || !newPasswordInput || !confirmPasswordInput) return;
 
     const inputType = toggle.checked ? 'text' : 'password';
     newPasswordInput.type = inputType;
@@ -79,78 +61,38 @@ function toggleResetPasswordVisibility() {
 
 async function handleResetPassword(event) {
     event.preventDefault();
-    
-    const newPassword = document.getElementById('newPassword').value.trim();
-    const confirmPassword = document.getElementById('confirmNewPassword').value.trim();
+
+    const newPassword = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
     const errorDisplay = document.getElementById('reset-error');
     errorDisplay.innerText = "";
-    
-    if (!newPassword || !confirmPassword) {
+
+    if(!newPassword || !confirmPassword) {
         errorDisplay.innerText = "Please fill in all fields";
         return;
     }
-    
-    if (newPassword !== confirmPassword) {
+
+    if(newPassword !== confirmPassword) {
         errorDisplay.innerText = "Passwords do not match";
         return;
     }
-    
+
     const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-    
-    if (!passRegex.test(newPassword)) {
+
+    if(!passRegex.test(newPassword)) {
         errorDisplay.innerText = "Password must be 8+ chars with uppercase, lowercase, number & special char";
         return;
     }
-    
+
     try {
-        const response = await axios.patch('/user/reset-password', { password: newPassword });
-        
-        if (response.data.success) {
+        const response = await axios.patch('/user/reset-password', {password: newPassword});
+
+        if(response.data.success) {
             alert("Password reset successfully!");
             window.location.href = '/user/login';
         }
-    } catch (error) {
+    } catch(error) {
         errorDisplay.innerText = error.response?.data?.message || "Failed to reset password";
     }
 }
 
-function startResetTimer() {
-    let timeLeft = 120;
-    const timerDisplay = document.getElementById('reset-timer');
-    
-    clearInterval(resetTimerInterval);
-    
-    resetTimerInterval = setInterval(() => {
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-        
-        timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        
-        if (timeLeft <= 0) {
-            clearInterval(resetTimerInterval);
-            timerDisplay.innerText = "Expired";
-        }
-        timeLeft--;
-    }, 1000);
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    const params = new URLSearchParams(window.location.search);
-    const emailFromLogin = params.get('email');
-    const otpAlreadySent = params.get('sent') === '1';
-
-    if (emailFromLogin && otpAlreadySent) {
-        const emailInput = document.getElementById('email');
-        if (emailInput) emailInput.value = emailFromLogin;
-
-        document.getElementById('step1').classList.add('hidden');
-        document.getElementById('step2').classList.remove('hidden');
-        document.getElementById('email-display').innerText = emailFromLogin;
-        startResetTimer();
-        return;
-    }
-
-    if (emailFromLogin) {
-        await handleForgotPassword(null, emailFromLogin);
-    }
-});

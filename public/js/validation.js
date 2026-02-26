@@ -32,10 +32,8 @@ async function handleLogin(event, role) {
     if(!emailRegex.test(emailValue)) {
         return showError('Please enter a valid email address')
     }
-    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-
-    if(!passRegex.test(passValue)) {
-        return showError('Password must be 8+ chars with uppercase, lowercase & number')
+    if(passValue.length < 6) {
+        return showError("Invalid password");
     }
 
 
@@ -51,10 +49,10 @@ async function handleLogin(event, role) {
         if(response.data.success) {
             showSuccess('Login Successful!');
 
-
             setTimeout(() => {
-                window.location.replace(response.data.redirectUrl);
-            }, 500);
+                window.location.href = response.data.redirectUrl || "/";
+            }, 200);
+            console.log(document.cookie)
         } else {
             return showError(response.data.message || 'Login failed. Please try again.');
         }
@@ -78,35 +76,4 @@ function togglePassword() {
         eyeOpen.classList.remove('hidden');
         eyeClosed.classList.add('hidden');
     }
-}
-async function openForgotModal() {
-    const email = document.getElementById('email')?.value?.trim();
-    const errorDisplay = document.getElementById('local-error');
-
-    if(!email) {
-        if(errorDisplay) {
-            errorDisplay.innerText = 'Please enter your email address first';
-            errorDisplay.style.color = 'red';
-        }
-        return;
-    }
-
-    try {
-        const response = await axios.post('/user/forgot-password', { email });
-
-        if(response.data.success) {
-            const encodedEmail = encodeURIComponent(email);
-            window.location.href = `/user/forgot-password-page?email=${encodedEmail}&sent=1`;
-        }
-    } catch(error) {
-        if(errorDisplay) {
-            errorDisplay.innerText = error.response?.data?.message || 'Failed to send reset link';
-            errorDisplay.style.color = 'red';
-        }
-    }
-}
-function toggleForgotModal() {
-    const modal = document.getElementById('forgotPasswordModal');
-    openForgotModal()
-    modal.classList.toggle('hidden');
 }

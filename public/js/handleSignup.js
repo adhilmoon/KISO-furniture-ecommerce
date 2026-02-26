@@ -3,13 +3,13 @@
 
 let timerInterval;
 function startTimer() {
-    let timeLeft = 120;
+    let timeLeft = 60;
     const timerDisplay = document.getElementById('timer');
     const resendBtn = document.getElementById('resendBtn');
     const timerContainer = document.getElementById('timerContainer');
 
     clearInterval(timerInterval);
-    if(resendBtn) resendBtn.classList.remove('hidden');
+    if(resendBtn) resendBtn.classList.add('hidden');
     if(timerContainer) timerContainer.classList.remove('hidden');
 
     timerInterval = setInterval(() => {
@@ -104,7 +104,7 @@ async function verifyOTP() {
         return;
     }
     try {
-        const response = await axios.post('/user/veryfy-otp', {otp: otp});
+        const response = await axios.post('/user/verify-otp', {otp:otp});
         if(response.data.success) {
 
             window.location.replace(response.data.redirectUrl || '/user/login')

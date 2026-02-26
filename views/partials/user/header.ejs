@@ -60,7 +60,7 @@
         </svg>
       </button>
 
-      <a href="/user/profile"
+      <a href="/user/profile" id="nav-profile-img"
         class="w-9 h-9 md:w-10 md:h-10 bg-[#8B7355] rounded-full flex items-center justify-center overflow-hidden cursor-pointer border-2 border-red-400 shadow-sm hover:scale-105 transition-transform">
 
         <% if(user && user.avatar) { %>
@@ -113,24 +113,63 @@
       <div id="profile-sidebar-overlay"
         class="fixed inset-0 bg-black/50 z-[90] hidden md:hidden transition-opacity duration-300"></div>
       <div id="profile-sidebar-menu"
-        class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl">
-        <div class="p-6">
+        class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl flex flex-col">
+
+        <div class="p-6 flex-1 flex flex-col">
+
+          <!-- Header -->
           <div class="flex justify-between items-center mb-8">
-            <h2 class="text-xl font-bold">Profile Menu</h2>
-            <button id="close-profile-sidebar" class="p-2 text-gray-400 text-3xl hover:text-black">&times;</button>
+            <h2 class="text-xl font-bold text-gray-900">Profile Menu</h2>
+            <button id="close-profile-sidebar"
+              class="p-2 text-gray-400 text-3xl hover:text-black transition">&times;</button>
           </div>
+
+          <!-- Navigation -->
           <nav class="space-y-2">
-            <a href="/user/profile"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'profile' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Personal
-              Info</a>
-            <a href="/user/orders"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'orders' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">My
-              Orders</a>
-            <a href="/user/address"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'address' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Address</a>
-            <a href="/user/wallet"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'wallet' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Wallet</a>
+            <a href="/user/profile" class="<%= locals.currentPage === 'profile' ? 
+                'bg-[#E8E0D5] text-gray-900' : 
+                'text-gray-700 hover:bg-gray-50' %> 
+                block px-4 py-3 font-medium rounded-lg transition-colors">
+              Personal Info
+            </a>
+
+            <a href="/user/orders" class="<%= locals.currentPage === 'orders' ? 
+                'bg-[#E8E0D5] text-gray-900' : 
+                'text-gray-700 hover:bg-gray-50' %> 
+                block px-4 py-3 font-medium rounded-lg transition-colors">
+              My Orders
+            </a>
+
+            <a href="/user/address" class="<%= locals.currentPage === 'address' ? 
+                'bg-[#E8E0D5] text-gray-900' : 
+                'text-gray-700 hover:bg-gray-50' %> 
+                block px-4 py-3 font-medium rounded-lg transition-colors">
+              Address
+            </a>
+
+            <a href="/user/wallet" class="<%= locals.currentPage === 'wallet' ? 
+                'bg-[#E8E0D5] text-gray-900' : 
+                'text-gray-700 hover:bg-gray-50' %> 
+                block px-4 py-3 font-medium rounded-lg transition-colors">
+              Wallet
+            </a>
+
+            <a href="/user/settings" class="<%= locals.currentPage === 'settings' ? 
+                'bg-[#E8E0D5] text-gray-900' : 
+                'text-gray-700 hover:bg-gray-50' %> 
+                block px-4 py-3 font-medium rounded-lg transition-colors">
+              Settings
+            </a>
           </nav>
+
+          <!-- Logout at bottom -->
+          <div class="mt-auto pt-10 border-t border-gray-100">
+            <button onclick="handleLogout()"
+              class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 font-medium rounded-lg transition-all w-full">
+              <span class="mr-3">🚪</span> Logout
+            </button>
+          </div>
+
         </div>
       </div>
       <% } %>

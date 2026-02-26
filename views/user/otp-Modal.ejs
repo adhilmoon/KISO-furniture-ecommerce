@@ -1,0 +1,124 @@
+
+
+<!-- Paste this DIRECTLY inside <body>, not inside any layout wrapper -->
+<div id="otpModal" class="hidden fixed inset-0 z-[999]  items-center justify-center p-4"
+    style="background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);">
+
+    <div class="relative flex rounded-3xl overflow-hidden shadow-2xl"
+        style="width: 100%; max-width: 660px; min-height: 420px;">
+
+        <!-- LEFT brand panel -->
+        <div class="hidden md:flex flex-col items-center justify-center bg-[#1a1a1a] px-8 py-12 relative overflow-hidden"
+            style="width: 260px; flex-shrink: 0;">
+
+            <div class="absolute inset-0 opacity-[0.04] pointer-events-none"
+                style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
+
+            <svg viewBox="0 0 200 250" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-28 h-36 mb-8 opacity-80">
+                <path d="M48 148 H152 V162 H48 Z" stroke="#A67B5B" stroke-width="5.5" stroke-linejoin="round"
+                    fill="none" />
+                <path d="M62 42 H138 V60 H62 Z" stroke="#A67B5B" stroke-width="5.5" stroke-linejoin="round"
+                    fill="none" />
+                <line x1="78" y1="60" x2="74" y2="148" stroke="#A67B5B" stroke-width="4.5" stroke-linecap="round" />
+                <line x1="100" y1="60" x2="100" y2="148" stroke="#A67B5B" stroke-width="4.5" stroke-linecap="round" />
+                <line x1="122" y1="60" x2="126" y2="148" stroke="#A67B5B" stroke-width="4.5" stroke-linecap="round" />
+                <line x1="62" y1="162" x2="50" y2="238" stroke="#A67B5B" stroke-width="5" stroke-linecap="round" />
+                <line x1="138" y1="162" x2="150" y2="238" stroke="#A67B5B" stroke-width="5" stroke-linecap="round" />
+                <line x1="72" y1="162" x2="60" y2="238" stroke="#A67B5B" stroke-width="5" stroke-linecap="round" />
+                <line x1="128" y1="162" x2="140" y2="238" stroke="#A67B5B" stroke-width="5" stroke-linecap="round" />
+            </svg>
+
+            <div class="text-center relative z-10">
+                <div class="flex items-center justify-center gap-2 mb-2">
+                    <svg class="w-5 h-5 text-[#A67B5B]" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="2" y="2" width="9" height="9" rx="1" />
+                        <rect x="13" y="2" width="9" height="9" rx="1" opacity="0.4" />
+                        <rect x="2" y="13" width="9" height="9" rx="1" opacity="0.4" />
+                        <rect x="13" y="13" width="9" height="9" rx="1" />
+                    </svg>
+                    <span class="text-white text-xl font-black tracking-[0.15em] uppercase">KISO</span>
+                </div>
+                <p class="text-[#A67B5B] text-[10px] uppercase tracking-[0.25em] font-medium">Furniture for life</p>
+                <div class="mt-6 w-8 h-px bg-[#A67B5B] mx-auto opacity-40"></div>
+                <p class="mt-5 text-gray-500 text-xs leading-relaxed" style="max-width: 160px;">
+                    We sent a verification code to keep your account secure.
+                </p>
+            </div>
+        </div>
+
+        <!-- RIGHT form panel -->
+        <div class="flex-1 bg-white px-8 py-10 flex flex-col justify-center relative">
+
+            <!-- Close -->
+            <button onclick="closeOTPModal()"
+                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-gray-400 text-xs font-bold">
+                ✕
+            </button>
+
+            <!-- Mobile brand -->
+            <div class="flex md:hidden items-center gap-2 mb-6">
+                <span class="text-base font-black tracking-widest uppercase text-[#1a1a1a]">KISO</span>
+                <div class="h-3 w-px bg-gray-300"></div>
+                <span class="text-[10px] text-[#A67B5B] uppercase tracking-widest">Verify</span>
+            </div>
+
+            <!-- Icon -->
+            <div class="mb-5 w-11 h-11 flex items-center justify-center bg-[#F5F0EB] rounded-2xl">
+                <svg class="w-5 h-5 text-[#A67B5B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+
+            <h2 class="text-2xl font-bold text-[#1a1a1a] mb-1">Verify OTP</h2>
+            <p class="text-sm text-gray-400 mb-6">Enter the 4-digit code sent to your email</p>
+
+            <p id="modal-error" class="text-red-500 text-xs font-medium mb-3 min-h-[1rem]"></p>
+
+            <!-- 4 separate OTP boxes -->
+            <div class="flex gap-3 mb-6">
+                <input type="text" maxlength="1" inputmode="numeric"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    style="width: 3.25rem;" />
+                <input type="text" maxlength="1" inputmode="numeric"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    style="width: 3.25rem;" />
+                <input type="text" maxlength="1" inputmode="numeric"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    style="width: 3.25rem;" />
+                <input type="text" maxlength="1" inputmode="numeric"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    style="width: 3.25rem;" />
+            </div>
+
+            <!-- Verify button -->
+
+           
+                <button id="verifyBtn"
+                     style="background-color:#A67B5B;"
+                    class="w-56 bg-gradient-to-r from-[#A67B5B] to-[#8C6239] flex justify-center text-white font-semibold text-sm uppercase tracking-widest py-3 rounded-2xl shadow-lg hover:scale-105 transition-all duration-300">
+                    Verify Now
+                </button>
+     
+
+
+            <!-- Timer -->
+            <div class="mt-5 text-sm text-center">
+                <p id="timerContainer" class="text-gray-400 text-xs">
+                    Resend code in <span id="timer" class="font-bold text-[#A67B5B]">01:00</span>
+                </p>
+                <button id="resendBtn"
+                    class="hidden text-[#A67B5B] font-bold text-xs hover:text-[#8a6040] mt-2 transition"
+                    onclick="resendOTP()">
+                    Resend OTP →
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<script src="/js/otp.js"></script>
