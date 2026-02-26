@@ -1,5 +1,6 @@
 import User from "../../model/User.js";
 import Address from "../../model/Address.js";
+import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 
 
 const sampleProducts = [
@@ -49,19 +50,17 @@ const sampleProducts = [
     }
 ];
 export const load_Home = (req, res) => {
-    res.render("user/layout", {
-        title: 'HOME',
-        body: "homepage"
-    });
-};
+    res.render("user/homepage")
+}
 
 
-// Helper function to pick random image
+
+
 const pickRandomImage = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 export const user_home = async (req, res) => {
     try {
-        // Mapping products with a single image for display
+
         const products = sampleProducts.map((product) => ({
             ...product,
             img: pickRandomImage(product.products)
@@ -72,13 +71,11 @@ export const user_home = async (req, res) => {
             img: pickRandomImage(product.rooms) || pickRandomImage(product.products)
         }));
 
-       
+
         res.render('user/homepage', {
             title: 'homepagePage',
-            body: "homepage", 
             products,
-            rooms,
-            user: req.session.user || null
+            rooms
         });
     } catch(error) {
         console.log(error);
@@ -89,26 +86,51 @@ export const user_home = async (req, res) => {
 export const login_page = (req, res) => {
     res.render('user/login', {
         title: 'Login',
-        query: req.query || {}
+        query: req.query || {},
+        isLoggedIn: !!req.session.user
     });
 }
 
-export const forgot_password_page = (req, res) => {
-    res.render('user/forgot-password', {
+export const reset_password_page = (req, res) => {
+    res.render('user/reset-password', {
         title: 'Forgot Password',
         query: req.query || {}
     });
 }
-export const user_profiel = async (req, res) => {
-    const currentUser = req.session.user;
-    const user = await User.findById(currentUser)
-    res.render('user/profile', {
-        user: user,
-        isProfilePage: true,
-        title: "My Profile"
-    })
+
+
+export const user_profile = async (req, res) => {
+    try {
+        const userId = req.session.user._id
+        if(!userId) {
+            return res.redirect('/login')
+        }
+        const user = await User.findById(userId)
+        res.render('user/profile', {
+            user: user,
+            isProfilePage: true,
+            title: "My Profile"
+        })
+        if(!user) {
+            return res.send("in Db user not fount ")
+        }
+    } catch(error) {
+        console.log(error)
+        return res
+            .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+            .send(MESSAGES.INTERNAL_SERVER_ERROR);
+    }
+
 }
-export const user_singup = (req, res) => {
+export const settings_page = (req, res) => {
+    res.render('user/settings', {
+        title: 'settings',
+        isProfilePage: true,
+        query: req.query || {}
+    });
+}
+
+export const user_signup = (req, res) => {
     res.render('user/signup', {
         title: "Sign Up - Kiso",
         user: req.session.user || null,
@@ -119,19 +141,19 @@ export const user_singup = (req, res) => {
 export const user_address = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const perPage = 5; 
+        const perPage = 5;
         const skip = (page - 1) * perPage;
-        
+
         const userId = req.session.user._id;
 
-       
-        const totalAddresses = await Address.countDocuments({ userId });
 
-     
-        const addresses = await Address.find({ userId })
+        const totalAddresses = await Address.countDocuments({userId});
+
+
+        const addresses = await Address.find({userId})
             .skip(skip)
             .limit(perPage)
-            .sort({ createdAt: -1 });
+            .sort({createdAt: -1});
 
         const user = await User.findById(userId);
 
@@ -143,12 +165,13 @@ export const user_address = async (req, res) => {
             title: "My Addresses",
             isProfilePage: true
         });
-    } catch (error) {
+    } catch(error) {
         console.error(error);
     }
 };
 export const page_notfound = (req, res) => {
-    res.render('user/pagenotfont', {
-        title: "pagenotfor"
-    })
-}
+
+    res.status(STATUS_CODES.NOT_FOUND).render('404', {
+        title: "Page Not Found - KISO"
+    });
+};

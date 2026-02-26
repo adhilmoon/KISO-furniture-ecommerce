@@ -1,0 +1,428 @@
+<div class="min-h-screen bg-[#F5F0EB] flex flex-col items-center justify-center p-4 overflow-hidden relative">
+
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');">
+    </div>
+
+    <div class="relative z-10 max-w-2xl w-full text-center space-y-8">
+
+        <!-- Chair + 404 Container -->
+     <div class="relative mx-auto w-full h-[500px] md:h-[600px] flex items-center justify-center overflow-visible">
+
+    <h1 class="absolute inset-0 flex items-center justify-center text-[220px] md:text-[450px] font-black text-black leading-none tracking-tighter select-none z-30 glitch-wrapper"
+        style="line-height: 1;" 
+        data-text="404">
+        404
+    </h1>
+
+    <div class="relative z-10 w-48 h-56 md:w-60 md:h-72 opacity-80">
+        <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <line class="chair-part leg-bl" x1="55" y1="150" x2="45" y2="230" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round" />
+            <line class="chair-part leg-br" x1="145" y1="150" x2="155" y2="230" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round" />
+            <line class="chair-part leg-fl" x1="65" y1="155" x2="55" y2="230" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round" />
+            <line class="chair-part leg-fr" x1="135" y1="155" x2="145" y2="230" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round" />
+            <rect class="chair-part seat" x="50" y="140" width="100" height="18" rx="3" fill="#1a1a1a" />
+            <line class="chair-part slat-l" x1="75" y1="55" x2="70" y2="140" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round" />
+            <line class="chair-part slat-m" x1="100" y1="50" x2="100" y2="140" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round" />
+            <line class="chair-part slat-r" x1="125" y1="55" x2="130" y2="140" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round" />
+            <rect class="chair-part backrest" x="60" y="40" width="80" height="20" rx="4" fill="#1a1a1a" />
+        </svg>
+    </div>
+</div>
+        <div class="space-y-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-[#2c2c2c] uppercase tracking-widest">
+                Page Not Found
+            </h2>
+            <p class="text-[#75614a] text-sm md:text-base max-w-md mx-auto leading-relaxed">
+                Oops! The furniture broke. The page you're looking for has been moved, removed, or crushed into pieces.
+            </p>
+        </div>
+
+        <div>
+            <a href="/">
+
+
+                <svg class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Safety
+                </span>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* ─── Glitch on 404 ─── */
+    .glitch-wrapper {
+        position: absolute;
+        color: #1a1a1a; /* Solid color for maximum impact */
+        z-index: 30;    /* Ensure it's above the chair */
+        pointer-events: none;
+    }
+
+    /* Optional: Make the glitch colors more vivid since it's now in front */
+    .glitch-wrapper::before {
+        text-shadow: -2px 0 #A67B5B; /* Your brand brown */
+    }
+
+    .glitch-wrapper::after {
+        text-shadow: 2px 0 #cc4444; /* Error red */
+    }
+    .glitch-wrapper::before {
+        left: 2px;
+        text-shadow: -1px 0 #A67B5B;
+        clip-path: inset(24% 0 29% 0);
+        animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+    }
+
+    .glitch-wrapper::after {
+        left: -2px;
+        text-shadow: -1px 0 #cc4444;
+        clip-path: inset(54% 0 21% 0);
+        animation: glitch-anim-2 3s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim-1 {
+        0% {
+            clip-path: inset(80% 0 2% 0);
+        }
+
+        20% {
+            clip-path: inset(20% 0 60% 0);
+        }
+
+        40% {
+            clip-path: inset(50% 0 10% 0);
+        }
+
+        60% {
+            clip-path: inset(10% 0 80% 0);
+        }
+
+        80% {
+            clip-path: inset(90% 0 5% 0);
+        }
+
+        100% {
+            clip-path: inset(30% 0 40% 0);
+        }
+    }
+
+    @keyframes glitch-anim-2 {
+        0% {
+            clip-path: inset(10% 0 80% 0);
+        }
+
+        20% {
+            clip-path: inset(80% 0 10% 0);
+        }
+
+        40% {
+            clip-path: inset(40% 0 50% 0);
+        }
+
+        60% {
+            clip-path: inset(20% 0 20% 0);
+        }
+
+        80% {
+            clip-path: inset(5% 0 90% 0);
+        }
+
+        100% {
+            clip-path: inset(60% 0 30% 0);
+        }
+    }
+
+    /* ─── Chair break / reassemble loop ─── */
+    /*
+        Timeline (total 4s loop):
+        0%–30%    → chair sits assembled (calm)
+        30%–55%   → pieces fly outward (break)
+        55%–70%   → pieces hang scattered (pause)
+        70%–95%   → pieces fly back (reassemble)
+        95%–100%  → snaps back, brief shake, loops
+    */
+
+    .chair-part {
+        transform-box: fill-box;
+        transform-origin: center center;
+        animation-duration: 4s;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        animation-iteration-count: infinite;
+    }
+
+    /* SEAT drops and rotates */
+    .seat {
+        animation-name: break-seat;
+    }
+
+    @keyframes break-seat {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(0px, 55px) rotate(25deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(0px, 55px) rotate(25deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* BACKREST flies up-left */
+    .backrest {
+        animation-name: break-backrest;
+    }
+
+    @keyframes break-backrest {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(-40px, -50px) rotate(-30deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(-40px, -50px) rotate(-30deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* SLAT LEFT tilts left */
+    .slat-l {
+        animation-name: break-slat-l;
+    }
+
+    @keyframes break-slat-l {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(-35px, -20px) rotate(-45deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(-35px, -20px) rotate(-45deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* SLAT MIDDLE goes straight up */
+    .slat-m {
+        animation-name: break-slat-m;
+    }
+
+    @keyframes break-slat-m {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(5px, -40px) rotate(10deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(5px, -40px) rotate(10deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* SLAT RIGHT tilts right */
+    .slat-r {
+        animation-name: break-slat-r;
+    }
+
+    @keyframes break-slat-r {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(35px, -20px) rotate(45deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(35px, -20px) rotate(45deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* BACK LEFT LEG kicks back-left */
+    .leg-bl {
+        animation-name: break-leg-bl;
+    }
+
+    @keyframes break-leg-bl {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(-40px, 40px) rotate(-40deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(-40px, 40px) rotate(-40deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* BACK RIGHT LEG kicks back-right */
+    .leg-br {
+        animation-name: break-leg-br;
+    }
+
+    @keyframes break-leg-br {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(40px, 40px) rotate(40deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(40px, 40px) rotate(40deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* FRONT LEFT LEG falls forward-left */
+    .leg-fl {
+        animation-name: break-leg-fl;
+    }
+
+    @keyframes break-leg-fl {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(-25px, 50px) rotate(-20deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(-25px, 50px) rotate(-20deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* FRONT RIGHT LEG falls forward-right */
+    .leg-fr {
+        animation-name: break-leg-fr;
+    }
+
+    @keyframes break-leg-fr {
+
+        0%,
+        28% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate(25px, 50px) rotate(20deg);
+            opacity: 1;
+        }
+
+        68% {
+            transform: translate(25px, 50px) rotate(20deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+        }
+    }
+</style>

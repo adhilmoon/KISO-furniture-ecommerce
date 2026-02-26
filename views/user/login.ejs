@@ -70,10 +70,7 @@
 
           <!-- Forgot Password Link -->
           <div class="text-left">
-            <a href="javascript:void(0)" onclick="openForgotModal()"
-              class="text-sm text-kiso-placeholder hover:text-kiso-brown transition-colors">
-              Forgot password?
-            </a>
+           <a href="#" id="forgotPasswordLink">Forgot password?</a>
           </div>
 
           <!-- Login Button -->
@@ -119,38 +116,9 @@
         </form>
   </div>
   <!--  forgot password modal -->
-  <div id="forgotPasswordModal"
-    class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl w-full max-w-md shadow-xl transform transition-all p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-bold text-gray-900">forgot Password</h3>
-        <button onclick="toggleForgotModal()" class="text-gray-400 hover:text-gray-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-
-      <p class="text-sm text-gray-500 mb-6">Enter your email address and we'll send you an OTP to reset your password.
-      </p>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-          <input type="email" id="forgotEmailInput" placeholder="Enter your registered email"
-            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-kiso-brown">
-        </div>
-
-        <button onclick="sendOTP()" id="forgotSubmitBtn"
-          class="w-full bg-kiso-brown text-white py-3 rounded-lg font-medium hover:bg-kiso-brown-dark transition-all">
-          Send OTP
-        </button>
-
-        <p id="forgotModalError" class="text-center text-sm font-medium hidden"></p>
-      </div>
-    </div>
-  </div>
+  <%- include('./otp-Modal') %>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
 <script src="/js/validation.js"></script>
+<script src="/js/forgotPassword.js"></script>

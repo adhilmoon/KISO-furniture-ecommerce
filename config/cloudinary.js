@@ -1,50 +1,64 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import multer from 'multer';
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import multer from "multer";
 
-// Configuration with validation
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-const apiKey = process.env.CLOUDINARY_API_KEY;
-const apiSecret = process.env.CLOUDINARY_API_SECRET;
+// Env validation
+const { 
+  CLOUDINARY_CLOUD_NAME, 
+  CLOUDINARY_API_KEY, 
+  CLOUDINARY_API_SECRET 
+} = process.env;
 
-if (!cloudName || !apiKey || !apiSecret) {
-  console.error('❌ Cloudinary config incomplete:');
-  console.error('   CLOUDINARY_CLOUD_NAME:', cloudName ? '✓' : '✗ missing');
-  console.error('   CLOUDINARY_API_KEY:', apiKey ? '✓' : '✗ missing');
-  console.error('   CLOUDINARY_API_SECRET:', apiSecret ? '✓' : '✗ missing');
-} else {
-  console.log('✓ Cloudinary credentials loaded');
+if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+  throw new Error(" Cloudinary environment variables missing");
 }
 
-cloudinary.config({ 
-  cloud_name: cloudName, 
-  api_key: apiKey, 
-  api_secret: apiSecret 
+// Cloudinary config
+cloudinary.config({
+  cloud_name: CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
 });
 
+console.log("..>>Cloudinary credentials loaded<<..");
+
+// Storage config
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary,
   params: async (req, file) => {
     return {
-      folder: 'kiso_uploads',
-      allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-      resource_type: 'auto',
-      quality: 'auto:best',
-      fetch_format: 'auto'
-    }
-  }
+      folder: "kiso/users/profile",
+      allowed_formats: ["jpg", "png", "jpeg", "webp"],
+      resource_type: "auto",
+      quality: "auto:best",
+      fetch_format: "auto",
+      public_id: `${Date.now()}-${file.originalname}`,
+    };
+  },
 });
 
-export const upload = multer({ 
-  storage: storage,
+// Multer upload middleware
+export const upload = multer({
+  storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB max
+    fileSize: 5 * 1024 * 1024, // 5MB
   },
   fileFilter: (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if(!allowedMimes.includes(file.mimetype)) {
-      return cb(new Error('Invalid file type. Only JPG, PNG, and WebP are allowed.'));
+    const allowedMimes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/webp",
+    ];
+
+    if (!allowedMimes.includes(file.mimetype)) {
+      return cb(
+        new Error(
+          "Invalid file type. Only JPG, PNG, and WebP are allowed."
+        )
+      );
     }
+
     cb(null, true);
-  }
+  },
 });

@@ -1,4 +1,11 @@
 async function toggleBlock(userId) {
+    const actionBtn = document.getElementById(`action-btn-${userId}`);
+ const row = document.querySelector(`tr[data-user-id='${userId}']`);
+   
+    if(!row||!actionBtn)return;
+    const isCurrentlyBlocked=actionBtn.textContent.trim()==="Activate"
+    const conformMessage=isCurrentlyBlocked?"Are you sure you want to activate this user?": "Are you sure you want to block this user?";
+    if(!confirm(conformMessage))return;
     try {
         const response = await axios.patch(`/admin/user/${userId}/block`);
         if (response.data.success) {
@@ -16,11 +23,9 @@ async function toggleBlock(userId) {
                 const actionBtn = document.getElementById(`action-btn-${userId}`);
                 if (actionBtn) {
                     if (response.data.isBlocked) {
-                        // user is now blocked — show action to activate
                         actionBtn.textContent = 'Activate';
                         actionBtn.className = "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition";
                     } else {
-                        // user is now active — show action to block
                         actionBtn.textContent = 'Block';
                         actionBtn.className = "px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition";
                     }

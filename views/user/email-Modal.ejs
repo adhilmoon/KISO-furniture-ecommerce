@@ -1,0 +1,42 @@
+<div id="emailModal" class="fixed inset-0 z-[100] hidden overflow-y-auto">
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
+
+    <div class="flex min-h-full items-center justify-center p-4 text-center">
+        <div class="relative transform overflow-hidden bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+            <div class="px-6 py-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">Update Email Address</h3>
+                    <button onclick="hideEmailModal()" class="text-gray-400 hover:text-black transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <form id="updateEmailForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">New Email Address</label>
+                        <input type="email" id="newEmail" name="email" 
+                            class="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-black focus:ring-0 outline-none transition">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Confirm with Password</label>
+                        <p class="text-xs text-gray-500 mb-2">For security, please enter your password to save this change.</p>
+                        <input type="password" id="confirmPassword" name="password" 
+                            class="mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-black focus:ring-0 outline-none transition">
+                    </div>
+                          <p id="emailModal-error" class="text-red-500 text-xs font-medium mb-3 min-h-[1rem]"></p>
+                    <div class="pt-4 flex gap-3">
+                        <button type="button" onclick="hideEmailModal()" 
+                            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                            class="flex-1 px-4 py-2 bg-black text-white hover:bg-zinc-800 transition">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
