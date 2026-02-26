@@ -1,23 +1,37 @@
 import nodemailer from "nodemailer"
 
 export const sendOTP = async (email, otp) => {
-    const transpoter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
+  const emailUser = process.env.EMAIL_USER?.trim();
+  const emailPass = process.env.EMAIL_PASS?.replace(/\s+/g, '').trim();
+
+  if(!emailUser || !emailPass) {
+    throw new Error("EMAIL_USER or EMAIL_PASS is missing in .env");
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: emailUser,
+        pass: emailPass
+      }
     });
-    await transpoter.sendMail({
-        from: '"KISO furniture" <kisofurniture@gmail.com>',
-        to: email,
-        subject: "Verify Your Account",
-        html: otpTemplate(otp)
-    })
-    console.log('Email sended')
+
+    await transporter.sendMail({
+      from: `"KISO furniture" <${emailUser}>`,
+      to: email,
+      subject: "Verify Your Account",
+      html: otpTemplate(otp)
+    });
+
+    console.log(`OTP email sent to ${email}`);
+  } catch(error) {
+    console.error("OTP email send failed:", error.message);
+    throw new Error("Unable to send OTP email. Check Gmail app password configuration.");
+  }
 }
-const otpTemplate=(otp)=>{
-    return `
+const otpTemplate = (otp) => {
+  return `
     <!DOCTYPE html>
 <html>
   <body style="margin:0; padding:0; background:#f4f6f8; font-family: Arial, sans-serif;">

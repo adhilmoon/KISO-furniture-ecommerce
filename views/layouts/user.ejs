@@ -3,18 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KISO - Modern Furniture</title>
-   <link href="/css/output.css" rel="stylesheet">
+    <title><%= title %> - KISO</title>
+    <link href="/css/output.css" rel="stylesheet">
 </head>
+
 <body class="bg-white flex flex-col min-h-screen">
 
+    <!-- Header -->
     <%- include('../partials/user/header') %>
 
-    <!-- ✅ Page Content Will Come Here -->
-    <%- body %>
+    <!-- Main Layout Wrapper -->
+    <div class="flex-grow flex bg-kiso-bg">
 
+        <!-- Sidebar (Only for Profile Pages) -->
+        <% if (locals.isProfilePage) { %>
+            <aside class="hidden md:block w-64 bg-white border-r border-gray-200">
+                <%- include('../partials/user/profile-sidebar') %>
+            </aside>
+        <% } %>
+
+        <!-- Main Content (Always Rendered) -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="<%= locals.isProfilePage ? 'max-w-5xl' : 'w-full' %> mx-auto px-4 py-8 md:py-12">
+                <%- body %>
+            </div>
+        </main>
+
+    </div>
+   
+
+
+    <!-- Footer -->
     <%- include('../partials/user/footer') %>
-<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/logout.js"></script>
+    <script src="/js/side-bar.js"></script>
+    <script>
+      window.addEventListener('pageshow', function(event) {
+           
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                window.location.reload();
+            }
+        });
+    </script>
 
 </body>
 </html>

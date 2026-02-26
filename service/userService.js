@@ -9,7 +9,6 @@ export const createUser=async(userData)=>{
         name,
         email,
         password:hashedPassword,
-        
     })
 
     return await newUser.save();

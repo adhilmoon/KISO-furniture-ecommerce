@@ -61,7 +61,7 @@
                     class="w-full px-4 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors">
             </div>
 
-           <p id="local-error" class="text-center font-medium mt-2 min-h-[1.25rem]"></p>
+            <p id="local-error" class="text-center font-medium mt-2 min-h-[1.25rem]"></p>
             <button type="submit"
                 class="w-full bg-kiso-brown text-white py-3 rounded-lg font-medium hover:bg-kiso-brown-dark transition-colors">
                 Sign Up
@@ -98,29 +98,9 @@
 
         </form>
     </div>
+
+    <%- include('./otp-Modal') %>
 </div>
-<div id="otpModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
-    <div class="bg-white p-6 rounded-2xl shadow-2xl w-[320px] text-center">
-        <h2 class="text-xl font-bold mb-4 text-gray-800">Verify OTP</h2>
-        
-        <input type="text" id="otpInput" oninput="toggleVerifyButton()"
-            class="w-full border-2 border-gray-200 rounded-lg p-2 text-center text-xl tracking-widest focus:border-brown-600 outline-none mb-4" 
-            placeholder="0000" maxlength="4">
-        
-        <button id="verifyBtn" onclick="verifyOTP()" 
-            class="hidden w-full bg-brown-600 hover:bg-brown-700 text-green-600 font-bold py-2.5 rounded-lg transition duration-300">
-            Verify
-        </button>
-        
-        <div class="mt-4 text-xs">
-            <p id="timerContainer" class="text-gray-500">
-                Resend OTP in: <span id="timer" class="font-bold text-red-500">02:00</span>
-            </p>
-            <button id="resendBtn" class="hidden text-brown-600 font-bold hover:underline mt-2" onclick="resendOTP()">
-                Resend OTP
-            </button>
-        </div>
-    </div>
-</div>
+
 <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
 <script src="/js/handleSignup.js"></script>

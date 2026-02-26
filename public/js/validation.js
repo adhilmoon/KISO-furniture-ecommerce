@@ -30,12 +30,10 @@ async function handleLogin(event, role) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(emailValue)) {
-        return showError('pleas enter valid email')
+        return showError('Please enter a valid email address')
     }
-    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-
-    if(!passRegex.test(passValue)) {
-        return showError('Password must be 8+ chars with uppercase, lowercase & number')
+    if(passValue.length < 6) {
+        return showError("Invalid password");
     }
 
 
@@ -51,13 +49,16 @@ async function handleLogin(event, role) {
         if(response.data.success) {
             showSuccess('Login Successful!');
 
-
             setTimeout(() => {
-                window.location.href = response.data.redirectUrl;
-            }, 500);
+                window.location.href = response.data.redirectUrl || "/";
+            }, 200);
+            console.log(document.cookie)
+        } else {
+            return showError(response.data.message || 'Login failed. Please try again.');
         }
     } catch(error) {
-        return showError('"Login failed. Please try again."')
+        const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+        return showError(errorMessage);
     }
 
 }
