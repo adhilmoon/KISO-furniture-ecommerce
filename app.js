@@ -4,7 +4,7 @@ import session from 'express-session';
 import expressLayouts from 'express-ejs-layouts'; 
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
-import * as userPages from "./controller/usercontroller/pages.js";
+import * as userPages from "./controller/userController/pagesController.js";
 import { fileURLToPath } from 'url';
 import path from 'path';
 import connectDB from './config/connectDB.js';
