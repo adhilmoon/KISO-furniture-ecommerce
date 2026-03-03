@@ -2,9 +2,9 @@ import express from "express";
 const router = express.Router();
 
 import * as userauth from "../middleware/userAuth.js";
-import * as Pages from "../controller/usercontroller/pages.js";
-import * as authController from "../controller/usercontroller/authController.js";
-import * as profileController from "../controller/usercontroller/profileCtr.js";
+import * as Pages from "../controller/userController/pagesController.js";
+import * as authController from "../controller/userController/authController.js";
+import * as profileController from "../controller/userController/profileController.js";
 import {upload} from "../config/cloudinary.js";
 import passport from "passport";
 
