@@ -245,7 +245,7 @@ export const updateEmail = async (req, res) => {
 
 
     } catch(error) {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(MESSAGES.INTERNAL_SERVER_ERROR)
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false,message:MESSAGES.INTERNAL_SERVER_ERROR})
     }
 }
 
@@ -262,7 +262,7 @@ export const changePassword = async (req, res) => {
         }
         const isMatch = await bcrypt.compare(currentPassword, user.password)
         if(!isMatch) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json(MESSAGES.INCORRECT_PASSWORD)
+            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false,message: MESSAGES.INCORRECT_PASSWORD})
         }
         const hashedPassword = await bcrypt.hash(newPassword, 12)
         user.password = hashedPassword;
@@ -270,6 +270,6 @@ export const changePassword = async (req, res) => {
         return res.status(STATUS_CODES.OK).json({success: true, message: "Password updated successfully"});
     } catch(error) {
         console.log("change password issue")
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(MESSAGES.INTERNAL_SERVER_ERROR)
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false,message:MESSAGES.INTERNAL_SERVER_ERROR})
     }
 }

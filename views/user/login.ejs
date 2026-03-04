@@ -1,9 +1,9 @@
 <!-- Login Page (login.ejs) -->
-<div class="flex-grow flex items-center justify-center px-4 py-12 bg-kiso-bg">
+<div class="min-h-screen px-4 pt-36 pb-12 flex flex-col items-center bg-brand-bg1">
   <div class="w-full max-w-md">
     <!-- Login Title -->
     <h1 class="text-3xl md:text-4xl text-center mb-10">
-      <span class="text-kiso-brown font-normal">Login</span>
+      <span class="text-brand-accent font-normal">Login</span>
       <span class="text-kiso-text font-normal"> your KISO account.</span>
     </h1>
 
@@ -36,7 +36,7 @@
               Email Address
             </label>
             <input type="email" id="email" name="email" placeholder="Enter your email"
-              class="w-full px-4 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors"
+              class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
               required>
           </div>
 
@@ -47,10 +47,10 @@
             </label>
             <div class="relative">
               <input type="password" id="password" name="password" placeholder="Enter your password"
-                class="w-full px-4 pr-12 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors"
+                class="w-full px-4 pr-12 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
                 required>
               <button type="button" onclick="togglePassword()"
-                class="absolute inset-y-0 right-4 flex items-center pr-4 text-gray-500 hover:text-gray-700 focus:outline-none">
+                class="absolute inset-y-0 right-4 flex items-center pr-4 text-brand-muted hover:text-brand-light focus:outline-none">
                 <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -70,7 +70,7 @@
 
           <!-- Forgot Password Link -->
           <div class="text-left">
-           <a href="#" id="forgotPasswordLink">Forgot password?</a>
+            <a href="#" id="forgotPasswordLink">Forgot password?</a>
           </div>
 
           <!-- Login Button -->
@@ -84,7 +84,7 @@
 
           <!-- Google Login Button -->
           <a href="/user/auth/google"
-            class="w-full bg-kiso-input border border-kiso-border text-kiso-text py-3 rounded-lg font-medium hover:bg-[#e0d7cd] transition-colors flex items-center justify-center gap-3"
+            class="w-full bg-brand-bg2 border border-white/5 text-kiso-text py-3 rounded-lg font-medium hover:bg-[#e0d7cd] transition-colors flex items-center justify-center gap-3"
             style="text-decoration: none;">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -107,7 +107,8 @@
           <div class="text-center pt-4">
             <p class="text-kiso-text text-sm">
               Don't have an account?
-              <a href="/user/signup" class="text-kiso-brown hover:text-kiso-brown-dark font-medium transition-colors">
+              <a href="/user/signup"
+                class="text-brand-accent hover:text-brand-accent-dark font-medium transition-colors">
                 Sign up
               </a>
             </p>

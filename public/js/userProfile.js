@@ -148,19 +148,20 @@ async function handleProfileUpdate(event) {
 
     const formData = {
         name: document.getElementById('name').value.trim(),
-        phone: document.getElementById('phone').value.trim()
+        phone: document.getElementById('phone').value
     };
 
 
 
-    if(formData.phone && !/^[0-9]{10}$/.test(formData.phone)) {
-        showMessage('Enter a valid 10-digit phone number', 'error')
+    if(formData.phone !== "" && !/^[0-9]{10}$/.test(formData.phone)) {
+        showMessage('Enter a valid 10-digit phone number', 'error');
         return;
     }
     if(!formData.name) {
         showMessage('Name is required', 'error');
         return;
     }
+
 
     try {
         const response = await axios.patch('/user/update-profile', formData);
@@ -169,8 +170,8 @@ async function handleProfileUpdate(event) {
             showMessage(response.data.message || 'Profile updated successfully!', 'success');
             const navprofileImgContainer = document.getElementById('nav-profile-img')
             const newName = formData.name;
-            const avatarLetter=document.getElementById('avatarLetter');
-            if(avatarLetter){
+            const avatarLetter = document.getElementById('avatarLetter');
+            if(avatarLetter) {
                 avatarLetter.textContent = newName.charAt(0).toUpperCase();
             }
 
@@ -182,7 +183,7 @@ async function handleProfileUpdate(event) {
                     navprofileImgContainer.innerHTML = `<span class="text-white font-bold text-xs leading-none">${firstLetter}</span>`
                 }
             }
-         
+
 
             originalData.name = formData.name;
             originalData.phone = formData.phone;
@@ -197,13 +198,7 @@ async function handleProfileUpdate(event) {
 
 
 function showMessage(msg, type) {
-    const el = document.getElementById('profile-message');
-    el.textContent = msg;
-    el.className = `text-center min-h-[20px] font-medium text-sm ${type === 'success' ? 'text-green-600' : 'text-red-600'}`;
-    setTimeout(() => {
-        el.textContent = '';
-        el.className = 'text-center min-h-[20px] font-medium text-sm';
-    }, 3000);
+    showToast(msg, type)
 }
 
 

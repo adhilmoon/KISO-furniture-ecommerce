@@ -12,13 +12,11 @@ async function handleLogin(event, role) {
     errorDisplay.style.color = "";
 
     const showError = (msg) => {
-        errorDisplay.innerText = msg;
-        errorDisplay.style.color = "red";
+        showToast(msg,"error")
         return false;
     }
     const showSuccess = (msg) => {
-        errorDisplay.innerText = msg;
-        errorDisplay.style.color = "#22c55e";
+        showToast(msg,"success")
         return false;
     }
 

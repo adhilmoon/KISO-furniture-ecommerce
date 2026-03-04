@@ -1,135 +1,147 @@
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16 ">
 
-    <section class="relative h-[450px] md:h-[600px] w-full rounded-3xl overflow-hidden group shadow-lg">
-        <img src="https://images.unsplash.com/photo-1692216709296-f698ed0ff17d?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="Elevated Living"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
 
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+<main class="bg-brand-bg1 text-stone-100 selection:bg-brand-accent/30">
+  
 
-        <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-16 text-center md:text-left">
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">Elevated Living</h1>
-            <p class="text-gray-200 text-sm md:text-lg max-w-xl font-light mb-6">
-                Discover our curated collection of Japandi-inspired furniture, designed for calm and comfort.
-            </p>
+    <!-- Scrollytelling Section -->
+    <div id="scrolly-container">
+        <!-- The sticky visual container -->
+        <div class="sticky-wrapper">
+            <canvas id="sofa-canvas"></canvas>
 
-            <div class="absolute bottom-8 right-8 hidden md:flex gap-3">
-                <button
-                    class="w-12 h-12 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-black transition duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                </button>
-                <button
-                    class="w-12 h-12 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-black transition duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>
-                </button>
+            <!-- Storytelling Overlays -->
+            <div id="steps-container" class="absolute inset-0 pointer-events-none">
+                <!-- Hero Intro (0-15%) -->
+                <div data-start="0" data-end="15" class="step opacity-100 flex">
+                    <h1
+                        class="text-5xl md:text-8xl font-bold tracking-tighter mb-6 text-brand-accent drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        Elevated Living.</h1>
+                    <p class="text-stone-400 text-lg md:text-xl max-w-xl font-light">
+                        Discover our curated collection of Japandi-inspired furniture, designed for calm and comfort.
+                    </p>
+                </div>
+
+                <!-- Craftsmanship (15-40%) -->
+                <div data-start="15" data-end="40"
+                    class="step absolute inset-y-0 left-0 flex flex-col justify-center px-8 md:px-24 text-left w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
+                    <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Built for generations.</h2>
+                    <p class="text-stone-400 text-lg max-w-md font-light">
+                        Kiln-dried solid ash wood and precision joinery form an unyielding foundation.
+                    </p>
+                </div>
+
+                <!-- Comfort (40-65%) -->
+                <div data-start="40" data-end="65"
+                    class="step absolute inset-y-0 right-0 flex flex-col justify-center px-8 md:px-24 text-right w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
+                    <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Uncompromising comfort.</h2>
+                    <p class="text-stone-400 text-lg max-w-md font-light ml-auto">
+                        Multi-layer high-resilience foam and a responsive suspension system perfectly adapt to your
+                        body.
+                    </p>
+                </div>
+
+                <!-- Materials (65-85%) -->
+                <div data-start="65" data-end="85"
+                    class="step absolute inset-y-0 left-0 flex flex-col justify-center px-8 md:px-24 text-left w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
+                    <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Everyday luxury.</h2>
+                    <p class="text-stone-400 text-lg max-w-md font-light">
+                        Spill-resistant, performance-grade linen blends offer a breathable, tactile harmony.
+                    </p>
+                </div>
+
+                <!-- CTA (85-100%) -->
+                <div data-start="85" data-end="100"
+                    class="step absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 translate-y-10 transition-all duration-700 ease-out">
+                    <h2 class="text-5xl md:text-8xl font-bold tracking-tighter mb-8">Center your space.</h2>
+                    <p class="text-stone-400 text-lg md:text-xl max-w-xl font-light mb-12">
+                        The Signature Sofa. Crafted for modern living.
+                    </p>
+                    <a href="/store"
+                        class="pointer-events-auto px-10 py-5 bg-brand-accent text-brand-bg1 font-bold tracking-widest uppercase hover:scale-105 transition-transform duration-300">
+                        Shop the Signature Sofa
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div> <!-- Close scrolly-container -->
+
+    <!-- Featured Products Section -->
+    <section class="py-24 bg-brand-bg1 px-6 md:px-12 lg:px-16 xl:px-24 relative z-10">
+        <div class="w-full mx-auto">
+            <div class="mb-16 flex flex-col md:flex-row justify-between items-end gap-6">
+                <div>
+                    <h2 class="text-xs uppercase tracking-[0.3em] text-brand-accent font-bold mb-4">The Collection</h2>
+                    <h3 class="text-4xl md:text-6xl font-bold tracking-tight text-brand-light">Featured Products</h3>
+                </div>
+                <a href="/store"
+                    class="text-sm border-b border-brand-accent text-brand-accent pb-1 hover:text-white hover:border-white transition-colors uppercase tracking-widest font-bold">View
+                    All</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <% if(products && products.length> 0) { %>
+                    <% products.slice(0, 4).forEach(product=> { %>
+                        <a href="/store"
+                            class="group block bg-brand-bg2 rounded-3xl overflow-hidden border border-white/5 hover:border-brand-accent/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] relative">
+                            <div
+                                class="aspect-square overflow-hidden relative flex items-center justify-center bg-brand-bg1">
+                                <!-- Full bleed product image setup -->
+                                <img src="<%= product.img %>" alt="<%= product.name %>"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 ease-in-out">
+                            </div>
+                            <div class="p-6">
+                                <h4 class="text-xl font-bold text-white mb-2">
+                                    <%= product.name %>
+                                </h4>
+                                <p class="text-brand-accent font-semibold tracking-wide">$<%= product.price %>
+                                </p>
+                            </div>
+                        </a>
+                        <% }) %>
+                            <% } else { %>
+                                <p class="text-brand-muted">No products found.</p>
+                                <% } %>
             </div>
         </div>
     </section>
 
-    <section>
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Featured Products</h2>
-            <a href="#" class="text-sm font-semibold text-gray-500 hover:text-black transition">View All &rarr;</a>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <% products.forEach(product=> { %>
-                <div class="group relative">
-                    <div
-                        class="aspect-square w-full overflow-hidden rounded-2xl bg-gray-100 shadow-sm transition-all duration-300 group-hover:shadow-md">
-                        <img src="<%= product.img %>" alt="<%= product.name %>"
-                            class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-110">
-
-                        <button
-                            class="absolute bottom-4 right-4 translate-y-12 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 bg-white p-3 rounded-xl shadow-lg hover:bg-black hover:text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="mt-4 flex justify-between items-start">
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-900">
-                                <%= product.name %>
-                            </h3>
-                            <p class="mt-1 text-sm text-gray-500 text-uppercase">Furniture</p>
-                        </div>
-                        <p class="text-sm font-bold text-gray-900">₹<%= product.price.toLocaleString('en-IN') %>
-                        </p>
-                    </div>
-                </div>
-                <% }) %>
-        </div>
-    </section>
-
-    <section>
-        <h2 class="text-2xl font-bold text-gray-900 mb-8">Explore by Room</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <% rooms.forEach(room=> { %>
-                <div class="relative group cursor-pointer overflow-hidden rounded-3xl aspect-[16/9]">
-                    <img src="<%= room.img %>" alt="<%= room.title %>"
-                        class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition duration-300"></div>
-                    <div class="absolute bottom-8 left-8">
-                        <h3 class="text-2xl font-bold text-white">
-                            <%= room.title %>
-                        </h3>
-                    </div>
-                </div>
-                <% }) %>
-        </div>
-    </section>
-
-    <section class="bg-gray-50 rounded-[40px] p-8 md:p-12">
-        <h2 class="text-2xl font-bold text-center text-gray-900 mb-10">Our Promise</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
-            <div
-                class="bg-white p-8 rounded-2xl flex flex-col items-center text-center shadow-sm border border-gray-100">
-                <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-800 mb-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
-                </div>
-                <span class="font-bold text-gray-900">Free Shipping</span>
-                <p class="text-xs text-gray-500 mt-2">On all orders above ₹5000</p>
+    <!-- Room Categories Section -->
+    <section class="py-32 bg-brand-bg2 px-6 md:px-12 lg:px-16 xl:px-24 relative z-10">
+        <div class="w-full mx-auto">
+            <div class="mb-20 text-center">
+                <h2 class="text-xs uppercase tracking-[0.3em] text-brand-accent font-bold mb-4">Spaces</h2>
+                <h3 class="text-4xl md:text-6xl font-bold tracking-tight text-white">Curated Rooms</h3>
             </div>
 
-            <div
-                class="bg-white p-8 rounded-2xl flex flex-col items-center text-center shadow-sm border border-gray-100">
-                <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-800 mb-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
-                <span class="font-bold text-gray-900">Secure Payment</span>
-                <p class="text-xs text-gray-500 mt-2">Fully encrypted transactions</p>
-            </div>
-
-            <div
-                class="bg-white p-8 rounded-2xl flex flex-col items-center text-center shadow-sm border border-gray-100">
-                <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-800 mb-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                </div>
-                <span class="font-bold text-gray-900">30-Day Returns</span>
-                <p class="text-xs text-gray-500 mt-2">Easy exchanges and refunds</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <% if(rooms && rooms.length> 0) { %>
+                    <% rooms.slice(0, 2).forEach((room, index)=> { %>
+                        <a href="/store"
+                            class="group relative aspect-[16/10] md:aspect-[4/3] rounded-[2rem] overflow-hidden inline-block w-full shadow-2xl hover:shadow-[0_0_50px_rgba(212,175,55,0.15)] transition-shadow duration-500">
+                            <img src="<%= room.img %>" alt="<%= room.title %>"
+                                class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent">
+                            </div>
+                            <div
+                                class="absolute bottom-8 left-8 md:bottom-12 md:left-12 flex flex-col items-start z-10">
+                                <h4
+                                    class="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 drop-shadow-md">
+                                    <%= room.title %>
+                                </h4>
+                                <span
+                                    class="inline-flex items-center gap-2 text-brand-accent font-bold uppercase tracking-widest text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                    Explore <span class="text-lg">→</span>
+                                </span>
+                            </div>
+                        </a>
+                        <% }) %>
+                            <% } else { %>
+                                <p class="text-brand-muted text-center">No rooms available.</p>
+                                <% } %>
             </div>
         </div>
     </section>
 
 </main>
+<script src="/js/homePage.js"></script>

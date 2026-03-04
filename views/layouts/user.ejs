@@ -1,54 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> - KISO</title>
+    <title>
+        <%= title %> - KISO
+    </title>
     <link href="/css/output.css" rel="stylesheet">
+
 </head>
 
-<body class="bg-white flex flex-col min-h-screen">
+<body class="bg-brand-bg1 flex flex-col min-h-screen">
 
     <!-- Header -->
     <%- include('../partials/user/header') %>
 
-    <!-- Main Layout Wrapper -->
-    <div class="flex-grow flex bg-kiso-bg">
-
-        <!-- Sidebar (Only for Profile Pages) -->
         <% if (locals.isProfilePage) { %>
-            <aside class="hidden md:block w-64 bg-white border-r border-gray-200">
-                <%- include('../partials/user/profile-sidebar') %>
-            </aside>
-        <% } %>
-
-        <!-- Main Content (Always Rendered) -->
-        <main class="flex-1 overflow-y-auto">
-            <div class="<%= locals.isProfilePage ? 'max-w-5xl' : 'w-full' %> mx-auto px-4 py-8 md:py-12">
-                <%- body %>
+            <div class="flex-grow flex bg-brand-bg1 pt-24">
+                <aside class="hidden md:block w-64 bg-brand-bg1 border-r border-white/5 relative z-10">
+                    <%- include('../partials/user/profile-sidebar') %>
+                </aside>
+                <main class="flex-1 overflow-y-auto">
+                    <div class="max-w-5xl mx-auto px-4 py-8 md:py-12">
+                        <%- body %>
+                    </div>
+                </main>
             </div>
-        </main>
+            <% } else { %>
+                <main class="w-full">
+                    <%- body %>
+                </main>
+                <% } %>
 
-    </div>
-   
 
 
-    <!-- Footer -->
-    <%- include('../partials/user/footer') %>
+                    <!-- Footer -->
+                    <%- include('../partials/user/footer') %>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/logout.js"></script>
-    <script src="/js/sideBar.js"></script>
-    <script>
-      window.addEventListener('pageshow', function(event) {
-           
-            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-                window.location.reload();
-            }
-        });
-    </script>
+                        <!-- Scripts -->
+                        <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                        <script src="/js/toast.js"></script>
+                        <script src="/js/logout.js"></script>
+                        <script src="/js/sideBar.js"></script>
+                        <script src="/js/handleSignup.js"></script>
+                        <script>
+                            window.addEventListener('pageshow', function (event) {
+
+                                if(event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                                    window.location.reload();
+                                }
+                            });
+                        </script>
 
 </body>
+
 </html>

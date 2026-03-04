@@ -7,8 +7,8 @@ const sampleProducts = [
     {
         name: "Classic Velvet Sofa",
         products: [
-            "https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80"
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372390/Classic_Velvet_Sofa_n0exb3.jpg",
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372390/Classic_Velvet_Sofa_n0exb3.jpg"
         ],
         rooms: [
             "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80"
@@ -18,8 +18,8 @@ const sampleProducts = [
     {
         name: "Oak Wood Armchair",
         products: [
-            "https://images.unsplash.com/photo-1598191950976-59910be4996a?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1200&q=80"
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372400/Oak_Wood_Armchair_kn7i1t.jpg",
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372400/Oak_Wood_Armchair_kn7i1t.jpg"
         ],
         rooms: [
             "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80"
@@ -29,8 +29,8 @@ const sampleProducts = [
     {
         name: "Bamboo Coffee Table",
         products: [
-            "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1581428982868-e410dd047a90?auto=format&fit=crop&w=1200&q=80"
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372416/Bamboo_Coffee_Table_c3ifas.jpg",
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372416/Bamboo_Coffee_Table_c3ifas.jpg"
         ],
         rooms: [
             "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80"
@@ -40,8 +40,8 @@ const sampleProducts = [
     {
         name: "Minimalist Dining Set",
         products: [
-            "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1617806118233-18e1db207fa6?auto=format&fit=crop&w=1200&q=80"
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372421/Minimalist_Dining_Set_ib9vrx.jpg",
+            "https://res.cloudinary.com/drns096or/image/upload/v1772372421/Minimalist_Dining_Set_ib9vrx.jpg"
         ],
         rooms: [
             "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&w=1200&q=80"

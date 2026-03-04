@@ -3,97 +3,101 @@
 
 const emailModal = document.getElementById('emailModal');
 const updateEmailForm = document.getElementById('updateEmailForm')
-const updatePasswrodForm=document.getElementById('changePasswordForm')
- const errorDisplay=document.getElementById('emailModal-error')
+const updatePasswrodForm = document.getElementById('changePasswordForm')
+// const errorDisplay = document.getElementById('emailModal-error')
 
 
 function showEmailModal() {
     emailModal.classList.remove('hidden')
     document.body.style.overflow = 'hidden';
-    errorDisplay.innerText=""
+    errorDisplay.innerText = ""
 
 }
 
 function hideEmailModal() {
     emailModal.classList.add('hidden')
     document.body.style.overflow = 'auto';
-    errorDisplay.innerText=""
+    errorDisplay.innerText = ""
     updateEmailForm.reset();
 }
 
-updateEmailForm.addEventListener('submit',async(e)=>{
+updateEmailForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const inputemail= document.getElementById('newEmail')
-    const password = document.getElementById('confirmPassword').value;
-    errorDisplay.innerText='';
-    const email=inputemail.value.trim()
+    const inputemail = document.getElementById('newEmail')
+    const password = document.getElementById('confirmPassword').value.trim();
+    const email = inputemail.value.trim()
+    // errorDisplay.innerText = '';
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!email){
-       errorDisplay.innerText="pleas enter email";
-       return
+    if(!email) {
+        showToast("pleas enter email","error")
+        return
     }
     if(!emailRegex.test(email)) {
-        errorDisplay.innerText="pleas enter valid email";
-       return
+        showToast("pleas enter valid email","error")
+        return
+    }
+    if(!password){
+        showToast("pleas enter valid password","error")
+        return
     }
     try {
-         const response=await axios.patch('/user/update-email',{email,password})
-         if(response.data.success){
+        const response = await axios.patch('/user/update-email', {email, password})
+        if(response.data.success) {
             showOTPModal()
             hideEmailModal()
-         }
-    } catch (error) {
-        console.log('updateemailform error')
+        }
+    } catch(error) {
+        console.log('updateemailform error',error)
+        const serverMassage = 
+        error.response?.data?.message||"server side not matching "
+        showToast(serverMassage,'error')
     }
 
 })
-updatePasswrodForm.addEventListener('submit',async(e)=>{
+updatePasswrodForm.addEventListener('submit', async (e) => {
     e.preventDefault()
-    const currentPassword=document.getElementById('currentPassword').value;
+    const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPassword').value;
-    const errorDisplay=document.getElementById('pass-error')
-    errorDisplay.innerText=""
-     const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-     if(!newPassword||!currentPassword){
-        errorDisplay.style.color="red" ;
-        errorDisplay.innerText="pleas enter both password";
-        return   
-     }
-     if(!passRegex.test(newPassword)) {
-        errorDisplay.style.color="red" ;
-       errorDisplay.innerText="pleas enter valid  password";
-       return    
+
+    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if(!newPassword || !currentPassword) {
+        showToast("pleas enter both password", 'error')
+        return false
+    }
+    if(!passRegex.test(newPassword)) {
+
+        showToast("pleas enter valid passwrod ", 'error')
+        return false
     }
     try {
-        const response=await axios.patch('/user/change-password',{currentPassword,newPassword})
-        if(response.data.success){
-             errorDisplay.style.color="green";
-             errorDisplay.innerText="password changed  successfully" 
-             updatePasswrodForm.reset()
-             setTimeout(()=>{
-                window.location.reload()
-             },300)
-             
+        const response = await axios.patch('/user/change-password', {currentPassword, newPassword})
+        if(response.data.success) {
+            const message=response.data.message||"password changed  successfully"
+            showToast(message,"success")
+            updatePasswrodForm.reset()
+
         }
-    } catch (error) {
-        consoler.log('passwrod changing error')
-        errorDisplay.style.color = "red";
-        errorDisplay.innerText = error.response?.data?.message || "Failed to change password";
+    } catch(error) {
+
+       const ms = 
+       error.response?.data?.message || "Failed to change password";
+        showToast(ms,'error')
     }
 })
 
 
 
-function togglePasswordVisibility(){
-    const isChecked=document.getElementById('showPasswordToggle').checked;
+function togglePasswordVisibility() {
+    const isChecked = document.getElementById('showPasswordToggle').checked;
 
-    const currentPassInput=document.getElementById('currentPassword')
-    const newPassInput=document.getElementById('newPassword')
-    if(isChecked){
-        currentPassInput.type="text";
-        newPassInput.type="text"
-    }else{
-         currentPassInput.type="password";
-        newPassInput.type="password"
+    const currentPassInput = document.getElementById('currentPassword')
+    const newPassInput = document.getElementById('newPassword')
+    if(isChecked) {
+        currentPassInput.type = "text";
+        newPassInput.type = "text"
+    } else {
+        currentPassInput.type = "password";
+        newPassInput.type = "password"
     }
 }

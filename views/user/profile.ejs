@@ -1,10 +1,10 @@
 <div class="w-full max-w-4xl mx-auto px-4">
-    <div class="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100">
+    <div class="bg-brand-bg1 rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100">
 
         <div class="flex flex-row justify-between items-center mb-8">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Personal Information</h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-brand-light">Personal Information</h1>
             <button type="button" id="toggleEditBtn" onclick="toggleEditMode()"
-                class="px-6 py-2.5 text-sm font-semibold bg-[#B89968] hover:bg-[#A38659] text-black rounded-lg transition-all shadow-sm flex items-center gap-2">
+                class="px-6 py-2.5 text-sm font-semibold bg-brand-accent hover:bg-yellow-600 text-black rounded-lg transition-all shadow-sm flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
@@ -15,53 +15,61 @@
         </div>
 
         <form id="profileForm" onsubmit="handleProfileUpdate(event)" class="max-w-3xl mx-auto">
-            
+
             <div class="flex flex-col items-center mb-10">
                 <div class="relative group">
-                    <div class="w-32 h-32 rounded-full bg-[#8B7355] flex items-center justify-center border-4 border-gray-200 overflow-hidden">
+                    <div
+                        class="w-32 h-32 rounded-full bg-brand-accent flex items-center justify-center border-4 border-white/5 overflow-hidden">
                         <% if(user.avatar) { %>
-                            <img id="profilePreview" src="<%= user.avatar %>" alt="Profile" class="w-full h-full object-cover">
-                        <% } else { %>
-                            <span class="text-5xl font-bold text-white" id="avatarLetter">
-                                <%= user.name ? user.name.charAt(0).toUpperCase() : 'A' %>
-                            </span>
-                            <img id="profilePreview" src="" alt="Profile" class="w-full h-full object-cover hidden">
-                        <% } %>
+                            <img id="profilePreview" src="<%= user.avatar %>" alt="Profile"
+                                class="w-full h-full object-cover">
+                            <% } else { %>
+                                <span class="text-5xl font-bold text-white" id="avatarLetter">
+                                    <%= user.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+                                </span>
+                                <img id="profilePreview" src="" alt="Profile" class="w-full h-full object-cover hidden">
+                                <% } %>
                     </div>
 
                     <label for="profileImageInput" id="imageUploadLabel"
                         class="absolute inset-0  items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="handleProfileImageChange(event)">
+                        <input type="file" id="profileImageInput" accept="image/*" class="hidden"
+                            onchange="handleProfileImageChange(event)">
                     </label>
                 </div>
             </div>
 
             <div class="space-y-6">
                 <div class="space-y-2">
-                    <label for="name" class="block text-sm font-semibold text-gray-700">Full Name</label>
+                    <label for="name" class="block text-sm font-semibold text-brand-light">Full Name</label>
                     <input type="text" id="name" name="name" value="<%= user.name %>" disabled
-                        class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none transition-all disabled:bg-gray-50/50 disabled:text-gray-500 disabled:cursor-not-allowed">
+                        class="w-full px-5 py-4 bg-brand-bg1 border border-white/5 rounded-xl text-brand-light focus:outline-none transition-all disabled:bg-brand-bg2/50 disabled:text-brand-muted disabled:cursor-not-allowed">
                 </div>
 
                 <div class="space-y-2">
-                    <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
+                    <label for="email" class="block text-sm font-semibold text-brand-light">Email</label>
                     <input type="email" id="email" value="<%= user.email %>" disabled
-                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-400 cursor-not-allowed">
+                        class="w-full px-5 py-4 bg-brand-bg2 border border-white/5 rounded-xl text-brand-muted cursor-not-allowed">
                 </div>
 
                 <div class="space-y-2">
-                    <label for="phone" class="block text-sm font-semibold text-gray-700">Phone</label>
+                    <label for="phone" class="block text-sm font-semibold text-brand-light">Phone</label>
                     <input type="tel" id="phone" name="phone" value="<%= user.phone? user.phone : '' %>"
                         placeholder="Not added" disabled
-                        class="w-full px-5 py-4 bg-white border-gray-200 <%= user.phone? 'border-gray-200' : 'border-dashed border-gray-300' %> rounded-xl text-gray-900 placeholder:text-gray-400 placeholder:font-normal transition-all disabled:bg-gray-50/80 disabled:cursor-not-allowed">
-                    
+                        class="w-full px-5 py-4 bg-brand-bg1 border-white/5 <%= user.phone? 'border-white/5' : 'border-dashed border-gray-300' %> rounded-xl text-brand-light placeholder:text-brand-muted placeholder:font-normal transition-all disabled:bg-brand-bg2/80 disabled:cursor-not-allowed">
+
                     <% if(!user.phoneNumber) { %>
-                        <button type="button" onclick="toggleEditMode()" class="text-xs font-medium text-[#B89968] hover:underline" id="addPhoneText">+ Add phone number</button>
-                    <% } %>
+                        <button type="button" onclick="toggleEditMode()"
+                            class="text-xs font-medium text-brand-accent hover:underline" id="addPhoneText">+ Add phone
+                            number</button>
+                        <% } %>
                 </div>
             </div>
 
@@ -69,27 +77,27 @@
 
             <div id="formActions" class="hidden  items-center justify-end gap-3 pt-8 mt-6 border-t border-gray-100">
                 <button type="button" onclick="cancelEdit()"
-                    class="px-6 py-2.5 text-gray-700 font-medium bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-all">
+                    class="px-6 py-2.5 text-brand-light font-medium bg-brand-bg1 border border-gray-300 hover:bg-brand-bg2 rounded-lg transition-all">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="px-8 py-2.5 bg-[#9A7556] hover:bg-[#876649] text-white font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
+                    class="px-8 py-2.5 bg-brand-accent hover:bg-yellow-600 text-black font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
                     Save Changes
                 </button>
             </div>
         </form>
 
-        <div class="pt-8 mt-12 border-t border-gray-200">
-            <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
+        <div class="pt-8 mt-12 border-t border-white/5">
+            <div class="bg-brand-bg2 rounded-xl p-5 border border-white/5">
                 <div class="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Referral Code</p>
-                        <p class="text-xl font-mono font-bold text-gray-900" id="referralText">
+                        <p class="text-xs font-bold text-brand-muted uppercase tracking-wider mb-1">Referral Code</p>
+                        <p class="text-xl font-mono font-bold text-brand-light" id="referralText">
                             <%= user.referralCode || 'KISO-NEW' %>
                         </p>
                     </div>
                     <button type="button" onclick="copyReferralCode()"
-                        class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-all shadow-sm">
+                        class="px-5 py-2.5 text-sm font-semibold text-brand-light bg-brand-bg1 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all shadow-sm">
                         Copy Code
                     </button>
                     <input type="hidden" id="referralCode" value="<%= user.referralCode || 'KISO-NEW' %>">
@@ -97,8 +105,8 @@
             </div>
         </div>
 
-    </div> 
-</div> 
+    </div>
+</div>
 
 
 <script src="/js/userProfile.js"></script>

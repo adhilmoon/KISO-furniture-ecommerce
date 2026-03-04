@@ -188,9 +188,9 @@ export const googleAuthCallback = (req, res) => {
             name: req.user.name,
             _id: req.user._id
         };
-        res.redirect('/user/homepage');
+        res.redirect('/user/homepage?message= Google Authenticated');
     } else {
-        res.redirect('/user/login')
+        res.redirect('/user/login?error=Google authentication failed')
     }
 };
 export const deleteAddress = async (req, res) => {
