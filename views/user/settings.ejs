@@ -1,12 +1,12 @@
 <div class="w-full max-w-4xl mx-auto px-4">
-    <div class="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100">
+    <div class="bg-brand-bg1 rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100">
         <h1 class="text-2xl font-bold">Account Settings</h1>
 
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+        <div class="bg-brand-bg1 p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 class="text-lg font-semibold mb-4">Email Address</h2>
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Current Email</p>
+                    <p class="text-sm text-brand-muted">Current Email</p>
                     <p class="font-medium">
                         <%= user.email %>
                     </p>
@@ -15,18 +15,18 @@
             </div>
         </div>
         <% if (!user.googleId) { %>
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <div class="bg-brand-bg1 p-6 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-lg font-semibold mb-4">Security</h2>
                 <form id="changePasswordForm" class="space-y-4">
                     <div>
                         <label class="block text-sm text-gray-600">Current Password</label>
                         <input type="password" name="currentPassword" id="currentPassword"
-                            class="w-full border rounded-md p-2 mt-1">
+                            class="w-full border rounded-md p-2 mt-1 text-black bg-white">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-600">New Password</label>
                         <input type="password" name="newPassword" id="newPassword"
-                            class="w-full border rounded-md p-2 mt-1">
+                            class="w-full border rounded-md p-2 mt-1 text-black bg-white">
                     </div>
                     <div class="flex items-center justify-between">
                         <label for="showPasswordToggle" class="flex items-center cursor-pointer">
@@ -42,10 +42,10 @@
 
                                 <!-- Toggle Dot -->
                                 <div
-                                    class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6">
+                                    class="absolute left-1 top-1 bg-brand-bg1 w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6">
                                 </div>
                             </div>
-                            <span class="ml-3 text-sm font-medium text-gray-700">Show Password</span>
+                            <span class="ml-3 text-sm font-medium text-brand-light">Show Password</span>
                         </label>
                     </div>
                     <p id="pass-error" class=" text-xs font-medium mb-3 min-h-[1rem]"></p>
@@ -57,7 +57,7 @@
                 </form>
             </div>
             <% } else { %>
-                <div class="bg-gray-50 p-6 rounded-lg border border-gray-100 italic text-gray-500 text-sm">
+                <div class="bg-brand-bg2 p-6 rounded-lg border border-gray-100 italic text-brand-muted text-sm">
                     You are logged in via Google. Password management is handled by your Google Account.
                 </div>
                 <% } %>

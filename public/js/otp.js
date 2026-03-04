@@ -37,9 +37,7 @@ function showOTPModal() {
     modal.classList.add('flex');
     const digits = document.querySelectorAll('otp-digit')
     digits.forEach(d => d.value = '')
-    const modalError = document.getElementById('modal-error');
-    modalError.innerText = "";
-    modalError.classList.remove('text-red-500', 'text-green-500');
+    
 
     startTimer();
 
@@ -57,8 +55,7 @@ function closeOTPModal() {
     const digits = document.querySelectorAll('.otp-digit');
     digits.forEach(d => d.value = '');
 
-    const modalError = document.getElementById('modal-error');
-    modalError.innerText = '';
+    
 }
 async function verifyOTP() {
 
@@ -66,14 +63,10 @@ async function verifyOTP() {
     let otp = "";
     digits.forEach(input => otp += input.value);
 
-    const modalError = document.getElementById('modal-error');
-    modalError.innerText = "";
 
 
     if(otp.length !== 4) {
-        modalError.innerText = "Please enter all 4 digits";
-        modalError.classList.remove('hidden');
-        modalError.style.color = "red";
+        showToast("Please enter all 4 digits","error")
         return;
     }
 
@@ -84,9 +77,7 @@ async function verifyOTP() {
         }
     } catch(error) {
         const message = error.response?.data?.message || "Invalid OTP. Please try again.";
-        modalError.innerText = message;
-        modalError.classList.remove('hidden');
-        modalError.style.color = "red";
+          showToast(message,"error")
     }
 }
 async function resendOTP() {
@@ -114,25 +105,14 @@ async function resendOTP() {
             digits[0].focus();
 
 
-            const modalError = document.getElementById('modal-error')
-            modalError.innerText = ''
+           
         }
     } catch(error) {
-        const modalError = document.getElementById('modal-error');
-        modalError.innerText = error.response?.data?.message || "Failed to resend";
-        modalError.style.color = 'red'
+        const msg = error.response?.data?.message || "Failed to resend";
+        showToast(msg,"error")
     }
 }
-function showError(message) {
-    const errorDiv = document.getElementById('errorMessage');
-    const otpInput = document.getElementById('otpInput');
 
-    errorDiv.textContent = message;
-    errorDiv.classList.remove('hidden');
-
-
-    otpInput.classList.add('border-red-400');
-}
 
 // otp.js
 

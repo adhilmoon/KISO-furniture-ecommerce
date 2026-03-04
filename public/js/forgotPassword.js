@@ -2,33 +2,32 @@
 document.addEventListener("DOMContentLoaded", () => {
     const forgotLink = document.getElementById("forgotPasswordLink");
 
-    if (forgotLink) {
+    if(forgotLink) {
         forgotLink.addEventListener("click", handleForgotPassword);
     }
 });
 async function handleForgotPassword(event) {
     event.preventDefault()
-     console.log("Forgot password clicked");
-   
+    console.log("Forgot password clicked");
+
     const emailInput = document.getElementById('email');
     const email = emailInput.value.trim();
     const errorDisplay = document.getElementById('local-error');
-     errorDisplay.innerText = "";
-     errorDisplay.style.color = "";
+    errorDisplay.innerText = "";
+    errorDisplay.style.color = "";
 
     const showError = (msg) => {
-        errorDisplay.innerText = msg;
-        errorDisplay.style.color = "red";
+        showToast(msg, 'error')
         return false;
     }
 
     if(!email) {
-       showError("Please enter your email");
+        showError("Please enter your email");
         return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(email)) {
-      showError('Please enter a valid email address')
+        showError('Please enter a valid email address')
         return
     }
 
@@ -36,12 +35,12 @@ async function handleForgotPassword(event) {
         const response = await axios.post('/user/forgot-password', {email});
 
         if(response.data.success) {
-          showOTPModal()
+            showOTPModal()
 
         }
     } catch(error) {
         const message = error.response?.data?.message || "Something went wrong";
-        errorDisplay.innerText = message;
+        showToast(message,'error')
     }
 }
 
@@ -64,23 +63,23 @@ async function handleResetPassword(event) {
 
     const newPassword = document.getElementById('password').value.trim();
     const confirmPassword = document.getElementById('confirmPassword').value.trim();
-    const errorDisplay = document.getElementById('reset-error');
-    errorDisplay.innerText = "";
+    // const errorDisplay = document.getElementById('reset-error');
+    // errorDisplay.innerText = "";
 
     if(!newPassword || !confirmPassword) {
-        errorDisplay.innerText = "Please fill in all fields";
+        showToast("Please fill in all fields", 'error')
         return;
     }
 
     if(newPassword !== confirmPassword) {
-        errorDisplay.innerText = "Passwords do not match";
+        showToast("Passwords do not match", 'error')
         return;
     }
 
     const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
     if(!passRegex.test(newPassword)) {
-        errorDisplay.innerText = "Password must be 8+ chars with uppercase, lowercase, number & special char";
+        showToast("Password must be 8+ chars with upper, lower, number & symbol.", 'error')
         return;
     }
 
@@ -88,11 +87,12 @@ async function handleResetPassword(event) {
         const response = await axios.patch('/user/reset-password', {password: newPassword});
 
         if(response.data.success) {
-            alert("Password reset successfully!");
+            showToast("Password reset successfully!",'success');
             window.location.href = '/user/login';
         }
     } catch(error) {
-        errorDisplay.innerText = error.response?.data?.message || "Failed to reset password";
+        const message = error.response?.data?.message || "Failed to reset password";
+        showToast(message,'error')
     }
 }
 

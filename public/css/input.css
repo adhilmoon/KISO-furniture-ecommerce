@@ -1,4 +1,83 @@
-@tailwind base;
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+ */
+ @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    /* Set the entire page background and text default */
+    background-color: #0A0A0A;
+    color: #F8F9FA;
+  }
+  
+  body {
+    background-color: #0A0A0A;
+    color: #F8F9FA;
+  }
+}
+@layer components {
+    /* Creates the long scrollable area (600vh gives you the scroll length) */
+    #scrolly-container {
+        position: relative;
+        height: 600vh;
+        background-color: #1E2320;
+    }
+
+    /* Pins the canvas and overlays to the screen while you scroll through the 600vh */
+    .sticky-wrapper {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        z-index: 5;
+    }
+
+    /* Ensures the canvas fills the screen properly */
+    #sofa-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        max-width: 100vw;
+        max-height: 100vh;
+        background-color: transparent;
+    }
+
+    /* Base styling for your story text overlays to fade and slide in */
+    .step {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0;
+        z-index: 50;
+        pointer-events: none;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+}
+
+@layer utilities {
+    /* Helper classes toggled by your JS for the navigation bar */
+    .bg-transparent {
+        background-color: transparent !important;
+    }
+
+    .backdrop-blur-md {
+        background-color: rgba(30, 35, 32, 0.4) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+    }
+}

@@ -1,8 +1,8 @@
-<div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+<div class="bg-brand-bg1 rounded-2xl p-6 shadow-sm border border-gray-100">
     <div class="flex justify-between items-start mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">My Addresses</h1>
-            <p class="text-sm text-gray-500 mt-1">Manage your delivery locations easily.</p>
+            <h1 class="text-2xl font-bold text-brand-light">My Addresses</h1>
+            <p class="text-sm text-brand-muted mt-1">Manage your delivery locations easily.</p>
         </div>
     </div>
 
@@ -20,12 +20,12 @@
             <tbody class="divide-y divide-gray-50">
                 <% if(addresses && addresses.length> 0) { %>
                     <% addresses.forEach(addr=> { %>
-                        <tr class="text-sm text-gray-700 hover:bg-gray-50/50 transition-colors">
-                            <td class="py-4 px-2 font-medium text-gray-900">
+                        <tr class="text-sm text-brand-light hover:bg-brand-bg2/50 transition-colors">
+                            <td class="py-4 px-2 font-medium text-brand-light">
                                 <%= addr.fullName %>
                             </td>
-                            <td class="py-4 px-2 text-gray-500">
-                              <%= addr.mobile || user.phone || "No number available" %>
+                            <td class="py-4 px-2 text-brand-muted">
+                                <%= addr.mobile || user.phone || "No number available" %>
                             </td>
                             <td class="py-4 px-2 max-w-xs truncate">
                                 <%= addr.houseName %>, <%= addr.city %>, <%= addr.state %>
@@ -40,7 +40,7 @@
                             </td>
                             <td class="py-4 px-2 text-right space-x-3 font-medium">
                                 <button onclick="editAddress('<%= addr._id %>')"
-                                    class="text-gray-900 hover:underline">Edit</button>
+                                    class="text-brand-light hover:underline">Edit</button>
                                 <button onclick="deleteAddress('<%= addr._id %>')"
                                     class="text-red-500 hover:underline">Delete</button>
                             </td>
@@ -48,7 +48,7 @@
                         <% }) %>
                             <% } else { %>
                                 <tr>
-                                    <td colspan="5" class="py-12 text-center text-gray-400">
+                                    <td colspan="5" class="py-12 text-center text-brand-muted">
                                         No addresses found. Add a new one to get started.
                                     </td>
                                 </tr>
@@ -65,25 +65,25 @@
     <!--  page nation -->
     <% if (totalPages> 1){%>
         <div class="mt-6 flex items-center justify-between border-t border-gray-100 pt-6">
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-brand-muted">
                 Showing page <%= currentPage %> of <%= totalPages %>
             </p>
             <div class="flex gap-2">
                 <% if(currentPage> 1) { %>
                     <a href="?page=<%= currentPage - 1 %>"
-                        class="px-4 py-2 border rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors">
+                        class="px-4 py-2 border rounded-lg hover:bg-brand-bg2 text-sm font-medium transition-colors">
                         Previous
                     </a>
                     <% } %>
                         <% for(let i=1; i <=totalPages; i++) { %>
                             <a href="?page=<%= i %>"
-                                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors <%= i === currentPage ? 'bg-gray-900 text-white' : 'border hover:bg-gray-50' %>">
+                                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors <%= i === currentPage ? 'bg-gray-900 text-white' : 'border hover:bg-brand-bg2' %>">
                                 <%= i %>
                             </a>
                             <% } %>
                                 <% if (currentPage < totalPages) { %>
                                     <a href="?page=<%= currentPage + 1 %>"
-                                        class="px-4 py-2 border rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors">
+                                        class="px-4 py-2 border rounded-lg hover:bg-brand-bg2 text-sm font-medium transition-colors">
                                         Next
                                     </a>
                                     <% } %>
@@ -95,5 +95,4 @@
 <!-- Include Address Modal -->
 <%- include('./add-address') %>
 
-   
- <script src="/js/address.js"></script>
+    <script src="/js/address.js"></script>

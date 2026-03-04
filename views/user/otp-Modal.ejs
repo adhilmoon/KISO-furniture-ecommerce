@@ -1,13 +1,13 @@
 
 
-<!-- Paste this DIRECTLY inside <body>, not inside any layout wrapper -->
+
 <div id="otpModal" class="hidden fixed inset-0 z-[999]  items-center justify-center p-4"
     style="background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);">
 
     <div class="relative flex rounded-3xl overflow-hidden shadow-2xl"
         style="width: 100%; max-width: 660px; min-height: 420px;">
 
-        <!-- LEFT brand panel -->
+   
         <div class="hidden md:flex flex-col items-center justify-center bg-[#1a1a1a] px-8 py-12 relative overflow-hidden"
             style="width: 260px; flex-shrink: 0;">
 
@@ -40,18 +40,18 @@
                 </div>
                 <p class="text-[#A67B5B] text-[10px] uppercase tracking-[0.25em] font-medium">Furniture for life</p>
                 <div class="mt-6 w-8 h-px bg-[#A67B5B] mx-auto opacity-40"></div>
-                <p class="mt-5 text-gray-500 text-xs leading-relaxed" style="max-width: 160px;">
+                <p class="mt-5 text-brand-muted text-xs leading-relaxed" style="max-width: 160px;">
                     We sent a verification code to keep your account secure.
                 </p>
             </div>
         </div>
 
-        <!-- RIGHT form panel -->
-        <div class="flex-1 bg-white px-8 py-10 flex flex-col justify-center relative">
+     
+        <div class="flex-1 bg-brand-bg1 px-8 py-10 flex flex-col justify-center relative">
 
             <!-- Close -->
             <button onclick="closeOTPModal()"
-                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-gray-400 text-xs font-bold">
+                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-brand-muted text-xs font-bold">
                 ✕
             </button>
 
@@ -71,23 +71,23 @@
             </div>
 
             <h2 class="text-2xl font-bold text-[#1a1a1a] mb-1">Verify OTP</h2>
-            <p class="text-sm text-gray-400 mb-6">Enter the 4-digit code sent to your email</p>
+            <p class="text-sm text-brand-muted mb-6">Enter the 4-digit code sent to your email</p>
 
             <p id="modal-error" class="text-red-500 text-xs font-medium mb-3 min-h-[1rem]"></p>
 
             <!-- 4 separate OTP boxes -->
             <div class="flex gap-3 mb-6">
                 <input type="text" maxlength="1" inputmode="numeric"
-                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-brand-bg1 transition-all outline-none"
                     style="width: 3.25rem;" />
                 <input type="text" maxlength="1" inputmode="numeric"
-                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-brand-bg1 transition-all outline-none"
                     style="width: 3.25rem;" />
                 <input type="text" maxlength="1" inputmode="numeric"
-                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-brand-bg1 transition-all outline-none"
                     style="width: 3.25rem;" />
                 <input type="text" maxlength="1" inputmode="numeric"
-                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-white transition-all outline-none"
+                    class="otp-digit h-14 border-2 border-gray-100 bg-[#FAFAFA] rounded-2xl text-center text-2xl font-bold text-[#1a1a1a] focus:border-[#A67B5B] focus:bg-brand-bg1 transition-all outline-none"
                     style="width: 3.25rem;" />
             </div>
 
@@ -104,7 +104,7 @@
 
             <!-- Timer -->
             <div class="mt-5 text-sm text-center">
-                <p id="timerContainer" class="text-gray-400 text-xs">
+                <p id="timerContainer" class="text-brand-muted text-xs">
                     Resend code in <span id="timer" class="font-bold text-[#A67B5B]">01:00</span>
                 </p>
                 <button id="resendBtn"

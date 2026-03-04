@@ -1,7 +1,7 @@
-<div class="flex-grow flex items-center justify-center px-4 py-12 bg-kiso-bg">
+<div class="min-h-screen px-4 pt-36 pb-12 flex flex-col items-center bg-brand-bg1">
     <div class="w-full max-w-md">
         <h1 class="text-3xl md:text-4xl text-center mb-10">
-            <span class="text-kiso-brown font-normal">Create</span>
+            <span class="text-brand-accent font-normal">Create</span>
             <span class="text-kiso-text font-normal"> your KISO account.</span>
         </h1>
 
@@ -10,55 +10,55 @@
             <div class="space-y-2">
                 <label for="name" class="block text-sm font-medium text-kiso-text">Full Name</label>
                 <input type="text" id="name" name="name" placeholder="Enter your name"
-                    class="w-full px-4 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors"
+                    class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
                     required>
             </div>
 
             <div class="space-y-2">
                 <label for="email" class="block text-sm font-medium text-kiso-text">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email"
-                    class="w-full px-4 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors"
+                    class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
                     required>
             </div>
 
             <div class="space-y-2">
                 <label for="password" class="block text-sm font-medium text-kiso-text">Password</label>
                 <input type="password" id="password" name="password" placeholder="Create a password"
-                    class="w-full px-4 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors"
+                    class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
                     required>
             </div>
 
             <div class="space-y-2">
                 <label for="confirmPassword" class="block text-sm font-medium text-kiso-text">Confirm Password</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password"
-                    class="w-full px-4 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors"
+                    class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
                     required>
             </div>
             <!-- Show Password Toggle Switch -->
             <div class="flex items-center justify-between">
                 <label for="showPasswordToggle" class="flex items-center cursor-pointer">
                     <div class="relative">
-                        <!-- Toggle Input (Hidden) -->
+                    
                         <input type="checkbox" id="showPasswordToggle" class="peer sr-only"
                             onchange="togglePasswordVisibility()">
 
-                        <!-- Toggle Background -->
+                  
                         <div
                             class="block w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-[#9A7556] transition-colors">
                         </div>
 
-                        <!-- Toggle Dot -->
+                       
                         <div
-                            class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6">
+                            class="absolute left-1 top-1 bg-brand-bg1 w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6">
                         </div>
                     </div>
-                    <span class="ml-3 text-sm font-medium text-gray-700">Show Password</span>
+                    <span class="ml-3 text-sm font-medium text-brand-light">Show Password</span>
                 </label>
             </div>
             <div class="space-y-2">
                 <label for="referralCode" class="block text-sm font-medium text-kiso-text">Referral Code</label>
                 <input type="text" id="referralCode" name="referralCode" placeholder="Enter referral code (optional)"
-                    class="w-full px-4 py-3 bg-kiso-input border border-kiso-border rounded-lg text-kiso-text placeholder-kiso-placeholder focus:outline-none focus:border-kiso-brown transition-colors">
+                    class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors">
             </div>
 
             <p id="local-error" class="text-center font-medium mt-2 min-h-[1.25rem]"></p>
@@ -68,7 +68,7 @@
             </button>
 
             <button type="button"
-                class="w-full bg-kiso-input border border-kiso-border text-kiso-text py-3 rounded-lg font-medium hover:bg-[#e0d7cd] transition-colors flex items-center justify-center gap-3">
+                class="w-full bg-brand-bg2 border border-white/5 text-kiso-text py-3 rounded-lg font-medium hover:bg-[#e0d7cd] transition-colors flex items-center justify-center gap-3">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
@@ -90,7 +90,7 @@
                 <p class="text-kiso-text text-sm">
                     Already have an account?
                     <a href="/user/login"
-                        class="text-kiso-brown hover:text-kiso-brown-dark font-medium transition-colors">
+                        class="text-brand-accent hover:text-brand-accent-dark font-medium transition-colors">
                         Log in
                     </a>
                 </p>
@@ -103,4 +103,3 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
-<script src="/js/handleSignup.js"></script>
