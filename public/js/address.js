@@ -42,8 +42,9 @@ function toggleAddressModal() {
 
 
 async function deleteAddress(addressId) {
-    if (!confirm('Are you sure you want to delete this address?')) return;
-
+     const result=await confirmAction('Are you sure you want to delete this address?')
+     
+   if(!result.isConfirmed)return;
     try {
         const response = await axios.delete(`/user/address/delete/${addressId}`);
         if (response.data.success) {

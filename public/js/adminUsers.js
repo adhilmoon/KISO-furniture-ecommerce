@@ -4,8 +4,13 @@ async function toggleBlock(userId) {
 
     if(!row || !actionBtn) return;
     const isCurrentlyBlocked = actionBtn.textContent.trim() === "Activate"
-    const conformMessage = isCurrentlyBlocked ? "Are you sure you want to activate this user?" : "Are you sure you want to block this user?";
-    if(!confirm(conformMessage)) return;
+    const confirmMessage = isCurrentlyBlocked
+        ? "Are you sure you want to activate this user?"
+        : "Are you sure you want to block this user?";
+
+    const result = await confirmAction(confirmMessage);
+
+    if(!result.isConfirmed) return;
     try {
         const response = await axios.patch(`/admin/user/${userId}/block`);
         if(response.data.success) {
@@ -44,12 +49,12 @@ async function toggleBlock(userId) {
             if(response.data.isBlocked) {
                 blockedCount++;
                 activeCount--;
-            }else{
+            } else {
                 blockedCount--;
                 activeCount++;
             }
-            blockedCountEl.textContent=blockedCount;
-            activeCountEl.textContent=activeCount;
+            blockedCountEl.textContent = blockedCount;
+            activeCountEl.textContent = activeCount;
         }
 
     } catch(err) {

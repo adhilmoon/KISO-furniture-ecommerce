@@ -17,15 +17,18 @@
     <%- include('../partials/user/header') %>
 
         <% if (locals.isProfilePage) { %>
-            <div class="flex-grow flex bg-brand-bg1 pt-24">
+            <div class="flex-grow flex bg-brand-bg1 mt-24">
+
                 <aside class="hidden md:block w-64 bg-brand-bg1 border-r border-white/5 relative z-10">
                     <%- include('../partials/user/profile-sidebar') %>
                 </aside>
+
                 <main class="flex-1 overflow-y-auto">
                     <div class="max-w-5xl mx-auto px-4 py-8 md:py-12">
                         <%- body %>
                     </div>
                 </main>
+
             </div>
             <% } else { %>
                 <main class="w-full">
@@ -45,6 +48,7 @@
                         <script src="/js/logout.js"></script>
                         <script src="/js/sideBar.js"></script>
                         <script src="/js/handleSignup.js"></script>
+                        <script src="/js/confirm.js"></script>
                         <script>
                             window.addEventListener('pageshow', function (event) {
 
