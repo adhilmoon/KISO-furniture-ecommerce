@@ -1,5 +1,5 @@
 <nav id="main-nav"
-  class="flex items-center justify-between px-6 md:px-12 py-5 fixed w-full top-0 z-50 transition-all duration-700 bg-transparent text-stone-100">
+  class="flex items-center justify-between px-6 md:px-12 py-5 fixed w-full top-0 z-50 transition-all duration-700 <%= locals.isProfilePage ? 'bg-brand-bg1 border-b border-white/5' : 'bg-transparent' %> text-stone-100">
 
   <div class="flex items-center gap-4">
     <% if(locals.isProfilePage) { %>
