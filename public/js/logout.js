@@ -1,6 +1,7 @@
 
 async function handleLogout() {
-    
+    const result=await confirmAction("Are you sure you want to logout?")
+    if(!result.isConfirmed)return
     try {
         const response = await axios.get('/user/logout');
         
@@ -17,18 +18,19 @@ async function handleLogout() {
 }
 
 async function handleAdminLogout() {
+    const result=await confirmAction("Are you sure you want to logout?")
+    if(!result.isConfirmed)return
     try {
         const response = await axios.get('/admin/logout');
         
         if(response.data.success) {
-            // Clear session/auth data from frontend
+          
             localStorage.removeItem('admin');
             sessionStorage.removeItem('admin');
             
-            // Show success message
-            alert('Logged out successfully!');
+          
             
-            // Redirect to admin login page
+         
             setTimeout(() => {
                 window.location.replace(response.data.redirectUrl || '/admin/login');
             }, 500);
