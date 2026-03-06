@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-// const DEFAULT_USER_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,

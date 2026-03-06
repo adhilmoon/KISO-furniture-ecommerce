@@ -1,40 +1,37 @@
 
 async function signup_handle(event) {
     event.preventDefault()
-    const name = document.getElementById('name').value.trim()
-    const email = document.getElementById('email').value.trim()
-    const password = document.getElementById('password').value.trim()
-    const confirmPassword = document.getElementById('confirmPassword').value.trim()
-    const errorDisplay = document.getElementById('local-error')
-    const referralCode = document.getElementById('referralCode').value.trim();
+    resetValidation();
+    const form = event.target;
+    const signupData = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value.trim(),
+        confirmPassword: document.getElementById('confirmPassword').value.trim(),
+        referralCode: document.getElementById('referralCode').value.trim()
+    }
 
-    errorDisplay.innerText = "";
-    errorDisplay.classList.remove('text-green-500', 'text-red-500');
-    const showError = (msg) => {
-        showToast(msg, "error")
-        return false
-    }
-    if(!password || !name || !email || !confirmPassword) {
-        return showError("Please fill all fields");
-    }
-    if(password !== confirmPassword) {
-        return showError("Passwords do not match");
+    // const errorDisplay = document.getElementById('local-error')
+
+
+
+
+    if(!signupData.name || signupData.name.length < 3) {
+        return showFieldError('name', "Full Name must be at least 3 characters");
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if(!emailRegex.test(email)) {
-        event.preventDefault();
-        return showError('Please enter a valid email address');
+    if(!signupData.email || !emailRegex.test(signupData.email)) {
+        return showFieldError('email', 'Please enter a valid email address')
     }
     const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if(!signupData.password || !passRegex.test(signupData.password)) {
+        return showFieldError('password', "pleas enter valid password");
+    }
 
-    if(!passRegex.test(password)) {
-        event.preventDefault();
-        return showError('Password must be 8+ chars with uppercase, lowercase & number');
+    if(signupData.confirmPassword !== signupData.password) {
+        return showFieldError("confirmPassword", 'Password not match pleas enter exact password ');
     }
-    if(name.length > 20) {
-        return showError("Name cannot exceed 20 characters");
-    }
+    const {email, password, name, referralCode} = signupData;
     try {
         const response = await axios.post('/user/signup', {email, password, name, referralCode});
         if(response.data.success) {
@@ -55,7 +52,26 @@ async function signup_handle(event) {
     }
 }
 
+function showFieldError(fieldId, message) {
+    const errorEl = document.getElementById(`err-${fieldId}`);
+    const inputEl = document.getElementById(fieldId);
+    if(errorEl) errorEl.innerText = message;
+     if (inputEl) {
+        inputEl.classList.remove('focus:border-kiso-brown');
+        inputEl.classList.add('border-red-500', 'ring-1', 'ring-red-500');
+        inputEl.focus();
+    }
+}
 
+function resetValidation() {
+    document.querySelectorAll('[id^="err-"]').forEach(el => el.innerText = '')
+    document.querySelectorAll('#userSignupForm input,#userSignupForm select')
+    .forEach(input=>{
+        input.classList.remove('border-red-500', 'ring-1', 'ring-red-500');
+        input.classList.add('focus:border-kiso-brown')
+
+    })
+}
 function togglePasswordVisibility() {
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
