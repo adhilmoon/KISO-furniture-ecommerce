@@ -11,29 +11,34 @@
                 <label for="name" class="block text-sm font-medium text-kiso-text">Full Name</label>
                 <input type="text" id="name" name="name" placeholder="Enter your name"
                     class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
-                    required>
+                >
+                 <p id="err-name" class="text-red-500 text-xs mt-0.5"></p>
             </div>
-
+         
             <div class="space-y-2">
                 <label for="email" class="block text-sm font-medium text-kiso-text">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email"
                     class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
-                    required>
+                 >
+                   <p id="err-email" class="text-red-500 text-xs mt-0.5"></p>
             </div>
-
+           
             <div class="space-y-2">
                 <label for="password" class="block text-sm font-medium text-kiso-text">Password</label>
                 <input type="password" id="password" name="password" placeholder="Create a password"
                     class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
-                    required>
+                    >
+                       <p id="err-password" class="text-red-500 text-xs mt-0.5"></p>
             </div>
-
+            
             <div class="space-y-2">
                 <label for="confirmPassword" class="block text-sm font-medium text-kiso-text">Confirm Password</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password"
                     class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors"
-                    required>
+                   >
+                <p id="err-confirmPassword" class="text-red-500 text-xs mt-0.5"></p>
             </div>
+               
             <!-- Show Password Toggle Switch -->
             <div class="flex items-center justify-between">
                 <label for="showPasswordToggle" class="flex items-center cursor-pointer">
@@ -59,9 +64,9 @@
                 <label for="referralCode" class="block text-sm font-medium text-kiso-text">Referral Code</label>
                 <input type="text" id="referralCode" name="referralCode" placeholder="Enter referral code (optional)"
                     class="w-full px-4 py-3 bg-brand-bg2 border border-white/5 rounded-lg text-kiso-text placeholder-brand-muted focus:outline-none focus:border-kiso-brown transition-colors">
+                       <p id="err-referralCode" class="text-red-500 text-xs mt-0.5"></p>
             </div>
-
-            <p id="local-error" class="text-center font-medium mt-2 min-h-[1.25rem]"></p>
+          
             <button type="submit"
                 class="w-full bg-kiso-brown text-white py-3 rounded-lg font-medium hover:bg-kiso-brown-dark transition-colors">
                 Sign Up
@@ -102,4 +107,4 @@
     <%- include('./otp-modal') %>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="/js/handleSignup.js"></script>
