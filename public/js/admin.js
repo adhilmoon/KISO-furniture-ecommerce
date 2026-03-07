@@ -16,3 +16,7 @@ function togglePassword() {
         eyeClosed.style.display = 'none';
     }
 }
+function toggleSidebar() {
+  const sidebar = document.getElementById("adminSidebar");
+  sidebar.classList.toggle("-translate-x-full");
+}

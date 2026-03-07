@@ -9,9 +9,16 @@ export const createUser=async(userData)=>{
         name,
         email,
         password:hashedPassword,
-        
     })
 
     return await newUser.save();
     
 }
+
+// export const usermanagement=async(){
+//     page=parseInt(req.query.page)||1;
+//     perPage=10;
+//     skip=(page-1)*perPage
+//     totalUsers= User.countDocuments()
+//     const users=User.find
+// }

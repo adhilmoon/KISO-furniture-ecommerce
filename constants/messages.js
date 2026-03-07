@@ -34,4 +34,9 @@ export const MESSAGES = Object.freeze({
     // Address Messages
     ADDRESS_ADDED_SUCCESS: "Address added successfully!",
     INTERNAL_SERVER_ERROR_ADDRESS: "Internal server error",
+
+    // General Error Messages
+    PAGE_NOT_FOUND: "Page not found. The requested resource does not exist.",
+    ROUTE_NOT_FOUND: "The page you are looking for might have been removed or is temporarily unavailable.",
+    GO_BACK_HOME: "Click here to return to the homepage.",
 });
