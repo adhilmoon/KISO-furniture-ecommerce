@@ -7,14 +7,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'kiso-bg': '#f5f0eb',
-        'kiso-input': '#ebe4dc',
-        'kiso-border': '#d4c9bf',
-        'kiso-brown': '#8b7355',
-        'kiso-brown-dark': '#75614a',
-        'kiso-text': '#2c2c2c',
-        'kiso-placeholder': '#9b8f82',
-        'kiso-primary': '#A67B5B'
+        brand: {
+          bg1: '#0A0A0A',
+          bg2: '#111111',
+          light: '#F8F9FA',
+          muted: '#A3A3A3',
+          accent: '#D4AF37',
+        },
+        kiso: {
+          bg: '#0A0A0A',
+          brown: '#D4AF37',
+          text: '#F8F9FA',
+          primary: '#111111',
+        }
       }
     }
   },

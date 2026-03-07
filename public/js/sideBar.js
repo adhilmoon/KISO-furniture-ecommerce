@@ -27,4 +27,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     setupSidebar('mobile-menu-btn', 'mobile-sidebar', 'mobile-sidebar-overlay', 'close-sidebar');
     setupSidebar('mobile-profile-sidebar-toggle', 'profile-sidebar-menu', 'profile-sidebar-overlay', 'close-profile-sidebar');
+     setupSidebar('admin-mobile-menu-btn', 'admin-mobile-sidebar', 'admin-mobile-sidebar-overlay', 'close-admin-sidebar');
 });

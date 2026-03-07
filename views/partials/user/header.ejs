@@ -1,136 +1,162 @@
-<nav
-  class="flex items-center justify-between px-4 md:px-8 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
+<nav id="main-nav"
+  class="flex items-center justify-between px-6 md:px-12 py-5 fixed w-full top-0 z-50 transition-all duration-700 <%= locals.isProfilePage ? 'bg-brand-bg1 border-b border-white/5' : 'bg-transparent' %> text-stone-100">
+
   <div class="flex items-center gap-4">
-    <!-- Mobile Profile Sidebar Toggle (Profile Pages Only) -->
     <% if(locals.isProfilePage) { %>
       <button id="mobile-profile-sidebar-toggle"
-        class="md:hidden p-1 text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+        class="md:hidden p-1 text-stone-100 hover:text-brand-accent transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>
       </button>
-      <% } else { %>
-        <!-- Regular Mobile Menu Toggle (Non-Profile Pages) -->
-        <button id="mobile-menu-btn" class="md:hidden p-1 text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="w-7 h-7">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-        </button>
-        <% } %>
+      <% } %>
 
-          <a href="/" class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-black flex items-end p-1">
-              <div class="w-full h-1/2 bg-white"></div>
-            </div>
-            <span class="text-xl font-bold tracking-tight text-gray-900">KISO</span>
-          </a>
+        <a href="/" class="flex items-center gap-3 group">
+          <span
+            class="text-2xl font-bold tracking-tighter hover:text-brand-accent transition-colors duration-300">KISO</span>
+        </a>
   </div>
 
-  <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-    <li><a href="/store" class="hover:text-black transition-colors">Store</a></li>
-    <li><a href="/dining" class="hover:text-black transition-colors">Dining</a></li>
-    <li><a href="/living" class="hover:text-black transition-colors">Living</a></li>
-    <li><a href="/bedroom" class="hover:text-black transition-colors">Bedroom</a></li>
-    <li><a href="/office" class="hover:text-black transition-colors">Office</a></li>
+  <ul class="hidden md:flex items-center gap-10 text-[13px] font-medium tracking-widest uppercase text-stone-300">
+    <li><a href="/store" class="hover:text-stone-100 transition-colors duration-300">Store</a></li>
+    <li><a href="/living" class="hover:text-stone-100 transition-colors duration-300">Living Room</a></li>
+    <li><a href="/dining" class="hover:text-stone-100 transition-colors duration-300">Dining & Kitchen</a></li>
+    <li><a href="/bedroom" class="hover:text-stone-100 transition-colors duration-300">Bedroom</a></li>
+    <li><a href="/office" class="hover:text-stone-100 transition-colors duration-300">Home Office</a></li>
   </ul>
 
-  <div class="flex items-center gap-2 md:gap-4">
-    <button class="hidden sm:block p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-        class="w-6 h-6">
+  <div class="flex items-center gap-5 md:gap-6">
+    <button class="p-2 text-stone-300 hover:text-stone-100 transition-colors hidden md:block group relative"
+      title="Search">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor"
+        class="w-5 h-5 group-hover:scale-110 transition-transform">
         <path stroke-linecap="round" stroke-linejoin="round"
           d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
       </svg>
     </button>
 
+    <a href="<%= locals.user ? '/user/wishlist' : '/user/login' %>"
+      class="p-2 text-stone-300 hover:text-brand-accent transition-colors group relative" title="Wishlist">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor"
+        class="w-5 h-5 group-hover:scale-110 transition-transform">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+      </svg>
+    </a>
+
+    <a href="<%= locals.user ? '/user/cart' : '/user/login' %>"
+      class="p-2 text-stone-300 hover:text-brand-accent transition-colors group relative mr-1 md:mr-2" title="Cart">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor"
+        class="w-5 h-5 group-hover:scale-110 transition-transform">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+      </svg>
+    </a>
+
     <% if (locals.user) { %>
-      <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all relative">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-        </svg>
-      </button>
-      <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all relative">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-        </svg>
-      </button>
-
-      <a href="/user/profile"
-        class="w-9 h-9 md:w-10 md:h-10 bg-[#8B7355] rounded-full flex items-center justify-center overflow-hidden cursor-pointer border-2 border-red-400 shadow-sm hover:scale-105 transition-transform">
-
+      <a href="/user/profile" id="nav-profile-img"
+        class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-stone-800 flex items-center justify-center overflow-hidden border border-stone-700 hover:border-stone-100 transition-colors">
         <% if(user && user.avatar) { %>
           <img src="<%= user.avatar %>" alt="Profile" class="w-full h-full object-cover">
-
-          <% } else if(user && (user.name || user.username)) { %>
-            <span class="text-white font-bold text-xs leading-none">
-              <%= (user.name || user.username).charAt(0).toUpperCase() %>
+          <% } else { %>
+            <span class="text-[10px] md:text-xs font-bold uppercase text-stone-100">
+              <%= (user.name || user.username || 'U' ).charAt(0) %>
             </span>
-
-            <% } else { %>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                class="w-7 h-7 text-white mt-1">
-                <path fill-rule="evenodd"
-                  d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                  clip-rule="evenodd" />
-              </svg>
-              <% } %>
+            <% } %>
       </a>
       <% } else if (locals.title && locals.title !=='Login' ) { %>
         <a href="/user/login"
-          class="flex items-center justify-center bg-black hover:bg-zinc-900 text-white font-bold tracking-widest uppercase rounded-none transition-all duration-300 active:scale-95 text-[11px] md:text-[13px] px-6 md:px-10 h-10 md:h-11 min-w-[100px] md:min-w-[140px]">
-          Log In
+          class="text-[12px] font-bold tracking-widest uppercase border-b border-stone-100/30 hover:border-stone-100 transition-colors pb-0.5 text-stone-100">
+          Login
         </a>
         <% } %>
+
+          <% if(!locals.isProfilePage) { %>
+            <button id="mobile-menu-btn" class="md:hidden p-1 text-stone-100 hover:text-stone-300">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-7 h-7">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+            <% } %>
   </div>
 </nav>
 
-<!-- Regular Mobile Sidebar (Non-Profile Pages) -->
 <% if(!locals.isProfilePage) { %>
-  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity duration-300">
-  </div>
+  <div id="mobile-sidebar-overlay"
+    class="fixed inset-0 bg-black/60 z-[90] hidden md:hidden transition-opacity duration-300 backdrop-blur-sm"></div>
   <div id="mobile-sidebar"
-    class="fixed inset-y-0 left-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl overflow-y-auto">
-    <div class="p-6">
-      <div class="flex justify-between items-center mb-8">
-        <span class="font-bold text-xl tracking-tight">MENU</span>
-        <button id="close-sidebar" class="p-2 text-gray-500 text-2xl">&times;</button>
+    class="fixed top-0 left-0 bottom-0 w-72 bg-stone-900 text-stone-100 z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl flex flex-col border-r border-stone-800">
+
+    <div class="p-6 flex-1 flex flex-col">
+      <div class="flex justify-between items-center mb-10">
+        <h2 class="text-xl font-bold tracking-widest uppercase">MENU</h2>
+        <button id="close-sidebar"
+          class="p-2 text-stone-400 hover:text-stone-100 text-3xl transition-colors">&times;</button>
       </div>
-      <ul class="space-y-4 font-medium text-gray-700">
-        <li><a href="/store" class="block py-2 border-b border-gray-50">Store</a></li>
-        <li><a href="/dining" class="block py-2 border-b border-gray-50">Dining</a></li>
-        <li><a href="/living" class="block py-2 border-b border-gray-50">Living</a></li>
-      </ul>
+
+      <nav class="space-y-3">
+        <a href="/store"
+          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Store</a>
+        <a href="/living"
+          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Living
+          Room</a>
+        <a href="/dining"
+          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Dining
+          & Kitchen</a>
+        <a href="/bedroom"
+          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Bedroom</a>
+        <a href="/office"
+          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Home
+          Office</a>
+      </nav>
     </div>
   </div>
   <% } %>
 
     <% if(locals.isProfilePage) { %>
       <div id="profile-sidebar-overlay"
-        class="fixed inset-0 bg-black/50 z-[90] hidden md:hidden transition-opacity duration-300"></div>
+        class="fixed inset-0 bg-black/60 z-[90] hidden md:hidden transition-opacity duration-300 backdrop-blur-sm">
+      </div>
       <div id="profile-sidebar-menu"
-        class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl">
-        <div class="p-6">
-          <div class="flex justify-between items-center mb-8">
-            <h2 class="text-xl font-bold">Profile Menu</h2>
-            <button id="close-profile-sidebar" class="p-2 text-gray-400 text-3xl hover:text-black">&times;</button>
+        class="fixed top-0 left-0 bottom-0 w-72 bg-stone-900 text-stone-100 z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl flex flex-col border-r border-stone-800">
+
+        <div class="p-6 flex-1 flex flex-col">
+          <div class="flex justify-between items-center mb-10">
+            <h2 class="text-xl font-bold tracking-widest uppercase">Account</h2>
+            <button id="close-profile-sidebar"
+              class="p-2 text-stone-400 hover:text-stone-100 text-3xl transition-colors">&times;</button>
           </div>
-          <nav class="space-y-2">
+
+          <nav class="space-y-3">
             <a href="/user/profile"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'profile' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Personal
-              Info</a>
+              class="<%= locals.currentPage === 'profile' ? 'bg-stone-800 text-stone-100' : 'text-stone-400 hover:bg-stone-800 hover:text-stone-100' %> block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors">
+              Personal Info
+            </a>
             <a href="/user/orders"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'orders' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">My
-              Orders</a>
+              class="<%= locals.currentPage === 'orders' ? 'bg-stone-800 text-stone-100' : 'text-stone-400 hover:bg-stone-800 hover:text-stone-100' %> block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors">
+              My Orders
+            </a>
             <a href="/user/address"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'address' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Address</a>
+              class="<%= locals.currentPage === 'address' ? 'bg-stone-800 text-stone-100' : 'text-stone-400 hover:bg-stone-800 hover:text-stone-100' %> block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors">
+              Address
+            </a>
             <a href="/user/wallet"
-              class="block px-4 py-3 rounded-xl <%= locals.currentPage === 'wallet' ? 'bg-[#9A7556] text-white shadow-md' : 'text-gray-600 hover:bg-gray-50' %> transition-all">Wallet</a>
+              class="<%= locals.currentPage === 'wallet' ? 'bg-stone-800 text-stone-100' : 'text-stone-400 hover:bg-stone-800 hover:text-stone-100' %> block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors">
+              Wallet
+            </a>
+            <a href="/user/settings"
+              class="<%= locals.currentPage === 'settings' ? 'bg-stone-800 text-stone-100' : 'text-stone-400 hover:bg-stone-800 hover:text-stone-100' %> block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors">
+              Settings
+            </a>
           </nav>
+
+          <div class="mt-auto pt-8 border-t border-stone-800">
+            <button onclick="handleLogout()"
+              class="flex items-center px-4 py-3 text-red-400 hover:bg-red-400/10 font-medium rounded-sm transition-all w-full tracking-wide text-sm">
+              <span class="mr-3">🚪</span> Logout
+            </button>
+          </div>
         </div>
       </div>
       <% } %>
