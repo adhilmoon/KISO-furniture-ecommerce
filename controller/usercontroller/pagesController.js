@@ -171,7 +171,7 @@ export const user_address = async (req, res) => {
 };
 export const page_notfound = (req, res) => {
 
-    res.status(STATUS_CODES.NOT_FOUND).render('404', {
+    res.status('404').render('404', {
         title: "Page Not Found - KISO"
     });
 };

@@ -3,7 +3,7 @@ const router = express.Router();
 
 import * as userauth from "../middleware/userAuth.js";
 import * as Pages from "../controller/userController/pagesController.js";
-import * as authController from "../controller/userController/authController.js";
+import * as authController from "../controller/usercontroller/authController.js";
 import * as profileController from "../controller/userController/profileController.js";
 import {upload} from "../config/cloudinary.js";
 import passport from "passport";
@@ -17,7 +17,7 @@ router.use(userauth.noCache);
 // Google OAuth
 router.get("/login", userauth.islogin, Pages.login_page);
 router.get("/auth/google", passport.authenticate("google", {scope: ["profile", "email"]}));
-router.get("/auth/google/callback", passport.authenticate("google", {failureRedirect: "/user/login"}), authController.googleAuthCallback);
+router.get("/auth/google/callback", passport.authenticate("google", {failureRedirect: '/user/login?error=Google authentication failed',keepSessionInfo:true}), authController.googleAuthCallback);
 router.get("/", Pages.load_Home);
 router.get("/homepage",userauth.userauth,userauth.isUser,Pages.user_home)
 router.get("/signup", userauth.islogin, Pages.user_signup);

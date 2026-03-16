@@ -1,6 +1,13 @@
 
 
-
+document.addEventListener('DOMContentLoaded',()=>{
+    const urlParams=new URLSearchParams(window.location.search);
+    const errorMessage=urlParams.get('error')
+    if(errorMessage){
+        showToast(errorMessage,'error')
+        window.history.replaceState({},document.title,window.location.pathname)
+    }
+})
 async function handleLogin(event, role) {
     event.preventDefault()
     const emailValue = document.getElementById('email').value.trim();
