@@ -53,7 +53,7 @@ app.use(passport.session())
 
 
 app.set('view engine', 'ejs');
-app.set('views', './views'); 
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(expressLayouts);
 app.set('layout', 'layouts/user'); 
