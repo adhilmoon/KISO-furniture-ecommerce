@@ -1,5 +1,6 @@
 import User from "../../model/User.js";
 import Order from "../../model/Order.js";
+import Category from "../../model/Category.js";
 
 export const adminlogin = (req, res) => {
     res.render('admin/login', {
@@ -13,7 +14,7 @@ export const toggleBlock = async (req, res) => {
     try {
         const userId = req.params.id;
         const user = await User.findById(userId);
-        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        if(!user) return res.status(404).json({success: false, message: 'User not found'});
 
         // Toggle block state
         user.isBlocked = !user.isBlocked;
@@ -22,10 +23,10 @@ export const toggleBlock = async (req, res) => {
 
         await user.save();
 
-        return res.json({ success: true, isBlocked: user.isBlocked, status: user.status });
-    } catch (error) {
+        return res.json({success: true, isBlocked: user.isBlocked, status: user.status});
+    } catch(error) {
         console.error('Toggle block error:', error);
-        return res.status(500).json({ success: false, message: 'Server error' });
+        return res.status(500).json({success: false, message: 'Server error'});
     }
 }
 export const admindash = (req, res) => {
@@ -51,7 +52,7 @@ export const users_mange = async (req, res) => {
         for(let user of users) {
             const ordercount = await Order.countDocuments({userId: user._id})
             user.ordercount = ordercount;
-             user.status = user.isBlocked ? 'Blocked' : user.isActive ? 'Active' : 'Inactive';
+            user.status = user.isBlocked ? 'Blocked' : user.isActive ? 'Active' : 'Inactive';
         }
         res.render('admin/users', {
             title: "CustomerManagement",
@@ -71,6 +72,35 @@ export const users_mange = async (req, res) => {
 
 }
 
+export const adminCategory_load = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 5;
+        const skip = (page - 1) * perPage;
+        const totalCategories = await Category.countDocuments()
+        const categories = await Category.find()
+            .skip(skip)
+            .limit(perPage)
+            .sort({createdAt: -1})
+            .lean()
+      
+        res.render('admin/category', {
+            title: "categoryManagement",
+            layout: "layouts/admin",
+            showSidebar: true,
+            categories,
+            totalCategories,
+            currentPage: page,
+            perPage,
+            totalPages: Math.ceil(totalCategories / perPage)
+
+        })
+
+    } catch(error) {
+        console.error('category management side errror')
+        res.status(500).send('Server error')
+    }
+}
 
 
 
