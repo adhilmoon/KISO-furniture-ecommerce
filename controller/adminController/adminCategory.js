@@ -1,5 +1,5 @@
 
-import { STATUS_CODES } from "../../constants/statusCodes.js";
+import {STATUS_CODES} from "../../constants/statusCodes.js";
 import * as categoryService from "../../service/categoryService.js"
 import Category from "../../model/Category.js"
 // add category
@@ -33,6 +33,17 @@ export const updateCategories = async (req, res) => {
     try {
         const {id} = req.params;
         const {categoryName, description} = req.body;
+        const isDublicate = await Category.findOne({
+            categoryName: {$regex: categoryName, $options: "i"},
+            _id: {$ne: id}
+        })
+        if(isDublicate) {
+            return res.status(STATUS_CODES.BAD_REQUEST).json({
+                success: false,
+                message: "Is already exist"
+            })
+        }
+
         if(!categoryName) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
@@ -75,11 +86,11 @@ export const deleteCategories = async (req, res) => {
 export const getCategory = async (req, res) => {
     try {
         const {id} = req.params;
-        const category = await Category.findOne({_id:id})
-        if(!category.isActieve){
+        const category = await Category.findOne({_id: id})
+        if(!category.isActieve) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
-                success:false,
-                message:'now canot access this category'
+                success: false,
+                message: 'now canot access this category'
             })
         }
         if(!category) {

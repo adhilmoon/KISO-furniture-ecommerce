@@ -1,5 +1,6 @@
 
 
+
 function toggleAddCategoryModal() {
     const modal = document.getElementById('addCategoryModal')
     const form = document.getElementById('addCategoryForm')
@@ -13,7 +14,7 @@ function toggleAddCategoryModal() {
         delete form.dataset.editId;
         document.querySelector('#addCategoryModal h2').innerText = "Add New Category";
         const submitBtn = document.querySelector('#addCategoryForm button[type="submit"]');
-        if (submitBtn) submitBtn.innerText = "Add Category";
+        if(submitBtn) submitBtn.innerText = "Add Category";
         resetValidationforcategory();
     } else {
         modal.classList.remove('hidden');
@@ -30,20 +31,20 @@ function resetValidationforcategory() {
 async function editCategory(categoryId) {
     try {
         const response = await axios.get(`/admin/category/get/${categoryId}`);
-        const catelog=response.data.category;
-        document.getElementById('name').value=catelog.categoryName;
-        document.getElementById('description').value=catelog.description;
-        
+        const catelog = response.data.category;
+        document.getElementById('name').value = catelog.categoryName;
+        document.getElementById('description').value = catelog.description;
+
         const form = document.getElementById('addCategoryForm');
         form.dataset.editId = categoryId;
-        
+
         document.querySelector('#addCategoryModal h2').innerText = "Edit Category";
         const submitBtn = document.querySelector('#addCategoryForm button[type="submit"]');
-        if (submitBtn) submitBtn.innerText = "Update Category";
-        
+        if(submitBtn) submitBtn.innerText = "Update Category";
+
         toggleAddCategoryModal()
     } catch(error) {
-       console.log('Error fetching category details')
+        console.log('Error fetching category details')
         showToast(error.response?.data?.message || " ! Canot open the category", 'false')
     }
 }
@@ -107,7 +108,109 @@ async function deleteCategory(categoryId) {
         }
     } catch(error) {
         console.log("category deleted side wrong")
-         showToast(error.response?.data?.message || " can't delete it", 'false')
+        showToast(error.response?.data?.message || " can't delete it", 'false')
     }
 
+}
+
+
+async function handleSearch() {
+
+    const query = document.getElementById('searchInput').value.trim();
+    try {
+        const response = await axios.get('/admin/categories', {
+            params: {
+                search: query
+            }
+        })
+        if(response.data.success) {
+            console.log("Search result:", response.data.categories);
+            renderCategories(response.data.categories)
+        }
+    } catch(error) {
+        console.error("Search failed:", error.response?.data?.message || error.message);
+    }
+}
+
+function renderCategories(categories) {
+    const tableBody = document.getElementById("categoryTableBody")
+
+    tableBody.innerHTML = "";
+
+    if(categories.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-brand-muted">No categories found.</td></tr>';
+        return;
+    }
+    categories.forEach((category, index) => {
+        const row = `
+      <tr class="hover:bg-white/5 transition">
+        <td class="px-6 py-4">C#${String(index + 1).padStart(3, '0')}</td>
+
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-kiso-bg text-xs font-bold">
+              ${category.categoryName.charAt(0).toUpperCase()}
+            </div>
+            <span>${category.categoryName}</span>
+          </div>
+        </td>
+
+        <td class="px-6 py-4">
+          ${new Date(category.createdAt).toISOString().split('T')[0]}
+        </td>
+
+        <td class="px-6 py-4">
+          ${category.description || 'N/A'}
+        </td>
+
+        <td class="px-6 py-4">
+          ${category.productCount || 0}
+        </td>
+
+        <td class="px-6 py-4">
+          ${category.isActieve
+                ? '<span class="text-green-400">Active</span>'
+                : '<span class="text-red-400">Inactive</span>'}
+        </td>
+
+        <td class="px-6 py-4">
+          <button onclick="editCategory('${category._id}')">Edit</button>
+        </td>
+
+        <td class="px-6 py-4">
+          <button onclick="deleteCategory('${category._id}')">Delete</button>
+        </td>
+      </tr>
+    `;
+        tableBody.insertAdjacentHTML('beforeend', row);
+    })
+}
+let timeout;
+function handleSearchDebounced(){
+    const clearBtn = document.getElementById('clearSearchBtn');
+    const input = document.getElementById('searchInput');
+    if (input && clearBtn) {
+        if (input.value.trim() !== '') {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+    }
+
+    clearTimeout(timeout)
+
+    timeout=setTimeout(()=>{
+        handleSearch();
+        console.log("clear timout")
+    },1000)
+}
+
+function clearSearch() {
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+    if (input && clearBtn) {
+        input.value = '';
+        clearBtn.classList.add('hidden');
+        handleSearch();
+    }
 }
