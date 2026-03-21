@@ -75,15 +75,28 @@ export const users_mange = async (req, res) => {
 export const adminCategory_load = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
+        const searchQuery = req.query.search || "";
         const perPage = 5;
         const skip = (page - 1) * perPage;
+
+        const filter = {};
+        if(searchQuery) {
+            filter.categoryName = {$regex: searchQuery, $options: 'i'};
+        }
         const totalCategories = await Category.countDocuments()
-        const categories = await Category.find()
+        const categories = await Category.find(filter)
             .skip(skip)
             .limit(perPage)
             .sort({createdAt: -1})
             .lean()
-      
+
+        if(req.xhr || req.headers.accept.includes('json')) {
+            return res.json({
+                success: true,
+                categories
+            });
+        }
+
         res.render('admin/category', {
             title: "categoryManagement",
             layout: "layouts/admin",
@@ -92,7 +105,8 @@ export const adminCategory_load = async (req, res) => {
             totalCategories,
             currentPage: page,
             perPage,
-            totalPages: Math.ceil(totalCategories / perPage)
+            totalPages: Math.ceil(totalCategories / perPage),
+            searchQuery,
 
         })
 

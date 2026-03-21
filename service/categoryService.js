@@ -14,6 +14,7 @@ export const createCategory = async (data) => {
 }
 
 export const updateCategory = async (data) => {
+    
     const{id,categoryName,description}=data;
     await Category.findOneAndUpdate(
         {_id: id}, {
