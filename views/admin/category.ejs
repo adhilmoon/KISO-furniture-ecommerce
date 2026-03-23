@@ -15,7 +15,8 @@
       </svg>
       <input type="text" id="searchInput" placeholder="Search by name" oninput="handleSearchDebounced()"
         class="bg-transparent outline-none text-kiso-text placeholder-brand-muted text-sm w-full flex-1" />
-      <button type="button" id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear search" class="hidden text-brand-muted hover:text-white transition-colors text-lg leading-none">
+      <button type="button" id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear search"
+        class="hidden text-brand-muted hover:text-white transition-colors text-lg leading-none">
         &times;
       </button>
     </div>
@@ -120,10 +121,17 @@
 
               <!-- Action -->
               <td class="px-6 py-4 whitespace-nowrap">
-                <button onclick="deleteCategory('<%= category._id %>')"
-                  class="bg-red-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-red-600 transition">
-                  Delete
-                </button>
+                <% if (category.isActieve) { %>
+                  <button onclick="deleteCategory('<%= category._id %>')"
+                    class="bg-red-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-red-600 transition font-medium">
+                    Disable
+                  </button>
+                  <% } else { %>
+                    <button onclick="deleteCategory('<%= category._id %>')"
+                      class="bg-green-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-green-600 transition font-medium">
+                      Enable
+                    </button>
+                    <% } %>
               </td>
 
             </tr>
