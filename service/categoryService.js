@@ -1,4 +1,4 @@
-import {STATUS_CODES} from "../constants/statusCodes.js";
+
 import Category from "../model/Category.js"
 
 
@@ -23,17 +23,19 @@ export const updateCategory = async (data) => {
     }
     )
 }
-export const deleteCategory= async(categoryId)=>{
+export const disableCategory= async(categoryId)=>{
     const{id}=categoryId;
-    const category=await Category.findById({_id:id})
-    if(!category.isActieve){
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success:false,
-            message:"its alredy inactieved ..!!!"
-        })
-    }
+
     await Category.findByIdAndUpdate(
         {_id:id},
         {isActieve:false}
+    )
+}
+
+export const enableCategory=async(categoryId)=>{
+    const{id}=categoryId;
+    await Category.findByIdAndUpdate(
+        {_id:id},
+        {isActieve:true}
     )
 }
