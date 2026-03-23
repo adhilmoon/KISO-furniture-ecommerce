@@ -66,14 +66,35 @@ export const updateCategories = async (req, res) => {
 
 // delete cate gory
 
-export const deleteCategories = async (req, res) => {
+export const disableCategories = async (req, res) => {
     try {
         const {id} = req.params;
-        await categoryService.deleteCategory({id})
+
+        await categoryService.disableCategory({id})
         return res.status(STATUS_CODES.OK).json({
             success: true,
-            message: "success fully category deleted"
+            message: "success fully category disabled"
         })
+
+
+
+    } catch(error) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: "deletside probelm"
+
+        })
+    }
+}
+export const enableCategories = async (req, res) => {
+    try {
+        const {id} = req.params;
+        await categoryService.enableCategory({id})
+        return res.status(STATUS_CODES.OK).json({
+            success: true,
+            message: "success fully category enabled"
+        })
+
     } catch(error) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({
             success: false,
