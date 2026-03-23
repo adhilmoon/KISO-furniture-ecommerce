@@ -1,6 +1,7 @@
 
 
 
+
 function toggleAddCategoryModal() {
     const modal = document.getElementById('addCategoryModal')
     const form = document.getElementById('addCategoryForm')
@@ -98,8 +99,8 @@ function showFieldError(fieldId, message) {
     }
 }
 
-async function deleteCategory(categoryId) {
-    const result = await confirmAction('Are you sure you want to delete this category?')
+async function disableCategory(categoryId) {
+    const result = await confirmAction('Are you sure you want to disable this category?')
     if(!result.isConfirmed) return;
     try {
         const response = await axios.patch(`/admin/category/delete/${categoryId}`)
@@ -108,7 +109,21 @@ async function deleteCategory(categoryId) {
         }
     } catch(error) {
         console.log("category deleted side wrong")
-        showToast(error.response?.data?.message || " can't delete it", 'false')
+        showToast(error.response?.data?.message || " can't disable it", 'false')
+    }
+
+}
+
+async function enableCategory(categoryId) {
+    const result = await confirmAction('Are you sure you want to enable this category?')
+    if(!result.isConfirmed) return;
+    try {
+        const response = await axios.patch(`/admin/category/enable/${categoryId}`)
+        if(response.data.success) {
+            window.location.reload();
+        }
+    } catch(error) {
+        console.error("enable side error", error)
     }
 
 }
@@ -143,54 +158,61 @@ function renderCategories(categories) {
     }
     categories.forEach((category, index) => {
         const row = `
-      <tr class="hover:bg-white/5 transition">
-        <td class="px-6 py-4">C#${String(index + 1).padStart(3, '0')}</td>
+  <tr class="hover:bg-white/5 transition border-b border-gray-700/50">
+    <td class="px-6 py-4 text-sm text-gray-400">
+      C#${String(index + 1).padStart(3, '0')}
+    </td>
 
-        <td class="px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-kiso-bg text-xs font-bold">
-              ${category.categoryName.charAt(0).toUpperCase()}
-            </div>
-            <span>${category.categoryName}</span>
-          </div>
-        </td>
+    <td class="px-6 py-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-kiso-bg text-xs font-bold">
+          ${category.categoryName.charAt(0).toUpperCase()}
+        </div>
+        <span class="font-medium text-gray-200">${category.categoryName}</span>
+      </div>
+    </td>
 
-        <td class="px-6 py-4">
-          ${new Date(category.createdAt).toISOString().split('T')[0]}
-        </td>
+    <td class="px-6 py-4 text-sm text-gray-400">
+      ${new Date(category.createdAt).toLocaleDateString()}
+    </td>
 
-        <td class="px-6 py-4">
-          ${category.description || 'N/A'}
-        </td>
+    <td class="px-6 py-4 text-sm text-gray-400 max-w-xs truncate">
+      ${category.description || 'No description provided'}
+    </td>
 
-        <td class="px-6 py-4">
-          ${category.productCount || 0}
-        </td>
+    <td class="px-6 py-4 text-sm text-gray-400">
+      ${category.productCount || 0}
+    </td>
 
-        <td class="px-6 py-4">
-          ${category.isActieve
-                ? '<span class="text-green-400">Active</span>'
-                : '<span class="text-red-400">Inactive</span>'}
-        </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+      ${category.isActieve
+                ? `<button onclick="deleteCategory('${category._id}')" 
+            class="bg-red-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-red-600 transition font-medium">
+            Disable
+           </button>`
+                : `<button onclick="deleteCategory('${category._id}')" 
+            class="bg-green-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-green-600 transition font-medium">
+            Enable
+           </button>`
+            }
+    </td>
 
-        <td class="px-6 py-4">
-          <button onclick="editCategory('${category._id}')">Edit</button>
-        </td>
-
-        <td class="px-6 py-4">
-          <button onclick="deleteCategory('${category._id}')">Delete</button>
-        </td>
-      </tr>
-    `;
+    <td class="px-6 py-4">
+      <button onclick="editCategory('${category._id}')" 
+        class="text-blue-400 hover:text-blue-300 text-sm font-semibold transition">
+                Edit
+               </button>
+               </td>
+        </tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);
     })
 }
 let timeout;
-function handleSearchDebounced(){
+function handleSearchDebounced() {
     const clearBtn = document.getElementById('clearSearchBtn');
     const input = document.getElementById('searchInput');
-    if (input && clearBtn) {
-        if (input.value.trim() !== '') {
+    if(input && clearBtn) {
+        if(input.value.trim() !== '') {
             clearBtn.classList.remove('hidden');
         } else {
             clearBtn.classList.add('hidden');
@@ -199,16 +221,16 @@ function handleSearchDebounced(){
 
     clearTimeout(timeout)
 
-    timeout=setTimeout(()=>{
+    timeout = setTimeout(() => {
         handleSearch();
         console.log("clear timout")
-    },1000)
+    }, 1000)
 }
 
 function clearSearch() {
     const input = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearSearchBtn');
-    if (input && clearBtn) {
+    if(input && clearBtn) {
         input.value = '';
         clearBtn.classList.add('hidden');
         handleSearch();
