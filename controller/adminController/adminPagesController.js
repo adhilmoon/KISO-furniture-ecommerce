@@ -1,6 +1,7 @@
 import User from "../../model/User.js";
 import Order from "../../model/Order.js";
 import Category from "../../model/Category.js";
+import Product from "../../model/Product.js";
 
 export const adminlogin = (req, res) => {
     res.render('admin/login', {
@@ -90,13 +91,6 @@ export const adminCategory_load = async (req, res) => {
             .sort({createdAt: -1})
             .lean()
 
-        if(req.xhr || req.headers.accept.includes('json')) {
-            return res.json({
-                success: true,
-                categories
-            });
-        }
-
         res.render('admin/category', {
             title: "categoryManagement",
             layout: "layouts/admin",
@@ -116,6 +110,38 @@ export const adminCategory_load = async (req, res) => {
     }
 }
 
+export const adminProduct_Management = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const searchQuery = req.query.search || "";
+        const perPage = 10;
+        const skip = (page - 1) * perPage;
+        const filter = {};
+        if(searchQuery) {
+            filter.productName = {$regex: searchQuery, $options: "i"}
+        }
+        const totalProducts = await Product.countDocuments();
+        const products = await Product.find(filter)
+            .skip(skip)
+            .limit(perPage)
+            .sort({createdAt: -1})
+            .lean()
+        res.render('admin/product', {
+            title: "productManagment",
+            layout: "layouts/admin",
+            showSidebar: true,
+            currentPage: page,
+            perPage,
+            totalProducts,
+            products,
+            searchQuery,
+            totalPages:Math.ceil(totalProducts/perPage)
 
+        })
+    } catch(error) {
+       console.error('category management side errror',error)
+        res.status(500).send('Server error')
+    }
+}
 
 
