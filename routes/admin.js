@@ -10,6 +10,7 @@ router.post('/login', adminController.auth);
 router.get('/dashboard', adminauth.isAdmin, adminPages.admindash);
 router.get('/customers', adminauth.isAdmin, adminPages.users_mange)
 router.get('/categories', adminauth.isAdmin, adminPages.adminCategory_load)
+router.get('/products',adminauth.isAdmin,adminPages.adminProduct_Management)
 router.get('/category/get/:id', adminauth.isAdmin, adminCategory.getCategory)
 
 router.post("/category/add", adminauth.isAdmin, adminCategory.addCategory);
