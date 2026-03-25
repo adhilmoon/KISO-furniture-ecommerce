@@ -17,7 +17,7 @@ async function toggleBlock(userId) {
             const row = document.querySelector(`tr[data-user-id='${userId}']`);
             if(row) {
 
-                const statusCell = row.querySelectorAll('td')[5];
+                const statusCell = row.querySelectorAll('td')[6];
                 if(statusCell) {
                     statusCell.innerHTML = response.data.isBlocked
                         ? `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Blocked</span>`
