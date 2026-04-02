@@ -17,22 +17,24 @@ async function toggleBlock(userId) {
             const row = document.querySelector(`tr[data-user-id='${userId}']`);
             if(row) {
 
-                const statusCell = row.querySelectorAll('td')[6];
+                // Update data-status attribute for potential filtering
+                row.setAttribute('data-status', response.data.isBlocked ? 'blocked' : 'active');
+
+                const statusCell = row.querySelectorAll('td')[5];
                 if(statusCell) {
                     statusCell.innerHTML = response.data.isBlocked
-                        ? `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Blocked</span>`
-                        : `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>`;
+                        ? `<span class="px-3 py-1 bg-red-500/10 text-red-500 border border-red-500/20 rounded-full text-xs font-semibold tracking-wide">Blocked</span>`
+                        : `<span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-semibold tracking-wide">Active</span>`;
                 }
-
 
                 const actionBtn = document.getElementById(`action-btn-${userId}`);
                 if(actionBtn) {
                     if(response.data.isBlocked) {
                         actionBtn.textContent = 'Activate';
-                        actionBtn.className = "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition";
+                        actionBtn.className = "px-5 py-2 rounded-lg text-xs font-semibold transition-colors shadow-lg bg-green-500/20 text-green-400 hover:bg-green-500/30 shadow-green-500/10";
                     } else {
                         actionBtn.textContent = 'Block';
-                        actionBtn.className = "px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition";
+                        actionBtn.className = "px-5 py-2 rounded-lg text-xs font-semibold transition-colors shadow-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 flex-shrink-0 shadow-red-500/10";
                     }
                 }
 

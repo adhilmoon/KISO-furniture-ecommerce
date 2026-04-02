@@ -1,7 +1,4 @@
 
-
-
-
 function toggleAddCategoryModal() {
     const modal = document.getElementById('addCategoryModal')
     const form = document.getElementById('addCategoryForm')
@@ -16,6 +13,9 @@ function toggleAddCategoryModal() {
         document.querySelector('#addCategoryModal h2').innerText = "Add New Category";
         const submitBtn = document.querySelector('#addCategoryForm button[type="submit"]');
         if(submitBtn) submitBtn.innerText = "Add Category";
+        const attrContainer = document.getElementById('attributesContainer');
+        if(attrContainer) attrContainer.innerHTML = '';
+        if(typeof attributeCount !== 'undefined') attributeCount = 0;
         resetValidationforcategory();
     } else {
         modal.classList.remove('hidden');
@@ -80,7 +80,7 @@ const handleCategorysubmit = async (event) => {
 
         if(response.data.success) {
             showToast(response.data.message || "Category created", 'success')
-            setTimeout(() => location.reload(), 800);
+            setTimeout(() => location.href = '/admin/categories', 800);
         }
 
     } catch(error) {
@@ -228,9 +228,9 @@ function renderCategories(categories) {
     </td>
 
     <td class="px-6 py-4 whitespace-nowrap">
-      <button onclick="editCategory('${category._id}')" class="border border-green-400/40 text-green-400 px-4 py-1 rounded-full text-xs hover:bg-green-400/10 transition">
+      <a href="/admin/category/edit/${category._id}" class="border border-green-400/40 text-green-400 px-4 py-1 rounded-full text-xs hover:bg-green-400/10 transition inline-block text-center">
         Edit
-      </button>
+      </a>
     </td>
 
     <td class="px-6 py-4 whitespace-nowrap" id="action-${category._id}">
@@ -272,3 +272,4 @@ function clearSearch() {
         handleSearch();
     }
 }
+
