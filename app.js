@@ -11,7 +11,10 @@ import connectDB from './config/connectDB.js';
 import './config/passport.js'
 import passport from 'passport';
 import User from './model/User.js';
+import { fetchGlobalCategories } from './middleware/globalCategories.js';
 
+
+// your existing code below
 
 const app = express();
 
@@ -51,6 +54,7 @@ app.use(async (req, res, next) => {
 })
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(fetchGlobalCategories)
 
 
 app.set('view engine', 'ejs');

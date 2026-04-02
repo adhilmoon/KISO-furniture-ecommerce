@@ -24,10 +24,10 @@
       class="bg-brand-bg2 border border-white/10 text-kiso-text px-5 py-3 rounded-lg text-sm hover:bg-white/5 transition">
       Search
     </button>
-    <button id="addCategoryBtn" onclick="toggleAddCategoryModal()"
-      class="bg-kiso-text text-kiso-bg px-5 py-3 rounded-lg text-sm font-semibold hover:bg-white/90 transition">
+    <a href="/admin/category/add" id="addCategoryBtn"
+      class="bg-kiso-text text-kiso-bg px-5 py-3 rounded-lg text-sm font-semibold hover:bg-white/90 transition text-center sm:text-left">
       + Add Category
-    </button>
+    </a>
   </div>
 
   <!-- Table -->
@@ -113,10 +113,10 @@
 
               <!-- Edit -->
               <td class="px-6 py-4 whitespace-nowrap">
-                <button onclick="editCategory('<%= category._id %>')"
-                  class="border border-green-400/40 text-green-400 px-4 py-1 rounded-full text-xs hover:bg-green-400/10 transition">
+                <a href="/admin/category/edit/<%= category._id %>"
+                  class="border border-green-400/40 text-green-400 px-4 py-1 rounded-full text-xs hover:bg-green-400/10 transition inline-block text-center mb-0">
                   Edit
-                </button>
+                </a>
               </td>
 
               <!-- Action -->
@@ -191,5 +191,4 @@
       </div>
 
 </div>
-<%- include('./category-add') %>
-  <script src="/js/admin_side/categoryManagement.js"></script>
+  <script src="/js/admin/categoryManagement.js"></script>

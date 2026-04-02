@@ -110,6 +110,41 @@ export const adminCategory_load = async (req, res) => {
     }
 }
 
+export const adminCategoryAdd_load = async (req, res) => {
+    try {
+        res.render('admin/category-add', {
+            title: "Add Category",
+            layout: "layouts/admin",
+            showSidebar: true,
+            category: null // Indicates it's an add operation
+        });
+    } catch(error) {
+        console.error('Error loading add category page', error);
+        res.status(500).send('Server error');
+    }
+};
+
+export const adminCategoryEdit_load = async (req, res) => {
+    try {
+        const categoryId = req.params.id;
+        const category = await Category.findById(categoryId).lean();
+        
+        if (!category) {
+            return res.status(404).send('Category not found');
+        }
+
+        res.render('admin/category-add', {
+            title: "Edit Category",
+            layout: "layouts/admin",
+            showSidebar: true,
+            category // Pass existing data
+        });
+    } catch(error) {
+        console.error('Error loading edit category page', error);
+        res.status(500).send('Server error');
+    }
+};
+
 export const adminProduct_Management = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -142,6 +177,14 @@ export const adminProduct_Management = async (req, res) => {
        console.error('category management side errror',error)
         res.status(500).send('Server error')
     }
+}
+
+export const AddProductPage=async(req,res)=>{
+    res.render('admin/product-add', {
+        title: 'product add',
+        layout: 'layouts/admin',
+        showSidebar: true
+    });
 }
 
 

@@ -1,6 +1,6 @@
 
 import {STATUS_CODES} from "../../constants/statusCodes.js";
-import * as categoryService from "../../service/categoryService.js"
+import * as categoryService from "../../service/admin/categoryService.js"
 import Category from "../../model/Category.js"
 // add category
 export const addCategory = async (req, res) => {

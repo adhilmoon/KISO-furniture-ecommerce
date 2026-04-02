@@ -38,7 +38,7 @@ router.get("/logout", authController.logout);
 // Profile
 router.get("/profile",userauth.userauth,userauth.isUser,Pages.user_profile);
 router.patch("/update-profile", userauth.userauth, userauth.isUser, profileController.profile_Update);
-// Profile Image Upload
+// Profile Image Upload  
 router.patch("/profile/image", userauth.userauth, userauth.isUser,upload.single("profileImage"),userauth.handleUploadErrors, profileController.uploadProfilePic);
 
 // Address APIs (REST style)

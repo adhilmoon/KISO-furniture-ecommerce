@@ -1,5 +1,5 @@
 
-import Category from "../model/Category.js"
+import Category from "../../model/Category.js"
 
 
 export const createCategory = async (data) => {
