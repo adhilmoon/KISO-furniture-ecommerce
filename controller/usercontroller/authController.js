@@ -1,4 +1,4 @@
-import * as userService from "../../service/userService.js"
+import * as userService from "../../service/user/userService.js"
 import User from '../../model/User.js'
 import Address from "../../model/Address.js"
 import bcrypt from 'bcrypt'

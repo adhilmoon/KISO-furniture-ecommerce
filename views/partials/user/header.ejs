@@ -19,10 +19,11 @@
 
   <ul class="hidden md:flex items-center gap-10 text-[13px] font-medium tracking-widest uppercase text-stone-300">
     <li><a href="/store" class="hover:text-stone-100 transition-colors duration-300">Store</a></li>
-    <li><a href="/living" class="hover:text-stone-100 transition-colors duration-300">Living Room</a></li>
-    <li><a href="/dining" class="hover:text-stone-100 transition-colors duration-300">Dining & Kitchen</a></li>
-    <li><a href="/bedroom" class="hover:text-stone-100 transition-colors duration-300">Bedroom</a></li>
-    <li><a href="/office" class="hover:text-stone-100 transition-colors duration-300">Home Office</a></li>
+    <% if (locals.globalCategories && locals.globalCategories.length > 0) { %>
+      <% globalCategories.forEach(category => { %>
+        <li><a href="/store?category=<%= category._id %>" class="hover:text-stone-100 transition-colors duration-300"><%= category.categoryName %></a></li>
+      <% }) %>
+    <% } %>
   </ul>
 
   <div class="flex items-center gap-5 md:gap-6">
@@ -98,17 +99,11 @@
       <nav class="space-y-3">
         <a href="/store"
           class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Store</a>
-        <a href="/living"
-          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Living
-          Room</a>
-        <a href="/dining"
-          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Dining
-          & Kitchen</a>
-        <a href="/bedroom"
-          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Bedroom</a>
-        <a href="/office"
-          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Home
-          Office</a>
+        <% if (locals.globalCategories && locals.globalCategories.length > 0) { %>
+          <% globalCategories.forEach(category => { %>
+            <a href="/store?category=<%= category._id %>" class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100 uppercase"><%= category.categoryName %></a>
+          <% }) %>
+        <% } %>
       </nav>
     </div>
   </div>

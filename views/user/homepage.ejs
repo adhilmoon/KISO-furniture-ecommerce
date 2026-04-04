@@ -1,7 +1,5 @@
-
-
 <main class="bg-brand-bg1 text-stone-100 selection:bg-brand-accent/30">
-  
+
 
     <!-- Scrollytelling Section -->
     <div id="scrolly-container">
@@ -10,9 +8,10 @@
             <canvas id="sofa-canvas"></canvas>
 
             <!-- Storytelling Overlays -->
-            <div id="steps-container" class="absolute inset-0 pointer-events-none">
+            <div id="steps-container" class="absolute inset-0 pointer-events-none  bg-black/50">
                 <!-- Hero Intro (0-15%) -->
-                <div data-start="0" data-end="15" class="step opacity-100 flex">
+                <div data-start="0" data-end="15"
+                    class="step absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-100 transition-all duration-700 ease-out">
                     <h1
                         class="text-5xl md:text-8xl font-bold tracking-tighter mb-6 text-brand-accent drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                         Elevated Living.</h1>
@@ -23,30 +22,37 @@
 
                 <!-- Craftsmanship (15-40%) -->
                 <div data-start="15" data-end="40"
-                    class="step absolute inset-y-0 left-0 flex flex-col justify-center px-8 md:px-24 text-left w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
-                    <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Built for generations.</h2>
-                    <p class="text-stone-400 text-lg max-w-md font-light">
-                        Kiln-dried solid ash wood and precision joinery form an unyielding foundation.
-                    </p>
+                    class="step absolute inset-0 md:inset-y-0 md:left-0 flex flex-col justify-end items-start px-8 md:px-24 text-left w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
+                    <div style="margin-bottom: 10vh; width: 100%;">
+                        <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Built for generations.</h2>
+                        <p class="text-stone-400 text-lg max-w-md font-light">
+                            Kiln-dried solid ash wood and precision joinery form an unyielding foundation.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Comfort (40-65%) -->
                 <div data-start="40" data-end="65"
-                    class="step absolute inset-y-0 right-0 flex flex-col justify-center px-8 md:px-24 text-right w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
-                    <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Uncompromising comfort.</h2>
-                    <p class="text-stone-400 text-lg max-w-md font-light ml-auto">
-                        Multi-layer high-resilience foam and a responsive suspension system perfectly adapt to your
-                        body.
-                    </p>
+                    class="step absolute inset-y-0 right-0 left-auto flex flex-col justify-end items-end px-8 md:px-24 text-right w-full md:w-1/2 ml-auto opacity-0 translate-y-10 transition-all duration-700 ease-out">
+                    <div
+                        style="margin-bottom: 10vh; width: 100%; display: flex; flex-direction: column; align-items: flex-end;">
+                        <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Uncompromising comfort.</h2>
+                        <p class="text-stone-400 text-lg max-w-md font-light">
+                            Multi-layer high-resilience foam and a responsive suspension system perfectly adapt to your
+                            body.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Materials (65-85%) -->
                 <div data-start="65" data-end="85"
-                    class="step absolute inset-y-0 left-0 flex flex-col justify-center px-8 md:px-24 text-left w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
-                    <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Everyday luxury.</h2>
-                    <p class="text-stone-400 text-lg max-w-md font-light">
-                        Spill-resistant, performance-grade linen blends offer a breathable, tactile harmony.
-                    </p>
+                    class="step absolute inset-0 md:inset-y-0 md:left-0 flex flex-col justify-end items-start px-8 md:px-24 text-left w-full md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out">
+                    <div style="margin-bottom: 10vh; width: 100%;">
+                        <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Everyday luxury.</h2>
+                        <p class="text-stone-400 text-lg max-w-md font-light">
+                            Spill-resistant, performance-grade linen blends offer a breathable, tactile harmony.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- CTA (85-100%) -->
@@ -144,4 +150,4 @@
     </section>
 
 </main>
-<script src="/js/homePage.js"></script>
+<script src="/js/user/homePage.js"></script>

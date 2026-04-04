@@ -1,32 +1,36 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities;
- */
- @tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Set the entire page background and text default */
     background-color: #0A0A0A;
     color: #F8F9FA;
   }
-  
   body {
     background-color: #0A0A0A;
     color: #F8F9FA;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENTS
+───────────────────────────────────────────────────────────────────────────── */
 @layer components {
-    /* Creates the long scrollable area (600vh gives you the scroll length) */
+
+    /* ── User-side: Scrollytelling ────────────────────────────────────────── */
+
+    /* Creates the long scrollable area */
     #scrolly-container {
         position: relative;
         height: 600vh;
         background-color: #1E2320;
     }
 
-    /* Pins the canvas and overlays to the screen while you scroll through the 600vh */
+    /* Pins the canvas and overlays to the screen while scrolling */
     .sticky-wrapper {
         position: -webkit-sticky;
         position: sticky;
@@ -40,7 +44,7 @@
         z-index: 5;
     }
 
-    /* Ensures the canvas fills the screen properly */
+    /* Canvas fills the screen */
     #sofa-canvas {
         display: block;
         width: 100%;
@@ -50,7 +54,7 @@
         background-color: transparent;
     }
 
-    /* Base styling for your story text overlays to fade and slide in */
+    /* Story text overlays */
     .step {
         position: absolute;
         top: 0;
@@ -67,17 +71,94 @@
         pointer-events: none;
         transition: opacity 0.6s ease, transform 0.6s ease;
     }
+
+    /* ── Admin: Shared Form Components ───────────────────────────────────────
+       Used across all admin form pages (product-add, category-add, etc.)
+    ───────────────────────────────────────────────────────────────────────── */
+
+    /* Base dark input / select / textarea */
+    .field-input {
+        background: #111111;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        color: #F8F9FA;
+        border-radius: 0.75rem;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.875rem;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        width: 100%;
+    }
+    .field-input::placeholder {
+        color: rgba(255, 255, 255, 0.20);
+    }
+    .field-input:focus {
+        border-color: rgba(184, 111, 82, 0.60);
+        box-shadow: 0 0 0 3px rgba(184, 111, 82, 0.10);
+    }
+    .field-input option {
+        background: #111111;
+        color: #F8F9FA;
+    }
+
+    /* Validation: invalid field state */
+    .field-invalid {
+        border-color: rgba(239, 68, 68, 0.60) !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.10) !important;
+    }
+
+    /* Validation: inline error message */
+    .field-error {
+        font-size: 0.72rem;
+        color: #f87171;
+        margin-top: 0.25rem;
+    }
+
+    /* Quick-pick option chips (e.g. Size / Color / Material inside variant cards) */
+    .chip {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.15s;
+        cursor: pointer;
+    }
+    .chip:hover {
+        background: rgba(184, 111, 82, 0.15);
+        color: #b86f52;
+        border-color: rgba(184, 111, 82, 0.30);
+    }
+
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   KEYFRAMES  (must live outside @layer)
+───────────────────────────────────────────────────────────────────────────── */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────────────────────────────────────────── */
 @layer utilities {
-    /* Helper classes toggled by your JS for the navigation bar */
+
+    /* Navbar helpers toggled by JS */
     .bg-transparent {
         background-color: transparent !important;
     }
-
     .backdrop-blur-md {
         background-color: rgba(30, 35, 32, 0.4) !important;
         backdrop-filter: blur(12px) !important;
         -webkit-backdrop-filter: blur(12px) !important;
     }
+
+    /* Slide-in entry animation for dynamically added rows / variant cards */
+    .animate-slide-in {
+        animation: slideIn 0.2s ease-out forwards;
+    }
+
 }
