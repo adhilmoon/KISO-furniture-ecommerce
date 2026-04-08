@@ -1,56 +1,104 @@
 <aside class="w-64 bg-brand-bg1 border-r border-white/5 hidden md:flex flex-col h-full sticky top-0 flex-shrink-0">
 
+    <nav class="flex-grow px-3 py-4 space-y-1 overflow-y-auto custom-scrollbar">
 
-    <nav class="flex-grow px-4 space-y-1 overflow-y-auto custom-scrollbar">
-        <p class="text-[10px] font-semibold text-brand-muted uppercase px-4 mb-2 mt-4">Core</p>
-        <a href="/admin/dashboard" class="flex items-center px-4 py-3 bg-[#F2F0EE] text-gray-900 rounded-xl font-medium"
-            style="color: #111827;">
-            <span class="mr-3">📊</span> Dashboard
+        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-2">Core</p>
+        <a href="/admin/dashboard"
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/dashboard">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📊</span>
+            Dashboard
         </a>
 
-        <p class="text-[10px] font-semibold text-brand-muted uppercase px-4 mb-2 mt-4">Management</p>
+        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-5">Management</p>
         <a href="/admin/products"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">📦</span> Products
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/products">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📦</span>
+            Products
         </a>
         <a href="/admin/orders"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">📜</span> Orders
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/orders">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📜</span>
+            Orders
         </a>
         <a href="/admin/customers"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">👥</span> Customers
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/customers">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">👥</span>
+            Customers
         </a>
         <a href="/admin/categories"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">🗂️</span> Categories
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/categories">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🗂️</span>
+            Categories
         </a>
 
-        <p class="text-[10px] font-semibold text-brand-muted uppercase px-4 mb-2 mt-4">Marketing</p>
+        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-5">Marketing</p>
         <a href="/admin/coupons"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">🎫</span> Coupons
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/coupons">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🎫</span>
+            Coupons
         </a>
         <a href="/admin/banners"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">🖼️</span> Banners
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/banners">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🖼️</span>
+            Banners
         </a>
         <a href="/admin/offers"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">🏷️</span> Offers
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/offers">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🏷️</span>
+            Offers
         </a>
 
-        <p class="text-[10px] font-semibold text-brand-muted uppercase px-4 mb-2 mt-4">System</p>
+        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-5">System</p>
         <a href="/admin/settings"
-            class="flex items-center px-4 py-3 text-gray-600 hover:bg-brand-bg2 rounded-xl transition-all">
-            <span class="mr-3">⚙️</span> Settings
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            data-path="/admin/settings">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">⚙️</span>
+            Settings
         </a>
     </nav>
 
-    <div class="p-4 border-t border-gray-100">
+    <div class="px-3 py-4 border-t border-white/5">
         <button onclick="handleAdminLogout()"
-            class="flex items-center px-4 py-3 text-red-500 hover:bg-red-50 w-full rounded-xl transition-all font-medium">
-            <span class="mr-3">🚪</span> Logout
+            class="flex items-center gap-3 px-3 py-2.5 text-red-400/80 hover:text-red-400 hover:bg-red-500/10 w-full rounded-xl transition-all duration-200 text-sm font-medium">
+            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/10 text-base">🚪</span>
+            Logout
         </button>
     </div>
+
 </aside>
+
+<%# Active link highlighting — pure CSS-driven via data-path %>
+<script>
+(function() {
+    const path = window.location.pathname;
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        const linkPath = link.getAttribute('data-path');
+        if (path === linkPath || path.startsWith(linkPath + '/')) {
+            link.classList.remove('text-brand-muted', 'hover:text-brand-light', 'hover:bg-white/5');
+            link.classList.add('text-brand-accent', 'bg-brand-accent/10', 'border', 'border-brand-accent/20');
+            const icon = link.querySelector('span');
+            if (icon) {
+                icon.classList.remove('bg-white/5');
+                icon.classList.add('bg-brand-accent/20');
+            }
+        }
+    });
+})();
+</script>

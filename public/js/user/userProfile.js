@@ -88,7 +88,20 @@ function copyReferralCode() {
 function handleProfileImageChange(event) {
     const file = event.target.files[0];
     if(!file) return;
+    Image.openCropper({
+        file: file,
+        aspectRatio: 1,
+        onCrop: (blob, previewUrl) => {
+            const previewImg = document.getElementById('profilePreview');
+            const avatarLetter = document.getElementById('avatarLetter');
+            previewImg.src = previewUrl;
+            previewImg.classList.remove('hidden');
+            if(avatarLetter) avatarLetter.classList.add('hidden');
 
+            const formData= new formData();
+            formData.append('profileImage', blob, 'profile.jpg')
+        }
+    })
     if(!file.type.startsWith('image/')) {
         showMessage('Please select a valid image file', 'error');
         return;

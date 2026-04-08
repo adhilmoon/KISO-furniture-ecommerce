@@ -3,6 +3,7 @@ import Address from "../../model/Address.js";
 import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 
 
+
 const sampleProducts = [
     {
         name: "Classic Velvet Sofa",
@@ -175,3 +176,12 @@ export const page_notfound = (req, res) => {
         title: "Page Not Found - KISO"
     });
 };
+export const user_store = (req, res) => {
+    res.render('user/store', {
+        title: "Store - KISO",
+        isStorePage: true,
+        user: req.session.user || null,
+        isLoggedIn: !!req.session.user
+        
+    });
+}

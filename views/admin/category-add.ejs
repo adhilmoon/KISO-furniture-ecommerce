@@ -1,0 +1,56 @@
+<div class="w-full max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- Breadcrumb -->
+    <div class="mb-8 text-sm text-brand-muted">
+        <a href="/admin/categories" class="hover:text-kiso-text transition">Categories</a>
+        <span class="mx-2">/</span>
+        <span class="text-kiso-text font-medium"><%= category ? 'Edit Category' : 'Add Category' %></span>
+    </div>
+
+    <!-- Page Card -->
+    <div class="bg-brand-bg2 border border-white/10 rounded-2xl p-8 w-full">
+
+        <!-- Header -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-kiso-text"><%= category ? 'Edit Category' : 'Add New Category' %></h2>
+            <p class="text-brand-muted text-sm mt-1">
+                <%= category ? 'Update category details and variant attributes' : 'Create a new product category and define dynamic specifications' %>
+            </p>
+        </div>
+
+        <!-- Form -->
+        <form id="addCategoryForm" data-edit-id="<%= category ? category._id : '' %>" onsubmit="handleCategorysubmit(event)">
+
+            <!-- Category Name -->
+            <div class="mb-5">
+                <label class="block text-kiso-text text-sm font-semibold mb-2">Category Name</label>
+                <input id="name" type="text" name="name" placeholder="e.g, Chairs" value="<%= category ? category.categoryName : '' %>" 
+                    class="w-full bg-brand-bg1 border border-white/10 text-kiso-text placeholder-brand-muted rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors">
+                <p id="err-name" class="text-red-500 text-xs mt-0.5"></p>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-8">
+                <label class="block text-kiso-text text-sm font-semibold mb-2">Description</label>
+                <textarea name="description" rows="3" placeholder="Optional details about the category..." id="description" 
+                    class="w-full bg-brand-bg1 border border-white/10 text-kiso-text placeholder-brand-muted rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition resize-none"><%= category ? category.description : '' %></textarea>
+                <p id="err-description" class="text-red-500 text-xs mt-0.5"></p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-white/10">
+                <a href="/admin/categories"
+                    class="px-5 py-2.5 rounded-lg text-sm text-kiso-text border border-white/10 hover:bg-white/5 transition">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="px-5 py-2.5 rounded-lg text-sm font-semibold bg-brand-accent text-kiso-bg hover:opacity-90 transition shadow-lg shadow-brand-accent/20">
+                    <%= category ? 'Update Category' : 'Save Category' %>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="/js/admin/categoryManagement.js"></script>
