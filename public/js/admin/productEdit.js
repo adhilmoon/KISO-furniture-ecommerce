@@ -1,9 +1,11 @@
 
 
+
 let attrCount = 0;
 let variantCount = 0;
 let cropper = null;
 
+let deletedImages = [];
 let imageQueue = [];
 let croppedFiles = [];
 let mainCroppedFiles = [];
@@ -12,6 +14,8 @@ let currentInput = null;
 let currentVariantId = null;
 
 const variantCroppedFiles = {};
+let deletedVariantImages = {};
+let existingVariantImageCount = {};
 const $ = id => document.getElementById(id);
 
 // ── Error helpers ─────────────────────────────────────────────────────────
@@ -42,8 +46,8 @@ function showVariantError(variantId, field, msg) {
 }
 
 function clearVariantError(variantId, field) {
-    $(`verr-${variantId}-${field}`)?.classList.add('hidden');
-    $(`v${field.charAt(0).toUpperCase() + field.slice(1)}-${variantId}`)?.classList.remove('field-invalid');
+  $(`verr-${variantId}-${field}`)?.classList.add('hidden');
+  $(`v${field.charAt(0).toUpperCase() + field.slice(1)}-${variantId}`)?.classList.remove('field-invalid');
 }
 
 //____________________________Cropper open /close ______________________________________________________
@@ -95,13 +99,19 @@ function confirmCrop() {
 
       if(currentVariantId !== null) {
         // Store for this variant
-        if(!variantCroppedFiles[currentVariantId]) { variantCroppedFiles[currentVariantId] = []; }
+        if(!variantCroppedFiles[currentVariantId]) {variantCroppedFiles[currentVariantId] = [];}
         croppedFiles.forEach(f => {
-            if(variantCroppedFiles[currentVariantId].length < 3) {
-                variantCroppedFiles[currentVariantId].push(f);
-            }
+          const existingCount=existingVariantImageCount[currentVariantId]||0;
+          const newCount =variantCroppedFiles[currentVariantId].length;
+          const total=existingCount+newCount;
+          if(total<3){
+            variantCroppedFiles[currentVariantId].push(f)
+          }else{
+            showToast("Max 3 images allowed for this variant", "error")
+          }
+             
         });
-        
+
         const dt = new DataTransfer();
         variantCroppedFiles[currentVariantId].forEach(f => dt.items.add(f));
         currentInput.files = dt.files;
@@ -116,9 +126,9 @@ function confirmCrop() {
 
         renderPreviews(mainCroppedFiles, 'mainImgPreview', true);
         clearError('err-images');
-        
+
         const dropZone = document.getElementById('mainImageDropZone');
-        if (dropZone) dropZone.classList.add('hidden');
+        if(dropZone) dropZone.classList.add('hidden');
       }
 
       closeCrop();
@@ -128,75 +138,106 @@ function confirmCrop() {
 
 //-------------image preview--------------------
 function renderPreviews(files, containerId, large) {
-    const container = $(containerId);
-    if (!container) return;
-    container.innerHTML = '';
+  const container = $(containerId);
+  if(!container) return;
+  container.innerHTML = '';
 
-    const size = large ? 'w-full h-40 max-w-[200px]' : 'w-16 h-16';
+  const size = large ? 'w-full h-40 max-w-[200px]' : 'w-16 h-16';
 
-    Array.from(files).forEach((file, idx) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const thumb = document.createElement('div');
-            thumb.className = `${size} rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
-            
-            let overlayHtml = '';
-            if (containerId === 'mainImgPreview') {
-                overlayHtml = `
+  Array.from(files).forEach((file, idx) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const thumb = document.createElement('div');
+      thumb.className = `${size} rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
+
+      let overlayHtml = '';
+      if(containerId === 'mainImgPreview') {
+        overlayHtml = `
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3">
                         <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1.5 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                         <button type="button" onclick="removeMainImage()" title="Remove" class="p-1.5 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
                     </div>
                 `;
-            } else {
-                const variantId = containerId.split('-')[1];
-                overlayHtml = `
+      } else {
+        const variantId = containerId.split('-')[1];
+        overlayHtml = `
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
                         <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                         <button type="button" onclick="removeVariantImage('${variantId}', ${idx})" title="Remove" class="p-1 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
                     </div>
                 `;
-            }
+      }
 
-            thumb.innerHTML = `
+      thumb.innerHTML = `
                 <img src="${e.target.result}" class="w-full h-full object-cover">
                 ${overlayHtml}
             `;
-            container.appendChild(thumb);
-        };
-        reader.readAsDataURL(file);
-    });
+      container.appendChild(thumb);
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
-function removeMainImage() {
-    mainCroppedFiles = [];
-    document.getElementById('images').value = '';
-    renderPreviews([], 'mainImgPreview', true);
-    const dropZone = document.getElementById('mainImageDropZone');
-    if (dropZone) dropZone.classList.remove('hidden');
+async function removeMainImage() {    
+  mainCroppedFiles = [];
+
+  document.getElementById('images').value = '';
+  renderPreviews([], 'mainImgPreview', true);
+  const dropZone = document.getElementById('mainImageDropZone');
+  if(dropZone) dropZone.classList.remove('hidden');
 }
 
 function removeVariantImage(variantId, idx) {
-    if(variantCroppedFiles[variantId]) {
-        variantCroppedFiles[variantId].splice(idx, 1);
-        renderPreviews(variantCroppedFiles[variantId], `vImgPreview-${variantId}`, false);
-        
-        const dt = new DataTransfer();
-        variantCroppedFiles[variantId].forEach(f => dt.items.add(f));
-        const input = document.getElementById(`vImgInput-${variantId}`);
-        if(input) input.files = dt.files;
-    }
+  if(variantCroppedFiles[variantId]) {
+    variantCroppedFiles[variantId].splice(idx, 1);
+    renderPreviews(variantCroppedFiles[variantId], `vImgPreview-${variantId}`, false);
+
+    const dt = new DataTransfer();
+    variantCroppedFiles[variantId].forEach(f => dt.items.add(f));
+    const input = document.getElementById(`vImgInput-${variantId}`);
+    if(input) input.files = dt.files;
+  }
+}
+
+function removeExistingMainImage(url, idx) {
+  deletedImages.push(url);
+  const el = document.getElementById(`existing-main-${idx}`);
+  if(el) el.remove();
+
+  // Update existingImageCount
+  const countEl = document.getElementById('existingImageCount');
+  if(countEl) countEl.value = Math.max(0, parseInt(countEl.value || '0') - 1);
+
+  if(parseInt(countEl.value) === 0 && !mainCroppedFiles.length) {
+    document.getElementById('mainImageDropZone').classList.remove('hidden');
+  }
+}
+
+function removeExistingVariantImage(url, variantId, vc, idx) {
+ 
+  if((existingVariantImageCount[variantId] || 0) > 0) {
+    existingVariantImageCount[variantId]--;
+  }
+  if(!deletedVariantImages[variantId]) {
+    deletedVariantImages[variantId] = [];
+  }
+
+  deletedVariantImages[variantId].push(url)
+
+  const el = document.getElementById(`existing-variant-${vc}-${idx}`);
+  if(el) el.remove();
+
+
 }
 
 function viewImage(src) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 z-[10000] bg-black/90 flex items-center justify-center p-4 cursor-pointer';
-    modal.innerHTML = `<img src="${src}" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl">`;
-    modal.onclick = () => modal.remove();
-    document.body.appendChild(modal);
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 z-[10000] bg-black/90 flex items-center justify-center p-4 cursor-pointer';
+  modal.innerHTML = `<img src="${src}" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl">`;
+  modal.onclick = () => modal.remove();
+  document.body.appendChild(modal);
 }
 
-//-----------Mian image handler -----------//
 function handleMainImages(input) {
   const file = input.files[0];
   if(!file) return;
@@ -209,16 +250,17 @@ function handleMainImages(input) {
   openCropper(file);
   input.value = '';
 }
-//__________variant image handler_________________________________
 
 
 function handleVariantImages(input, variantId) {
   const files = Array.from(input.files);
   if(!files.length) return;
-  const currentCount = variantCroppedFiles[variantId] ? variantCroppedFiles[variantId].length : 0;
-  if(currentCount + files.length > 3) {
+  const existingCount = existingVariantImageCount[variantId] || 0;
+  const newCount = variantCroppedFiles[variantId]?.length || 0;
+  const totalCount = existingCount + newCount;
+  if(totalCount + files.length > 3) {
     input.value = '';
-    showToast(`You can upload up to 3 images per variant. (Currently have ${currentCount})`, 'error');
+    showToast(`Max 3 images allowed. You already have ${existingCount} existing and ${newCount} new.`, 'error');
     return;
   }
   currentInput = input;
@@ -231,7 +273,7 @@ function handleVariantImages(input, variantId) {
   input.value = '';
 }
 
-//______________Custom attributes___________________________________
+
 
 
 function addCustomAttribute() {
@@ -393,7 +435,7 @@ function addVariant() {
       class="hidden"
       onchange="handleVariantImages(this, '${vc}')"
 />
-   <div id="vImgPreview-${vc}" class="flex flex-wrap gap-2 mt-2"></div>
+  
         <label for="vImgInput-${vc}"
           class="flex items-center gap-3 border border-dashed border-white/10 hover:border-brand-accent/30 rounded-xl px-4 py-3 cursor-pointer transition group">
           <svg class="w-6 h-6 shrink-0 text-white/20 group-hover:text-brand-accent/40 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -424,21 +466,14 @@ function setOptType(variantId, value) {
   const el = $(`vOptType-${variantId}`);
   if(el) {el.value = value; clearVariantError(variantId, 'optType');}
 }
-// variant tpe vlaue 
 
-function setOptypeValues(){
-  const existType=$('vOptType-${vc}').value.tirm()
-  switch(existType){
-    case  "Size":
-
-  }
-}
 
 function collectVariants() {
   const result = [];
   document.querySelectorAll('#variantsContainer .variant-card').forEach(card => {
     const id = card.dataset.id;
     result.push({
+      _id: $(`vId-${id}`)?.value || null,
       optionType: $(`vOptType-${id}`)?.value.trim() || '',
       optionValue: $(`vOptValue-${id}`)?.value.trim() || '',
       price: parseFloat($(`vPrice-${id}`)?.value) || 0,
@@ -448,7 +483,79 @@ function collectVariants() {
   return result;
 }
 
+function populateEditData(product) {
+  existingVariantImageCount = {};
+  if(product.images && product.images.length) {
+  const categoryEl=$('category');
+  if(categoryEl){
+    categoryEl.value=
+      typeof product.category==="object"
+      ?product.category._id
+      :product.category;
+  }
+    const container = document.getElementById('mainImgPreview');
+    document.getElementById('mainImageDropZone').classList.add('hidden');
+    product.images.forEach((url, idx) => {
+      const thumb = document.createElement('div');
+      thumb.id = `existing-main-${idx}`;
+      thumb.className = `w-full h-40 max-w-[200px] rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
+      thumb.innerHTML = `
+            <img src="${url}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3">
+                <button type="button" onclick="viewImage('${url}')" title="View Image" class="p-1.5 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                <button type="button" onclick="removeExistingMainImage('${url}',${idx})" title="Remove" class="p-1.5 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            </div>
+        `;
+      if(container) container.appendChild(thumb);
+    });
+  }
+  if(product.customAttributes && product.customAttributes.length) {
+    product.customAttributes.forEach(attr => {
+      addCustomAttribute();
+      const id = attrCount;
+      const keyEl = document.getElementById(`attr-key-${id}`);
+      const valEl = document.getElementById(`attr-val-${id}`);
+      if(keyEl) keyEl.value = attr.key || '';
+      if(valEl) valEl.value = attr.value || '';
+    });
+  }
 
+  if(product.variants && product.variants.length) {
+    product.variants.forEach(variant => {
+      addVariant();
+      const vc = variantCount;
+      const vIdEl = document.getElementById(`vId-${vc}`);
+      const optTypeEl = document.getElementById(`vOptType-${vc}`);
+      const optValEl = document.getElementById(`vOptValue-${vc}`);
+      const priceEl = document.getElementById(`vPrice-${vc}`);
+      const stockEl = document.getElementById(`vStock-${vc}`);
+
+      if(vIdEl) vIdEl.value = variant._id;
+      if(optTypeEl) optTypeEl.value = variant.optionType || '';
+      if(optValEl) optValEl.value = variant.optionValue || '';
+      if(priceEl) priceEl.value = variant.price || 0;
+      if(stockEl) stockEl.value = variant.stock || 0;
+
+      if(variant.images && variant.images.length) {
+        existingVariantImageCount[vc] = variant.images.length;
+        const vContainer = document.getElementById(`vImgPreview-${vc}`);
+        variant.images.forEach((url, idx) => {
+          const thumb = document.createElement('div');
+          thumb.id = `existing-variant-${vc}-${idx}`;
+          thumb.className = `w-16 h-16 rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
+          thumb.innerHTML = `
+                  <img src="${url}" class="w-full h-full object-cover">
+                  <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                      <button type="button" onclick="viewImage('${url}')" title="View Image" class="p-1 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                      <button type="button" onclick="removeExistingVariantImage('${url}','${variant._id}', '${vc}', ${idx})" title="Remove" class="p-1 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                  </div>
+              `;
+          if(vContainer) vContainer.appendChild(thumb);
+        });
+      }
+    });
+  }
+}
 
 //________________validation form_________________________________
 
@@ -485,7 +592,8 @@ function validateForm() {
       valid = false;
     }
   });
-  if(!mainCroppedFiles.length) {
+  const existingImgCount = parseInt($('existingImageCount')?.value || "0");
+  if(!mainCroppedFiles.length && existingImgCount === 0) {
     showError('err-images', 'At least one product image is required.');
     valid = false;
   }
@@ -552,7 +660,18 @@ function validateForm() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  $('addProductForm')?.addEventListener('submit', async function (e) {
+
+  const payloadEl = document.getElementById('productDataPayload');
+  if(payloadEl && payloadEl.dataset.product) {
+    try {
+      const productData = JSON.parse(payloadEl.dataset.product);
+      populateEditData(productData);
+    } catch(e) {
+      console.error("Error parsing product data", e);
+    }
+  }
+
+  $('editProductForm')?.addEventListener('submit', async function (e) {
     e.preventDefault();
     if(!validateForm()) return;
 
@@ -576,10 +695,12 @@ document.addEventListener('DOMContentLoaded', () => {
       fd.append('dimensions[width]', $('dimWidth').value || 0);
       fd.append('dimensions[depth]', $('dimDepth').value || 0);
       fd.append('dimensions[height]', $('dimHeight').value || 0);
-      // Custom attributes and variants as JSON
+
       fd.append('customAttributesJSON', JSON.stringify(collectCustomAttributes()));
       fd.append('variantsJSON', JSON.stringify(collectVariants()));
-      // main cropped image files-fieldname "images"
+      fd.append('deletedImages', JSON.stringify(deletedImages));
+      fd.append('deletedVariantImages', JSON.stringify(deletedVariantImages));
+
       mainCroppedFiles.forEach(f => fd.append('images', f, f.name));
 
       // append variant images
@@ -592,7 +713,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      const {data} = await axios.post('/admin/product/add', fd);
+      const formNode = document.getElementById('editProductForm');
+      const productId = formNode ? formNode.dataset.productId : '';
+      const {data} = await axios.post('/admin/product/update/' + productId, fd);
       if(data.success) {
         showToast('Product saved successfully!', 'success');
         setTimeout(() => window.location.href = '/admin/products', 1200);

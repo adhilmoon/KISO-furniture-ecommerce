@@ -40,7 +40,7 @@ export const updateCategories = async (req, res) => {
         if(isDublicate) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "Is already exist"
+                message: "Category name already exists"
             })
         }
 
@@ -108,7 +108,7 @@ export const getCategory = async (req, res) => {
     try {
         const {id} = req.params;
         const category = await Category.findOne({_id: id})
-        if(!category.isActieve) {
+        if(!category.isActive) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
                 message: 'now canot access this category'

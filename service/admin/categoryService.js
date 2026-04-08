@@ -3,7 +3,7 @@ import Category from "../../model/Category.js"
 
 
 export const createCategory = async (data) => {
-    const{categoryName, description} = data;
+    const {categoryName, description} = data;
 
     const newCategory = new Category({
         categoryName,
@@ -14,8 +14,8 @@ export const createCategory = async (data) => {
 }
 
 export const updateCategory = async (data) => {
-    
-    const{id,categoryName,description}=data;
+
+    const {id, categoryName, description} = data;
     await Category.findOneAndUpdate(
         {_id: id}, {
         categoryName,
@@ -23,19 +23,19 @@ export const updateCategory = async (data) => {
     }
     )
 }
-export const disableCategory= async(categoryId)=>{
-    const{id}=categoryId;
+export const disableCategory = async (categoryId) => {
+    const {id} = categoryId;
 
     await Category.findByIdAndUpdate(
-        {_id:id},
-        {isActieve:false}
+        {_id: id},
+        {isActive: false}
     )
 }
 
-export const enableCategory=async(categoryId)=>{
-    const{id}=categoryId;
+export const enableCategory = async (categoryId) => {
+    const {id} = categoryId;
     await Category.findByIdAndUpdate(
-        {_id:id},
-        {isActieve:true}
+        {_id: id},
+        {isActive: true}
     )
 }

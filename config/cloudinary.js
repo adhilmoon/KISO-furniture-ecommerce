@@ -1,15 +1,14 @@
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+import {v2 as cloudinary} from "cloudinary";
 import multer from "multer";
 
 // Env validation
-const { 
-  CLOUDINARY_CLOUD_NAME, 
-  CLOUDINARY_API_KEY, 
-  CLOUDINARY_API_SECRET 
+const {
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET
 } = process.env;
 
-if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+if(!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
   throw new Error(" Cloudinary environment variables missing");
 }
 
@@ -23,19 +22,15 @@ cloudinary.config({
 console.log("..>>Cloudinary credentials loaded<<..");
 
 // Storage config
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    return {
-      folder: "kiso/users/profile",
-      allowed_formats: ["jpg", "png", "jpeg", "webp"],
-      resource_type: "auto",
-      quality: "auto:best",
-      fetch_format: "auto",
-      public_id: `${Date.now()}-${file.originalname}`,
-    };
-  },
-});
+const storage = multer.memoryStorage();
+
+const fileFilter = (req, file, cb) => {
+  const allowed = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+  if(!allowed.includes(file.mimetype)) {
+    return cb(new Error("Invalid file type. Only JPG, PNG, WebP allowed."));
+  }
+  cb(null, true);
+};
 
 // Multer upload middleware
 export const upload = multer({
@@ -43,22 +38,26 @@ export const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
   },
-  fileFilter: (req, file, cb) => {
-    const allowedMimes = [
-      "image/jpeg",
-      "image/png",
-      "image/jpg",
-      "image/webp",
-    ];
+  fileFilter,
 
-    if (!allowedMimes.includes(file.mimetype)) {
-      return cb(
-        new Error(
-          "Invalid file type. Only JPG, PNG, and WebP are allowed."
-        )
-      );
-    }
-
-    cb(null, true);
-  },
 });
+export const uploadProduct = multer({
+  storage,
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter,
+});
+
+
+export const uploadToCloudinary = async (fileBuffer, folderName = "kiso_furniture") => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {folder: folderName},
+      (error, result) => {
+        if(error) return reject(error)
+        resolve(result)
+      }
+    );
+    uploadStream.end(fileBuffer)
+
+  })
+}

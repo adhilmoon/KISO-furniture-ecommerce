@@ -76,7 +76,7 @@
                     </div>
                     <div>
                       <p class="text-kiso-text font-medium"><%= product.productName %></p>
-                      <p class="text-brand-muted text-xs mt-0.5"><%= product.brand || 'No brand' %></p>
+                     
                     </div>
                   </div>
                 </td>
@@ -96,16 +96,16 @@
                 <!-- Price -->
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="text-kiso-text font-medium">
-                    $<%= product.price ? product.price.toFixed(2) : '0.00' %>
+                  ₹<%= product.basePrice ? product.basePrice.toFixed(1) :'0.00' %>
                   </span>
                 </td>
 
                 <!-- Stock -->
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <% if (product.quantity > 10) { %>
-                    <span class="text-green-400 font-medium"><%= product.quantity %></span>
+                  <% if (product.totalQuantity > 10) { %>
+                    <span class="text-green-400 font-medium"><%= product.totalQuantity  %></span>
                   <% } else if (product.quantity > 0) { %>
-                    <span class="text-yellow-400 font-medium"><%= product.quantity %></span>
+                    <span class="text-yellow-400 font-medium"><%= product.totalQuantity %></span>
                   <% } else { %>
                     <span class="text-red-400 font-medium">Out of stock</span>
                   <% } %>
@@ -128,7 +128,7 @@
 
                 <!-- Edit -->
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <a href="/admin/products/edit/<%= product._id %>"
+                  <a href="/admin/product/edit/<%= product._id %>"
                     class="border border-green-400/40 text-green-400 px-4 py-1 rounded-full text-xs hover:bg-green-400/10 transition inline-block text-center">
                     Edit
                   </a>
@@ -183,9 +183,9 @@
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <a href="#" class="border border-green-400/40 text-green-400 px-4 py-1 rounded-full text-xs hover:bg-green-400/10 transition inline-block text-center">
+                <button  onclick="handleEditProductPage('<%= product._id %>')"   class="border border-green-400/40 text-green-400 px-4 py-1 rounded-full text-xs hover:bg-green-400/10 transition inline-block text-center">
                   Edit
-                </a>
+                </button>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <button class="bg-red-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-red-600 transition font-medium w-full max-w-[80px]">
@@ -252,5 +252,5 @@
 
 </div>
 
-<!-- Only include script if needed, currently no JS file specific to product management -->
-<!-- <script src="/js/admin_side/productManagement.js"></script> -->
+
+<script src="/js/admin_side/productManagement.js"></script>
