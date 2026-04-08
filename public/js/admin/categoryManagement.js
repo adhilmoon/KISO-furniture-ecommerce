@@ -1,27 +1,5 @@
 
-function toggleAddCategoryModal() {
-    const modal = document.getElementById('addCategoryModal')
-    const form = document.getElementById('addCategoryForm')
 
-    const isOpen = !modal.classList.contains('hidden');
-
-    if(isOpen) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        form.reset();
-        delete form.dataset.editId;
-        document.querySelector('#addCategoryModal h2').innerText = "Add New Category";
-        const submitBtn = document.querySelector('#addCategoryForm button[type="submit"]');
-        if(submitBtn) submitBtn.innerText = "Add Category";
-        const attrContainer = document.getElementById('attributesContainer');
-        if(attrContainer) attrContainer.innerHTML = '';
-        if(typeof attributeCount !== 'undefined') attributeCount = 0;
-        resetValidationforcategory();
-    } else {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-}
 
 function resetValidationforcategory() {
     document.querySelectorAll('[id^="err-"]').forEach(el => el.innerText = '');
@@ -46,10 +24,10 @@ async function editCategory(categoryId) {
         toggleAddCategoryModal()
     } catch(error) {
         console.log('Error fetching category details')
-        showToast(error.response?.data?.message || " ! Canot open the category", 'false')
+        showToast(error.response?.data?.message || " ! Canot open the category", 'error')
     }
 }
-const handleCategorysubmit = async (event) => {
+async function handleCategorysubmit(event) {
     event.preventDefault();
     resetValidationforcategory()
     const form = event.target;
@@ -84,7 +62,7 @@ const handleCategorysubmit = async (event) => {
         }
 
     } catch(error) {
-        showToast(error.response?.data?.message || " ! Not created", 'false')
+        showToast(error.response?.data?.message || " ! Not created", 'error')
     }
 
 }
@@ -106,23 +84,23 @@ async function disableCategory(categoryId) {
         const response = await axios.patch(`/admin/category/disable/${categoryId}`)
         if(response.data.success) {
             console.log(response.data)
-          
+
             const statusTd = document.getElementById(`status-${categoryId}`);
             const actionTd = document.getElementById(`action-${categoryId}`);
-            
-            
-            if (statusTd) {
+
+
+            if(statusTd) {
                 statusTd.innerHTML = `<span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-red-400/10 text-red-400 border border-red-400/20">Inactive</span>`;
             }
-            if (actionTd) {
+            if(actionTd) {
                 actionTd.innerHTML = `<button onclick="enableCategory('${categoryId}')" class="bg-green-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-green-600 transition font-medium">Enable</button>`;
             }
-            
+
             showToast("Category disabled", "success");
         }
     } catch(error) {
-        console.error("category disable side wrong",error)
-        showToast(error.response?.data?.message || " can't disable it", 'false')
+        console.error("category disable side wrong", error)
+        showToast(error.response?.data?.message || " can't disable it", 'error')
     }
 
 }
@@ -133,20 +111,20 @@ async function enableCategory(categoryId) {
     try {
         const response = await axios.patch(`/admin/category/enable/${categoryId}`)
         if(response.data.success) {
-             
 
-             console.log(response.data)
-           
+
+            console.log(response.data)
+
             const statusTd = document.getElementById(`status-${categoryId}`);
             const actionTd = document.getElementById(`action-${categoryId}`);
-            
-            if (statusTd) {
+
+            if(statusTd) {
                 statusTd.innerHTML = `<span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-400/10 text-green-400 border border-green-400/20">Active</span>`;
             }
-            if (actionTd) {
+            if(actionTd) {
                 actionTd.innerHTML = `<button onclick="disableCategory('${categoryId}')" class="bg-red-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-red-600 transition font-medium">Disable</button>`;
             }
-            
+
             showToast("Category enabled", "success");
         }
     } catch(error) {
@@ -221,10 +199,10 @@ function renderCategories(categories) {
     </td>
 
     <td class="px-6 py-4 whitespace-nowrap" id="status-${category._id}">
-      ${category.isActieve ? 
-        `<span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-400/10 text-green-400 border border-green-400/20">Active</span>` :
-        `<span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-red-400/10 text-red-400 border border-red-400/20">Inactive</span>`
-      }
+      ${category.isActive ?
+                `<span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-400/10 text-green-400 border border-green-400/20">Active</span>` :
+                `<span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-red-400/10 text-red-400 border border-red-400/20">Inactive</span>`
+            }
     </td>
 
     <td class="px-6 py-4 whitespace-nowrap">
@@ -234,10 +212,10 @@ function renderCategories(categories) {
     </td>
 
     <td class="px-6 py-4 whitespace-nowrap" id="action-${category._id}">
-      ${category.isActieve ? 
-        `<button onclick="disableCategory('${category._id}')" class="bg-red-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-red-600 transition font-medium">Disable</button>` : 
-        `<button onclick="enableCategory('${category._id}')" class="bg-green-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-green-600 transition font-medium">Enable</button>`
-      }
+      ${category.isActive ?
+                `<button onclick="disableCategory('${category._id}')" class="bg-red-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-red-600 transition font-medium">Disable</button>` :
+                `<button onclick="enableCategory('${category._id}')" class="bg-green-500/80 text-white px-4 py-1 rounded-lg text-xs hover:bg-green-600 transition font-medium">Enable</button>`
+            }
     </td>
   </tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);

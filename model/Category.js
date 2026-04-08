@@ -11,7 +11,7 @@ const categoryScheama = new schema({
         type: String,
         required: true
     },
-    isActieve: {
+    isActive: {
         type: Boolean,
         required: true,
         default: true

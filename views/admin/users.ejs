@@ -11,8 +11,10 @@
         <!-- Total Users -->
         <div class="bg-brand-bg1 p-6 rounded-2xl border border-white/10 shadow-lg shadow-black/20 flex items-center hover:border-brand-accent/50 transition relative group">
             <div class="absolute inset-0 bg-brand-accent/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-            <div class="w-12 h-12 rounded-xl bg-brand-bg2 border border-white/5 flex items-center justify-center text-kiso-text mr-4 relative z-10">
-                <i class="fas fa-users text-xl"></i>
+            <div class="w-12 h-12 rounded-xl bg-brand-bg2 border border-white/5 flex items-center justify-center text-kiso-text mr-4 relative z-10 transition-transform group-hover:scale-110">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                </svg>
             </div>
             <div class="relative z-10">
                 <p class="text-[13px] font-medium text-brand-muted uppercase tracking-wider mb-1">Total Users</p>
@@ -25,8 +27,11 @@
         <!-- Active Users -->
         <div class="bg-brand-bg1 p-6 rounded-2xl border border-white/10 shadow-lg shadow-black/20 flex items-center hover:border-brand-accent/50 transition relative group">
             <div class="absolute inset-0 bg-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-            <div class="w-12 h-12 rounded-xl bg-brand-bg2 border border-white/5 flex items-center justify-center text-green-400 mr-4 relative z-10 shadow-[0_0_15px_rgba(74,222,128,0.1)]">
-                <i class="fas fa-user-check text-xl"></i>
+            <div class="w-12 h-12 rounded-xl bg-brand-bg2 border border-white/5 flex items-center justify-center text-green-400 mr-4 relative z-10 shadow-[0_0_15px_rgba(74,222,128,0.1)] transition-transform group-hover:scale-110">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 13l1.5 1.5 3-3" />
+                </svg>
             </div>
             <div class="relative z-10">
                 <p class="text-[13px] font-medium text-brand-muted uppercase tracking-wider mb-1">Active Users</p>
@@ -39,8 +44,11 @@
         <!-- Blocked Users -->
         <div class="bg-brand-bg1 p-6 rounded-2xl border border-white/10 shadow-lg shadow-black/20 flex items-center hover:border-brand-accent/50 transition relative group">
             <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-            <div class="w-12 h-12 rounded-xl bg-brand-bg2 border border-white/5 flex items-center justify-center text-red-400 mr-4 relative z-10 shadow-[0_0_15px_rgba(248,113,113,0.1)]">
-                <i class="fas fa-user-slash text-xl"></i>
+            <div class="w-12 h-12 rounded-xl bg-brand-bg2 border border-white/5 flex items-center justify-center text-red-400 mr-4 relative z-10 shadow-[0_0_15px_rgba(248,113,113,0.1)] transition-transform group-hover:scale-110">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16.5 12.5l3 3m0-3l-3 3" />
+                </svg>
             </div>
             <div class="relative z-10">
                 <p class="text-[13px] font-medium text-brand-muted uppercase tracking-wider mb-1">Blocked Users</p>
@@ -69,13 +77,18 @@
         </div>
         
         <!-- Status Filter -->
-        <div class="w-full sm:w-auto">
+        <div class="w-full sm:w-auto relative">
             <select id="statusFilter"
-                class="w-full sm:w-48 px-4 py-3 bg-brand-bg1 border border-white/10 rounded-xl text-kiso-text focus:outline-none focus:border-brand-accent transition-colors appearance-none shadow-lg shadow-black/10">
+                class="w-full sm:w-48 pl-4 pr-10 py-3 bg-brand-bg1 border border-white/10 rounded-xl text-kiso-text focus:outline-none focus:border-brand-accent transition-colors appearance-none shadow-lg shadow-black/10">
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
                 <option value="blocked">Blocked</option>
             </select>
+            <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
         </div>
     </div>
 

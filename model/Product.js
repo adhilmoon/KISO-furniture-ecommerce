@@ -34,8 +34,7 @@ const productSchema = new schema({
   },
 
   // ── Custom Attributes (replaces the old `attributes` Map) ───────────────
-  // Stored as a flat array of key-value pairs so we can add anything:
-  //   [{ key: "Seat Height", value: "45 cm" }, { key: "Drawers", value: "3" }]
+
   customAttributes: [
     {
       key:   { type: String, required: true },
@@ -46,9 +45,7 @@ const productSchema = new schema({
   // ── Main product images ──────────────────────────────────────────────────
   images: [{ type: String }],
 
-  // ── Variants ─────────────────────────────────────────────────────────────
-  // Each variant carries its own option type/value, price, stock, and images.
-  // Example: { optionType: "Size", optionValue: "King", price: 850, stock: 10 }
+
   variants: [
     {
       optionType:  { type: String, default: "" },  // e.g. "Color", "Size"

@@ -8,9 +8,9 @@
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
-          <span class="text-brand-light">Add New Product</span>
+          <span class="text-brand-light">Edit Product</span>
         </div>
-        <h1 class="text-2xl font-bold text-kiso-text tracking-tight">Add New Product</h1>
+        <h1 class="text-2xl font-bold text-kiso-text tracking-tight">Edit Product</h1>
         <p class="text-sm text-brand-muted mt-1">Fill in the details below to add a product to your catalog.</p>
       </div>
 
@@ -24,7 +24,7 @@
           <span id="formErrorText">Please fix the errors above before submitting.</span>
         </div>
 
-        <form id="addProductForm" enctype="multipart/form-data" novalidate>
+        <form id="editProductForm" enctype="multipart/form-data" novalidate data-product-id="<%= product._id %>">
           <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
 
             <%# ═══════════════════════════════════════════════════════ LEFT COLUMN (7/12 wide)
@@ -52,7 +52,7 @@
                           </label>
                           <input type="text" id="productName" name="productName"
                             placeholder="e.g. Upholstered Bed Frame, Oslo 3-Seater Sofa" class="field-input w-full"
-                            autocomplete="off" />
+                            autocomplete="off" value="<%= product.productName %>" />
                           <p class="field-error hidden" id="err-productName">Product name is required.</p>
                         </div>
 
@@ -64,7 +64,7 @@
                             </label>
                             <textarea id="description" name="description" rows="4"
                               placeholder="Describe the product — highlight key features, style, and use case."
-                              class="field-input w-full resize-none"></textarea>
+                              class="field-input w-full resize-none"><%= product.description %></textarea>
                             <p class="text-xs text-brand-muted mt-1.5">Min. 20 characters recommended.</p>
                           </div>
 
@@ -91,7 +91,8 @@
                             (cm)</label>
                           <div class="relative">
                             <input type="number" id="dimWidth" name="dimensions[width]" placeholder="0" min="0"
-                              step="0.1" class="field-input w-full pr-12" />
+                              value="<%= product.dimensions?.width || 0 %>" step="0.1"
+                              class="field-input w-full pr-12" />
                             <span
                               class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted pointer-events-none">cm</span>
                           </div>
@@ -103,7 +104,8 @@
                             (cm)</label>
                           <div class="relative">
                             <input type="number" id="dimDepth" name="dimensions[depth]" placeholder="0" min="0"
-                              step="0.1" class="field-input w-full pr-12" />
+                              value="<%= product.dimensions?.depth || 0 %>" step="0.1"
+                              class="field-input w-full pr-12" />
                             <span
                               class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted pointer-events-none">cm</span>
                           </div>
@@ -115,7 +117,8 @@
                             (cm)</label>
                           <div class="relative">
                             <input type="number" id="dimHeight" name="dimensions[height]" placeholder="0" min="0"
-                              step="0.1" class="field-input w-full pr-12" />
+                              value="<%= product.dimensions?.height || 0 %>" step="0.1"
+                              class="field-input w-full pr-12" />
                             <span
                               class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted pointer-events-none">cm</span>
                           </div>
@@ -247,7 +250,12 @@
                                   category</option>
                                 <% if(typeof categories !=="undefined" && categories.length> 0) { %>
                                   <% categories.forEach(cat=> { %>
-                                    <option value="<%= cat._id %>" class="bg-brand-bg2 text-kiso-text">
+                                    <option value="<%= cat._id %>" class="bg-brand-bg2 text-kiso-text" <%=(
+                                      product.category && ( (product.category._id &&
+                                      product.category._id.toString()===cat._id.toString()) ||
+                                      (product.category.toString && product.category.toString()===cat._id.toString()) )
+                                      ) ? 'selected' : '' %>>
+
                                       <%= cat.categoryName %>
                                     </option>
                                     <% }) %>
@@ -277,7 +285,7 @@
                                 <span
                                   class="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-muted text-sm font-medium pointer-events-none">₹</span>
                                 <input type="number" id="basePrice" name="basePrice" placeholder="0.00" min="0"
-                                  step="0.01" class="field-input w-full pl-8" />
+                                  value="<%= product.basePrice %>" step="0.01" class="field-input w-full pl-8" />
                               </div>
                               <p class="field-error hidden" id="err-basePrice">Enter a valid price (≥ 0).</p>
                               <p class="text-xs text-brand-muted mt-1.5">This is the default listing price. Individual
@@ -287,36 +295,38 @@
                       </div>
                     </div>
 
+                  
 
-                    <%# ── Card: Publish ── %>
-                      <div class="bg-brand-bg1 border border-white/10 rounded-2xl p-6 shadow-lg shadow-black/20">
-                        <h2
-                          class="text-sm font-semibold text-kiso-text uppercase tracking-wider mb-5 flex items-center gap-2">
-                          <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Publish
-                        </h2>
-
-                        <div class="flex gap-3">
-                          <a href="/admin/products"
-                            class="flex-1 text-center bg-brand-bg2 hover:bg-white/10 border border-white/10 text-brand-muted hover:text-brand-light font-medium px-4 py-3 rounded-xl text-sm transition">
-                            Discard
-                          </a>
-                          <button type="submit" id="saveProductBtn"
-                            class="flex-1 flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-accent/90 text-white font-semibold px-4 py-3 rounded-xl text-sm transition shadow-lg shadow-brand-accent/20 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <span id="saveBtnLabel">Save Product</span>
-                            <svg id="saveBtnSpinner" class="hidden w-4 h-4 animate-spin" fill="none"
+                      <%# ── Card: Publish ── %>
+                        <div class="bg-brand-bg1 border border-white/10 rounded-2xl p-6 shadow-lg shadow-black/20">
+                          <h2
+                            class="text-sm font-semibold text-kiso-text uppercase tracking-wider mb-5 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor"
                               viewBox="0 0 24 24">
-                              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                stroke-width="4" />
-                              <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                          </button>
+                            Publish
+                          </h2>
+
+                          <div class="flex gap-3">
+                            <a href="/admin/products"
+                              class="flex-1 text-center bg-brand-bg2 hover:bg-white/10 border border-white/10 text-brand-muted hover:text-brand-light font-medium px-4 py-3 rounded-xl text-sm transition">
+                              Discard
+                            </a>
+                            <button type="submit" id="saveProductBtn"
+                              class="flex-1 flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-accent/90 text-white font-semibold px-4 py-3 rounded-xl text-sm transition shadow-lg shadow-brand-accent/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                              <span id="saveBtnLabel">Save Product</span>
+                              <svg id="saveBtnSpinner" class="hidden w-4 h-4 animate-spin" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                  stroke-width="4" />
+                                <path class="opacity-75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
-                      </div>
 
                 </div>
                 <%# end right column %>
@@ -326,7 +336,5 @@
         <%- include('./croperModal') %>
   </div>
   <%# end page wrapper %>
-
-
-    <%# Page script — loaded after DOM is ready %>
-      <script src="/js/admin/productAdd.js"></script>
+    <div id="productDataPayload" data-product="<%= JSON.stringify(product) %>" class="hidden"></div>
+    <script src="/js/admin/productEdit.js"></script>

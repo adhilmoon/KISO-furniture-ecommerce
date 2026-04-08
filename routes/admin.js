@@ -5,7 +5,7 @@ import * as adminPages from "../controller/adminController/adminPagesController.
 import * as adminController from "../controller/adminController/adminAuthController.js";
 import * as adminCategory from "../controller/adminController/adminCategory.js";
 import * as adminProduct from "../controller/adminController/adminProduct.js";
-import { uploadProduct } from "../config/multerProduct.js";
+import { uploadProduct } from "../config/cloudinary.js";
 
 router.use(adminauth.noCache);
 
@@ -16,8 +16,10 @@ router.get('/customers', adminauth.isAdmin, adminPages.users_mange);
 router.get('/categories', adminauth.isAdmin, adminPages.adminCategory_load);
 router.get('/products', adminauth.isAdmin, adminPages.adminProduct_Management);
 router.get('/category/get/:id', adminauth.isAdmin, adminCategory.getCategory);
-router.get('/product/add',  adminauth.isAdmin, adminProduct.addProductPage);
+router.get('/product/add',  adminauth.isAdmin, adminPages.addProductPage);
 router.post('/product/add', adminauth.isAdmin, uploadProduct.any(), adminProduct.addProduct);
+router.get('/product/edit/:id', adminauth.isAdmin, adminPages.editProductPage);
+router.post('/product/update/:id', adminauth.isAdmin, uploadProduct.any(), adminProduct.updateProduct);
 
 router.get('/category/add', adminauth.isAdmin, adminPages.adminCategoryAdd_load);
 router.get('/category/edit/:id', adminauth.isAdmin, adminPages.adminCategoryEdit_load);

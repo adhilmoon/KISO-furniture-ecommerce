@@ -149,18 +149,23 @@ export const adminProduct_Management = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const searchQuery = req.query.search || "";
-        const perPage = 10;
+        const perPage = 5;
         const skip = (page - 1) * perPage;
+
         const filter = {};
         if(searchQuery) {
             filter.productName = {$regex: searchQuery, $options: "i"}
         }
-        const totalProducts = await Product.countDocuments();
+        const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
+            .populate('category','categoryName')
             .skip(skip)
             .limit(perPage)
             .sort({createdAt: -1})
             .lean()
+            products.forEach(product=>{
+                product.totalQuantity=product.variants.reduce((sum,v)=>sum+v.stock,0)
+            });
         res.render('admin/product', {
             title: "productManagment",
             layout: "layouts/admin",
@@ -179,12 +184,42 @@ export const adminProduct_Management = async (req, res) => {
     }
 }
 
-export const AddProductPage=async(req,res)=>{
-    res.render('admin/product-add', {
-        title: 'product add',
-        layout: 'layouts/admin',
-        showSidebar: true
+export const addProductPage = async (req, res) => {
+  try {
+    const categories = await Category.find({ isActive: true })
+          .lean();
+    res.render("admin/product-add", {
+      title: "Add Product",
+      layout: "layouts/admin",
+      showSidebar: true,
+      categories,
     });
-}
+  } catch (error) {
+    console.error("addProductPage error:", error);
+    res.status(500).send("Server error");
+  }
+};
 
+export const editProductPage = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findById(productId)
+     .populate('category','categoryName')
+     .lean();
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+    const categories = await Category.find({ isActive: true }).lean();
+    res.render("admin/product-edit",{
+      title: "Edit Product",
+      layout: "layouts/admin",
+      showSidebar: true,
+      categories,
+      product
+    });
+  } catch (error) {
+    console.error("editProductPage error:", error);
+    res.status(500).send("Server error");
+  }
+};
 

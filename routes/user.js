@@ -5,7 +5,7 @@ import * as userauth from "../middleware/userAuth.js";
 import * as Pages from "../controller/userController/pagesController.js";
 import * as authController from "../controller/usercontroller/authController.js";
 import * as profileController from "../controller/userController/profileController.js";
-import {upload} from "../config/cloudinary.js";
+import {upload,uploadToCloudinary} from "../config/cloudinary.js";
 import passport from "passport";
 
 
@@ -47,6 +47,9 @@ router.post("/address/add", userauth.userauth, userauth.isUser, profileControlle
 router.get("/address/get/:id", userauth.userauth, userauth.isUser, profileController.getAddress);
 router.patch("/address/update/:id", userauth.userauth, userauth.isUser, profileController.updateAddress);
 router.delete("/address/delete/:id", userauth.userauth, userauth.isUser, authController.deleteAddress);
+
+//product listing page API
+router.get("/store",Pages.user_store)
 router.get("/session-check", (req, res) => {
   res.json({ loggedIn: !!req.session.user });
 });

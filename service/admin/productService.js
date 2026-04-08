@@ -1,102 +1,91 @@
+import {uploadToCloudinary} from "../../config/cloudinary.js";
 import Product from "../../model/Product.js";
 
-/**
- * createProduct
- * 
- * @param {Object} body   - req.body after form submission
- * @param {Array}  files  - req.files from multer (.any())
- * 
- * Payload shape expected from the frontend:
- * {
- *   productName, description, category, basePrice, material,
- *   dimensions: { width, depth, height },
- *   customAttributes: [ { key, value }, ... ],       ← JSON string from hidden input
- *   variants: [                                       ← JSON string from hidden input
- *     { optionType, optionValue, price, stock },
- *     ...
- *   ]
- * }
- *
- * Files from multer (.any()):
- *   { fieldname: "images", ... }                     → main product images
- *   { fieldname: "variants[0][images]", ... }        → variant 0 images
- *   { fieldname: "variants[1][images]", ... }        → variant 1 images
- */
-export const createProduct = async (body, files = []) => {
-  const {
-    productName,
-    description,
-    category,
-    basePrice,
-    material,
-  } = body;
 
-  // ── Dimensions ────────────────────────────────────────────────────────────
+export const createProduct = async (body, files) => {
+
+  const {productName, description, category, basePrice, material} = body;
+
+ 
   const dimensions = {
-    width:  parseFloat(body["dimensions[width]"]  || body?.dimensions?.width  || 0) || 0,
-    depth:  parseFloat(body["dimensions[depth]"]  || body?.dimensions?.depth  || 0) || 0,
-    height: parseFloat(body["dimensions[height]"] || body?.dimensions?.height || 0) || 0,
+    width: parseFloat(body['dimensions[width]'] || 0) || 0,
+    depth: parseFloat(body['dimensions[depth]'] || 0) || 0,
+    height: parseFloat(body['dimensions[height]'] || 0) || 0,
   };
 
-  // ── Custom Attributes ─────────────────────────────────────────────────────
-  // Frontend sends a JSON string in the hidden field "customAttributesJSON"
+
+
   let customAttributes = [];
-  if (body.customAttributesJSON) {
+  if(body.customAttributesJSON) {
     try {
       const parsed = JSON.parse(body.customAttributesJSON);
-      // Filter out rows where key is empty
+     
       customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
-    } catch (e) {
+    } catch(e) {
       customAttributes = [];
     }
   }
 
-  // ── Main Product Images ───────────────────────────────────────────────────
-  const mainImages = files
-    .filter(f => f.fieldname === "images")
-    .map(f => f.path); // Cloudinary returns the URL in `path`
 
-  // ── Variants ──────────────────────────────────────────────────────────────
-  // Frontend sends a JSON string in the hidden field "variantsJSON"
+  const mainImageFiles = files.filter(f => f.fieldname === 'images');
+  const mainImages = await Promise.all(
+    mainImageFiles.map(f =>
+      uploadToCloudinary(f.buffer, "kiso/products/main")
+        .then(r => r.secure_url)
+    )
+  )
+ 
   let variantsData = [];
-  if (body.variantsJSON) {
+  if(body.variantsJSON) {
     try {
       variantsData = JSON.parse(body.variantsJSON);
-    } catch (e) {
+    } catch(e) {
       variantsData = [];
     }
   }
 
-  // Map variant images: fieldname "variants[{index}][images]" → variant index
-  const variantImageMap = {}; // { index: [url, url, ...] }
-  files
-    .filter(f => f.fieldname.startsWith("variants["))
-    .forEach(f => {
-      // Parse index from fieldname like "variants[2][images]"
-      const match = f.fieldname.match(/variants\[(\d+)\]\[images\]/);
-      if (match) {
-        const idx = parseInt(match[1]);
-        if (!variantImageMap[idx]) variantImageMap[idx] = [];
-        variantImageMap[idx].push(f.path); // Cloudinary URL
-      }
-    });
+  
 
-  // Build final variants array
+  const variantFiles = files.filter(f => f.fieldname.startsWith('variants['));
+  const variantUploadResult = await Promise.all(
+    variantFiles.map(async (f) => {
+      const match = f.fieldname.match(/variants\[(\d+)\]\[images\]/);
+      if(!match) return;
+
+      const idx = parseInt(match[1]);
+
+
+      const result = await uploadToCloudinary(
+        f.buffer,
+        "kiso/products/variants"
+      );
+
+      return {idx, url: result.secure_url};
+    })
+  );
+  const variantImageMap = {};
+
+  variantUploadResult.forEach(item => {
+    if(!item) return;
+    if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];
+    variantImageMap[item.idx].push(item.url);
+  })
+
   const variants = variantsData.map((v, index) => ({
-    optionType:  v.optionType  || "",
+    optionType: v.optionType || "",
     optionValue: v.optionValue || "",
-    price:       parseFloat(v.price)  || 0,
-    stock:       parseInt(v.stock, 10) || 0,
-    images:      variantImageMap[index] || [],
+    price: parseFloat(v.price) || 0,
+    stock: parseInt(v.stock, 10) || 0,
+    images: variantImageMap[index] || [],
   }));
 
-  // ── Save to DB ────────────────────────────────────────────────────────────
+  
   const newProduct = new Product({
     productName: productName.trim(),
-    description: description.trim(),
+    description: description?.trim(),
     category,
-    basePrice:   parseFloat(basePrice) || 0,
-    material:    material ? material.trim() : "",
+    basePrice: parseFloat(basePrice) || 0,
+    material:       material?.trim() || '',
     dimensions,
     customAttributes,
     variants,
@@ -105,4 +94,151 @@ export const createProduct = async (body, files = []) => {
   });
 
   return await newProduct.save();
+};
+
+export const updateProduct = async (productId, body, files) => {
+  const product = await Product.findById(productId);
+  if (!product) throw new Error("Product not found");
+
+  const { productName, description, category, basePrice, material } = body;
+
+  product.productName = productName.trim() || product.productName;
+  product.description = description ? description.trim() : product.description;
+  product.category = category || product.category;
+  product.basePrice = parseFloat(basePrice) || product.basePrice;
+  product.material = material !== undefined ? material.trim() : product.material;
+
+  product.dimensions.width = parseFloat(body['dimensions[width]']) || product.dimensions.width || 0;
+  product.dimensions.depth = parseFloat(body['dimensions[depth]']) || product.dimensions.depth || 0;
+  product.dimensions.height = parseFloat(body['dimensions[height]']) || product.dimensions.height || 0;
+
+  if (body.customAttributesJSON) {
+    try {
+      const parsed = JSON.parse(body.customAttributesJSON);
+      product.customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
+    } catch(e) {
+      console.log("customAttributes parse error:", e);
+    }
+  }
+
+  
+  if (body.deletedImages) {
+    console.log("deletedImages raw:", body.deletedImages);
+    try {
+      const deletedImages = JSON.parse(body.deletedImages);
+      const beforeCount = product.images.length;
+      product.images = product.images.filter(img => !deletedImages.includes(img));
+      const afterCount = product.images.length;
+      console.log(`Main images: removed ${beforeCount - afterCount} images`);
+    } catch(e) {
+      console.log("deletedImages parse error:", e);
+    }
+  }
+
+ 
+  if (body.deletedVariantImages) {
+    console.log("deletedVariantImages raw:", body.deletedVariantImages);
+    try {
+      const parsedDeletedVariantImages = JSON.parse(body.deletedVariantImages);
+      console.log("parsedDeletedVariantImages:", parsedDeletedVariantImages);
+      
+      product.variants.forEach(variant => {
+        const vId = variant._id.toString();
+        if (parsedDeletedVariantImages[vId] && Array.isArray(parsedDeletedVariantImages[vId])) {
+          const beforeCount = variant.images.length;
+          console.log(`Variant ${vId} BEFORE deletion:`, variant.images);
+          
+          variant.images = variant.images.filter(
+            img => !parsedDeletedVariantImages[vId].includes(img)
+          );
+          
+          const afterCount = variant.images.length;
+          console.log(`Variant ${vId} AFTER deletion:`, variant.images);
+          console.log(`Variant ${vId}: removed ${beforeCount - afterCount} images`);
+        }
+      });
+    } catch (e) {
+      console.log("variant delete error:", e);      
+    }
+  }
+
+  const mainImageFiles = files.filter(f => f.fieldname === 'images');
+  if (mainImageFiles.length > 0) {
+    const newMainImages = await Promise.all(
+      mainImageFiles.map(f => uploadToCloudinary(f.buffer, "kiso/products/main").then(r => r.secure_url))
+    );
+    product.images = [...product.images, ...newMainImages];
+    console.log(`Added ${newMainImages.length} new main images`);
+  }
+
+ 
+  let incomingVariants = [];
+  if (body.variantsJSON) {
+    try { 
+      incomingVariants = JSON.parse(body.variantsJSON); 
+      console.log("incomingVariants:", incomingVariants);
+    } catch(e) {
+      console.log("variantsJSON parse error:", e);
+    }
+  }
+
+  const incomingVariantIds = incomingVariants.map(v => v._id).filter(id => id);
+  console.log("incomingVariantIds:", incomingVariantIds);
+
+  product.variants = product.variants.filter(v => incomingVariantIds.includes(v._id.toString()));
+
+ 
+  const variantFiles = files.filter(f => f.fieldname.startsWith('variants['));
+  const variantUploadResult = await Promise.all(
+    variantFiles.map(async (f) => {
+      const match = f.fieldname.match(/variants\[(\d+)\]\[images\]/);
+      if(!match) return;
+      const result = await uploadToCloudinary(f.buffer, "kiso/products/variants");
+      return { idx: parseInt(match[1]), url: result.secure_url };
+    })
+  );
+  
+  const variantImageMap = {};
+  variantUploadResult.forEach(item => {
+    if(!item) return;
+    if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];
+    variantImageMap[item.idx].push(item.url);
+  });
+
+
+  incomingVariants.forEach((incVar, index) => {
+    const uploadedImages = variantImageMap[index] || [];
+    
+    if (incVar._id) {
+      const existingVariant = product.variants.find(v => v._id.toString() === incVar._id);
+      if (existingVariant) {
+        existingVariant.optionType = incVar.optionType;
+        existingVariant.optionValue = incVar.optionValue;
+        existingVariant.price = parseFloat(incVar.price) || 0;
+        existingVariant.stock = parseInt(incVar.stock, 10) || 0;
+        
+        if (uploadedImages.length > 0) {
+          existingVariant.images = [...(existingVariant.images || []), ...uploadedImages];
+          console.log(`Added ${uploadedImages.length} images to variant ${incVar._id}`);
+        }
+      }
+    } else {
+  
+      product.variants.push({
+        optionType: incVar.optionType || "",
+        optionValue: incVar.optionValue || "",
+        price: parseFloat(incVar.price) || 0,
+        stock: parseInt(incVar.stock, 10) || 0,
+        images: uploadedImages,
+      });
+      console.log("Added new variant");
+    }
+  });
+
+  console.log("Final product variants:", product.variants.map(v => ({
+    id: v._id.toString(),
+    imageCount: v.images.length
+  })));
+
+  return await product.save();
 };
