@@ -1,0 +1,44 @@
+<%# views/admin/croperModal.ejs %>
+<div id="cropeModal"
+    style="display:none; position:fixed; inset:0; z-index:9999;
+           background:rgba(0,0,0,0.8); align-items:center; justify-content:center;">
+    <div style="background:#111; border-radius:14px; padding:24px;
+                width:min(580px,95vw); display:flex; flex-direction:column; gap:16px;">
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <p style="color:#f8f9fa; font-weight:500; margin:0;">Crop Image</p>
+            <button id="cropClose" onclick="closeCrop()"
+                style="background:none; border:none; color:#a3a3a3; font-size:22px; cursor:pointer;">&times;</button>
+        </div>
+
+        <div style="max-height:420px; overflow:hidden; background:#000; border-radius:8px;">
+            <img id="cropImage" style="display:block; max-width:100%;">
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" onclick="cropper?.rotate(-90)"
+                style="padding:7px 12px; background:#1e1e1e; border:1px solid #333;
+                       color:#d4af37; border-radius:8px; cursor:pointer; font-size:12px;">↺ Rotate</button>
+            <button type="button" onclick="cropper?.rotate(90)"
+                style="padding:7px 12px; background:#1e1e1e; border:1px solid #333;
+                       color:#d4af37; border-radius:8px; cursor:pointer; font-size:12px;">↻ Rotate</button>
+            <button type="button" onclick="cropper?.zoom(0.1)"
+                style="padding:7px 12px; background:#1e1e1e; border:1px solid #333;
+                       color:#d4af37; border-radius:8px; cursor:pointer; font-size:12px;">+ Zoom</button>
+            <button type="button" onclick="cropper?.zoom(-0.1)"
+                style="padding:7px 12px; background:#1e1e1e; border:1px solid #333;
+                       color:#d4af37; border-radius:8px; cursor:pointer; font-size:12px;">− Zoom</button>
+
+            <div style="margin-left:auto; display:flex; gap:8px;">
+                <button id="cropCancel" type="button" onclick="closeCrop()"
+                    style="padding:8px 20px; background:#1e1e1e; border:1px solid #333;
+                           color:#a3a3a3; border-radius:8px; cursor:pointer; font-size:13px;">Cancel</button>
+                <button id="cropConfirm" type="button" onclick="confirmCrop()"
+                    style="padding:8px 20px; background:#d4af37; border:none;
+                           color:#0a0a0a; border-radius:8px; cursor:pointer;
+                           font-size:13px; font-weight:600;">Crop & Use</button>
+            </div>
+        </div>
+
+    </div>
+</div>

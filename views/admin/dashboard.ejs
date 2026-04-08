@@ -1,16 +1,204 @@
-
-  
-
- <div class="p-8">
-    <header class="mb-8">
-        <h1 class="text-3xl font-bold text-brand-light">Welcome back, Admin</h1>
-        <p class="text-brand-muted">Here's an overview of your store's performance.</p>
+<div class="p-4 sm:p-8 max-w-7xl mx-auto w-full font-sans transition-colors duration-300">
+    
+    <!-- Header -->
+    <header class="mb-10">
+        <h1 class="text-3xl font-bold text-kiso-text tracking-tight">Welcome back, Admin</h1>
+        <p class="text-sm text-brand-muted mt-1">Here's an overview of your store's performance.</p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-brand-bg1 p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm text-brand-muted mb-1">Total Products</p>
-            <h3 class="text-2xl font-bold text-brand-light">120</h3>
+    <!-- Stats Matrix -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <!-- Card 1 -->
+        <div class="bg-brand-bg1 p-6 rounded-2xl border border-white/10 shadow-lg shadow-black/20 flex flex-col justify-center h-[120px] hover:border-brand-accent/50 transition">
+            <p class="text-[13px] font-medium text-brand-muted mb-2 uppercase tracking-wider">Total Products</p>
+            <h3 class="text-3xl font-bold text-kiso-text">120</h3>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-brand-bg1 p-6 rounded-2xl border border-white/10 shadow-lg shadow-black/20 flex flex-col justify-center h-[120px] hover:border-brand-accent/50 transition">
+            <p class="text-[13px] font-medium text-brand-muted mb-2 uppercase tracking-wider">Total Orders</p>
+            <h3 class="text-3xl font-bold text-kiso-text">350</h3>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-brand-bg1 p-6 rounded-2xl border border-white/10 shadow-lg shadow-black/20 flex flex-col justify-center h-[120px] hover:border-brand-accent/50 transition relative overflow-hidden group">
+            <div class="absolute inset-0 bg-brand-accent/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <p class="text-[13px] font-medium text-brand-muted mb-2 uppercase tracking-wider relative z-10">Total Revenue</p>
+            <h3 class="text-3xl font-bold text-brand-accent relative z-10">$45,000</h3>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-brand-bg1 p-6 rounded-2xl border border-white/10 shadow-lg shadow-black/20 flex flex-col justify-center h-[120px] hover:border-brand-accent/50 transition">
+            <p class="text-[13px] font-medium text-brand-muted mb-2 uppercase tracking-wider">Active Customers</p>
+            <h3 class="text-3xl font-bold text-kiso-text">200</h3>
         </div>
     </div>
+
+    <!-- Analytics Section -->
+    <div class="mb-12">
+        <h2 class="text-xl font-bold text-kiso-text mb-6 tracking-tight">Analytics Overview</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Sales Overview -->
+            <div class="bg-brand-bg1 border border-white/10 p-6 rounded-2xl shadow-lg shadow-black/20">
+                <p class="text-sm text-brand-muted mb-2">Sales Overview</p>
+                <h3 class="text-3xl font-bold text-kiso-text mb-8">$45,000</h3>
+                <!-- Dummy Line Chart -->
+                <div class="h-40 w-full relative mb-4">
+                    <svg class="w-full h-full drop-shadow-md" preserveAspectRatio="none" viewBox="0 0 400 100">
+                        <defs>
+                            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#currentColor" stop-opacity="0.2"/>
+                                <stop offset="100%" stop-color="#currentColor" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,80 Q20,30 40,20 T80,40 T120,80 T160,30 T200,60 T240,20 T280,90 T320,10 T360,80 T400,30" fill="none" stroke="currentColor" class="text-brand-accent" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <!-- X Axis Labels -->
+                <div class="flex justify-between text-xs text-brand-muted px-2 uppercase font-medium tracking-wide">
+                    <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+                </div>
+            </div>
+
+            <!-- Revenue by Category -->
+            <div class="bg-brand-bg1 border border-white/10 p-6 rounded-2xl shadow-lg shadow-black/20">
+                <p class="text-sm text-brand-muted mb-2">Revenue by Category</p>
+                <h3 class="text-3xl font-bold text-kiso-text mb-8">$20,000</h3>
+                <!-- Dummy Bar Chart -->
+                <div class="h-40 w-full flex items-end justify-between gap-4 pb-2 mb-4 px-2">
+                    <div class="w-12 sm:w-16 bg-brand-bg2 border border-white/10 h-full rounded-t-lg relative group transition hover:bg-brand-accent/20 cursor-pointer">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-kiso-text opacity-0 group-hover:opacity-100 transition-opacity">$12k</div>
+                    </div>
+                    <div class="w-12 sm:w-16 bg-brand-bg2 border border-white/10 h-full rounded-t-lg relative group transition hover:bg-brand-accent/20 cursor-pointer">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-kiso-text opacity-0 group-hover:opacity-100 transition-opacity">$12k</div>
+                    </div>
+                    <div class="w-12 sm:w-16 bg-brand-bg2 border border-white/10 h-[90%] rounded-t-lg relative group transition hover:bg-brand-accent/20 cursor-pointer">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-kiso-text opacity-0 group-hover:opacity-100 transition-opacity">$10k</div>
+                    </div>
+                    <div class="w-12 sm:w-16 bg-brand-accent border border-brand-accent/50 h-[80%] rounded-t-lg relative shadow-[0_0_15px_rgba(255,255,255,0.1)] cursor-pointer">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-brand-accent">$8k</div>
+                    </div>
+                </div>
+                <!-- X Axis Labels -->
+                <div class="flex justify-between text-xs text-brand-muted font-medium uppercase tracking-wide px-2">
+                    <span class="w-12 sm:w-16 text-center">Living</span>
+                    <span class="w-12 sm:w-16 text-center">Dining</span>
+                    <span class="w-12 sm:w-16 text-center">Bedroom</span>
+                    <span class="w-12 sm:w-16 text-center">Office</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders Section -->
+    <div class="mb-12">
+        <h2 class="text-xl font-bold text-kiso-text mb-6 tracking-tight">Recent Orders</h2>
+        
+        <div class="border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-brand-bg1 border-b border-white/10 text-brand-muted uppercase tracking-wider text-[11px]">
+                        <tr>
+                            <th class="px-6 py-5 font-semibold">Order ID</th>
+                            <th class="px-6 py-5 font-semibold">Customer</th>
+                            <th class="px-6 py-5 font-semibold">Amount</th>
+                            <th class="px-6 py-5 font-semibold">Status</th>
+                            <th class="px-6 py-5 font-semibold text-right">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 bg-brand-bg2/50 backdrop-blur-sm">
+                        <!-- Order 1 -->
+                        <tr class="hover:bg-white/5 transition-colors group cursor-pointer">
+                            <td class="px-6 py-4 border-l-2 border-transparent group-hover:border-brand-accent/70 font-medium text-kiso-text">#12345</td>
+                            <td class="px-6 py-4 text-brand-light">Sophia Carter</td>
+                            <td class="px-6 py-4 font-semibold text-kiso-text">$150.00</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-semibold">Shipped</span>
+                            </td>
+                            <td class="px-6 py-4 text-right text-brand-muted font-medium">Aug 15, 2023</td>
+                        </tr>
+                        <!-- Order 2 -->
+                        <tr class="hover:bg-white/5 transition-colors group cursor-pointer">
+                            <td class="px-6 py-4 border-l-2 border-transparent group-hover:border-brand-accent/70 font-medium text-kiso-text">#12346</td>
+                            <td class="px-6 py-4 text-brand-light">Ethan Bennett</td>
+                            <td class="px-6 py-4 font-semibold text-kiso-text">$220.00</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-xs font-semibold tracking-wide">Processing</span>
+                            </td>
+                            <td class="px-6 py-4 text-right text-brand-muted font-medium">Aug 14, 2023</td>
+                        </tr>
+                        <!-- Order 3 -->
+                        <tr class="hover:bg-white/5 transition-colors group cursor-pointer">
+                            <td class="px-6 py-4 border-l-2 border-transparent group-hover:border-brand-accent/70 font-medium text-kiso-text">#12347</td>
+                            <td class="px-6 py-4 text-brand-light">Olivia Hayes</td>
+                            <td class="px-6 py-4 font-semibold text-kiso-text">$80.00</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-xs font-semibold tracking-wide">Delivered</span>
+                            </td>
+                            <td class="px-6 py-4 text-right text-brand-muted font-medium">Aug 13, 2023</td>
+                        </tr>
+                        <!-- Order 4 -->
+                        <tr class="hover:bg-white/5 transition-colors group cursor-pointer">
+                            <td class="px-6 py-4 border-l-2 border-transparent group-hover:border-brand-accent/70 font-medium text-kiso-text">#12348</td>
+                            <td class="px-6 py-4 text-brand-light">Liam Foster</td>
+                            <td class="px-6 py-4 font-semibold text-kiso-text">$300.00</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-semibold">Shipped</span>
+                            </td>
+                            <td class="px-6 py-4 text-right text-brand-muted font-medium">Aug 12, 2023</td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition-colors group cursor-pointer border-b-0">
+                            <td class="px-6 py-4 border-l-2 border-transparent group-hover:border-brand-accent/70 font-medium text-kiso-text">#12349</td>
+                            <td class="px-6 py-4 text-brand-light">Ava Mitchell</td>
+                            <td class="px-6 py-4 font-semibold text-kiso-text">$100.00</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-xs font-semibold tracking-wide">Processing</span>
+                            </td>
+                            <td class="px-6 py-4 text-right text-brand-muted font-medium">Aug 11, 2023</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Activity -->
+    <div class="mb-4">
+        <h2 class="text-xl font-bold text-kiso-text mb-6 tracking-tight">Customer Activity</h2>
+        
+        <div class="flex flex-col gap-5">
+            <!-- Activity 1 -->
+            <div class="flex items-center gap-4 bg-brand-bg1/50 p-3 rounded-xl border border-white/5 hover:bg-brand-bg1 transition-colors group max-w-2xl">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Sophia+Carter&background=18181b&color=fff&rounded=true" alt="Sophia Carter" class="w-11 h-11 rounded-full border-2 border-brand-accent/40 group-hover:border-brand-accent transition-colors object-cover" />
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-brand-bg1"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-brand-light">Sophia Carter</span>
+                    <span class="text-xs text-brand-muted mt-0.5">Signed up as a <span class="font-medium text-brand-accent/80">New Customer</span></span>
+                </div>
+            </div>
+            
+            <!-- Activity 2 -->
+            <div class="flex items-center gap-4 bg-brand-bg1/50 p-3 rounded-xl border border-white/5 hover:bg-brand-bg1 transition-colors group max-w-2xl">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Ethan+Bennett&background=18181b&color=fff&rounded=true" alt="Ethan Bennett" class="w-11 h-11 rounded-full border-2 border-white/10 group-hover:border-brand-accent transition-colors object-cover" />
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-brand-light">Ethan Bennett</span>
+                    <span class="text-xs text-brand-muted mt-0.5">Placed a new <span class="font-medium text-brand-accent/80">Order (#12346)</span></span>
+                </div>
+            </div>
+            
+            <!-- Activity 3 -->
+            <div class="flex items-center gap-4 bg-brand-bg1/50 p-3 rounded-xl border border-white/5 hover:bg-brand-bg1 transition-colors group max-w-2xl">
+                 <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Olivia+Hayes&background=18181b&color=fff&rounded=true" alt="Olivia Hayes" class="w-11 h-11 rounded-full border-2 border-white/10 group-hover:border-brand-accent transition-colors object-cover" />
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-brand-light">Olivia Hayes</span>
+                    <span class="text-xs text-brand-muted mt-0.5">Left a 5-star <span class="font-medium text-yellow-500/80">Product Review</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>

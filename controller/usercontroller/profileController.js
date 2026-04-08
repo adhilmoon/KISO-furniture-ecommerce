@@ -4,17 +4,19 @@ import {STATUS_CODES} from "../../constants/statusCodes.js";
 import {MESSAGES} from "../../constants/messages.js";
 import * as otpsender from '../../utilities/sendEmail.js'
 import bcrypt from 'bcrypt'
+import { uploadToCloudinary } from "../../config/cloudinary.js";
 
 
 export const uploadProfilePic = async (req, res) => {
     try {
-        console.log(req.file)
+        
         if(!req.file) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.PLEASE_UPLOAD_IMAGE});
         }
 
         const userId = req.session.user._id;
-        const imageUrl = req.file.path;
+        const result=await uploadToCloudinary(req.res.buffer,"kiso/users/profile");
+        const imageUrl = result.secure_url;
 
         // Database Update
         const updatedUser = await User.findByIdAndUpdate(
@@ -40,7 +42,7 @@ export const uploadProfilePic = async (req, res) => {
     }
 };
 
-//update user profile 
+
 
 export const profile_Update = async (req, res) => {
     try {
@@ -58,7 +60,7 @@ export const profile_Update = async (req, res) => {
             })
         }
 
-        if(currentUser.naem === name && currentUser.phone === phone) {
+        if(currentUser.name === name && currentUser.phone === phone) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
                 message: "No changes detected. Please update at least one field."

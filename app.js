@@ -1,17 +1,20 @@
 import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
-import expressLayouts from 'express-ejs-layouts'; 
+import expressLayouts from 'express-ejs-layouts';
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
 import * as userPages from "./controller/userController/pagesController.js";
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 import path from 'path';
 import connectDB from './config/connectDB.js';
 import './config/passport.js'
-import passport from 'passport'; 
+import passport from 'passport';
 import User from './model/User.js';
+import { fetchGlobalCategories } from './middleware/globalCategories.js';
 
+
+// your existing code below
 
 const app = express();
 
@@ -21,10 +24,11 @@ const __dirname = path.dirname(__filename)
 await connectDB()
 
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 app.use(session({
+    
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -33,30 +37,31 @@ app.use(session({
         secure: false
     }
 }));
-app.use(async(req,res,next)=>{
+app.use(async (req, res, next) => {
     try {
-        if(req.session.user){
-            const user=await User.findById(req.session.user._id)
-            res.locals.user=user||null
-        }else{
-            res.locals.user=null
+        if(req.session.user) {
+            const user = await User.findById(req.session.user._id)
+            res.locals.user = user || null
+        } else {
+            res.locals.user = null
         }
         next()
-    } catch (error) {
-         console.log('global user middilware error',error)
-         res.locals.user=null
-         next()
+    } catch(error) {
+        console.log('global user middilware error', error)
+        res.locals.user = null
+        next()
     }
 })
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(fetchGlobalCategories)
 
 
 app.set('view engine', 'ejs');
-app.set('views', './views'); 
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(expressLayouts);
-app.set('layout', 'layouts/user'); 
+app.set('layout', 'layouts/user');
 
 app.use(express.static("public"));
 
