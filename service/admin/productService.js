@@ -27,13 +27,7 @@ export const createProduct = async (body, files) => {
   }
 
 
-  const mainImageFiles = files.filter(f => f.fieldname === 'images');
-  const mainImages = await Promise.all(
-    mainImageFiles.map(f =>
-      uploadToCloudinary(f.buffer, "kiso/products/main")
-        .then(r => r.secure_url)
-    )
-  )
+ 
  
   let variantsData = [];
   if(body.variantsJSON) {
@@ -78,23 +72,29 @@ export const createProduct = async (body, files) => {
     stock: parseInt(v.stock, 10) || 0,
     images: variantImageMap[index] || [],
   }));
-
+ const sku =
+  productName.substring(0, 3).toUpperCase() +
+  "-" +
+  Math.floor(1000 + Math.random() * 9000);
   
   const newProduct = new Product({
     productName: productName.trim(),
     description: description?.trim(),
+    sku: sku,
     category,
     basePrice: parseFloat(basePrice) || 0,
     material:       material?.trim() || '',
     dimensions,
     customAttributes,
     variants,
-    images: mainImages,
     isListed: true,
   });
 
   return await newProduct.save();
 };
+
+
+
 
 export const updateProduct = async (productId, body, files) => {
   const product = await Product.findById(productId);
@@ -106,7 +106,7 @@ export const updateProduct = async (productId, body, files) => {
   product.description = description ? description.trim() : product.description;
   product.category = category || product.category;
   product.basePrice = parseFloat(basePrice) || product.basePrice;
-  product.material = material !== undefined ? material.trim() : product.material;
+
 
   product.dimensions.width = parseFloat(body['dimensions[width]']) || product.dimensions.width || 0;
   product.dimensions.depth = parseFloat(body['dimensions[depth]']) || product.dimensions.depth || 0;
@@ -122,18 +122,7 @@ export const updateProduct = async (productId, body, files) => {
   }
 
   
-  if (body.deletedImages) {
-    console.log("deletedImages raw:", body.deletedImages);
-    try {
-      const deletedImages = JSON.parse(body.deletedImages);
-      const beforeCount = product.images.length;
-      product.images = product.images.filter(img => !deletedImages.includes(img));
-      const afterCount = product.images.length;
-      console.log(`Main images: removed ${beforeCount - afterCount} images`);
-    } catch(e) {
-      console.log("deletedImages parse error:", e);
-    }
-  }
+
 
  
   if (body.deletedVariantImages) {
@@ -162,15 +151,7 @@ export const updateProduct = async (productId, body, files) => {
     }
   }
 
-  const mainImageFiles = files.filter(f => f.fieldname === 'images');
-  if (mainImageFiles.length > 0) {
-    const newMainImages = await Promise.all(
-      mainImageFiles.map(f => uploadToCloudinary(f.buffer, "kiso/products/main").then(r => r.secure_url))
-    );
-    product.images = [...product.images, ...newMainImages];
-    console.log(`Added ${newMainImages.length} new main images`);
-  }
-
+  
  
   let incomingVariants = [];
   if (body.variantsJSON) {
@@ -235,6 +216,8 @@ export const updateProduct = async (productId, body, files) => {
     }
   });
 
+
+
   console.log("Final product variants:", product.variants.map(v => ({
     id: v._id.toString(),
     imageCount: v.images.length
@@ -242,3 +225,17 @@ export const updateProduct = async (productId, body, files) => {
 
   return await product.save();
 };
+export const disableProduct = async (productId) => {
+      await Product.findByIdAndUpdate(
+           productId,
+          {isListed:false}
+      )
+  }
+  
+ export const enableProduct = async (productId) => {
+      
+      await Product.findByIdAndUpdate(
+         productId,
+          {isListed: true}
+      )
+  }

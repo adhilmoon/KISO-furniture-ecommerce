@@ -20,6 +20,8 @@ router.get('/product/add',  adminauth.isAdmin, adminPages.addProductPage);
 router.post('/product/add', adminauth.isAdmin, uploadProduct.any(), adminProduct.addProduct);
 router.get('/product/edit/:id', adminauth.isAdmin, adminPages.editProductPage);
 router.post('/product/update/:id', adminauth.isAdmin, uploadProduct.any(), adminProduct.updateProduct);
+router.patch('/product/disable/:id',adminauth.isAdmin,adminProduct.disableProduct)
+router.patch('/product/enable/:id',adminauth.isAdmin,adminProduct.enableProduct)
 
 router.get('/category/add', adminauth.isAdmin, adminPages.adminCategoryAdd_load);
 router.get('/category/edit/:id', adminauth.isAdmin, adminPages.adminCategoryEdit_load);

@@ -6,7 +6,6 @@ let cropper = null;
 
 let imageQueue = [];
 let croppedFiles = [];
-let mainCroppedFiles = [];
 let currentIndex = 0;
 let currentInput = null;
 let currentVariantId = null;
@@ -42,8 +41,8 @@ function showVariantError(variantId, field, msg) {
 }
 
 function clearVariantError(variantId, field) {
-    $(`verr-${variantId}-${field}`)?.classList.add('hidden');
-    $(`v${field.charAt(0).toUpperCase() + field.slice(1)}-${variantId}`)?.classList.remove('field-invalid');
+  $(`verr-${variantId}-${field}`)?.classList.add('hidden');
+  $(`v${field.charAt(0).toUpperCase() + field.slice(1)}-${variantId}`)?.classList.remove('field-invalid');
 }
 
 //____________________________Cropper open /close ______________________________________________________
@@ -57,10 +56,17 @@ function openCropper(file) {
   if(cropper) {cropper.destroy(); cropper = null}
   img.onload = () => {
     cropper = new Cropper(img, {
-      aspectRatio: 1,
-      viewMode: 1,
+      aspectRatio: NaN,
+      viewMode: 0,            
       autoCropArea: 0.8,
-    })
+      responsive: true,
+      zoomable: true,
+      scalable: true,
+      cropBoxResizable: true,  
+      cropBoxMovable: true,   
+      minCropBoxWidth: 50,
+      minCropBoxHeight: 50,
+    });
   }
 }
 function closeCrop() {
@@ -95,30 +101,18 @@ function confirmCrop() {
 
       if(currentVariantId !== null) {
         // Store for this variant
-        if(!variantCroppedFiles[currentVariantId]) { variantCroppedFiles[currentVariantId] = []; }
+        if(!variantCroppedFiles[currentVariantId]) {variantCroppedFiles[currentVariantId] = [];}
         croppedFiles.forEach(f => {
-            if(variantCroppedFiles[currentVariantId].length < 3) {
-                variantCroppedFiles[currentVariantId].push(f);
-            }
+          if(variantCroppedFiles[currentVariantId].length < 3) {
+            variantCroppedFiles[currentVariantId].push(f);
+          }
         });
-        
+
         const dt = new DataTransfer();
         variantCroppedFiles[currentVariantId].forEach(f => dt.items.add(f));
         currentInput.files = dt.files;
 
         renderPreviews(variantCroppedFiles[currentVariantId], `vImgPreview-${currentVariantId}`, false);
-      } else {
-
-        mainCroppedFiles = croppedFiles.slice(0, 1);
-        const dt = new DataTransfer();
-        dt.items.add(mainCroppedFiles[0]);
-        currentInput.files = dt.files;
-
-        renderPreviews(mainCroppedFiles, 'mainImgPreview', true);
-        clearError('err-images');
-        
-        const dropZone = document.getElementById('mainImageDropZone');
-        if (dropZone) dropZone.classList.add('hidden');
       }
 
       closeCrop();
@@ -128,87 +122,62 @@ function confirmCrop() {
 
 //-------------image preview--------------------
 function renderPreviews(files, containerId, large) {
-    const container = $(containerId);
-    if (!container) return;
-    container.innerHTML = '';
+  const container = $(containerId);
+  if(!container) return;
+  container.innerHTML = '';
 
-    const size = large ? 'w-full h-40 max-w-[200px]' : 'w-16 h-16';
+  const size = 'w-16 h-16';
 
-    Array.from(files).forEach((file, idx) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const thumb = document.createElement('div');
-            thumb.className = `${size} rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
-            
-            let overlayHtml = '';
-            if (containerId === 'mainImgPreview') {
-                overlayHtml = `
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3">
-                        <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1.5 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-                        <button type="button" onclick="removeMainImage()" title="Remove" class="p-1.5 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
-                    </div>
-                `;
-            } else {
-                const variantId = containerId.split('-')[1];
-                overlayHtml = `
+  Array.from(files).forEach((file, idx) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const thumb = document.createElement('div');
+      thumb.className = `${size} rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
+
+      let overlayHtml = '';
+
+      const variantId = containerId.split('-')[1];
+      overlayHtml = `
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
                         <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                         <button type="button" onclick="removeVariantImage('${variantId}', ${idx})" title="Remove" class="p-1 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
                     </div>
                 `;
-            }
 
-            thumb.innerHTML = `
+
+      thumb.innerHTML = `
                 <img src="${e.target.result}" class="w-full h-full object-cover">
                 ${overlayHtml}
             `;
-            container.appendChild(thumb);
-        };
-        reader.readAsDataURL(file);
-    });
+      container.appendChild(thumb);
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
-function removeMainImage() {
-    mainCroppedFiles = [];
-    document.getElementById('images').value = '';
-    renderPreviews([], 'mainImgPreview', true);
-    const dropZone = document.getElementById('mainImageDropZone');
-    if (dropZone) dropZone.classList.remove('hidden');
-}
+
 
 function removeVariantImage(variantId, idx) {
-    if(variantCroppedFiles[variantId]) {
-        variantCroppedFiles[variantId].splice(idx, 1);
-        renderPreviews(variantCroppedFiles[variantId], `vImgPreview-${variantId}`, false);
-        
-        const dt = new DataTransfer();
-        variantCroppedFiles[variantId].forEach(f => dt.items.add(f));
-        const input = document.getElementById(`vImgInput-${variantId}`);
-        if(input) input.files = dt.files;
-    }
+  if(variantCroppedFiles[variantId]) {
+    variantCroppedFiles[variantId].splice(idx, 1);
+    renderPreviews(variantCroppedFiles[variantId], `vImgPreview-${variantId}`, false);
+
+    const dt = new DataTransfer();
+    variantCroppedFiles[variantId].forEach(f => dt.items.add(f));
+    const input = document.getElementById(`vImgInput-${variantId}`);
+    if(input) input.files = dt.files;
+  }
 }
 
 function viewImage(src) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 z-[10000] bg-black/90 flex items-center justify-center p-4 cursor-pointer';
-    modal.innerHTML = `<img src="${src}" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl">`;
-    modal.onclick = () => modal.remove();
-    document.body.appendChild(modal);
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 z-[10000] bg-black/90 flex items-center justify-center p-4 cursor-pointer';
+  modal.innerHTML = `<img src="${src}" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl">`;
+  modal.onclick = () => modal.remove();
+  document.body.appendChild(modal);
 }
 
-//-----------Mian image handler -----------//
-function handleMainImages(input) {
-  const file = input.files[0];
-  if(!file) return;
 
-  currentInput = input;
-  currentVariantId = null;
-  imageQueue = [file];
-  croppedFiles = [];
-  currentIndex = 0;
-  openCropper(file);
-  input.value = '';
-}
 //__________variant image handler_________________________________
 
 
@@ -349,7 +318,8 @@ function addVariant() {
           <input type="text" id="vOptValue-${vc}"
             placeholder="e.g. King, Navy, Oak"
             class="field-input w-full text-sm"
-            oninput="clearVariantError(${vc},'optValue')" />
+              oninput="clearVariantError(${vc},'optValue')" />
+            <div id="vOptValueBtns-${vc}" class="flex flex-wrap gap-1.5 mt-2"></div>
           <p class="field-error hidden mt-1" id="verr-${vc}-optValue"></p>
         </div>
       </div>
@@ -422,17 +392,48 @@ function removeVariant(id) {
 }
 function setOptType(variantId, value) {
   const el = $(`vOptType-${variantId}`);
-  if(el) {el.value = value; clearVariantError(variantId, 'optType');}
+  if(el) {
+    el.value = value;
+    clearVariantError(variantId, 'optType');
+  }
+  renderValueButtons(variantId, value)
+
 }
 // variant tpe vlaue 
+function renderValueButtons(variantId, type) {
+  const container = $(`vOptValueBtns-${variantId}`)
+  if(!container) return
 
-function setOptypeValues(){
-  const existType=$('vOptType-${vc}').value.tirm()
-  switch(existType){
-    case  "Size":
-
+  container.innerHTML = '';
+  let values = [];
+  switch(type) {
+    case "Size":
+      values = ["Single", "Double", "Queen", "King"];
+      break;
+    case "Color":
+      values = ["Red", "Blue", "Black", "White"];
+      break;
+    case "Material":
+      values = ["Wood", "Metal", "Plastic"];
+      break;
+    default:
+      values = [];
   }
+  values.forEach(val => {
+    const btn = document.createElement('button')
+    btn.type = "button";
+    btn.className = "chip";
+    btn.textContent = val;
+    btn.onclick = () => {
+      const input = $(`vOptValue-${variantId}`)
+      if(input) input.value = val;
+      clearVariantError(variantId, 'optValue')
+    }
+    container.appendChild(btn)
+  })
+
 }
+
 
 function collectVariants() {
   const result = [];
@@ -485,10 +486,7 @@ function validateForm() {
       valid = false;
     }
   });
-  if(!mainCroppedFiles.length) {
-    showError('err-images', 'At least one product image is required.');
-    valid = false;
-  }
+
 
 
   document.querySelectorAll('#customAttributesContainer .attr-row').forEach(row => {
@@ -570,7 +568,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // ---------------------Text fields--------------------
       fd.append('productName', $('productName').value.trim());
       fd.append('description', $('description').value.trim());
-      fd.append('material', $('material').value.trim());
       fd.append('category', $('category').value);
       fd.append('basePrice', $('basePrice').value);
       fd.append('dimensions[width]', $('dimWidth').value || 0);
@@ -580,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fd.append('customAttributesJSON', JSON.stringify(collectCustomAttributes()));
       fd.append('variantsJSON', JSON.stringify(collectVariants()));
       // main cropped image files-fieldname "images"
-      mainCroppedFiles.forEach(f => fd.append('images', f, f.name));
+
 
       // append variant images
       const variantsList = document.querySelectorAll('#variantsContainer .variant-card');

@@ -5,10 +5,9 @@ let attrCount = 0;
 let variantCount = 0;
 let cropper = null;
 
-let deletedImages = [];
+
 let imageQueue = [];
 let croppedFiles = [];
-let mainCroppedFiles = [];
 let currentIndex = 0;
 let currentInput = null;
 let currentVariantId = null;
@@ -60,11 +59,18 @@ function openCropper(file) {
 
   if(cropper) {cropper.destroy(); cropper = null}
   img.onload = () => {
-    cropper = new Cropper(img, {
-      aspectRatio: 1,
-      viewMode: 1,
+       cropper = new Cropper(img, {
+      aspectRatio: NaN,
+      viewMode: 0,            
       autoCropArea: 0.8,
-    })
+      responsive: true,
+      zoomable: true,
+      scalable: true,
+      cropBoxResizable: true,  
+      cropBoxMovable: true,   
+      minCropBoxWidth: 50,
+      minCropBoxHeight: 50,
+    });
   }
 }
 function closeCrop() {
@@ -99,17 +105,19 @@ function confirmCrop() {
 
       if(currentVariantId !== null) {
         // Store for this variant
-        if(!variantCroppedFiles[currentVariantId]) {variantCroppedFiles[currentVariantId] = [];}
+        if(!variantCroppedFiles[currentVariantId]) {
+          variantCroppedFiles[currentVariantId] = [];
+        }
         croppedFiles.forEach(f => {
-          const existingCount=existingVariantImageCount[currentVariantId]||0;
-          const newCount =variantCroppedFiles[currentVariantId].length;
-          const total=existingCount+newCount;
-          if(total<3){
+          const existingCount = existingVariantImageCount[currentVariantId] || 0;
+          const newCount = variantCroppedFiles[currentVariantId].length;
+          const total = existingCount + newCount;
+          if(total < 3) {
             variantCroppedFiles[currentVariantId].push(f)
-          }else{
+          } else {
             showToast("Max 3 images allowed for this variant", "error")
           }
-             
+
         });
 
         const dt = new DataTransfer();
@@ -117,18 +125,6 @@ function confirmCrop() {
         currentInput.files = dt.files;
 
         renderPreviews(variantCroppedFiles[currentVariantId], `vImgPreview-${currentVariantId}`, false);
-      } else {
-
-        mainCroppedFiles = croppedFiles.slice(0, 1);
-        const dt = new DataTransfer();
-        dt.items.add(mainCroppedFiles[0]);
-        currentInput.files = dt.files;
-
-        renderPreviews(mainCroppedFiles, 'mainImgPreview', true);
-        clearError('err-images');
-
-        const dropZone = document.getElementById('mainImageDropZone');
-        if(dropZone) dropZone.classList.add('hidden');
       }
 
       closeCrop();
@@ -142,7 +138,7 @@ function renderPreviews(files, containerId, large) {
   if(!container) return;
   container.innerHTML = '';
 
-  const size = large ? 'w-full h-40 max-w-[200px]' : 'w-16 h-16';
+  const size = 'w-16 h-16';
 
   Array.from(files).forEach((file, idx) => {
     const reader = new FileReader();
@@ -151,22 +147,20 @@ function renderPreviews(files, containerId, large) {
       thumb.className = `${size} rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
 
       let overlayHtml = '';
-      if(containerId === 'mainImgPreview') {
-        overlayHtml = `
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3">
-                        <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1.5 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-                        <button type="button" onclick="removeMainImage()" title="Remove" class="p-1.5 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
-                    </div>
-                `;
-      } else {
-        const variantId = containerId.split('-')[1];
-        overlayHtml = `
+
+      const variantId = containerId.split('-')[1];
+      overlayHtml = `
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                        <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-                        <button type="button" onclick="removeVariantImage('${variantId}', ${idx})" title="Remove" class="p-1 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                        <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                        <button type="button" onclick="removeVariantImage('${variantId}', ${idx})" title="Remove" class="p-1 text-white hover:text-red-400 bg-black/50 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        </button>
                     </div>
                 `;
-      }
+
 
       thumb.innerHTML = `
                 <img src="${e.target.result}" class="w-full h-full object-cover">
@@ -178,14 +172,7 @@ function renderPreviews(files, containerId, large) {
   });
 }
 
-async function removeMainImage() {    
-  mainCroppedFiles = [];
 
-  document.getElementById('images').value = '';
-  renderPreviews([], 'mainImgPreview', true);
-  const dropZone = document.getElementById('mainImageDropZone');
-  if(dropZone) dropZone.classList.remove('hidden');
-}
 
 function removeVariantImage(variantId, idx) {
   if(variantCroppedFiles[variantId]) {
@@ -199,22 +186,10 @@ function removeVariantImage(variantId, idx) {
   }
 }
 
-function removeExistingMainImage(url, idx) {
-  deletedImages.push(url);
-  const el = document.getElementById(`existing-main-${idx}`);
-  if(el) el.remove();
 
-  // Update existingImageCount
-  const countEl = document.getElementById('existingImageCount');
-  if(countEl) countEl.value = Math.max(0, parseInt(countEl.value || '0') - 1);
-
-  if(parseInt(countEl.value) === 0 && !mainCroppedFiles.length) {
-    document.getElementById('mainImageDropZone').classList.remove('hidden');
-  }
-}
 
 function removeExistingVariantImage(url, variantId, vc, idx) {
- 
+
   if((existingVariantImageCount[variantId] || 0) > 0) {
     existingVariantImageCount[variantId]--;
   }
@@ -238,18 +213,6 @@ function viewImage(src) {
   document.body.appendChild(modal);
 }
 
-function handleMainImages(input) {
-  const file = input.files[0];
-  if(!file) return;
-
-  currentInput = input;
-  currentVariantId = null;
-  imageQueue = [file];
-  croppedFiles = [];
-  currentIndex = 0;
-  openCropper(file);
-  input.value = '';
-}
 
 
 function handleVariantImages(input, variantId) {
@@ -392,6 +355,7 @@ function addVariant() {
             placeholder="e.g. King, Navy, Oak"
             class="field-input w-full text-sm"
             oninput="clearVariantError(${vc},'optValue')" />
+             <div id="vOptValueBtns-${vc}" class="flex flex-wrap gap-1.5 mt-2"></div>
           <p class="field-error hidden mt-1" id="verr-${vc}-optValue"></p>
         </div>
       </div>
@@ -464,7 +428,44 @@ function removeVariant(id) {
 }
 function setOptType(variantId, value) {
   const el = $(`vOptType-${variantId}`);
-  if(el) {el.value = value; clearVariantError(variantId, 'optType');}
+  if(el) {el.value = value;
+     clearVariantError(variantId, 'optType');}
+     renderValueButtons(variantId, value)
+
+}
+
+function renderValueButtons(variantId, type) {
+  const container = $(`vOptValueBtns-${variantId}`)
+  if(!container) return
+
+  container.innerHTML = '';
+  let values = [];
+  switch(type) {
+    case "Size":
+      values = ["Single", "Double", "Queen", "King"];
+      break;
+    case "Color":
+      values = ["Red", "Blue", "Black", "White"];
+      break;
+    case "Material":
+       values = ["Wood", "Metal", "Plastic"];
+      break;
+    default:
+      values = [];
+  }
+  values.forEach(val => {
+    const btn = document.createElement('button')
+    btn.type = "button";
+    btn.className = "chip";
+    btn.textContent = val;
+    btn.onclick = () => {
+      const input = $(`vOptValue-${variantId}`)
+      if(input) input.value = val;
+      clearVariantError(variantId, 'optValue')
+    }
+    container.appendChild(btn)
+  })
+
 }
 
 
@@ -485,29 +486,13 @@ function collectVariants() {
 
 function populateEditData(product) {
   existingVariantImageCount = {};
-  if(product.images && product.images.length) {
-  const categoryEl=$('category');
-  if(categoryEl){
-    categoryEl.value=
-      typeof product.category==="object"
-      ?product.category._id
-      :product.category;
-  }
-    const container = document.getElementById('mainImgPreview');
-    document.getElementById('mainImageDropZone').classList.add('hidden');
-    product.images.forEach((url, idx) => {
-      const thumb = document.createElement('div');
-      thumb.id = `existing-main-${idx}`;
-      thumb.className = `w-full h-40 max-w-[200px] rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
-      thumb.innerHTML = `
-            <img src="${url}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3">
-                <button type="button" onclick="viewImage('${url}')" title="View Image" class="p-1.5 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-                <button type="button" onclick="removeExistingMainImage('${url}',${idx})" title="Remove" class="p-1.5 text-white hover:text-red-400 bg-black/50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
-            </div>
-        `;
-      if(container) container.appendChild(thumb);
-    });
+
+  const categoryEl = $('category');
+  if(categoryEl) {
+    categoryEl.value =
+      typeof product.category === "object"
+        ? product.category._id
+        : product.category;
   }
   if(product.customAttributes && product.customAttributes.length) {
     product.customAttributes.forEach(attr => {
@@ -592,11 +577,7 @@ function validateForm() {
       valid = false;
     }
   });
-  const existingImgCount = parseInt($('existingImageCount')?.value || "0");
-  if(!mainCroppedFiles.length && existingImgCount === 0) {
-    showError('err-images', 'At least one product image is required.');
-    valid = false;
-  }
+
 
 
   document.querySelectorAll('#customAttributesContainer .attr-row').forEach(row => {
@@ -685,11 +666,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const fd = new FormData();
-      console.log("fd in public/js/productAdd:", fd)
+
       // ---------------------Text fields--------------------
       fd.append('productName', $('productName').value.trim());
       fd.append('description', $('description').value.trim());
-      fd.append('material', $('material').value.trim());
+
       fd.append('category', $('category').value);
       fd.append('basePrice', $('basePrice').value);
       fd.append('dimensions[width]', $('dimWidth').value || 0);
@@ -698,10 +679,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       fd.append('customAttributesJSON', JSON.stringify(collectCustomAttributes()));
       fd.append('variantsJSON', JSON.stringify(collectVariants()));
-      fd.append('deletedImages', JSON.stringify(deletedImages));
       fd.append('deletedVariantImages', JSON.stringify(deletedVariantImages));
 
-      mainCroppedFiles.forEach(f => fd.append('images', f, f.name));
+
 
       // append variant images
       const variantsList = document.querySelectorAll('#variantsContainer .variant-card');
@@ -726,6 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         spinner?.classList.add('hidden');
       }
     } catch(err) {
+      console.error("product submition sid : ",err)
       const message = err.response?.data?.message || 'Network error. Please try again.';
       showToast(message, 'error');
       btn.disabled = false;
