@@ -1,26 +1,26 @@
 import * as productService from "../../service/admin/productService.js";
-import { STATUS_CODES } from "../../constants/statusCodes.js";
+import {STATUS_CODES} from "../../constants/statusCodes.js";
 
 
 
 export const addProduct = async (req, res) => {
   try {
-    const { productName, category, basePrice   } = req.body;
+    const {productName, category, basePrice} = req.body;
 
-   
-    if (!productName || !productName.trim()) {
+
+    if(!productName || !productName.trim()) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "Product name is required.",
       });
     }
-    if (!category) {
+    if(!category) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "Category is required.",
       });
     }
-    if (!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
+    if(!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "A valid base price is required.",
@@ -36,11 +36,11 @@ export const addProduct = async (req, res) => {
       productId: product._id,
     });
 
-  } catch (error) {
+  } catch(error) {
     console.error("addProduct error:", error);
 
     // Handle duplicate key errors (e.g. SKU if we add it back later)
-    if (error.code === 11000) {
+    if(error.code === 11000) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "A product with those details already exists.",
@@ -56,21 +56,21 @@ export const addProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const { productName, category, basePrice } = req.body;
+    const {productName, category, basePrice} = req.body;
 
-    if (!productName || !productName.trim()) {
+    if(!productName || !productName.trim()) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "Product name is required.",
       });
     }
-    if (!category) {
+    if(!category) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "Category is required.",
       });
     }
-    if (!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
+    if(!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "A valid base price is required.",
@@ -85,10 +85,10 @@ export const updateProduct = async (req, res) => {
       productId: updatedProduct._id,
     });
 
-  } catch (error) {
+  } catch(error) {
     console.error("updateProduct error:", error);
 
-    if (error.code === 11000) {
+    if(error.code === 11000) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
         message: "A product with those details already exists.",
@@ -101,3 +101,31 @@ export const updateProduct = async (req, res) => {
     });
   }
 };
+export const disableProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    await productService.disableProduct(productId)
+    return res.status(STATUS_CODES.OK).json({
+      success: true,
+      message: "success fully product disabled"
+    })
+
+
+  } catch(err) {
+     console.error("product disble side in controller",err)
+  }
+}
+export const enableProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    await productService.enableProduct(productId)
+    return res.status(STATUS_CODES.OK).json({
+      success: true,
+      message: "success fully product enabled"
+    })
+
+
+  } catch(err) {
+     console.error("product enable side in controller",err)
+  }
+}

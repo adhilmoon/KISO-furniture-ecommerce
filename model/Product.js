@@ -25,6 +25,11 @@ const productSchema = new schema({
     type: String,
     default: "",
   },
+  sku: {
+    type: String,
+    unique: true,
+    sparse: true, 
+  },
 
   // ── Dimensions (replaces the old generic `specs` Map) ───────────────────
   dimensions: {
@@ -41,10 +46,6 @@ const productSchema = new schema({
       value: { type: String, required: true },
     },
   ],
-
-  // ── Main product images ──────────────────────────────────────────────────
-  images: [{ type: String }],
-
 
   variants: [
     {
