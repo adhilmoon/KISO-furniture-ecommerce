@@ -57,13 +57,13 @@ function openCropper(file) {
   img.onload = () => {
     cropper = new Cropper(img, {
       aspectRatio: NaN,
-      viewMode: 0,            
+      viewMode: 0,
       autoCropArea: 0.8,
       responsive: true,
       zoomable: true,
       scalable: true,
-      cropBoxResizable: true,  
-      cropBoxMovable: true,   
+      cropBoxResizable: true,
+      cropBoxMovable: true,
       minCropBoxWidth: 50,
       minCropBoxHeight: 50,
     });
@@ -415,6 +415,9 @@ function renderValueButtons(variantId, type) {
       break;
     case "Material":
       values = ["Wood", "Metal", "Plastic"];
+      break;
+    case "Finish":
+      values = ["Matte", "Glossy", "Satin", "Textured"];
       break;
     default:
       values = [];

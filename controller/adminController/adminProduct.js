@@ -78,7 +78,12 @@ export const updateProduct = async (req, res) => {
     }
 
     const updatedProduct = await productService.updateProduct(productId, req.body, req.files || []);
-
+    if(!updated) {
+      return res.status(STATUS_CODES.NOT_FOUND).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
     return res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Product updated successfully.",
@@ -104,7 +109,14 @@ export const updateProduct = async (req, res) => {
 export const disableProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    await productService.disableProduct(productId)
+    const updated = await productService.disableProduct(productId);
+    if(!updated) {
+      return res.status(STATUS_CODES.NOT_FOUND).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
+
     return res.status(STATUS_CODES.OK).json({
       success: true,
       message: "success fully product disabled"
@@ -112,13 +124,19 @@ export const disableProduct = async (req, res) => {
 
 
   } catch(err) {
-     console.error("product disble side in controller",err)
+    console.error("product disble side in controller", err)
   }
 }
 export const enableProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    await productService.enableProduct(productId)
+    const updated=await productService.enableProduct(productId)
+    if(!updated){
+        return res.status(STATUS_CODES.NOT_FOUND).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
     return res.status(STATUS_CODES.OK).json({
       success: true,
       message: "success fully product enabled"
@@ -126,6 +144,6 @@ export const enableProduct = async (req, res) => {
 
 
   } catch(err) {
-     console.error("product enable side in controller",err)
+    console.error("product enable side in controller", err)
   }
 }
