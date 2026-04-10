@@ -226,16 +226,18 @@ export const updateProduct = async (productId, body, files) => {
   return await product.save();
 };
 export const disableProduct = async (productId) => {
-      await Product.findByIdAndUpdate(
+    return await Product.findByIdAndUpdate(
            productId,
-          {isListed:false}
+          {isListed:false},
+          {new:true}
       )
   }
   
  export const enableProduct = async (productId) => {
       
-      await Product.findByIdAndUpdate(
+     return await Product.findByIdAndUpdate(
          productId,
-          {isListed: true}
+          {isListed: true},
+          {new:true}
       )
   }

@@ -1,6 +1,8 @@
 import User from "../../model/User.js";
 import Address from "../../model/Address.js";
+import Product from "../../model/Product.js";
 import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
+import Category from "../../model/Category.js";
 
 
 
@@ -80,7 +82,7 @@ export const user_home = async (req, res) => {
         });
     } catch(error) {
         console.log(error);
-        res.status(500).send("Internal Server Error");
+        return res.status(500).send("Internal Server Error");
     }
 };
 
@@ -107,14 +109,14 @@ export const user_profile = async (req, res) => {
             return res.redirect('/login')
         }
         const user = await User.findById(userId)
-        res.render('user/profile', {
+        if(!user) {
+            return res.send("in Db user not fount ")
+        }
+        return res.render('user/profile', {
             user: user,
             isProfilePage: true,
             title: "My Profile"
         })
-        if(!user) {
-            return res.send("in Db user not fount ")
-        }
     } catch(error) {
         console.log(error)
         return res
@@ -158,7 +160,7 @@ export const user_address = async (req, res) => {
 
         const user = await User.findById(userId);
 
-        res.render('user/address', {
+       return res.render('user/address', {
             addresses,
             user,
             currentPage: page,
@@ -168,20 +170,70 @@ export const user_address = async (req, res) => {
         });
     } catch(error) {
         console.error(error);
+        return res.status(500).send("Internal Server Error");
     }
 };
 export const page_notfound = (req, res) => {
 
-    res.status(STATUS_CODES.NOT_FOUND).render('404', {
+   return res.status(STATUS_CODES.NOT_FOUND).render('404', {
         title: "Page Not Found - KISO"
     });
 };
-export const user_store = (req, res) => {
-    res.render('user/store', {
-        title: "Store - KISO",
-        isStorePage: true,
-        user: req.session.user || null,
-        isLoggedIn: !!req.session.user
+export const user_store = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const searchQuery = req.query.search || "";
+        const perPage = 6;
+        const skip = (page - 1) * perPage;
+        const filter = {
+            isListed:true
+        }
+
+
+        if(searchQuery) {
+            filter.productName = {$regex: searchQuery, $options: "i"}
+        }
+
+        const totalProducts = await Product.countDocuments(filter);
+        const products = await Product.find(filter)
+            .populate('category', "categoryName")
+            .skip(skip)
+            .limit(perPage)
+            .sort({createdAt: -1})
+            .lean()
+
+        products.forEach(product => {
+            if(product.variants && Array.isArray(product.variants)) {
+                product.totalQuantity = product.variants.reduce((sum, v) => {
+                    return sum + (v.stock || 0);
+                }, 0);
+            } else {
+                product.totalQuantity = 0;
+            }
+        })
+
+        if(req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({
+                success: true,
+                products,
+                totalProducts,
+                currentPage: page,
+                totalPages: Math.ceil(totalProducts / perPage)
+            });
+        }
         
-    });
+        return res.render('user/store', {
+            title: 'Store -KISO',
+            products,
+            currentPage: page,
+            totalPages: Math.ceil(totalProducts / perPage),
+            searchQuery,
+            perPage,
+            totalProducts
+        })
+
+    } catch(error) {
+        console.error("Store page error:", error);
+        return res.status(500).render('404', {title: "Error"});
+    }
 }

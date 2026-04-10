@@ -1,0 +1,97 @@
+<aside
+    class="w-full md:w-72 bg-brand-bg1 border-r border-white/5 p-6 md:sticky md:top-24 md:h-[calc(100vh-6rem)] overflow-y-auto">
+
+    <!-- 🔥 TITLE -->
+    <h2 class="text-lg font-semibold text-brand-light mb-6 tracking-wide">
+        Filters
+    </h2>
+
+    <!-- 🔹 FILTER GROUP -->
+    <div class="space-y-4">
+
+        <!-- CATEGORY -->
+        <div class="border-b border-white/5 pb-4">
+            <button onclick="toggleFilter('catFilter')"
+                class="w-full flex justify-between items-center text-sm font-medium text-brand-light">
+                Category
+                <span>+</span>
+            </button>
+
+            <div id="catFilter" class="mt-3 hidden space-y-2">
+
+            </div>
+        </div>
+
+        <!-- PRICE SLIDER -->
+        <div class="border-b border-white/5 pb-4">
+            <button onclick="toggleFilter('priceFilter')"
+                class="w-full flex justify-between items-center text-sm font-medium text-brand-light">
+                Price
+                <span>+</span>
+            </button>
+
+            <div id="priceFilter" class="mt-4 hidden">
+
+                <input type="range" min="0" max="50000" value="25000" id="priceRange" class="w-full accent-brand-accent"
+                    oninput="updatePriceLabel(this.value)">
+
+                <div class="flex justify-between text-xs text-brand-muted mt-2">
+                    <span>₹0</span>
+                    <span id="priceValue">₹25000</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- COLOR -->
+        <div class="border-b border-white/5 pb-4">
+            <button onclick="toggleFilter('colorFilter')"
+                class="w-full flex justify-between items-center text-sm font-medium text-brand-light">
+                Color
+                <span>+</span>
+            </button>
+
+            <div id="colorFilter" class="mt-3 hidden gap-2 flex-wrap">
+            </div>
+        </div>
+
+        <!-- MATERIAL -->
+        <div class="border-b border-white/5 pb-4">
+            <button onclick="toggleFilter('materialFilter')"
+                class="w-full flex justify-between items-center text-sm font-medium text-brand-light">
+                Material
+                <span>+</span>
+            </button>
+
+            <div id="materialFilter" class="mt-3 hidden space-y-2">
+
+            </div>
+        </div>
+
+        <!-- FINISH -->
+        <div class="border-b border-white/5 pb-4">
+            <button onclick="toggleFilter('finishFilter')"
+                class="w-full flex justify-between items-center text-sm font-medium text-brand-light">
+                Finish
+                <span>+</span>
+            </button>
+
+            <div id="finishFilter" class="mt-3 hidden space-y-2">
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="mt-8 space-y-3">
+        <button id="applyFiltersBtn" class="w-full bg-brand-accent text-brand-bg1 py-2 rounded-lg font-semibold">
+            Apply Filters
+        </button>ƒ
+
+        <button onclick="clearFilters()" class="w-full border border-white/10 text-brand-muted py-2 rounded-lg">
+            Clear
+        </button>
+    </div>
+
+</aside>

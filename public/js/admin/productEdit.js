@@ -59,15 +59,15 @@ function openCropper(file) {
 
   if(cropper) {cropper.destroy(); cropper = null}
   img.onload = () => {
-       cropper = new Cropper(img, {
+    cropper = new Cropper(img, {
       aspectRatio: NaN,
-      viewMode: 0,            
+      viewMode: 0,
       autoCropArea: 0.8,
       responsive: true,
       zoomable: true,
       scalable: true,
-      cropBoxResizable: true,  
-      cropBoxMovable: true,   
+      cropBoxResizable: true,
+      cropBoxMovable: true,
       minCropBoxWidth: 50,
       minCropBoxHeight: 50,
     });
@@ -428,9 +428,11 @@ function removeVariant(id) {
 }
 function setOptType(variantId, value) {
   const el = $(`vOptType-${variantId}`);
-  if(el) {el.value = value;
-     clearVariantError(variantId, 'optType');}
-     renderValueButtons(variantId, value)
+  if(el) {
+    el.value = value;
+    clearVariantError(variantId, 'optType');
+  }
+  renderValueButtons(variantId, value)
 
 }
 
@@ -448,7 +450,10 @@ function renderValueButtons(variantId, type) {
       values = ["Red", "Blue", "Black", "White"];
       break;
     case "Material":
-       values = ["Wood", "Metal", "Plastic"];
+      values = ["Wood", "Metal", "Plastic"];
+      break;
+    case "Finish":
+      values = ["Matte", "Glossy", "Satin", "Textured"];
       break;
     default:
       values = [];
@@ -706,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
         spinner?.classList.add('hidden');
       }
     } catch(err) {
-      console.error("product submition sid : ",err)
+      console.error("product submition sid : ", err)
       const message = err.response?.data?.message || 'Network error. Please try again.';
       showToast(message, 'error');
       btn.disabled = false;
