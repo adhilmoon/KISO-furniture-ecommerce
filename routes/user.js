@@ -20,7 +20,7 @@ router.use(userauth.noCache);
 router.get("/login", userauth.islogin, Pages.login_page);
 router.get("/auth/google", passport.authenticate("google", {scope: ["profile", "email"]}));
 router.get("/auth/google/callback", passport.authenticate("google", {failureRedirect: '/user/login?error=Google authentication failed',keepSessionInfo:true}), authController.googleAuthCallback);
-router.get("/", Pages.load_Home);
+
 router.get("/homepage",userauth.userauth,userauth.isUser,Pages.user_home)
 router.get("/signup", userauth.islogin, Pages.user_signup);
 
