@@ -4,6 +4,7 @@ import session from 'express-session';
 import expressLayouts from 'express-ejs-layouts';
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
+import indexRoutes from "./routes/indexRoutes.js"
 import * as userPages from "./controller/userController/pagesController.js";
 import {fileURLToPath} from 'url';
 import path from 'path';
@@ -68,7 +69,7 @@ app.use(express.static("public"));
 app.use('/admin', adminRoute)
 app.use('/user', userRoute)
 
-app.get('/', userPages.user_home);
+app.use('/', indexRoutes);
 
 const port = process.env.PORT || 4004;
 app.listen(port, () => {

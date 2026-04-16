@@ -52,9 +52,7 @@ const sampleProducts = [
         price: 65000
     }
 ];
-export const load_Home = (req, res) => {
-    res.render("user/homepage")
-}
+
 
 
 
