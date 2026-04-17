@@ -11,20 +11,7 @@
 
     <div class="space-y-5">
 
-        <!-- ── SORT ─────────────────────────────────────── -->
-        <div class="border-b border-white/5 pb-5">
-            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Sort By</p>
-            <select id="sortSelect"
-                class="w-full bg-brand-bg2 border border-white/10 text-brand-light text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-brand-accent/50 transition">
-                <option value="newest"    <%= activeFilters.sort === 'newest'     ? 'selected' : '' %>>Newest First</option>
-                <option value="oldest"    <%= activeFilters.sort === 'oldest'     ? 'selected' : '' %>>Oldest First</option>
-                <option value="price-asc" <%= activeFilters.sort === 'price-asc'  ? 'selected' : '' %>>Price: Low → High</option>
-                <option value="price-desc"<%= activeFilters.sort === 'price-desc' ? 'selected' : '' %>>Price: High → Low</option>
-                <option value="name-asc"  <%= activeFilters.sort === 'name-asc'   ? 'selected' : '' %>>Name: A → Z</option>
-                <option value="name-desc" <%= activeFilters.sort === 'name-desc'  ? 'selected' : '' %>>Name: Z → A</option>
-            </select>
-        </div>
-
+        <!-- ── SORT (Removed by request) ────────────────────────────────── -->
         <!-- ── CATEGORY ──────────────────────────────────── -->
         <div class="border-b border-white/5 pb-5">
             <button onclick="toggleFilter('catFilter')"

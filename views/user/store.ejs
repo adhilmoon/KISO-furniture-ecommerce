@@ -2,15 +2,17 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- ── Header ──────────────────────────────────────────── -->
-        <div class="mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-brand-light mb-4">Kiso Store</h1>
-            <p class="text-sm text-brand-muted flex items-center gap-2">
-                <span class="text-brand-light font-medium">Showing</span>
-                <span class="px-2 py-0.5 rounded-md bg-brand-accent/10 text-brand-accent font-semibold"><%= products.length %></span>
-                <span>of</span>
-                <span class="px-2 py-0.5 rounded-md bg-white/5 text-brand-light font-semibold"><%= totalProducts %></span>
-                <span class="text-brand-muted">products</span>
-            </p>
+        <div class="mb-4">
+            <% 
+               let pageTitle = "Kiso Store";
+               if (activeFilters.categoryId) { 
+                   const activeCat = categories.find(c => String(c._id) === activeFilters.categoryId);
+                   if (activeCat) {
+                       pageTitle = activeCat.categoryName;
+                   }
+               }
+            %>
+            <h1 class="text-4xl md:text-5xl font-bold text-brand-light mb-4"><%= pageTitle %></h1>
         </div>
 
         <!-- ── Search ──────────────────────────────────────────── -->
@@ -46,12 +48,6 @@
                     –
                     <%= activeFilters.maxPrice > 0 ? '₹' + activeFilters.maxPrice : 'Any' %>
                     <button onclick="removePriceFilter()" class="hover:text-white transition">&times;</button>
-                </span>
-            <% } %>
-            <% if (activeFilters.sort && activeFilters.sort !== 'newest') { %>
-                <span class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-brand-light text-xs font-medium">
-                    Sort: <%= activeFilters.sort.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
-                    <button onclick="removeSortFilter()" class="hover:text-white transition">&times;</button>
                 </span>
             <% } %>
         </div>
@@ -172,7 +168,6 @@
                   if (activeFilters.categoryId) qp.push(`category=${encodeURIComponent(activeFilters.categoryId)}`);
                   if (activeFilters.minPrice>0) qp.push(`minPrice=${activeFilters.minPrice}`);
                   if (activeFilters.maxPrice>0) qp.push(`maxPrice=${activeFilters.maxPrice}`);
-                  if (activeFilters.sort !== 'newest') qp.push(`sort=${activeFilters.sort}`);
                   const baseQS = qp.length ? '&' + qp.join('&') : '';
                 %>
                 <% if (totalPages > 1) { %>
@@ -242,5 +237,5 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script src="/js/user/storeManagement.js"></script>
