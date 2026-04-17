@@ -23,7 +23,7 @@ export const addCategory = async (req, res) => {
         console.log("ERROR 👉", error);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "add category facing truble"
+            message:error.message || "add category facing truble"
         })
     }
 
@@ -59,7 +59,7 @@ export const updateCategories = async (req, res) => {
     } catch(error) {
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "edit category facing truble"
+             message: error.message || "edit category facing trouble"
         })
     }
 }
