@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateCartTotals = () => {
         let subtotal = 0;
         document.querySelectorAll('.cart-item').forEach(item => {
-            const price = parseFloat(item.querySelector('.item-price').innerText);
+            const price = parseFloat(item.querySelector('.item-price').textContent);
             const qty = parseInt(item.querySelector('.qty-input').value);
             const itemTotal = price * qty;
             item.querySelector('.item-total').innerText = itemTotal;
@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateQuantity = async (itemId, newQty, inputEl) => {
         try {
-            originalValue = inputEl.value; // Store to revert if api fails
-            inputEl.value = newQty; // Optimistic update
+            originalValue = inputEl.value; 
+            inputEl.value = newQty; 
             updateCartTotals();
 
             const response = await axios.patch(`/user/cart/item/${itemId}`, { quantity: newQty });
@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Failed to update qty:', error);
-            inputEl.value = originalValue; // Revert
+            inputEl.value = originalValue; 
             updateCartTotals();
-            alert('Failed to update quantity. Please try again.');
+            showToast(error.message || 'Failed to update quantity. Please try again.', 'error');
         }
     };
 
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 rowEl.remove();
                 updateCartTotals();
                 if (document.querySelectorAll('.cart-item').length === 0) {
-                    window.location.reload(); // Reload to show empty state
+                    window.location.reload(); 
                 }
             } else {
                 throw new Error(response.data.message);
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Failed to remove item:', error);
             rowEl.style.opacity = '1';
-            alert('Failed to remove item. Please try again.');
+            showToast(error.message || 'Failed to remove item. Please try again.', 'error');
         }
     };
 
@@ -62,11 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.reload();
             }
         } catch(error) {
-            alert('Failed to clear cart. Please try again.');
+            showToast('Failed to clear cart. Please try again.', 'error');
         }
     };
 
-    // ── Bind Events ──────────────────────────────────────────────────
+   
     document.querySelectorAll('.cart-item').forEach(row => {
         const itemId = row.dataset.itemId;
         const input = row.querySelector('.qty-input');
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentObj < stock && currentObj < 5) { // Assuming max 5 per person
                 updateQuantity(itemId, currentObj + 1, input);
             } else {
-                alert(`Maximum quantity reached for this item.`);
+                showToast(`Maximum quantity reached for this item.`, 'warning');
             }
         });
 
@@ -100,4 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clearBtn) {
         clearBtn.addEventListener('click', clearCart);
     }
+
+    // Run once on load to ensure initial totals are calculated
+    updateCartTotals();
 });

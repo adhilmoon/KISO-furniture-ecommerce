@@ -187,7 +187,6 @@ export const user_store = async (req, res) => {
         const categoryId  = req.query.category || "";
         const minPrice    = parseFloat(req.query.minPrice) || 0;
         const maxPrice    = parseFloat(req.query.maxPrice) || 0;
-        const sortParam   = req.query.sort     || "newest";
 
         // ── Build filter ──────────────────────────────────────────────────
         const filter = {};
@@ -204,24 +203,13 @@ export const user_store = async (req, res) => {
             if (maxPrice > 0) filter.basePrice.$lte = maxPrice;
         }
 
-        // ── Build sort ────────────────────────────────────────────────────
-        const sortMap = {
-            newest:     { createdAt: -1 },
-            oldest:     { createdAt:  1 },
-            'price-asc':  { basePrice:  1 },
-            'price-desc': { basePrice: -1 },
-            'name-asc':   { productName: 1 },
-            'name-desc':  { productName: -1 },
-        };
-        const sortObj = sortMap[sortParam] || sortMap.newest;
-
         // ── Query ──────────────────────────────────────────────────────────
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
             .populate('category', 'categoryName')
             .skip(skip)
             .limit(perPage)
-            .sort(sortObj)
+            .sort({ createdAt: -1 })
             .lean();
 
         products.forEach(product => {
@@ -233,7 +221,7 @@ export const user_store = async (req, res) => {
         // ── Categories for sidebar ─────────────────────────────────────────
         const categories = await Category.find({}, 'categoryName _id').lean();
 
-        const activeFilters = { categoryId, minPrice, maxPrice, sort: sortParam };
+        const activeFilters = { categoryId, minPrice, maxPrice };
 
         // ── JSON response (AJAX calls from storeManagement.js) ─────────────
         if (req.xhr || req.headers.accept?.includes("application/json")) {

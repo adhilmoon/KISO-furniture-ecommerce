@@ -9,8 +9,7 @@ function getActiveParams() {
   const category = document.querySelector('input[name="categoryFilter"]:checked')?.value || '';
   const minPrice = $('minPrice')?.value.trim()     || '';
   const maxPrice = $('maxPrice')?.value.trim()     || '';
-  const sort     = $('sortSelect')?.value          || 'newest';
-  return { search, category, minPrice, maxPrice, sort };
+  return { search, category, minPrice, maxPrice };
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -25,22 +24,22 @@ async function addToCartFromStore(productId) {
     });
 
     if (response.data.success) {
-      alert('Product added to cart!');
+      showToast('Product added to cart!', 'success');
     } else {
-      alert(response.data.message || 'Error adding to cart');
+      showToast(response.data.message || 'Error adding to cart', 'error');
     }
   } catch (error) {
     if (error.response && error.response.status === 401) {
       window.location.href = '/user/login';
     } else {
       console.error(error);
-      alert('Failed to add product to cart. Please make sure you are logged in.');
+      showToast('Failed to add product to cart. Please make sure you are logged in.', 'error');
     }
   }
 }
 
 function toggleWishlist(productId) {
-  alert('Wishlist feature coming soon!');
+  showToast('Wishlist feature coming soon!', 'info');
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -53,7 +52,6 @@ function buildQueryString(params, page = 1) {
   if (params.category)   p.set('category', params.category);
   if (params.minPrice)   p.set('minPrice', params.minPrice);
   if (params.maxPrice)   p.set('maxPrice', params.maxPrice);
-  if (params.sort && params.sort !== 'newest') p.set('sort', params.sort);
   return p.toString() ? '?' + p.toString() : '';
 }
 
@@ -62,13 +60,6 @@ function buildQueryString(params, page = 1) {
 // and sidebar state all reflect the new query cleanly)
 // ─────────────────────────────────────────────────────────────────
 function applyFilters() {
-  const params = getActiveParams();
-  const qs = buildQueryString(params, 1);
-  window.location.href = '/user/store' + qs;
-}
-
-// Sort shortcut — fire immediately on change
-function applySort() {
   const params = getActiveParams();
   const qs = buildQueryString(params, 1);
   window.location.href = '/user/store' + qs;
@@ -93,11 +84,6 @@ function removePriceFilter() {
   const params = getActiveParams();
   params.minPrice = '';
   params.maxPrice = '';
-  window.location.href = '/user/store' + buildQueryString(params, 1);
-}
-function removeSortFilter() {
-  const params = getActiveParams();
-  params.sort = 'newest';
   window.location.href = '/user/store' + buildQueryString(params, 1);
 }
 
@@ -148,8 +134,8 @@ function toggleFilter(id) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Sort select — fire immediately
+// Ready
 // ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  $('sortSelect')?.addEventListener('change', applySort);
+  // Add direct DOM listener init logic here if needed
 });

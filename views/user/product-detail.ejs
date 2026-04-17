@@ -1,225 +1,290 @@
-<div class="min-h-screen bg-white pt-32 pb-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <nav class="flex text-sm text-stone-500 mb-8" aria-label="Breadcrumb">
-            <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                <li class="inline-flex items-center">
-                    <a href="/" class="hover:text-stone-900 transition">Home</a>
-                </li>
-                <li>
-                    <div class="flex items-center">
-                        <svg class="w-4 h-4 text-stone-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        <a href="/user/store" class="hover:text-stone-900 transition">Store</a>
-                    </div>
-                </li>
-                <% if (product.category) { %>
-                <li>
-                    <div class="flex items-center">
-                        <svg class="w-4 h-4 text-stone-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        <a href="/user/store?category=<%= product.category._id %>" class="hover:text-stone-900 transition"><%= product.category.categoryName %></a>
-                    </div>
-                </li>
-                <% } %>
-                <li>
-                    <div class="flex items-center">
-                        <svg class="w-4 h-4 text-stone-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        <span class="text-stone-900 ml-1 font-semibold"><%= product.productName %></span>
-                    </div>
-                </li>
-            </ol>
-        </nav>
+<div class="bg-brand-bg1 min-h-screen">
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-16">
-            <!-- Left: Images -->
-            <div class="lg:col-span-7 flex flex-col gap-6">
-                <!-- Main Image -->
-                <div id="zoom-container" class="w-full bg-stone-50 rounded-3xl overflow-hidden aspect-[4/3] lg:aspect-[4/3] border border-stone-200 relative flex items-center justify-center p-8 cursor-zoom-in group/zoom">
-                    <% 
-                    let allImages = [];
-                    if (product.variants && product.variants.length > 0) {
-                        product.variants.forEach(v => {
-                            if (v.images) allImages = allImages.concat(v.images);
-                        });
-                    } 
-                    %>
-                    <img id="main-image" src="<%= allImages.length ? allImages[0] : '/images/placeholder.png' %>" 
-                        class="max-w-full max-h-full object-contain transition-transform duration-200 pointer-events-none origin-center drop-shadow-xl mix-blend-multiply">
-                </div>
-                
-                <!-- Thumbnails Horizontal -->
-                <div class="flex gap-4 overflow-x-auto hide-scrollbar py-2" id="thumbnails-container">
-                    <% allImages.slice(0, 6).forEach((img, idx) => { %>
-                        <button class="thumbnail-btn w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden border-2 <%= idx === 0 ? 'border-teal-700 shadow-md ring-2 ring-teal-700/20' : 'border-stone-200 hover:border-stone-400' %> transition-all bg-stone-50 flex items-center justify-center" data-src="<%= img %>">
-                            <img src="<%= img %>" class="max-w-full max-h-full object-cover mix-blend-multiply">
-                        </button>
-                    <% }); %>
-                </div>
+  <div class="max-w-7xl mx-auto px-4 md:px-8 pt-28 pb-8">
+    <nav class="flex text-[11px] uppercase tracking-widest text-brand-muted/60 mb-8" aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-2">
+        <li><a href="/user/store" class="hover:text-brand-accent transition-colors">Store</a></li>
+        <% if (product.category) { %>
+          <li class="flex items-center gap-2">
+            <span>/</span>
+            <a href="/user/store?category=<%= product.category._id %>"
+              class="hover:text-brand-accent transition-colors">
+              <%= product.category.categoryName %>
+            </a>
+          </li>
+          <% } %>
+      </ol>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+
+      <!-- LEFT: Gallery -->
+      <div class="flex flex-col gap-4">
+        <% let allImages=[]; if (product.variants && product.variants.length> 0) {
+          product.variants.forEach(v => {
+          if (v.images) allImages = allImages.concat(v.images);
+          });
+          }
+          %>
+          <div
+            class="relative aspect-square md:aspect-[4/3] bg-brand-bg2 rounded-2xl overflow-hidden border border-white/5">
+            <img id="mainImage" src="<%= allImages.length ? allImages[0] : '/images/placeholder.png' %>"
+              class="w-full h-full object-cover transition-transform duration-300 cursor-zoom-in">
+            <button
+              class="absolute top-4 right-4 w-9 h-9 bg-brand-bg1/70 backdrop-blur-sm rounded-full flex items-center justify-center text-brand-muted hover:text-red-400 transition-colors"
+              id="wishlistBtn" onclick="toggleWishlist('<%= product._id %>')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Thumbnails -->
+          <div class="flex gap-3 overflow-x-auto pb-1 hide-scrollbar">
+            <% allImages.slice(0, 6).forEach((img, i)=> { %>
+              <button
+                onclick="document.getElementById('mainImage').src='<%= img %>'; document.querySelectorAll('.thumb-btn').forEach(b=>b.classList.remove('border-brand-accent')); this.classList.add('border-brand-accent')"
+                class="thumb-btn flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 <%= i === 0 ? 'border-brand-accent' : 'border-white/10 hover:border-white/30' %> bg-brand-bg2 p-1">
+                <img src="<%= img %>" alt="View <%= i+1 %>"
+                  class="w-full h-full object-cover rounded-lg opacity-80 hover:opacity-100 transition-opacity">
+              </button>
+              <% }) %>
+          </div>
+
+          <!-- Trust badges -->
+          <div class="grid grid-cols-4 gap-3 mt-4">
+            <div class="flex flex-col items-center gap-1.5 text-center">
+              <div class="w-10 h-10 bg-brand-bg2 rounded-xl flex items-center justify-center border border-white/5">
+                <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+                </svg>
+              </div>
+              <span class="text-[11px] text-brand-muted">Solid Wood</span>
             </div>
-
-            <!-- Right: Info -->
-            <div class="lg:col-span-5 flex flex-col pt-2 md:pt-6">
-                <nav class="flex text-[11px] uppercase tracking-widest text-stone-500 mb-6" aria-label="Breadcrumb">
-                    <ol class="inline-flex items-center space-x-2">
-                        <li><a href="/user/store" class="hover:text-stone-900 transition-colors">Store</a></li>
-                        <% if (product.category) { %>
-                        <li class="flex items-center gap-2">
-                            <span>/</span>
-                            <a href="/user/store?category=<%= product.category._id %>" class="hover:text-stone-900 transition-colors"><%= product.category.categoryName %></a>
-                        </li>
-                        <% } %>
-                    </ol>
-                </nav>
-
-                <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-4 tracking-tight leading-[1.1]"><%= product.productName %></h1>
-                <p class="text-3xl text-stone-900 mb-10 font-bold tracking-tight" id="product-price">
-                    ₹<%= product.variants && product.variants.length > 0 ? product.variants[0].price : product.basePrice %>
-                </p>
-
-                <!-- Variants Selection -->
-                <% if (product.variants && product.variants.length > 0) { %>
-                    <div class="mb-8">
-                        <h3 class="text-xs font-bold text-stone-500 mb-4 uppercase tracking-[0.2em]">Select Option</h3>
-                        <div class="flex flex-wrap gap-4" id="variant-selector">
-                            <% product.variants.forEach((variant, idx) => { %>
-                                <button class="variant-btn group relative w-12 h-12 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300
-                                    <%= idx === 0 ? 'border-stone-900 bg-stone-100 text-stone-900 shadow-md ring-4 ring-stone-900/10' : 'border-stone-200 text-stone-500 hover:border-stone-400 hover:bg-stone-50' %>"
-                                    data-index="<%= idx %>"
-                                    data-price="<%= variant.price %>"
-                                    data-stock="<%= variant.stock %>"
-                                    data-image="<%= variant.images && variant.images[0] ? variant.images[0] : '' %>">
-                                    <span class="truncate px-1"><%= variant.optionValue.substring(0, 3) %></span>
-                                    
-                                    <!-- Tooltip -->
-                                    <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-stone-900 text-white font-bold text-[10px] tracking-wider uppercase rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10 pointer-events-none">
-                                      <%= variant.optionValue %>
-                                    </span>
-                                </button>
-                            <% }) %>
-                        </div>
-                    </div>
-                <% } %>
-
-                <!-- BUY BOX -->
-                <div class="bg-white border border-stone-200 rounded-3xl p-6 md:p-8 mt-2 shadow-sm">
-                    <div class="mb-6 flex justify-between items-center">
-                        <span class="text-sm font-bold text-stone-700 tracking-wide">Availability</span>
-                        <div class="flex items-center gap-3">
-                            <span id="stock-status" class="text-sm font-bold px-4 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-200">
-                                In Stock
-                            </span>
-                            <span id="stock-count" class="text-xs text-stone-500 font-medium"></span>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-4 mb-2">
-                        <!-- Qty Stepper -->
-                        <div class="flex items-center justify-between border-2 border-stone-200 hover:border-stone-300 transition-colors rounded-2xl overflow-hidden bg-white w-full sm:w-36 h-14 shrink-0">
-                            <button type="button" id="qty-minus" class="w-12 h-full flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition text-lg">-</button>
-                            <input type="number" id="qty-input" value="1" min="1" class="w-full text-center bg-transparent text-stone-900 font-bold text-lg focus:outline-none" readonly>
-                            <button type="button" id="qty-plus" class="w-12 h-full flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition text-lg">+</button>
-                        </div>
-                        
-                        <!-- Submit -->
-                        <button id="add-to-cart-btn" data-product-id="<%= product._id %>"
-                            class="flex-1 h-14 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-bold text-lg tracking-wide transition-all flex items-center justify-center gap-3 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Trust Indicators -->
-                <div class="grid grid-cols-3 gap-2 md:gap-4 mt-8 pt-8 border-t border-stone-200">
-                    <div class="flex flex-col items-center justify-center text-center gap-3 group px-2">
-                        <div class="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-700 group-hover:bg-stone-100 group-hover:scale-110 transition-all duration-300">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <span class="text-[10px] uppercase tracking-[0.1em] text-stone-600 font-bold">Fast<br>Shipping</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center text-center gap-3 group px-2">
-                        <div class="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-700 group-hover:bg-stone-100 group-hover:scale-110 transition-all duration-300">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        </div>
-                        <span class="text-[10px] uppercase tracking-[0.1em] text-stone-600 font-bold">Secure<br>Payment</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center text-center gap-3 group px-2">
-                        <div class="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-700 group-hover:bg-stone-100 group-hover:scale-110 transition-all duration-300">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        </div>
-                        <span class="text-[10px] uppercase tracking-[0.1em] text-stone-600 font-bold">30-Day<br>Returns</span>
-                    </div>
-                </div>
+            <div class="flex flex-col items-center gap-1.5 text-center">
+              <div class="w-10 h-10 bg-brand-bg2 rounded-xl flex items-center justify-center border border-white/5">
+                <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+              </div>
+              <span class="text-[11px] text-brand-muted">5yr Warranty</span>
             </div>
+            <div class="flex flex-col items-center gap-1.5 text-center">
+              <div class="w-10 h-10 bg-brand-bg2 rounded-xl flex items-center justify-center border border-white/5">
+                <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                </svg>
+              </div>
+              <span class="text-[11px] text-brand-muted">Free Delivery</span>
+            </div>
+            <div class="flex flex-col items-center gap-1.5 text-center">
+              <div class="w-10 h-10 bg-brand-bg2 rounded-xl flex items-center justify-center border border-white/5">
+                <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                </svg>
+              </div>
+              <span class="text-[11px] text-brand-muted">EMI Available</span>
+            </div>
+          </div>
+      </div>
+
+      <!-- RIGHT: Product Info -->
+      <div class="flex flex-col gap-5">
+        <div>
+          <p class="text-xs font-bold tracking-[0.2em] uppercase text-brand-accent mb-2">
+            <% if (product.category) { %> KISO · <%= product.category.categoryName %>
+                <% } %>
+          </p>
+          <h1 class="text-3xl md:text-5xl font-bold text-brand-light leading-[1.1]">
+            <%= product.productName %>
+          </h1>
         </div>
 
-        <!-- Details & Specs (Below the fold) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8 lg:mt-16 pt-16 border-t border-stone-200 relative">
-            
-            <div class="lg:col-span-8 pr-0 lg:pr-16">
-                <h2 class="text-3xl font-extrabold text-stone-900 mb-8">Product Story</h2>
-                <div class="prose prose-stone prose-lg text-stone-600 leading-relaxed max-w-none prose-p:mb-6">
-                    <p><%= product.description %></p>
-                </div>
-            </div>
-
-            <div class="lg:col-span-4 bg-stone-50 rounded-3xl p-8 border border-stone-200 h-fit sticky top-32">
-                <h3 class="text-xl font-bold text-stone-900 mb-8 flex items-center gap-3">
-                    <svg class="w-6 h-6 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    Specifications
-                </h3>
-                <div class="space-y-5 text-sm">
-                    <% if (product.material) { %>
-                        <div class="flex justify-between border-b border-stone-200 pb-5">
-                            <span class="text-stone-500 tracking-wide">Material</span>
-                            <span class="text-stone-900 font-bold text-right"><%= product.material %></span>
-                        </div>
-                    <% } %>
-                    <% if (product.dimensions && (product.dimensions.width > 0)) { %>
-                        <div class="flex justify-between border-b border-stone-200 pb-5">
-                            <span class="text-stone-500 tracking-wide">Dimensions (W×H×D)</span>
-                            <span class="text-stone-900 font-bold text-right"><%= product.dimensions.width %>x<%= product.dimensions.height %>x<%= product.dimensions.depth %> cm</span>
-                        </div>
-                    <% } %>
-                    <% if (product.category) { %>
-                        <div class="flex justify-between border-b border-stone-200 pb-5">
-                            <span class="text-stone-500 tracking-wide">Category</span>
-                            <span class="text-stone-900 font-bold text-right"><%= product.category.categoryName %></span>
-                        </div>
-                    <% } %>
-                    <% if (product.customAttributes && product.customAttributes.length > 0) { %>
-                        <% product.customAttributes.forEach((attr, index) => { %>
-                            <div class="flex justify-between <%= index !== product.customAttributes.length - 1 ? 'border-b border-stone-200 pb-5' : '' %>">
-                                <span class="text-stone-500 tracking-wide"><%= attr.key %></span>
-                                <span class="text-stone-900 font-bold text-right"><%= attr.value %></span>
-                            </div>
-                        <% }) %>
-                    <% } %>
-                </div>
-            </div>
+        <!-- Rating -->
+        <div class="flex items-center gap-3">
+          <div class="flex text-brand-accent text-sm">
+            ★★★★★
+          </div>
+          <span class="text-sm font-medium text-brand-light">5.0</span>
+          <a href="#reviews"
+            class="text-sm text-brand-muted underline underline-offset-2 hover:text-brand-light transition-colors">
+            12 reviews
+          </a>
         </div>
 
-        <!-- Related Products -->
-        <% if (relatedProducts && relatedProducts.length > 0) { %>
-            <div class="border-t border-white/10 pt-16">
-                <h2 class="text-2xl font-bold text-brand-light mb-8">Related Products</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <% relatedProducts.forEach(rel => { %>
-                        <div class="bg-brand-bg2 rounded-xl overflow-hidden border border-white/5 hover:border-brand-accent/40 transition group pb-4">
-                            <a href="/user/product/<%= rel._id %>" class="block aspect-square bg-brand-bg1 relative overflow-hidden mb-4">
-                                <img src="<%= (rel.variants && rel.variants.length > 0 && rel.variants[0].images && rel.variants[0].images.length > 0) ? rel.variants[0].images[0] : '/images/placeholder.png' %>" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700">
-                            </a>
-                            <div class="px-4">
-                                <h3 class="text-lg font-semibold text-brand-light truncate mb-1"><a href="/user/product/<%= rel._id %>" class="hover:text-brand-accent transition"><%= rel.productName %></a></h3>
-                                <p class="text-brand-accent font-bold">₹<%= rel.variants && rel.variants.length > 0 ? rel.variants[0].price : rel.basePrice %></p>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            </div>
-        <% } %>
+        <!-- Price -->
+        <div class="bg-brand-bg2 rounded-2xl p-6 border border-white/5 mt-2">
+          <div class="flex items-baseline gap-3 mb-1">
+            <span class="text-4xl font-bold text-brand-light" id="product-price">₹<%= product.variants &&
+                product.variants.length> 0 ? product.variants[0].price : product.basePrice %></span>
+          </div>
+        </div>
 
+        <!-- Variants -->
+        <% if(product.variants && product.variants.length> 0) { %>
+          <div class="mt-4">
+            <p class="text-xs font-medium text-brand-muted uppercase tracking-wider mb-4">
+              Available Options
+            </p>
+            <div class="flex gap-3 flex-wrap">
+              <% product.variants.forEach((v, i)=> { %>
+                <button
+                  onclick="document.querySelectorAll('.variant-btn').forEach(b=>b.classList.replace('border-brand-accent', 'border-white/10')); this.classList.replace('border-white/10', 'border-brand-accent'); document.getElementById('product-price').innerText = '₹<%= v.price %>'; if('<%= v.images && v.images[0] ? v.images[0] : '' %>') document.getElementById('mainImage').src='<%= v.images && v.images.length > 0 ? v.images[0] : '/images/placeholder.png' %>';"
+                  class="variant-btn flex flex-col items-center gap-2 border-2 rounded-xl p-2 transition-all <%= i === 0 ? 'border-brand-accent' : 'border-white/10 hover:border-white/30' %>">
+                  <div class="w-16 h-16 rounded-lg overflow-hidden bg-brand-bg1 p-1">
+                    <img src="<%= v.images && v.images[0] ? v.images[0] : '/images/placeholder.png' %>"
+                      alt="<%= v.optionValue %>" class="w-full h-full object-cover rounded-md">
+                  </div>
+                  <span class="text-[11px] text-brand-muted font-bold truncate px-1">
+                    <%= v.optionValue %>
+                  </span>
+                </button>
+                <% }) %>
+            </div>
+          </div>
+          <% } %>
+
+            <!-- Quantity -->
+            <div class="flex items-center gap-4 mt-4">
+              <div class="flex items-center bg-brand-bg2 border border-white/10 rounded-xl overflow-hidden h-14 w-36">
+                <button type="button"
+                  onclick="let q=document.getElementById('qtyDisplay'); if(parseInt(q.innerText)>1) q.innerText=parseInt(q.innerText)-1;"
+                  class="w-12 h-full flex items-center justify-center text-brand-light hover:bg-white/5 transition-colors text-xl">−</button>
+                <span id="qtyDisplay"
+                  class="flex-1 text-center text-lg font-bold border-x border-white/10 h-full flex items-center justify-center text-brand-light">1</span>
+                <button type="button"
+                  onclick="let q=document.getElementById('qtyDisplay'); q.innerText=parseInt(q.innerText)+1;"
+                  class="w-12 h-full flex items-center justify-center text-brand-light hover:bg-white/5 transition-colors text-xl">+</button>
+              </div>
+              <span
+                class="text-sm px-4 py-1.5 bg-green-500/10 border border-green-500/20 text-green-400 font-bold rounded-full">●
+                In Stock</span>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="flex gap-4 mt-2">
+              <button type="button" id="add-to-cart-btn" data-product-id="<%= product._id %>"
+                class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-accent bg-brand-accent/10 border border-brand-accent rounded-xl hover:bg-brand-accent hover:text-brand-bg1 transition-all">
+                Add to Cart
+              </button>
+              <button type="button"
+                class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-bg1 bg-brand-accent rounded-xl hover:opacity-90 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                Buy Now
+              </button>
+            </div>
+
+            <!-- Offer Cards -->
+            <div class="mt-4">
+              <p class="text-xs font-medium text-brand-muted uppercase tracking-wider mb-3">Save extra with offers</p>
+              <div class="grid grid-cols-3 gap-3">
+                <div class="bg-brand-bg2 border border-white/5 rounded-xl p-3 md:p-4 text-center">
+                  <p class="text-xs font-semibold text-brand-accent mb-1">Store Discount</p>
+                  <p class="text-[10px] text-brand-muted/80 leading-tight">Get instant extra discount</p>
+                </div>
+                <div class="bg-brand-bg2 border border-white/5 rounded-xl p-3 md:p-4 text-center">
+                  <p class="text-xs font-semibold text-brand-accent mb-1">5% Instant</p>
+                  <p class="text-[10px] text-brand-muted/80 leading-tight">Credit & Debit EMI</p>
+                </div>
+                <div class="bg-brand-bg2 border border-white/5 rounded-xl p-3 md:p-4 text-center">
+                  <p class="text-xs font-semibold text-brand-accent mb-1">No Cost EMI</p>
+                  <p class="text-[10px] text-brand-muted/80 leading-tight">From ₹2,791/month</p>
+                </div>
+              </div>
+            </div>
+      </div>
     </div>
+
+    <!-- TABS: Description / Specs / Reviews -->
+    <div class="mt-20">
+      <div class="flex border-b border-white/10" id="tabBar">
+        <button
+          class="px-8 py-4 text-sm font-bold tracking-widest uppercase text-brand-accent border-b-2 border-brand-accent -mb-px">Description</button>
+        <button
+          class="px-8 py-4 text-sm font-bold tracking-widest uppercase text-brand-muted hover:text-brand-light transition-colors border-b-2 border-transparent -mb-px">Specifications</button>
+      </div>
+
+      <div class="py-10 text-brand-muted leading-relaxed text-sm max-w-4xl prose prose-invert">
+        <%- product.description %>
+      </div>
+
+      <div class="py-10 text-brand-muted max-w-4xl border-t border-white/5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <% if (product.material) { %>
+            <div class="flex border-b border-white/5 py-3">
+              <span class="w-48 text-sm text-brand-muted font-bold tracking-wide">Material</span>
+              <span class="text-sm text-brand-light">
+                <%= product.material %>
+              </span>
+            </div>
+            <% } %>
+              <% if (product.dimensions && product.dimensions.width) { %>
+                <div class="flex border-b border-white/5 py-3">
+                  <span class="w-48 text-sm text-brand-muted font-bold tracking-wide">Dimensions (cm)</span>
+                  <span class="text-sm text-brand-light">
+                    <%= product.dimensions.width %>W x <%= product.dimensions.height %>H x <%= product.dimensions.depth
+                          %>D
+                  </span>
+                </div>
+                <% } %>
+                  <% if (product.customAttributes && product.customAttributes.length> 0) { %>
+                    <% product.customAttributes.forEach((attr)=> { %>
+                      <div class="flex border-b border-white/5 py-3">
+                        <span class="w-48 text-sm text-brand-muted font-bold tracking-wide">
+                          <%= attr.key %>
+                        </span>
+                        <span class="text-sm text-brand-light">
+                          <%= attr.value %>
+                        </span>
+                      </div>
+                      <% }) %>
+                        <% } %>
+        </div>
+      </div>
+    </div>
+    <!-- Related Products -->
+    <div class="mt-20">
+      <h2 class="text-2xl font-bold text-brand-light mb-6">
+        Related Products
+      </h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <% if (relatedProducts && relatedProducts.length> 0) { %>
+          <% relatedProducts.forEach(p=> { %>
+            <div class="bg-brand-bg2 rounded-xl p-4 border border-white/5">
+
+              <img src="<%= p.variants && p.variants[0]?.images[0] %>" class="w-full h-40 object-cover rounded-lg mb-3">
+
+              <h3 class="text-sm text-brand-light font-semibold">
+                <%= p.productName %>
+              </h3>
+
+              <p class="text-brand-accent font-bold mt-1">
+                ₹<%= p.variants && p.variants[0]?.price %>
+              </p>
+
+              <a href="/user/product/<%= p._id %>" class="block mt-3 text-xs text-brand-accent hover:underline">
+                View Product →
+              </a>
+
+            </div>
+            <% }) %>
+              <% } else { %>
+                <p class="text-brand-muted">No related products found</p>
+                <% } %>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/js/user/productDetail.js"></script>

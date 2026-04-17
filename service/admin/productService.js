@@ -6,7 +6,7 @@ export const createProduct = async (body, files) => {
 
   const {productName, description, category, basePrice, material} = body;
 
- 
+
   const dimensions = {
     width: parseFloat(body['dimensions[width]'] || 0) || 0,
     depth: parseFloat(body['dimensions[depth]'] || 0) || 0,
@@ -19,7 +19,7 @@ export const createProduct = async (body, files) => {
   if(body.customAttributesJSON) {
     try {
       const parsed = JSON.parse(body.customAttributesJSON);
-     
+
       customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
     } catch(e) {
       customAttributes = [];
@@ -27,8 +27,8 @@ export const createProduct = async (body, files) => {
   }
 
 
- 
- 
+
+
   let variantsData = [];
   if(body.variantsJSON) {
     try {
@@ -38,7 +38,7 @@ export const createProduct = async (body, files) => {
     }
   }
 
-  
+
 
   const variantFiles = files.filter(f => f.fieldname.startsWith('variants['));
   const variantUploadResult = await Promise.all(
@@ -58,7 +58,9 @@ export const createProduct = async (body, files) => {
     })
   );
   const variantImageMap = {};
-
+  if(!variantUploadResult || variantUploadResult.length === 0) {
+    throw new Error("At least one variant image is required");
+  }
   variantUploadResult.forEach(item => {
     if(!item) return;
     if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];
@@ -72,18 +74,23 @@ export const createProduct = async (body, files) => {
     stock: parseInt(v.stock, 10) || 0,
     images: variantImageMap[index] || [],
   }));
- const sku =
-  productName.substring(0, 3).toUpperCase() +
-  "-" +
-  Math.floor(1000 + Math.random() * 9000);
-  
+  variants.forEach((v, i) => {
+    if(!v.images || v.images.length === 0) {
+      throw new Error(`Variant #${i + 1} must have at least one image`);
+    }
+  });
+  const sku =
+    productName.substring(0, 3).toUpperCase() +
+    "-" +
+    Math.floor(1000 + Math.random() * 9000);
+
   const newProduct = new Product({
     productName: productName.trim(),
     description: description?.trim(),
     sku: sku,
     category,
     basePrice: parseFloat(basePrice) || 0,
-    material:       material?.trim() || '',
+    material: material?.trim() || '',
     dimensions,
     customAttributes,
     variants,
@@ -98,9 +105,9 @@ export const createProduct = async (body, files) => {
 
 export const updateProduct = async (productId, body, files) => {
   const product = await Product.findById(productId);
-  if (!product) throw new Error("Product not found");
+  if(!product) throw new Error("Product not found");
 
-  const { productName, description, category, basePrice, material } = body;
+  const {productName, description, category, basePrice, material} = body;
 
   product.productName = productName.trim() || product.productName;
   product.description = description ? description.trim() : product.description;
@@ -112,7 +119,7 @@ export const updateProduct = async (productId, body, files) => {
   product.dimensions.depth = parseFloat(body['dimensions[depth]']) || product.dimensions.depth || 0;
   product.dimensions.height = parseFloat(body['dimensions[height]']) || product.dimensions.height || 0;
 
-  if (body.customAttributesJSON) {
+  if(body.customAttributesJSON) {
     try {
       const parsed = JSON.parse(body.customAttributesJSON);
       product.customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
@@ -121,42 +128,42 @@ export const updateProduct = async (productId, body, files) => {
     }
   }
 
-  
 
 
- 
-  if (body.deletedVariantImages) {
+
+
+  if(body.deletedVariantImages) {
     console.log("deletedVariantImages raw:", body.deletedVariantImages);
     try {
       const parsedDeletedVariantImages = JSON.parse(body.deletedVariantImages);
       console.log("parsedDeletedVariantImages:", parsedDeletedVariantImages);
-      
+
       product.variants.forEach(variant => {
         const vId = variant._id.toString();
-        if (parsedDeletedVariantImages[vId] && Array.isArray(parsedDeletedVariantImages[vId])) {
+        if(parsedDeletedVariantImages[vId] && Array.isArray(parsedDeletedVariantImages[vId])) {
           const beforeCount = variant.images.length;
           console.log(`Variant ${vId} BEFORE deletion:`, variant.images);
-          
+
           variant.images = variant.images.filter(
             img => !parsedDeletedVariantImages[vId].includes(img)
           );
-          
+
           const afterCount = variant.images.length;
           console.log(`Variant ${vId} AFTER deletion:`, variant.images);
           console.log(`Variant ${vId}: removed ${beforeCount - afterCount} images`);
         }
       });
-    } catch (e) {
-      console.log("variant delete error:", e);      
+    } catch(e) {
+      console.log("variant delete error:", e);
     }
   }
 
-  
- 
+
+
   let incomingVariants = [];
-  if (body.variantsJSON) {
-    try { 
-      incomingVariants = JSON.parse(body.variantsJSON); 
+  if(body.variantsJSON) {
+    try {
+      incomingVariants = JSON.parse(body.variantsJSON);
       console.log("incomingVariants:", incomingVariants);
     } catch(e) {
       console.log("variantsJSON parse error:", e);
@@ -168,18 +175,21 @@ export const updateProduct = async (productId, body, files) => {
 
   product.variants = product.variants.filter(v => incomingVariantIds.includes(v._id.toString()));
 
- 
+
   const variantFiles = files.filter(f => f.fieldname.startsWith('variants['));
   const variantUploadResult = await Promise.all(
     variantFiles.map(async (f) => {
       const match = f.fieldname.match(/variants\[(\d+)\]\[images\]/);
       if(!match) return;
       const result = await uploadToCloudinary(f.buffer, "kiso/products/variants");
-      return { idx: parseInt(match[1]), url: result.secure_url };
+      return {idx: parseInt(match[1]), url: result.secure_url};
     })
   );
-  
   const variantImageMap = {};
+  if(!variantUploadResult || variantUploadResult.length === 0) {
+    throw new Error("At least one variant image is required");
+  }
+
   variantUploadResult.forEach(item => {
     if(!item) return;
     if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];
@@ -189,22 +199,22 @@ export const updateProduct = async (productId, body, files) => {
 
   incomingVariants.forEach((incVar, index) => {
     const uploadedImages = variantImageMap[index] || [];
-    
-    if (incVar._id) {
+
+    if(incVar._id) {
       const existingVariant = product.variants.find(v => v._id.toString() === incVar._id);
-      if (existingVariant) {
+      if(existingVariant) {
         existingVariant.optionType = incVar.optionType;
         existingVariant.optionValue = incVar.optionValue;
         existingVariant.price = parseFloat(incVar.price) || 0;
         existingVariant.stock = parseInt(incVar.stock, 10) || 0;
-        
-        if (uploadedImages.length > 0) {
+
+        if(uploadedImages.length > 0) {
           existingVariant.images = [...(existingVariant.images || []), ...uploadedImages];
           console.log(`Added ${uploadedImages.length} images to variant ${incVar._id}`);
         }
       }
     } else {
-  
+
       product.variants.push({
         optionType: incVar.optionType || "",
         optionValue: incVar.optionValue || "",
@@ -226,18 +236,18 @@ export const updateProduct = async (productId, body, files) => {
   return await product.save();
 };
 export const disableProduct = async (productId) => {
-    return await Product.findByIdAndUpdate(
-           productId,
-          {isListed:false},
-          {new:true}
-      )
-  }
-  
- export const enableProduct = async (productId) => {
-      
-     return await Product.findByIdAndUpdate(
-         productId,
-          {isListed: true},
-          {new:true}
-      )
-  }
+  return await Product.findByIdAndUpdate(
+    productId,
+    {isListed: false},
+    {new: true}
+  )
+}
+
+export const enableProduct = async (productId) => {
+
+  return await Product.findByIdAndUpdate(
+    productId,
+    {isListed: true},
+    {new: true}
+  )
+}

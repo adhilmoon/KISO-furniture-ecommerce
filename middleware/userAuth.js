@@ -6,6 +6,9 @@ export const userauth = async (req, res, next) => {
 
   try {
     if(!req.session.user) {
+      if (req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+          return res.status(401).json({ success: false, message: "Unauthorized: Please login." });
+      }
       return res.redirect("/user/login");
     }
 
@@ -15,6 +18,10 @@ export const userauth = async (req, res, next) => {
       req.session.destroy((err) => {
         if(err) console.error("Session destroy error:", err);
       });
+
+      if (req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+          return res.status(403).json({ success: false, message: "Your account is blocked." });
+      }
 
       return res.redirect(
         "/user/login?status=blocked&message=Your+account+has+been+blocked"
@@ -47,11 +54,13 @@ export const islogin = (req, res, next) => {
 
 export const isUser = (req, res, next) => {
   try {
-    if(req.session.user ) {
-      return next();
+    if(!req.session.user) {
+      if (req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+          return res.status(401).json({ success: false, message: "Unauthorized: Please login." });
+      }
+      return res.redirect("/user/login");
     }
-
-    return res.redirect("/user/login");
+    return next();
   } catch(error) {
     console.error("isUser middleware error:", error);
     res.status(500).send("Internal Server Error");

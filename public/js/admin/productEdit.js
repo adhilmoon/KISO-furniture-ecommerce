@@ -138,7 +138,7 @@ function renderPreviews(files, containerId, large, variantId) {
   const container = $(containerId);
   if(!container) return;
 
-  
+
   Array.from(container.children).forEach(child => {
     if(!child.id || !child.id.startsWith('existing-variant-')) {
       child.remove();
@@ -663,7 +663,7 @@ function validateForm() {
     const optValue = $(`vOptValue-${id}`)?.value.trim();
     const price = parseFloat($(`vPrice-${id}`)?.value);
     const stock = parseInt($(`vStock-${id}`)?.value, 10);
-
+    const images = variantCroppedFiles[id] || []
     if(!optType) {showVariantError(id, 'optType', 'Option type is required (e.g. Size, Color).'); valid = false;}
     else {clearVariantError(id, 'optType');}
 
@@ -675,6 +675,11 @@ function validateForm() {
 
     if(isNaN(stock) || stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
     else {clearVariantError(id, 'stock');}
+
+    if(images.length === 0) {
+      showToast(`Variant #${id} must have at least 1 image`, 'error');
+      valid = false;
+    }
   });
 
   if(!valid) {

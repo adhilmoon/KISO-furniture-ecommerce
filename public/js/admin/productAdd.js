@@ -186,7 +186,7 @@ function handleVariantImages(input, variantId) {
   const files = Array.from(input.files);
   if(!files.length) return;
   const existingCount = existingVariantImageCount[variantId] || 0;
-  
+
   const newCount = variantCroppedFiles[variantId]?.length || 0;
   const currentCount = variantCroppedFiles[variantId] ? variantCroppedFiles[variantId].length : 0;
   if(currentCount + files.length > 3) {
@@ -208,14 +208,14 @@ function handleVariantImages(input, variantId) {
 
 
 function addCustomAttribute() {
-  if (attrCount > 0) {
+  if(attrCount > 0) {
     const rows = document.querySelectorAll('#customAttributesContainer .attr-row');
     const lastRow = rows[rows.length - 1];
-    if (lastRow) {
-      const id  = lastRow.dataset.id;
+    if(lastRow) {
+      const id = lastRow.dataset.id;
       const key = $(`attr-key-${id}`)?.value.trim();
       const val = $(`attr-val-${id}`)?.value.trim();
-      if (!key || !val) {
+      if(!key || !val) {
         showToast('Please fill in both name and value for the current attribute.', 'info');
         return;
       }
@@ -224,17 +224,17 @@ function addCustomAttribute() {
 
   attrCount++;
   const container = $('customAttributesContainer');
-  const emptyEl   = $('customAttrEmpty');
+  const emptyEl = $('customAttrEmpty');
   const headerRow = $('attrHeaderRow');
 
   emptyEl?.classList.add('hidden');
   headerRow?.classList.remove('hidden');
 
-  const id  = attrCount;
+  const id = attrCount;
   const row = document.createElement('div');
   row.dataset.id = id;
-  row.className  = 'attr-row grid grid-cols-[1fr_1fr_auto] gap-3 items-start animate-slide-in';
-  row.innerHTML  = `
+  row.className = 'attr-row grid grid-cols-[1fr_1fr_auto] gap-3 items-start animate-slide-in';
+  row.innerHTML = `
     <div>
       <input type="text" id="attr-key-${id}" placeholder="Name  (e.g. Seat Height)"
         class="field-input w-full text-sm"
@@ -280,26 +280,26 @@ function collectCustomAttributes() {
 
 
 function addVariant() {
-   const container = $('variantsContainer');
+  const container = $('variantsContainer');
   const existingCards = container.querySelectorAll('.variant-card');
 
-  if (existingCards.length > 0) {
+  if(existingCards.length > 0) {
     const lastCard = existingCards[existingCards.length - 1];
     const lastId = lastCard.dataset.id;
-    const optType  = $(`vOptType-${lastId}`)?.value.trim();
+    const optType = $(`vOptType-${lastId}`)?.value.trim();
     const optValue = $(`vOptValue-${lastId}`)?.value.trim();   // ← was vOpValue (missing 't')
-    const newImages    = variantCroppedFiles[lastId] || [];
+    const newImages = variantCroppedFiles[lastId] || [];
     const existingCount = existingVariantImageCount[lastId] || 0;
-    const totalImages  = newImages.length + existingCount;
+    const totalImages = newImages.length + existingCount;
 
-    if (!optType || !optValue || totalImages === 0) {
+    if(!optType || !optValue || totalImages === 0) {
       showToast("Please complete the current variant (Type, Value, and at least 1 image) before adding another.", "error");
       return;
     }
   }
   variantCount++;
   const vc = variantCount;
- 
+
   $('variantEmpty').classList.add('hidden');
 
 
@@ -395,7 +395,7 @@ function addVariant() {
       class="hidden"
       onchange="handleVariantImages(this, '${vc}')"
 />
-   <div id="vImgPreview-${vc}" class="flex flex-wrap gap-2 mt-2"></div>
+  
         <label for="vImgInput-${vc}"
           class="flex items-center gap-3 border border-dashed border-white/10 hover:border-brand-accent/30 rounded-xl px-4 py-3 cursor-pointer transition group">
           <svg class="w-6 h-6 shrink-0 text-white/20 group-hover:text-brand-accent/40 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -560,6 +560,8 @@ function validateForm() {
     const price = parseFloat($(`vPrice-${id}`)?.value);
     const stock = parseInt($(`vStock-${id}`)?.value, 10);
 
+     const images = variantCroppedFiles[id] || [];
+
     if(!optType) {showVariantError(id, 'optType', 'Option type is required (e.g. Size, Color).'); valid = false;}
     else {clearVariantError(id, 'optType');}
 
@@ -571,6 +573,10 @@ function validateForm() {
 
     if(isNaN(stock) || stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
     else {clearVariantError(id, 'stock');}
+    if(images.length === 0) {
+      showToast(`Variant #${id} must have at least 1 image`, 'error');
+      valid = false;
+    }
   });
 
   if(!valid) {
