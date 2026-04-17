@@ -1,0 +1,225 @@
+<div class="min-h-screen bg-white pt-32 pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <nav class="flex text-sm text-stone-500 mb-8" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="/" class="hover:text-stone-900 transition">Home</a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 text-stone-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <a href="/user/store" class="hover:text-stone-900 transition">Store</a>
+                    </div>
+                </li>
+                <% if (product.category) { %>
+                <li>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 text-stone-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <a href="/user/store?category=<%= product.category._id %>" class="hover:text-stone-900 transition"><%= product.category.categoryName %></a>
+                    </div>
+                </li>
+                <% } %>
+                <li>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 text-stone-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <span class="text-stone-900 ml-1 font-semibold"><%= product.productName %></span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-16">
+            <!-- Left: Images -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                <!-- Main Image -->
+                <div id="zoom-container" class="w-full bg-stone-50 rounded-3xl overflow-hidden aspect-[4/3] lg:aspect-[4/3] border border-stone-200 relative flex items-center justify-center p-8 cursor-zoom-in group/zoom">
+                    <% 
+                    let allImages = [];
+                    if (product.variants && product.variants.length > 0) {
+                        product.variants.forEach(v => {
+                            if (v.images) allImages = allImages.concat(v.images);
+                        });
+                    } 
+                    %>
+                    <img id="main-image" src="<%= allImages.length ? allImages[0] : '/images/placeholder.png' %>" 
+                        class="max-w-full max-h-full object-contain transition-transform duration-200 pointer-events-none origin-center drop-shadow-xl mix-blend-multiply">
+                </div>
+                
+                <!-- Thumbnails Horizontal -->
+                <div class="flex gap-4 overflow-x-auto hide-scrollbar py-2" id="thumbnails-container">
+                    <% allImages.slice(0, 6).forEach((img, idx) => { %>
+                        <button class="thumbnail-btn w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden border-2 <%= idx === 0 ? 'border-teal-700 shadow-md ring-2 ring-teal-700/20' : 'border-stone-200 hover:border-stone-400' %> transition-all bg-stone-50 flex items-center justify-center" data-src="<%= img %>">
+                            <img src="<%= img %>" class="max-w-full max-h-full object-cover mix-blend-multiply">
+                        </button>
+                    <% }); %>
+                </div>
+            </div>
+
+            <!-- Right: Info -->
+            <div class="lg:col-span-5 flex flex-col pt-2 md:pt-6">
+                <nav class="flex text-[11px] uppercase tracking-widest text-stone-500 mb-6" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-2">
+                        <li><a href="/user/store" class="hover:text-stone-900 transition-colors">Store</a></li>
+                        <% if (product.category) { %>
+                        <li class="flex items-center gap-2">
+                            <span>/</span>
+                            <a href="/user/store?category=<%= product.category._id %>" class="hover:text-stone-900 transition-colors"><%= product.category.categoryName %></a>
+                        </li>
+                        <% } %>
+                    </ol>
+                </nav>
+
+                <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-4 tracking-tight leading-[1.1]"><%= product.productName %></h1>
+                <p class="text-3xl text-stone-900 mb-10 font-bold tracking-tight" id="product-price">
+                    ₹<%= product.variants && product.variants.length > 0 ? product.variants[0].price : product.basePrice %>
+                </p>
+
+                <!-- Variants Selection -->
+                <% if (product.variants && product.variants.length > 0) { %>
+                    <div class="mb-8">
+                        <h3 class="text-xs font-bold text-stone-500 mb-4 uppercase tracking-[0.2em]">Select Option</h3>
+                        <div class="flex flex-wrap gap-4" id="variant-selector">
+                            <% product.variants.forEach((variant, idx) => { %>
+                                <button class="variant-btn group relative w-12 h-12 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300
+                                    <%= idx === 0 ? 'border-stone-900 bg-stone-100 text-stone-900 shadow-md ring-4 ring-stone-900/10' : 'border-stone-200 text-stone-500 hover:border-stone-400 hover:bg-stone-50' %>"
+                                    data-index="<%= idx %>"
+                                    data-price="<%= variant.price %>"
+                                    data-stock="<%= variant.stock %>"
+                                    data-image="<%= variant.images && variant.images[0] ? variant.images[0] : '' %>">
+                                    <span class="truncate px-1"><%= variant.optionValue.substring(0, 3) %></span>
+                                    
+                                    <!-- Tooltip -->
+                                    <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-stone-900 text-white font-bold text-[10px] tracking-wider uppercase rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10 pointer-events-none">
+                                      <%= variant.optionValue %>
+                                    </span>
+                                </button>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- BUY BOX -->
+                <div class="bg-white border border-stone-200 rounded-3xl p-6 md:p-8 mt-2 shadow-sm">
+                    <div class="mb-6 flex justify-between items-center">
+                        <span class="text-sm font-bold text-stone-700 tracking-wide">Availability</span>
+                        <div class="flex items-center gap-3">
+                            <span id="stock-status" class="text-sm font-bold px-4 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-200">
+                                In Stock
+                            </span>
+                            <span id="stock-count" class="text-xs text-stone-500 font-medium"></span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 mb-2">
+                        <!-- Qty Stepper -->
+                        <div class="flex items-center justify-between border-2 border-stone-200 hover:border-stone-300 transition-colors rounded-2xl overflow-hidden bg-white w-full sm:w-36 h-14 shrink-0">
+                            <button type="button" id="qty-minus" class="w-12 h-full flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition text-lg">-</button>
+                            <input type="number" id="qty-input" value="1" min="1" class="w-full text-center bg-transparent text-stone-900 font-bold text-lg focus:outline-none" readonly>
+                            <button type="button" id="qty-plus" class="w-12 h-full flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition text-lg">+</button>
+                        </div>
+                        
+                        <!-- Submit -->
+                        <button id="add-to-cart-btn" data-product-id="<%= product._id %>"
+                            class="flex-1 h-14 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-bold text-lg tracking-wide transition-all flex items-center justify-center gap-3 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div class="grid grid-cols-3 gap-2 md:gap-4 mt-8 pt-8 border-t border-stone-200">
+                    <div class="flex flex-col items-center justify-center text-center gap-3 group px-2">
+                        <div class="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-700 group-hover:bg-stone-100 group-hover:scale-110 transition-all duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.1em] text-stone-600 font-bold">Fast<br>Shipping</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center text-center gap-3 group px-2">
+                        <div class="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-700 group-hover:bg-stone-100 group-hover:scale-110 transition-all duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.1em] text-stone-600 font-bold">Secure<br>Payment</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center text-center gap-3 group px-2">
+                        <div class="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-700 group-hover:bg-stone-100 group-hover:scale-110 transition-all duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.1em] text-stone-600 font-bold">30-Day<br>Returns</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details & Specs (Below the fold) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8 lg:mt-16 pt-16 border-t border-stone-200 relative">
+            
+            <div class="lg:col-span-8 pr-0 lg:pr-16">
+                <h2 class="text-3xl font-extrabold text-stone-900 mb-8">Product Story</h2>
+                <div class="prose prose-stone prose-lg text-stone-600 leading-relaxed max-w-none prose-p:mb-6">
+                    <p><%= product.description %></p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 bg-stone-50 rounded-3xl p-8 border border-stone-200 h-fit sticky top-32">
+                <h3 class="text-xl font-bold text-stone-900 mb-8 flex items-center gap-3">
+                    <svg class="w-6 h-6 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Specifications
+                </h3>
+                <div class="space-y-5 text-sm">
+                    <% if (product.material) { %>
+                        <div class="flex justify-between border-b border-stone-200 pb-5">
+                            <span class="text-stone-500 tracking-wide">Material</span>
+                            <span class="text-stone-900 font-bold text-right"><%= product.material %></span>
+                        </div>
+                    <% } %>
+                    <% if (product.dimensions && (product.dimensions.width > 0)) { %>
+                        <div class="flex justify-between border-b border-stone-200 pb-5">
+                            <span class="text-stone-500 tracking-wide">Dimensions (W×H×D)</span>
+                            <span class="text-stone-900 font-bold text-right"><%= product.dimensions.width %>x<%= product.dimensions.height %>x<%= product.dimensions.depth %> cm</span>
+                        </div>
+                    <% } %>
+                    <% if (product.category) { %>
+                        <div class="flex justify-between border-b border-stone-200 pb-5">
+                            <span class="text-stone-500 tracking-wide">Category</span>
+                            <span class="text-stone-900 font-bold text-right"><%= product.category.categoryName %></span>
+                        </div>
+                    <% } %>
+                    <% if (product.customAttributes && product.customAttributes.length > 0) { %>
+                        <% product.customAttributes.forEach((attr, index) => { %>
+                            <div class="flex justify-between <%= index !== product.customAttributes.length - 1 ? 'border-b border-stone-200 pb-5' : '' %>">
+                                <span class="text-stone-500 tracking-wide"><%= attr.key %></span>
+                                <span class="text-stone-900 font-bold text-right"><%= attr.value %></span>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <% if (relatedProducts && relatedProducts.length > 0) { %>
+            <div class="border-t border-white/10 pt-16">
+                <h2 class="text-2xl font-bold text-brand-light mb-8">Related Products</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <% relatedProducts.forEach(rel => { %>
+                        <div class="bg-brand-bg2 rounded-xl overflow-hidden border border-white/5 hover:border-brand-accent/40 transition group pb-4">
+                            <a href="/user/product/<%= rel._id %>" class="block aspect-square bg-brand-bg1 relative overflow-hidden mb-4">
+                                <img src="<%= (rel.variants && rel.variants.length > 0 && rel.variants[0].images && rel.variants[0].images.length > 0) ? rel.variants[0].images[0] : '/images/placeholder.png' %>" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700">
+                            </a>
+                            <div class="px-4">
+                                <h3 class="text-lg font-semibold text-brand-light truncate mb-1"><a href="/user/product/<%= rel._id %>" class="hover:text-brand-accent transition"><%= rel.productName %></a></h3>
+                                <p class="text-brand-accent font-bold">₹<%= rel.variants && rel.variants.length > 0 ? rel.variants[0].price : rel.basePrice %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        <% } %>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/user/productDetail.js"></script>

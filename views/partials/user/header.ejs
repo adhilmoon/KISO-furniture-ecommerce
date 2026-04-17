@@ -19,11 +19,52 @@
 
   <ul class="hidden md:flex items-center gap-10 text-[13px] font-medium tracking-widest uppercase text-stone-300">
     <li><a href="/user/store" class="hover:text-stone-100 transition-colors duration-300">Store</a></li>
-    <% if (locals.globalCategories && locals.globalCategories.length > 0) { %>
-      <% globalCategories.forEach(category => { %>
-        <li><a href="/store?category=<%= category._id %>" class="hover:text-stone-100 transition-colors duration-300"><%= category.categoryName %></a></li>
-      <% }) %>
-    <% } %>
+    <li class="relative">
+      <button id="cat-dropdown-btn" class="hover:text-stone-100 transition-colors duration-300 uppercase flex items-center gap-1">
+        Categories
+        <svg id="cat-dropdown-arrow" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div id="cat-dropdown-menu" class="absolute left-0 mt-4 w-48 bg-brand-bg1 border border-white/5 shadow-xl rounded-lg opacity-0 invisible translate-y-2 transition-all duration-300 flex flex-col pt-2 pb-2 z-[60]">
+        <% if (locals.globalCategories && locals.globalCategories.length > 0) { %>
+          <% globalCategories.forEach(category => { %>
+            <a href="/user/store?category=<%= category._id %>" class="px-5 py-2.5 text-sm hover:bg-white/5 hover:text-brand-accent transition-colors"><%= category.categoryName %></a>
+          <% }) %>
+        <% } else { %>
+            <span class="px-5 py-2.5 text-sm text-brand-muted">No Categories</span>
+        <% } %>
+      </div>
+    </li>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('cat-dropdown-btn');
+    const menu = document.getElementById('cat-dropdown-menu');
+    const arrow = document.getElementById('cat-dropdown-arrow');
+
+    if (btn && menu) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !menu.classList.contains('invisible');
+        
+        if (isOpen) {
+          menu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+          arrow.classList.remove('rotate-180');
+        } else {
+          menu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+          arrow.classList.add('rotate-180');
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+          menu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+          arrow.classList.remove('rotate-180');
+        }
+      });
+    }
+  });
+</script>
+    <li><a href="/about" class="hover:text-stone-100 transition-colors duration-300">About</a></li>
   </ul>
 
   <div class="flex items-center gap-5 md:gap-6">
@@ -97,13 +138,25 @@
       </div>
 
       <nav class="space-y-3">
-        <a href="/store"
-          class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100">Store</a>
-        <% if (locals.globalCategories && locals.globalCategories.length > 0) { %>
-          <% globalCategories.forEach(category => { %>
-            <a href="/store?category=<%= category._id %>" class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100 uppercase"><%= category.categoryName %></a>
-          <% }) %>
-        <% } %>
+        <a href="/user/store" class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100 uppercase">Store</a>
+        
+        <details class="group">
+          <summary class="flex items-center justify-between px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100 uppercase cursor-pointer list-none">
+            Categories
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="pl-8 flex flex-col space-y-2 mt-2 pb-2">
+            <% if (locals.globalCategories && locals.globalCategories.length > 0) { %>
+              <% globalCategories.forEach(category => { %>
+                <a href="/user/store?category=<%= category._id %>" class="block py-2 text-sm text-stone-500 hover:text-brand-accent transition-colors"><%= category.categoryName %></a>
+              <% }) %>
+            <% } else { %>
+                <span class="block py-2 text-sm text-stone-500">No Categories</span>
+            <% } %>
+          </div>
+        </details>
+
+        <a href="/about" class="block px-4 py-3 text-sm font-medium tracking-wide rounded-sm transition-colors text-stone-400 hover:bg-stone-800 hover:text-stone-100 uppercase">About</a>
       </nav>
     </div>
   </div>
