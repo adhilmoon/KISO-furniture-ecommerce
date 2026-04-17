@@ -1,5 +1,5 @@
 
-
+let existingVariantImageCount = {};
 let attrCount = 0;
 let variantCount = 0;
 let cropper = null;
@@ -27,6 +27,7 @@ function clearError(id) {
   el.classList.add('hidden');
 
 }
+
 
 function clearAllErrors() {
   document.querySelectorAll('.field-error').forEach(e => e.classList.add('hidden'));
@@ -184,6 +185,9 @@ function viewImage(src) {
 function handleVariantImages(input, variantId) {
   const files = Array.from(input.files);
   if(!files.length) return;
+  const existingCount = existingVariantImageCount[variantId] || 0;
+  
+  const newCount = variantCroppedFiles[variantId]?.length || 0;
   const currentCount = variantCroppedFiles[variantId] ? variantCroppedFiles[variantId].length : 0;
   if(currentCount + files.length > 3) {
     input.value = '';
@@ -204,29 +208,40 @@ function handleVariantImages(input, variantId) {
 
 
 function addCustomAttribute() {
+  if (attrCount > 0) {
+    const rows = document.querySelectorAll('#customAttributesContainer .attr-row');
+    const lastRow = rows[rows.length - 1];
+    if (lastRow) {
+      const id  = lastRow.dataset.id;
+      const key = $(`attr-key-${id}`)?.value.trim();
+      const val = $(`attr-val-${id}`)?.value.trim();
+      if (!key || !val) {
+        showToast('Please fill in both name and value for the current attribute.', 'info');
+        return;
+      }
+    }
+  }
+
   attrCount++;
   const container = $('customAttributesContainer');
-  const emptyEl = $('customAttrEmpty');
+  const emptyEl   = $('customAttrEmpty');
   const headerRow = $('attrHeaderRow');
 
   emptyEl?.classList.add('hidden');
   headerRow?.classList.remove('hidden');
 
-
-  const id = attrCount;
+  const id  = attrCount;
   const row = document.createElement('div');
   row.dataset.id = id;
-  row.className = 'attr-row grid grid-cols-[1fr_1fr_auto] gap-3 items-start animate-slide-in';
-  row.innerHTML = `
+  row.className  = 'attr-row grid grid-cols-[1fr_1fr_auto] gap-3 items-start animate-slide-in';
+  row.innerHTML  = `
     <div>
-      <input type="text" id="attr-key-${id}"
-        placeholder="Name  (e.g. Seat Height)"
+      <input type="text" id="attr-key-${id}" placeholder="Name  (e.g. Seat Height)"
         class="field-input w-full text-sm"
         oninput="document.getElementById('attr-err-${id}')?.classList.add('hidden');this.classList.remove('field-invalid')" />
     </div>
     <div>
-      <input type="text" id="attr-val-${id}"
-        placeholder="Value  (e.g. 45 cm)"
+      <input type="text" id="attr-val-${id}" placeholder="Value  (e.g. 45 cm)"
         class="field-input w-full text-sm"
         oninput="document.getElementById('attr-err-${id}')?.classList.add('hidden');this.classList.remove('field-invalid')" />
     </div>
@@ -265,9 +280,26 @@ function collectCustomAttributes() {
 
 
 function addVariant() {
+   const container = $('variantsContainer');
+  const existingCards = container.querySelectorAll('.variant-card');
+
+  if (existingCards.length > 0) {
+    const lastCard = existingCards[existingCards.length - 1];
+    const lastId = lastCard.dataset.id;
+    const optType  = $(`vOptType-${lastId}`)?.value.trim();
+    const optValue = $(`vOptValue-${lastId}`)?.value.trim();   // ← was vOpValue (missing 't')
+    const newImages    = variantCroppedFiles[lastId] || [];
+    const existingCount = existingVariantImageCount[lastId] || 0;
+    const totalImages  = newImages.length + existingCount;
+
+    if (!optType || !optValue || totalImages === 0) {
+      showToast("Please complete the current variant (Type, Value, and at least 1 image) before adding another.", "error");
+      return;
+    }
+  }
   variantCount++;
   const vc = variantCount;
-  const container = $('variantsContainer');
+ 
   $('variantEmpty').classList.add('hidden');
 
 
@@ -353,7 +385,7 @@ function addVariant() {
       <div>
         <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5">
           Variant Images
-          <span class="font-normal normal-case tracking-normal text-white/25 ml-1">Optional — e.g. colour swatch photo</span>
+          <span class="font-normal normal-case tracking-normal text-white/25 ml-1">Required — e.g. colour swatch photo</span>
         </label>
       <input 
       id="vImgInput-${vc}"
@@ -462,7 +494,7 @@ function validateForm() {
   const name = $('productName')?.value.trim();
 
   if(!name) {
-    showError('err-productName', ' name is required.....hah aha.');
+    showError('err-productName', ' name is required');
     valid = false;
   } else if(name.length < 3) {
     showError('err-productName', 'Name must be at least 3 characters.');

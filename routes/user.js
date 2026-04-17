@@ -50,9 +50,21 @@ router.get("/address/get/:id", userauth.userauth, userauth.isUser, profileContro
 router.patch("/address/update/:id", userauth.userauth, userauth.isUser, profileController.updateAddress);
 router.delete("/address/delete/:id", userauth.userauth, userauth.isUser, authController.deleteAddress);
 
+import * as productController from "../controller/usercontroller/productController.js";
+import * as cartController from "../controller/usercontroller/cartController.js";
+
 //product listing page API
 router.get("/store",Pages.user_store)
 router.get('/store/filter-options',storeController.getFilterOptions)
+router.get("/product/:id", productController.getProductDetail)
+
+// Cart API
+router.get("/cart", userauth.userauth, userauth.isUser, cartController.getCartPage);
+router.post("/cart/add", userauth.userauth, userauth.isUser, cartController.addToCart);
+router.patch("/cart/item/:itemId", userauth.userauth, userauth.isUser, cartController.updateQuantity);
+router.delete("/cart/item/:itemId", userauth.userauth, userauth.isUser, cartController.removeItem);
+router.delete("/cart", userauth.userauth, userauth.isUser, cartController.clearCart);
+
 router.get("/session-check", (req, res) => {
   res.json({ loggedIn: !!req.session.user });
 });

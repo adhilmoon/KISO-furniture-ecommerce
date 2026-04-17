@@ -78,7 +78,7 @@ export const updateProduct = async (req, res) => {
     }
 
     const updatedProduct = await productService.updateProduct(productId, req.body, req.files || []);
-    if(!updated) {
+    if(!updatedProduct) {
       return res.status(STATUS_CODES.NOT_FOUND).json({
         success: false,
         message: "Product not found"

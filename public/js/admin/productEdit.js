@@ -1,6 +1,6 @@
 
 
-
+let existingVariantImageCount = {};
 let attrCount = 0;
 let variantCount = 0;
 let cropper = null;
@@ -14,7 +14,7 @@ let currentVariantId = null;
 
 const variantCroppedFiles = {};
 let deletedVariantImages = {};
-let existingVariantImageCount = {};
+
 const $ = id => document.getElementById(id);
 
 // ── Error helpers ─────────────────────────────────────────────────────────
@@ -30,6 +30,11 @@ function clearError(id) {
   if(!el) return;
   el.classList.add('hidden');
 
+}
+function getTotalImageCount(variantId) {
+  const existing = existingVariantImageCount[variantId] || 0;
+  const newImgs = variantCroppedFiles[variantId]?.length || 0;
+  return existing + newImgs
 }
 
 function clearAllErrors() {
@@ -109,22 +114,18 @@ function confirmCrop() {
           variantCroppedFiles[currentVariantId] = [];
         }
         croppedFiles.forEach(f => {
-          const existingCount = existingVariantImageCount[currentVariantId] || 0;
-          const newCount = variantCroppedFiles[currentVariantId].length;
-          const total = existingCount + newCount;
-          if(total < 3) {
-            variantCroppedFiles[currentVariantId].push(f)
+          if(getTotalImageCount(currentVariantId) < 3) {
+            variantCroppedFiles[currentVariantId].push(f);
           } else {
-            showToast("Max 3 images allowed for this variant", "error")
+            showToast('Max 3 images allowed for this variant.', 'error');
           }
-
         });
 
         const dt = new DataTransfer();
         variantCroppedFiles[currentVariantId].forEach(f => dt.items.add(f));
         currentInput.files = dt.files;
 
-        renderPreviews(variantCroppedFiles[currentVariantId], `vImgPreview-${currentVariantId}`, false);
+        renderPreviews(variantCroppedFiles[currentVariantId], `vImgPreview-${currentVariantId}`, false, currentVariantId);
       }
 
       closeCrop();
@@ -133,39 +134,38 @@ function confirmCrop() {
 }
 
 //-------------image preview--------------------
-function renderPreviews(files, containerId, large) {
+function renderPreviews(files, containerId, large, variantId) {
   const container = $(containerId);
   if(!container) return;
-  container.innerHTML = '';
 
-  const size = 'w-16 h-16';
+  
+  Array.from(container.children).forEach(child => {
+    if(!child.id || !child.id.startsWith('existing-variant-')) {
+      child.remove();
+    }
+  });
 
   Array.from(files).forEach((file, idx) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const thumb = document.createElement('div');
-      thumb.className = `${size} rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
-
-      let overlayHtml = '';
-
-      const variantId = containerId.split('-')[1];
-      overlayHtml = `
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                        <button type="button" onclick="viewImage('${e.target.result}')" title="View Image" class="p-1 text-white hover:text-brand-accent bg-black/50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-                        <button type="button" onclick="removeVariantImage('${variantId}', ${idx})" title="Remove" class="p-1 text-white hover:text-red-400 bg-black/50 rounded-lg">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        </button>
-                    </div>
-                `;
-
-
+      thumb.className = `w-16 h-16 rounded-xl border border-white/10 overflow-hidden bg-brand-bg2 shrink-0 relative group`;
       thumb.innerHTML = `
-                <img src="${e.target.result}" class="w-full h-full object-cover">
-                ${overlayHtml}
-            `;
+        <img src="${e.target.result}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+          <button type="button" onclick="viewImage('${e.target.result}')" class="p-1 text-white hover:text-brand-accent bg-black/50 rounded-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </button>
+          <button type="button" onclick="removeVariantImage('${variantId}', ${idx})" class="p-1 text-white hover:text-red-400 bg-black/50 rounded-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      `;
       container.appendChild(thumb);
     };
     reader.readAsDataURL(file);
@@ -173,11 +173,10 @@ function renderPreviews(files, containerId, large) {
 }
 
 
-
 function removeVariantImage(variantId, idx) {
   if(variantCroppedFiles[variantId]) {
     variantCroppedFiles[variantId].splice(idx, 1);
-    renderPreviews(variantCroppedFiles[variantId], `vImgPreview-${variantId}`, false);
+    renderPreviews(variantCroppedFiles[variantId], `vImgPreview-${variantId}`, false, variantId);
 
     const dt = new DataTransfer();
     variantCroppedFiles[variantId].forEach(f => dt.items.add(f));
@@ -190,18 +189,20 @@ function removeVariantImage(variantId, idx) {
 
 function removeExistingVariantImage(url, variantId, vc, idx) {
 
-  if((existingVariantImageCount[variantId] || 0) > 0) {
-    existingVariantImageCount[variantId]--;
+  // existingVariantImageCount is keyed by the numeric card index (vc),
+  // NOT the MongoDB _id — so decrement using vc.
+  if((existingVariantImageCount[vc] || 0) > 0) {
+    existingVariantImageCount[vc]--;
   }
+
+  // deletedVariantImages is sent to the backend and must use the real DB id.
   if(!deletedVariantImages[variantId]) {
     deletedVariantImages[variantId] = [];
   }
-
-  deletedVariantImages[variantId].push(url)
+  deletedVariantImages[variantId].push(url);
 
   const el = document.getElementById(`existing-variant-${vc}-${idx}`);
   if(el) el.remove();
-
 
 }
 
@@ -218,12 +219,11 @@ function viewImage(src) {
 function handleVariantImages(input, variantId) {
   const files = Array.from(input.files);
   if(!files.length) return;
-  const existingCount = existingVariantImageCount[variantId] || 0;
-  const newCount = variantCroppedFiles[variantId]?.length || 0;
-  const totalCount = existingCount + newCount;
-  if(totalCount + files.length > 3) {
+
+  const total = getTotalImageCount(variantId);
+  if(total + files.length > 3) {
     input.value = '';
-    showToast(`Max 3 images allowed. You already have ${existingCount} existing and ${newCount} new.`, 'error');
+    showToast(`Max 3 images allowed. You currently have ${total}.`, 'error');
     return;
   }
   currentInput = input;
@@ -240,6 +240,20 @@ function handleVariantImages(input, variantId) {
 
 
 function addCustomAttribute() {
+  if(attrCount > 0) {
+    const rows = document.querySelectorAll('#customAttributesContainer .attr-row');
+    const lastRow = rows[rows.length - 1];
+    if(lastRow) {
+      const id = lastRow.dataset.id;
+      const key = $(`attr-key-${id}`)?.value.trim();
+      const val = $(`attr-val-${id}`)?.value.trim();
+      if(!key || !val) {
+        showToast('Please fill in both name and value for the current attribute.', 'info');
+        return;
+      }
+    }
+  }
+
   attrCount++;
   const container = $('customAttributesContainer');
   const emptyEl = $('customAttrEmpty');
@@ -248,21 +262,18 @@ function addCustomAttribute() {
   emptyEl?.classList.add('hidden');
   headerRow?.classList.remove('hidden');
 
-
   const id = attrCount;
   const row = document.createElement('div');
   row.dataset.id = id;
   row.className = 'attr-row grid grid-cols-[1fr_1fr_auto] gap-3 items-start animate-slide-in';
   row.innerHTML = `
     <div>
-      <input type="text" id="attr-key-${id}"
-        placeholder="Name  (e.g. Seat Height)"
+      <input type="text" id="attr-key-${id}" placeholder="Name  (e.g. Seat Height)"
         class="field-input w-full text-sm"
         oninput="document.getElementById('attr-err-${id}')?.classList.add('hidden');this.classList.remove('field-invalid')" />
     </div>
     <div>
-      <input type="text" id="attr-val-${id}"
-        placeholder="Value  (e.g. 45 cm)"
+      <input type="text" id="attr-val-${id}" placeholder="Value  (e.g. 45 cm)"
         class="field-input w-full text-sm"
         oninput="document.getElementById('attr-err-${id}')?.classList.add('hidden');this.classList.remove('field-invalid')" />
     </div>
@@ -280,6 +291,12 @@ function addCustomAttribute() {
 
 
 function removeCustomAttribute(id) {
+  const row = document.querySelector(`[data-id="${id}"].attr-row`);
+  if(row) {
+    row.remove();
+
+    attrCount--;
+  }
   document.querySelector(`[data-id="${id}"].attr-row`)?.remove();
   if(!$('customAttributesContainer').children.length) {
     $('customAttrEmpty')?.classList.remove('hidden');
@@ -288,7 +305,8 @@ function removeCustomAttribute(id) {
 }
 function collectCustomAttributes() {
   const result = [];
-  document.querySelectorAll('#customAttributesContainer .attr-row').forEach(row => {
+  const rows = document.querySelectorAll('#customAttributesContainer .attr-row');
+  rows.forEach(row => {
     const id = row.dataset.id;
     const key = $(`attr-key-${id}`)?.value.trim();
     const val = $(`attr-val-${id}`)?.value.trim();
@@ -301,9 +319,29 @@ function collectCustomAttributes() {
 
 
 function addVariant() {
-  variantCount++;
-  const vc = variantCount;
   const container = $('variantsContainer');
+  const existingCards = container.querySelectorAll('.variant-card');
+
+  if(existingCards.length > 0) {
+    const lastCard = existingCards[existingCards.length - 1];
+    const lastId = lastCard.dataset.id;
+    const optType = $(`vOptType-${lastId}`)?.value.trim();
+    const optValue = $(`vOptValue-${lastId}`)?.value.trim();   // ← was vOpValue (missing 't')
+    const newImages = variantCroppedFiles[lastId] || [];
+    const existingCount = existingVariantImageCount[lastId] || 0;
+    const totalImages = newImages.length + existingCount;
+
+    if(!optType || !optValue || totalImages === 0) {
+      showToast("Please complete the current variant (Type, Value, and at least 1 image) before adding another.", "error");
+      return;
+    }
+  }
+
+  variantCount++;
+  const validVariant = collectVariants()
+  if(!validVariant.length && !variantCount === 1) return
+  const vc = variantCount;
+
   $('variantEmpty').classList.add('hidden');
 
 
@@ -389,7 +427,7 @@ function addVariant() {
       <div>
         <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5">
           Variant Images
-          <span class="font-normal normal-case tracking-normal text-white/25 ml-1">Optional — e.g. colour swatch photo</span>
+          <span class="font-normal normal-case tracking-normal text-white/25 ml-1">Required — e.g. colour swatch photo</span>
         </label>
       <input 
       id="vImgInput-${vc}"
@@ -420,6 +458,11 @@ function addVariant() {
   container.appendChild(card);
 }
 function removeVariant(id) {
+  const card = $(`variant-card-${id}`);
+  if(card) {
+    card.remove();
+    delete variantCroppedFiles[id]
+  }
   $(`variant-card-${id}`)?.remove();
   delete variantCroppedFiles[id];
   if(!$('variantsContainer').children.length) {
@@ -511,9 +554,9 @@ function populateEditData(product) {
   }
 
   if(product.variants && product.variants.length) {
-    product.variants.forEach(variant => {
+    product.variants.forEach((variant, index) => {
       addVariant();
-      const vc = variantCount;
+      const vc = index + 1;
       const vIdEl = document.getElementById(`vId-${vc}`);
       const optTypeEl = document.getElementById(`vOptType-${vc}`);
       const optValEl = document.getElementById(`vOptValue-${vc}`);

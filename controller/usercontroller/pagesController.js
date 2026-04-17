@@ -179,59 +179,87 @@ export const page_notfound = (req, res) => {
 };
 export const user_store = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const searchQuery = req.query.search || "";
-        const perPage = 6;
-        const skip = (page - 1) * perPage;
-        const filter = {
-            isListed:true
+        const page       = parseInt(req.query.page) || 1;
+        const perPage    = 6;
+        const skip       = (page - 1) * perPage;
+
+        const searchQuery = req.query.search   || "";
+        const categoryId  = req.query.category || "";
+        const minPrice    = parseFloat(req.query.minPrice) || 0;
+        const maxPrice    = parseFloat(req.query.maxPrice) || 0;
+        const sortParam   = req.query.sort     || "newest";
+
+        // ── Build filter ──────────────────────────────────────────────────
+        const filter = {};
+
+        if (searchQuery) {
+            filter.productName = { $regex: searchQuery, $options: "i" };
+        }
+        if (categoryId) {
+            filter.category = categoryId;
+        }
+        if (minPrice > 0 || maxPrice > 0) {
+            filter.basePrice = {};
+            if (minPrice > 0) filter.basePrice.$gte = minPrice;
+            if (maxPrice > 0) filter.basePrice.$lte = maxPrice;
         }
 
+        // ── Build sort ────────────────────────────────────────────────────
+        const sortMap = {
+            newest:     { createdAt: -1 },
+            oldest:     { createdAt:  1 },
+            'price-asc':  { basePrice:  1 },
+            'price-desc': { basePrice: -1 },
+            'name-asc':   { productName: 1 },
+            'name-desc':  { productName: -1 },
+        };
+        const sortObj = sortMap[sortParam] || sortMap.newest;
 
-        if(searchQuery) {
-            filter.productName = {$regex: searchQuery, $options: "i"}
-        }
-
+        // ── Query ──────────────────────────────────────────────────────────
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
-            .populate('category', "categoryName")
+            .populate('category', 'categoryName')
             .skip(skip)
             .limit(perPage)
-            .sort({createdAt: -1})
-            .lean()
+            .sort(sortObj)
+            .lean();
 
         products.forEach(product => {
-            if(product.variants && Array.isArray(product.variants)) {
-                product.totalQuantity = product.variants.reduce((sum, v) => {
-                    return sum + (v.stock || 0);
-                }, 0);
-            } else {
-                product.totalQuantity = 0;
-            }
-        })
+            product.totalQuantity = Array.isArray(product.variants)
+                ? product.variants.reduce((sum, v) => sum + (v.stock || 0), 0)
+                : 0;
+        });
 
-        if(req.xhr || req.headers.accept?.includes("application/json")) {
+        // ── Categories for sidebar ─────────────────────────────────────────
+        const categories = await Category.find({}, 'categoryName _id').lean();
+
+        const activeFilters = { categoryId, minPrice, maxPrice, sort: sortParam };
+
+        // ── JSON response (AJAX calls from storeManagement.js) ─────────────
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
             return res.json({
                 success: true,
                 products,
                 totalProducts,
                 currentPage: page,
-                totalPages: Math.ceil(totalProducts / perPage)
+                totalPages: Math.ceil(totalProducts / perPage),
             });
         }
-        
+
         return res.render('user/store', {
-            title: 'Store -KISO',
+            title: 'Store - KISO',
             products,
             currentPage: page,
             totalPages: Math.ceil(totalProducts / perPage),
             searchQuery,
             perPage,
-            totalProducts
-        })
+            totalProducts,
+            categories,
+            activeFilters,
+        });
 
-    } catch(error) {
+    } catch (error) {
         console.error("Store page error:", error);
-        return res.status(500).render('404', {title: "Error"});
+        return res.status(500).render('404', { title: "Error" });
     }
-}
+};
