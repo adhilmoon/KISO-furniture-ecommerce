@@ -1,4 +1,6 @@
 import User from "../model/User.js";
+import { STATUS_CODES, MESSAGES } from "../constants/index.js";
+import logger from "../utilities/logger.js";
 
 
 export const userauth = async (req, res, next) => {
@@ -6,8 +8,8 @@ export const userauth = async (req, res, next) => {
 
   try {
     if(!req.session.user) {
-      if (req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
-          return res.status(401).json({ success: false, message: "Unauthorized: Please login." });
+      if(req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+        return res.status(STATUS_CODES.UNAUTHORIZED).json({success: false, message: MESSAGES.UNAUTHORIZED_LOGIN});
       }
       return res.redirect("/user/login");
     }
@@ -16,11 +18,11 @@ export const userauth = async (req, res, next) => {
 
     if(user.isBlocked) {
       req.session.destroy((err) => {
-        if(err) console.error("Session destroy error:", err);
+        if(err) logger.error(`Session destroy error: ${err.message}`);
       });
 
-      if (req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
-          return res.status(403).json({ success: false, message: "Your account is blocked." });
+      if(req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+        return res.status(STATUS_CODES.FORBIDDEN).json({success: false, message: MESSAGES.ACCOUNT_BLOCKED});
       }
 
       return res.redirect(
@@ -30,11 +32,11 @@ export const userauth = async (req, res, next) => {
 
 
     req.currentUser = user;
-    res.locals.user=user;
+    res.locals.user = user;
     next();
   } catch(error) {
-    console.error("userauth middleware error:", error);
-    res.status(500).send("Internal Server Error");
+    logger.error(`userauth middleware error: ${error.message}`);
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -46,8 +48,8 @@ export const islogin = (req, res, next) => {
     }
     next();
   } catch(error) {
-    console.error("islogin middleware error:", error);
-    res.status(500).send("Server error");
+    logger.error(`islogin middleware error: ${error.message}`);
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
   }
 };
 
@@ -55,31 +57,79 @@ export const islogin = (req, res, next) => {
 export const isUser = (req, res, next) => {
   try {
     if(!req.session.user) {
-      if (req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
-          return res.status(401).json({ success: false, message: "Unauthorized: Please login." });
+      if(req.xhr || req.headers['content-type'] === 'application/json' || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+        return res.status(STATUS_CODES.UNAUTHORIZED).json({success: false, message: MESSAGES.UNAUTHORIZED_LOGIN});
       }
       return res.redirect("/user/login");
     }
     return next();
   } catch(error) {
-    console.error("isUser middleware error:", error);
-    res.status(500).send("Internal Server Error");
+    logger.error(`isUser middleware error: ${error.message}`);
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.INTERNAL_SERVER_ERROR);
   }
 };
 
 
 export const noCache = (req, res, next) => {
   res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
-  res.set("Pragma", "no-cache"); 
+  res.set("Pragma", "no-cache");
   res.set("Expires", "0");
   next();
 };
 export const handleUploadErrors = (err, req, res, next) => {
-    if(err) {
-        console.error("Upload Error:", err.message);
-        return res
-            .status(400)
-            .json({success: false, message: err.message || "File upload failed"});
+  if(err) {
+    logger.error(`Upload Error: ${err.message}`);
+    return res
+      .status(STATUS_CODES.BAD_REQUEST)
+      .json({success: false, message: err.message || "File upload failed"});
+  }
+  next();
+};
+
+
+export const checkUserExists = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({
+                success: false,
+                message: MESSAGES.INVALID_EMAIL_OR_PASSWORD
+            });
+        }
+
+        // attach user to request
+        req.user = user;
+
+        next();
+    } catch (error) {
+        logger.error(`checkUserExists error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: MESSAGES.SERVER_ERROR
+        });
     }
-    next();
+};
+
+export const checkUserActive = (req, res, next) => {
+    try {
+        const user = req.user;
+
+        if (user.isBlocked) {
+            return res.status(STATUS_CODES.FORBIDDEN).json({
+                success: false,
+                message: MESSAGES.ACCOUNT_BLOCKED
+            });
+        }
+
+        next();
+    } catch (error) {
+        logger.error(`checkUserActive error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: MESSAGES.SERVER_ERROR
+        });
+    }
 };

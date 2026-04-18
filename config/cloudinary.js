@@ -1,5 +1,6 @@
 import {v2 as cloudinary} from "cloudinary";
 import multer from "multer";
+import logger from "../utilities/logger.js";
 
 // Env validation
 const {
@@ -19,7 +20,7 @@ cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-console.log("..>>Cloudinary credentials loaded<<..");
+logger.info("Cloudinary credentials loaded");
 
 // Storage config
 const storage = multer.memoryStorage();

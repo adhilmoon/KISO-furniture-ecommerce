@@ -1,6 +1,7 @@
-
 import Product from "../../model/Product.js";
 import Category from "../../model/Category.js";
+import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
+import logger from "../../utilities/logger.js";
 
 export const getFilterOptions = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ export const getFilterOptions = async (req, res) => {
     
     const colors = await Product.distinct('variants.color');
 
-    return res.status(200).json({
+    return res.status(STATUS_CODES.OK).json({
       success: true,
       data: {
         categories,
@@ -24,7 +25,7 @@ export const getFilterOptions = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("Error fetching filter options:", error);
-    return res.status(500).json({ success: false, message: 'Server Error' });
+    logger.error(`Error fetching filter options: ${error.message}`);
+    return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.SERVER_ERROR });
   }
 };

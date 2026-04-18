@@ -1,8 +1,17 @@
 import {uploadToCloudinary} from "../../config/cloudinary.js";
 import Product from "../../model/Product.js";
+import logger from "../../utilities/logger.js";
+import * as productValidators from "../../validators/adminProducts.js";
 
 
 export const createProduct = async (body, files) => {
+  const validation = productValidators.productSchema.safeParse(body);
+  if (!validation.success) {
+    const errorMessage = validation.error.issues
+      .map(issue => issue.message)
+      .join(", ");
+    throw new Error(errorMessage);
+  }
 
   const {productName, description, category, basePrice, material} = body;
 
@@ -104,6 +113,14 @@ export const createProduct = async (body, files) => {
 
 
 export const updateProduct = async (productId, body, files) => {
+  const validation = productValidators.productSchema.safeParse(body);
+  if (!validation.success) {
+    const errorMessage = validation.error.issues
+      .map(issue => issue.message)
+      .join(", ");
+    throw new Error(errorMessage);
+  }
+
   const product = await Product.findById(productId);
   if(!product) throw new Error("Product not found");
 
@@ -124,7 +141,7 @@ export const updateProduct = async (productId, body, files) => {
       const parsed = JSON.parse(body.customAttributesJSON);
       product.customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
     } catch(e) {
-      console.log("customAttributes parse error:", e);
+      logger.debug(`customAttributes parse error: ${e.message}`);
     }
   }
 
@@ -133,28 +150,28 @@ export const updateProduct = async (productId, body, files) => {
 
 
   if(body.deletedVariantImages) {
-    console.log("deletedVariantImages raw:", body.deletedVariantImages);
+    logger.debug(`deletedVariantImages raw: ${body.deletedVariantImages}`);
     try {
       const parsedDeletedVariantImages = JSON.parse(body.deletedVariantImages);
-      console.log("parsedDeletedVariantImages:", parsedDeletedVariantImages);
+      logger.debug(`parsedDeletedVariantImages: ${JSON.stringify(parsedDeletedVariantImages)}`);
 
       product.variants.forEach(variant => {
         const vId = variant._id.toString();
         if(parsedDeletedVariantImages[vId] && Array.isArray(parsedDeletedVariantImages[vId])) {
           const beforeCount = variant.images.length;
-          console.log(`Variant ${vId} BEFORE deletion:`, variant.images);
+          logger.debug(`Variant ${vId} BEFORE deletion: ${variant.images}`);
 
           variant.images = variant.images.filter(
             img => !parsedDeletedVariantImages[vId].includes(img)
           );
 
           const afterCount = variant.images.length;
-          console.log(`Variant ${vId} AFTER deletion:`, variant.images);
-          console.log(`Variant ${vId}: removed ${beforeCount - afterCount} images`);
+          logger.debug(`Variant ${vId} AFTER deletion: ${variant.images}`);
+          logger.debug(`Variant ${vId}: removed ${beforeCount - afterCount} images`);
         }
       });
     } catch(e) {
-      console.log("variant delete error:", e);
+      logger.debug(`variant delete error: ${e.message}`);
     }
   }
 
@@ -164,14 +181,14 @@ export const updateProduct = async (productId, body, files) => {
   if(body.variantsJSON) {
     try {
       incomingVariants = JSON.parse(body.variantsJSON);
-      console.log("incomingVariants:", incomingVariants);
+      logger.debug(`incomingVariants: ${JSON.stringify(incomingVariants)}`);
     } catch(e) {
-      console.log("variantsJSON parse error:", e);
+      logger.debug(`variantsJSON parse error: ${e.message}`);
     }
   }
 
   const incomingVariantIds = incomingVariants.map(v => v._id).filter(id => id);
-  console.log("incomingVariantIds:", incomingVariantIds);
+  logger.debug(`incomingVariantIds: ${incomingVariantIds}`);
 
   product.variants = product.variants.filter(v => incomingVariantIds.includes(v._id.toString()));
 
@@ -185,11 +202,8 @@ export const updateProduct = async (productId, body, files) => {
       return {idx: parseInt(match[1]), url: result.secure_url};
     })
   );
-  const variantImageMap = {};
-  if(!variantUploadResult || variantUploadResult.length === 0) {
-    throw new Error("At least one variant image is required");
-  }
 
+const variantImageMap = {};
   variantUploadResult.forEach(item => {
     if(!item) return;
     if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];
@@ -210,7 +224,7 @@ export const updateProduct = async (productId, body, files) => {
 
         if(uploadedImages.length > 0) {
           existingVariant.images = [...(existingVariant.images || []), ...uploadedImages];
-          console.log(`Added ${uploadedImages.length} images to variant ${incVar._id}`);
+          logger.debug(`Added ${uploadedImages.length} images to variant ${incVar._id}`);
         }
       }
     } else {
@@ -222,16 +236,16 @@ export const updateProduct = async (productId, body, files) => {
         stock: parseInt(incVar.stock, 10) || 0,
         images: uploadedImages,
       });
-      console.log("Added new variant");
+      logger.debug("Added new variant");
     }
   });
 
 
 
-  console.log("Final product variants:", product.variants.map(v => ({
+  logger.debug(`Final product variants: ${JSON.stringify(product.variants.map(v => ({
     id: v._id.toString(),
     imageCount: v.images.length
-  })));
+  })))}`);
 
   return await product.save();
 };

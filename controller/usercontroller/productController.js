@@ -1,4 +1,6 @@
 import * as productService from "../../service/user/productService.js";
+import { STATUS_CODES } from "../../constants/index.js";
+import logger from "../../utilities/logger.js";
 
 export const getProductDetail = async (req, res) => {
     try {
@@ -11,7 +13,7 @@ export const getProductDetail = async (req, res) => {
             relatedProducts,
         });
     } catch (error) {
-        console.error("Error fetching product detail:", error);
-        res.status(404).render("404", { title: "Product Not Found" });
+        logger.error(`Error fetching product detail: ${error.message}`);
+        res.status(STATUS_CODES.NOT_FOUND).render("404", { title: "Product Not Found" });
     }
 };

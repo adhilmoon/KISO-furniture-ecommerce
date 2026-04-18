@@ -6,7 +6,10 @@
   "scripts": {
     "start": "nodemon app.js",
     "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npm run lint:js && npm run lint:ejs",
+    "lint:js": "eslint .",
+    "lint:ejs": "ejslint views/**/*.ejs"
   },
   "repository": {
     "type": "git",
@@ -21,7 +24,12 @@
   },
   "homepage": "https://github.com/adhilmoon/KISO-furniture-ecommerce#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "autoprefixer": "^10.4.23",
+    "ejs-lint": "^2.0.1",
+    "eslint": "^10.2.1",
+    "eslint-plugin-ejs": "^0.0.2",
+    "globals": "^17.5.0",
     "nodemon": "^3.1.11",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19"
@@ -37,10 +45,13 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.19.0",
     "mongoose": "^9.1.5",
+    "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "nodemailer": "^8.0.4",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "session": "^0.1.0"
+    "session": "^0.1.0",
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
   }
 }

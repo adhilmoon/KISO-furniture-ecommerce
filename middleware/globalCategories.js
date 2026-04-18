@@ -1,4 +1,5 @@
 import Category from '../model/Category.js';
+import logger from '../utilities/logger.js';
 
 export const fetchGlobalCategories = async (req, res, next) => {
     try {
@@ -6,7 +7,7 @@ export const fetchGlobalCategories = async (req, res, next) => {
         res.locals.globalCategories = categories;
         next();
     } catch(error) {
-        console.error('Error fetching global categories:', error);
+        logger.error(`Error fetching global categories: ${error.message}`);
         res.locals.globalCategories = [];
         next();
     }

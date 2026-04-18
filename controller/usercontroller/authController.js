@@ -3,7 +3,8 @@ import User from '../../model/User.js'
 import Address from "../../model/Address.js"
 import bcrypt from 'bcrypt'
 import * as otpsender from '../../utilities/sendEmail.js'
-import {STATUS_CODES,MESSAGES} from "../../constants/index.js";
+import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
+import logger from "../../utilities/logger.js";
 
 
 export const signup_post = async (req, res) => {
@@ -35,7 +36,7 @@ export const signup_post = async (req, res) => {
             })
         }
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        console.log(`new OTP${otp}for this email${email}`)
+        // logger.debug(`new OTP ${otp} for this email ${email}`);
         req.session.tempUserData = {name, email, password, referralCode, otp};
         await otpsender.sendOTP(email, otp);
 
@@ -52,78 +53,71 @@ export const signup_post = async (req, res) => {
 
 export const loginauth = async (req, res) => {
     try {
-        const {email, password} = req.body
+        const { password } = req.body;
+        const user = req.user; // comes from middleware
 
-        if(!email || !password) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.EMPTY_FIELDS});
-        }
-        const RegisterdUser = await User.findOne({email: email});
-        if(RegisterdUser) {
-            // Check if user is blocked
-            if(RegisterdUser.isBlocked) {
-                return res.status(STATUS_CODES.UNAUTHORIZED).json({
-                    success: false,
-                    message: MESSAGES.USER_ACCOUNT_BLOCKED
-                });
-            }
+        const valid = await bcrypt.compare(password, user.password);
 
-            const valid = await bcrypt.compare(password, RegisterdUser.password)
-
-            if(valid) {
-                req.session.user = {
-                    _id: RegisterdUser._id,
-                };
-
-                req.session.save((err) => {
-                    if(err) {
-                        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-                            success: false,
-                            message: MESSAGES.SESSION_SAVE_ERROR
-                        });
-                    }
-
-                    return res.status(STATUS_CODES.OK).json({
-                        success: true,
-                        message: MESSAGES.LOGIN_SUCCESS,
-                        redirectUrl: "/user/homepage"
-                    });
-                });
-
-            } else {
-                return res.status(STATUS_CODES.UNAUTHORIZED).json({success: false, message: MESSAGES.INCORRECT_PASSWORD});
-            }
-        } else {
-
+        if (!valid) {
             return res.status(STATUS_CODES.UNAUTHORIZED).json({
                 success: false,
-                message: MESSAGES.INVALID_EMAIL_OR_PASSWORD
+                message: MESSAGES.INCORRECT_PASSWORD
             });
         }
 
-    } catch(error) {
-        console.error(error);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR});
-    }
-}
-export const logout = (req, res) => {
+        req.session.user = {
+            _id: user._id,
+        };
 
-    req.session.destroy((error) => {
-        if(error) {
-            console.log("Session destroy error:", error);
-            return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: "Logout failed"});
-        }
-         
-        res.clearCookie('connect.sid', { path: '/' });
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
+        req.session.save((err) => {
+            if (err) {
+                return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+                    success: false,
+                    message: MESSAGES.SESSION_SAVE_ERROR
+                });
+            }
 
-        return res.status(STATUS_CODES.OK).json({
-            success: true,
-            message: "Logged out successfully",
-            redirectUrl: "/"
+            return res.status(STATUS_CODES.OK).json({
+                success: true,
+                message: MESSAGES.LOGIN_SUCCESS,
+                redirectUrl: "/user/homepage"
+            });
         });
-    });
+
+    } catch (error) {
+        logger.error(`Login Auth Error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: MESSAGES.INTERNAL_SERVER_ERROR
+        });
+    }
+};
+export const logout = (req, res) => {
+    try {
+        req.session.destroy((error) => {
+            if(error) {
+                logger.error(`Session destroy error: ${error.message}`);
+                return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.LOGOUT_FAILED});
+            }
+
+            res.clearCookie('connect.sid', {path: '/'});
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+
+            return res.status(STATUS_CODES.OK).json({
+                success: true,
+                message: MESSAGES.LOGOUT_SUCCESS,
+                redirectUrl: "/"
+            });
+        });
+    } catch(error) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: MESSAGES.SOMETHING_WENT_WRONG
+        });
+    }
+
 };
 
 export const verify_otp = async (req, res) => {
@@ -136,7 +130,7 @@ export const verify_otp = async (req, res) => {
             return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.SESSION_EXPIRED});
         }
         const {name, email, password, referralCode, otp: sessionOtp, purpose} = tempUser;
-   
+
         if(String(sessionOtp) === String(entereOtp)) {
 
             if(purpose === 'forgot_password') {
@@ -144,16 +138,16 @@ export const verify_otp = async (req, res) => {
                 req.session.allowReset = true;
                 return res.status(STATUS_CODES.OK).json({
                     success: true,
-                    message: "OTP Verified",
+                    message: MESSAGES.OTP_VERIFIED,
                     redirectUrl: '/user/reset-password'
                 });
             }
-                   
-            if(purpose==='update-email'){
-                const {email}=req.session.tempUserData
-                const userId=req.session.user._id;
-                await User.findByIdAndUpdate(userId,{email})
-                return res.status(STATUS_CODES.OK).json({success:true,message:"Email updated successfully"})
+
+            if(purpose === 'update-email') {
+                const {email} = req.session.tempUserData
+                const userId = req.session.user._id;
+                await User.findByIdAndUpdate(userId, {email})
+                return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.EMAIL_UPDATED_SUCCESS})
             }
             await userService.createUser({name, email, password, referralCode})
             delete req.session.tempUserData;
@@ -169,7 +163,7 @@ export const verify_otp = async (req, res) => {
             });
         }
     } catch(error) {
-        console.error("OTP verification error:", error);
+        logger.error(`OTP verification error: ${error.message}`);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: MESSAGES.VERIFICATION_FAILED
@@ -182,24 +176,30 @@ export const verify_otp = async (req, res) => {
 
 
 export const googleAuthCallback = (req, res) => {
-    if(req.session) {
-        req.session.user = {
-            role: 'user',
-            name: req.user.name,
-            _id: req.user._id
-        };
-        res.redirect('/user/homepage?message= Google Authenticated');
-    } else {
-        res.redirect('/user/login?error=Google authentication failed')
+    try {
+        if(req.session) {
+            req.session.user = {
+                role: 'user',
+                name: req.user.name,
+                _id: req.user._id
+            };
+            res.redirect('/user/homepage?message= Google Authenticated');
+        } else {
+            res.redirect('/user/login?error=Google authentication failed')
+        }
+    } catch(error) {
+        logger.error(`Google auth error: ${error.message}`);
+        return res.redirect('/user/login?error=Something went wrong');
     }
+
 };
 export const deleteAddress = async (req, res) => {
     try {
         const addressId = req.params.id;
         await Address.findByIdAndDelete(addressId);
-        res.json({success: true, message: "Address deleted"});
+        res.json({success: true, message: MESSAGES.ADDRESS_DELETED});
     } catch(error) {
-        res.status(500).json({success: false, message: "Server error"});
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.SERVER_ERROR});
     }
 };
 
@@ -208,11 +208,11 @@ export const deleteAddress = async (req, res) => {
 
 export const forgot_password = async (req, res) => {
     try {
-        const {email,isResend} = req.body;
+        const {email, isResend} = req.body;
         const user = await User.findOne({email});
 
         if(!user) {
-            return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: "User not found"});
+            return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: MESSAGES.USER_NOT_FOUND});
         }
         if(isResend) {
             const tempUser = req.session.tempUserData;
@@ -232,7 +232,7 @@ export const forgot_password = async (req, res) => {
         }
 
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        console.log(`this is otp : ${otp}for this mail ${email}`)
+        // logger.debug(`Forgot Password OTP: ${otp} for email ${email}`);
 
         req.session.tempUserData = {
             email,
@@ -244,8 +244,8 @@ export const forgot_password = async (req, res) => {
         return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.OTP_SENT});
 
     } catch(error) {
-        console.error(error);
-        return res.status(500).json({success: false, message: "Server Error"});
+        logger.error(`Forgot password error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.SERVER_ERROR});
     }
 };
 export const update_password = async (req, res) => {
@@ -254,7 +254,7 @@ export const update_password = async (req, res) => {
         const tempUser = req.session.tempUserData;
 
         if(!tempUser || !req.session.allowReset) {
-            return res.status(403).json({success: false, message: "Unauthorized access"});
+            return res.status(STATUS_CODES.FORBIDDEN).json({success: false, message: MESSAGES.UNAUTHORIZED_ACCESS});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -270,13 +270,13 @@ export const update_password = async (req, res) => {
         delete req.session.allowReset;
 
         return res.status(STATUS_CODES.OK).json({
-            success:true,
-            message:'password successfully updated ',
-            redirectUrl:'/user/login'
+            success: true,
+            message: MESSAGES.PASSWORD_UPDATED_SUCCESS,
+            redirectUrl: '/user/login'
         })
 
     } catch(error) {
-        console.error(error);
-        return res.status(500).json({success: false, message: "Internal Server Error"});
+        logger.error(`Update password error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR});
     }
 };

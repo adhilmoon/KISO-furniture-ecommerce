@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../model/User.js";
+import logger from "../utilities/logger.js";
 
 passport.use(
   new GoogleStrategy(
@@ -41,7 +42,7 @@ passport.use(
 
         return done(null, user);
       } catch (error) {
-        console.error("Google OAuth Error:", error);
+        logger.error(`Google OAuth Error: ${error.message}`);
         return done(error, null);
       }
     }
@@ -59,7 +60,7 @@ passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
-    console.error("Deserialize Error:", error);
+    logger.error(`Deserialize User Error: ${error.message}`);
     done(error, null);
   }
 });

@@ -26,7 +26,7 @@ router.get("/signup", userauth.islogin, Pages.user_signup);
 
 
 // Auth APIs
-router.post("/login", authController.loginauth);
+router.post("/login",userauth.checkUserExists,userauth.checkUserActive,authController.loginauth);
 router.post("/signup", authController.signup_post);
 router.post("/verify-otp", authController.verify_otp);
 router.post("/forgot-password", authController.forgot_password);
@@ -68,7 +68,5 @@ router.delete("/cart", userauth.userauth, userauth.isUser, cartController.clearC
 router.get("/session-check", (req, res) => {
   res.json({ loggedIn: !!req.session.user });
 });
-// 404 page
-router.use(Pages.page_notfound);
 
 export default router;

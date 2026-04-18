@@ -1,7 +1,8 @@
 
-import {STATUS_CODES} from "../../constants/statusCodes.js";
+import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
 import * as categoryService from "../../service/admin/categoryService.js"
 import Category from "../../model/Category.js"
+import logger from "../../utilities/logger.js";
 // add category
 export const addCategory = async (req, res) => {
     try {
@@ -10,17 +11,17 @@ export const addCategory = async (req, res) => {
         if(!categoryName) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "Required fields are missing"
+                message: MESSAGES.REQUIRED_FIELDS_MISSING
             })
         }
 
         await categoryService.createCategory({categoryName, description})
         return res.status(STATUS_CODES.CREATED).json({
             success: true,
-            message: "success fully Category created",
+            message: MESSAGES.CATEGORY_CREATED_SUCCESS,
         })
     } catch(error) {
-        console.log("ERROR 👉", error);
+        logger.error(`Add Category Error: ${error.message}`);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
             message:error.message || "add category facing truble"
@@ -40,20 +41,20 @@ export const updateCategories = async (req, res) => {
         if(isDublicate) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "Category name already exists"
+                message: MESSAGES.CATEGORY_ALREADY_EXISTS
             })
         }
 
         if(!categoryName) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "Required fields are missing"
+                message: MESSAGES.REQUIRED_FIELDS_MISSING
             })
         }
         await categoryService.updateCategory({id, categoryName, description})
         return res.status(STATUS_CODES.OK).json({
             success: true,
-            message: "category updated successfully"
+            message: MESSAGES.CATEGORY_UPDATED_SUCCESS
         })
 
     } catch(error) {
@@ -73,7 +74,7 @@ export const disableCategories = async (req, res) => {
         await categoryService.disableCategory({id})
         return res.status(STATUS_CODES.OK).json({
             success: true,
-            message: "success fully category disabled"
+            message: MESSAGES.CATEGORY_DISABLED_SUCCESS
         })
 
 
@@ -92,7 +93,7 @@ export const enableCategories = async (req, res) => {
         await categoryService.enableCategory({id})
         return res.status(STATUS_CODES.OK).json({
             success: true,
-            message: "success fully category enabled"
+            message: MESSAGES.CATEGORY_ENABLED_SUCCESS
         })
 
     } catch(error) {
@@ -111,13 +112,13 @@ export const getCategory = async (req, res) => {
         if(!category.isActive) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: 'now canot access this category'
+                message: MESSAGES.UNAUTHORIZED_ACCESS
             })
         }
         if(!category) {
             return res.status(STATUS_CODES.NOT_FOUND).json({
                 success: false,
-                message: "category not found"
+                message: MESSAGES.CATEGORY_NOT_FOUND
             });
         }
         return res.status(STATUS_CODES.OK).json({
@@ -125,8 +126,8 @@ export const getCategory = async (req, res) => {
             category
         })
     } catch(error) {
-        console.error("Get Category Error:", error);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: "Failed to fetch category"});
+        logger.error(`Get Category Error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.FETCH_CATEGORY_FAILED});
     }
 
 }

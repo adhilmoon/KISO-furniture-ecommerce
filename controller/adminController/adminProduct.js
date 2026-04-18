@@ -1,5 +1,6 @@
 import * as productService from "../../service/admin/productService.js";
 import {STATUS_CODES} from "../../constants/statusCodes.js";
+import logger from "../../utilities/logger.js";
 
 
 
@@ -37,7 +38,7 @@ export const addProduct = async (req, res) => {
     });
 
   } catch(error) {
-    console.error("addProduct error:", error);
+    logger.error(`addProduct error: ${error.message}`);
 
     // Handle duplicate key errors (e.g. SKU if we add it back later)
     if(error.code === 11000) {
@@ -49,6 +50,7 @@ export const addProduct = async (req, res) => {
 
     return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
       success: false,
+      message: error.message || "Failed to add product. Please try again.",
     });
   }
 };
@@ -91,7 +93,7 @@ export const updateProduct = async (req, res) => {
     });
 
   } catch(error) {
-    console.error("updateProduct error:", error);
+    logger.error(`updateProduct error: ${error.message}`);
 
     if(error.code === 11000) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
@@ -124,7 +126,7 @@ export const disableProduct = async (req, res) => {
 
 
   } catch(err) {
-    console.error("product disble side in controller", err)
+    logger.error(`Product disable error: ${err.message}`);
   }
 }
 export const enableProduct = async (req, res) => {
@@ -144,6 +146,6 @@ export const enableProduct = async (req, res) => {
 
 
   } catch(err) {
-    console.error("product enable side in controller", err)
+    logger.error(`Product enable error: ${err.message}`);
   }
 }
