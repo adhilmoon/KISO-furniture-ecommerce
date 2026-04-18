@@ -1,11 +1,12 @@
 
 import Admin from "../../model/Admin.js"
 import bcrypt from 'bcrypt'
-import { STATUS_CODES } from "../../constants/statusCodes.js";
-import { MESSAGES } from "../../constants/messages.js";
+import {STATUS_CODES} from "../../constants/statusCodes.js";
+import {MESSAGES} from "../../constants/messages.js";
 import User from "../../model/User.js";
 import Order from "../../model/Order.js";
 import logger from "../../utilities/logger.js";
+import {json} from "zod";
 
 export const auth = async (req, res) => {
     try {
@@ -14,26 +15,26 @@ export const auth = async (req, res) => {
             return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.EMPTY_FIELDS});
         }
         const UserExist = await Admin.findOne({email: email});
-     
+
         if(UserExist) {
             const isMatch = await bcrypt.compare(password, UserExist.password)
 
             if(isMatch) {
                 req.session.Admin = {role: 'admin'};
-                return res.status(STATUS_CODES.OK).json({ 
-                    success: true, 
-                    message: MESSAGES.ADMIN_LOGIN_SUCCESS, 
-                    redirectUrl: '/admin/dashboard' 
+                return res.status(STATUS_CODES.OK).json({
+                    success: true,
+                    message: MESSAGES.ADMIN_LOGIN_SUCCESS,
+                    redirectUrl: '/admin/dashboard'
                 });
             } else {
-                return res.status(STATUS_CODES.UNAUTHORIZED).json({ success: false, message: MESSAGES.INVALID_PASSWORD });
+                return res.status(STATUS_CODES.UNAUTHORIZED).json({success: false, message: MESSAGES.INVALID_PASSWORD});
             }
         } else {
-            return res.status(STATUS_CODES.UNAUTHORIZED).json({ success: false, message: MESSAGES.WRONG_ADMIN_CREDENTIALS })
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({success: false, message: MESSAGES.WRONG_ADMIN_CREDENTIALS})
         }
     } catch(error) {
         logger.error(`Admin Auth Error: ${error.message}`);
-       res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.ADMIN_AUTH_SERVER_ERROR });
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.ADMIN_AUTH_SERVER_ERROR});
     }
 }
 
@@ -41,26 +42,29 @@ export const auth = async (req, res) => {
 
 export const logout = (req, res) => {
     try {
-        
-    } catch (error) {
-        
-    }
-    req.session.destroy((err) => {
-        if(err) {
-            logger.error(`Session destroy error: ${err.message}`);
-            return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.LOGOUT_FAILED});
-        }
+        req.session.destroy((err) => {
+            if(err) {
+                logger.error(`Session destroy error: ${err.message}`);
+                return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.LOGOUT_FAILED});
+            }
 
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-        
-        return res.status(STATUS_CODES.OK).json({
-            success: true,
-            message: MESSAGES.LOGOUT_SUCCESS,
-            redirectUrl: "/admin/login"
-        });
-    });
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+
+            return res.status(STATUS_CODES.OK).json({
+                success: true,
+                message: MESSAGES.LOGOUT_SUCCESS,
+                redirectUrl: "/admin/login"
+            });
+        })
+    } catch(error) {
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success:false,
+            message:MESSAGES.LOGOUT_FAILED
+        })
+    }
+
 };
 
 export const load_data = async (req, res) => {
@@ -69,21 +73,21 @@ export const load_data = async (req, res) => {
         const searchFilter = query
             ? {
                 $or: [
-                    { name: { $regex: query, $options: "i" } },
-                    { email: { $regex: query, $options: "i" } }
+                    {name: {$regex: query, $options: "i"}},
+                    {email: {$regex: query, $options: "i"}}
                 ]
             }
             : {};
 
         const users = await User.find(searchFilter)
-            .sort({ createdAt: -1 })
+            .sort({createdAt: -1})
             .lean();
 
         const userIds = users.map((user) => user._id);
         const orderCountRows = userIds.length
             ? await Order.aggregate([
-                { $match: { userId: { $in: userIds } } },
-                { $group: { _id: "$userId", count: { $sum: 1 } } }
+                {$match: {userId: {$in: userIds}}},
+                {$group: {_id: "$userId", count: {$sum: 1}}}
             ])
             : [];
 
@@ -97,11 +101,11 @@ export const load_data = async (req, res) => {
             status: user.isBlocked ? "Blocked" : user.isActive ? "Active" : "Inactive"
         }));
 
-        return res.status(STATUS_CODES.OK).json({ users: usersWithMeta });
-    } catch (error) {
+        return res.status(STATUS_CODES.OK).json({users: usersWithMeta});
+    } catch(error) {
         logger.error(`Load users search error: ${error.message}`);
         return res
             .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-            .json({ success: false, message: MESSAGES.LOAD_USERS_FAILED });
+            .json({success: false, message: MESSAGES.LOAD_USERS_FAILED});
     }
 }

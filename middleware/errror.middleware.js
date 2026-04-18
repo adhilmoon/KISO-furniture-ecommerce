@@ -2,12 +2,6 @@ import { STATUS_CODES, MESSAGES } from "../constants/index.js";
 import logger from "../utilities/logger.js";
 
 
-export const pageNotFound = (req, res, next) => {
-    res.status(STATUS_CODES.NOT_FOUND).render('404', {
-        title: "Page Not Found - KISO"
-    });
-};
-
 
 export const globalErrorHandler = (err, req, res, next) => {
     logger.error(`Unhandled Error: ${err.message}\n${err.stack}`);

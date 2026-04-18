@@ -5,7 +5,6 @@ import expressLayouts from 'express-ejs-layouts';
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
 import indexRoutes from "./routes/indexRoutes.js"
-import * as userPages from "./controller/userController/pagesController.js";
 import { pageNotFound, globalErrorHandler } from "./middleware/errror.middleware.js";
 import {fileURLToPath} from 'url';
 import path from 'path';
@@ -40,21 +39,7 @@ app.use(session({
         secure: false
     }
 }));
-app.use(async (req, res, next) => {
-    try {
-        if(req.session.user) {
-            const user = await User.findById(req.session.user._id)
-            res.locals.user = user || null
-        } else {
-            res.locals.user = null
-        }
-        next()
-    } catch(error) {
-        logger.error(`Global user middleware error: ${error.message}`);
-        res.locals.user = null;
-        next()
-    }
-})
+
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(fetchGlobalCategories)
