@@ -124,7 +124,7 @@ export const updateProduct = async (productId, body, files) => {
   const product = await Product.findById(productId);
   if(!product) throw new Error("Product not found");
 
-  const {productName, description, category, basePrice, material} = body;
+  const {productName, description, category, basePrice} = body;
 
   product.productName = productName.trim() || product.productName;
   product.description = description ? description.trim() : product.description;

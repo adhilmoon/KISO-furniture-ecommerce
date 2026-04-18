@@ -28,7 +28,10 @@ export const sendOTP = async (email, otp) => {
     logger.info(`OTP email sent to ${email}`);
   } catch(error) {
     logger.error(`OTP email send failed: ${error.message}`);
-    throw new Error("Unable to send OTP email. Check Gmail app password configuration.");
+
+    throw new Error("Unable to send OTP email", {
+      cause: error
+    });
   }
 }
 const otpTemplate = (otp) => {

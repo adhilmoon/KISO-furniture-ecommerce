@@ -112,7 +112,7 @@ export const logout = (req, res) => {
             });
         });
     } catch(error) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
+        return res.status(STATUS_CODES.UNAUTHORIZED).json({
             success: false,
             message: MESSAGES.SOMETHING_WENT_WRONG
         });
