@@ -2,6 +2,8 @@ import User from "../../model/User.js";
 import Order from "../../model/Order.js";
 import Category from "../../model/Category.js";
 import Product from "../../model/Product.js";
+import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
+import logger from "../../utilities/logger.js";
 
 export const adminlogin = (req, res) => {
     res.render('admin/login', {
@@ -15,7 +17,7 @@ export const toggleBlock = async (req, res) => {
     try {
         const userId = req.params.id;
         const user = await User.findById(userId);
-        if(!user) return res.status(404).json({success: false, message: 'User not found'});
+        if(!user) return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: MESSAGES.USER_NOT_FOUND});
 
         // Toggle block state
         user.isBlocked = !user.isBlocked;
@@ -26,8 +28,8 @@ export const toggleBlock = async (req, res) => {
 
         return res.json({success: true, isBlocked: user.isBlocked, status: user.status});
     } catch(error) {
-        console.error('Toggle block error:', error);
-        return res.status(500).json({success: false, message: 'Server error'});
+        logger.error(`Toggle block error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.SERVER_ERROR});
     }
 }
 export const admindash = (req, res) => {
@@ -67,8 +69,8 @@ export const users_mange = async (req, res) => {
 
         })
     } catch(error) {
-        console.error('View customer error:', error);
-        res.status(500).send('Server error');
+        logger.error(`View customer error: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
     }
 
 }
@@ -113,8 +115,8 @@ export const adminCategory_load = async (req, res) => {
         })
 
     } catch(error) {
-        console.error('category management side errror')
-        res.status(500).send('Server error')
+        logger.error(`Category management side error: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
     }
 }
 
@@ -127,8 +129,8 @@ export const adminCategoryAdd_load = async (req, res) => {
             category: null // Indicates it's an add operation
         });
     } catch(error) {
-        console.error('Error loading add category page', error);
-        res.status(500).send('Server error');
+        logger.error(`Error loading add category page: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
     }
 };
 
@@ -138,7 +140,7 @@ export const adminCategoryEdit_load = async (req, res) => {
         const category = await Category.findById(categoryId).lean();
 
         if(!category) {
-            return res.status(404).send('Category not found');
+            return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.CATEGORY_NOT_FOUND);
         }
 
         res.render('admin/category-add', {
@@ -148,8 +150,8 @@ export const adminCategoryEdit_load = async (req, res) => {
             category // Pass existing data
         });
     } catch(error) {
-        console.error('Error loading edit category page', error);
-        res.status(500).send('Server error');
+        logger.error(`Error loading edit category page: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
     }
 };
 
@@ -203,8 +205,8 @@ export const adminProduct_Management = async (req, res) => {
 
         })
     } catch(error) {
-        console.error('category management side errror', error)
-        res.status(500).send('Server error')
+        logger.error(`Product management side error: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
     }
 }
 
@@ -219,8 +221,8 @@ export const addProductPage = async (req, res) => {
             categories,
         });
     } catch(error) {
-        console.error("addProductPage error:", error);
-        res.status(500).send("Server error");
+        logger.error(`addProductPage error: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
     }
 };
 
@@ -231,7 +233,7 @@ export const editProductPage = async (req, res) => {
             .populate('category', 'categoryName')
             .lean();
         if(!product) {
-            return res.status(404).send("Product not found");
+            return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.PRODUCT_NOT_FOUND);
         }
         const categories = await Category.find({isActive: true}).lean();
         res.render("admin/product-edit", {
@@ -242,8 +244,8 @@ export const editProductPage = async (req, res) => {
             product
         });
     } catch(error) {
-        console.error("editProductPage error:", error);
-        res.status(500).send("Server error");
+        logger.error(`editProductPage error: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
     }
 };
 

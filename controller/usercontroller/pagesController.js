@@ -3,6 +3,7 @@ import Address from "../../model/Address.js";
 import Product from "../../model/Product.js";
 import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 import Category from "../../model/Category.js";
+import logger from "../../utilities/logger.js";
 
 
 
@@ -62,10 +63,20 @@ const pickRandomImage = (arr) => arr[Math.floor(Math.random() * arr.length)];
 export const user_home = async (req, res) => {
     try {
 
-        const products = sampleProducts.map((product) => ({
-            ...product,
-            img: pickRandomImage(product.products)
-        }));
+
+        const productList = await Product.find({ isListed: true })
+            .limit(4)
+            .populate("category")
+            .lean();
+
+        const products = productList.map((product) => {
+        
+            const allImages = product.variants?.flatMap(v => v.images) || [];
+            return {
+                ...product,
+                img: pickRandomImage(allImages)
+            };
+        });
 
         const rooms = sampleProducts.map((product) => ({
             title: product.name,
@@ -79,8 +90,8 @@ export const user_home = async (req, res) => {
             rooms
         });
     } catch(error) {
-        console.log(error);
-        return res.status(500).send("Internal Server Error");
+        logger.error(`User home page error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.INTERNAL_SERVER_ERROR);
     }
 };
 
@@ -108,7 +119,7 @@ export const user_profile = async (req, res) => {
         }
         const user = await User.findById(userId)
         if(!user) {
-            return res.send("in Db user not fount ")
+            return res.send(MESSAGES.USER_NOT_FOUND)
         }
         return res.render('user/profile', {
             user: user,
@@ -116,7 +127,7 @@ export const user_profile = async (req, res) => {
             title: "My Profile"
         })
     } catch(error) {
-        console.log(error)
+        logger.error(`User profile page error: ${error.message}`);
         return res
             .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
             .send(MESSAGES.INTERNAL_SERVER_ERROR);
@@ -167,16 +178,11 @@ export const user_address = async (req, res) => {
             isProfilePage: true
         });
     } catch(error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
+        logger.error(`User address page error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.INTERNAL_SERVER_ERROR);
     }
 };
-export const page_notfound = (req, res) => {
 
-   return res.status(STATUS_CODES.NOT_FOUND).render('404', {
-        title: "Page Not Found - KISO"
-    });
-};
 export const user_store = async (req, res) => {
     try {
         const page       = parseInt(req.query.page) || 1;
@@ -247,7 +253,7 @@ export const user_store = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Store page error:", error);
-        return res.status(500).render('404', { title: "Error" });
+        logger.error(`Store page error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render('404', { title: "Error" });
     }
 };

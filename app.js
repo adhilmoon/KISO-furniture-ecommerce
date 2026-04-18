@@ -6,6 +6,7 @@ import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
 import indexRoutes from "./routes/indexRoutes.js"
 import * as userPages from "./controller/userController/pagesController.js";
+import { pageNotFound, globalErrorHandler } from "./middleware/errror.middleware.js";
 import {fileURLToPath} from 'url';
 import path from 'path';
 import connectDB from './config/connectDB.js';
@@ -13,6 +14,7 @@ import './config/passport.js'
 import passport from 'passport';
 import User from './model/User.js';
 import { fetchGlobalCategories } from './middleware/globalCategories.js';
+import logger from './utilities/logger.js';
 
 
 // your existing code below
@@ -48,8 +50,8 @@ app.use(async (req, res, next) => {
         }
         next()
     } catch(error) {
-        console.log('global user middilware error', error)
-        res.locals.user = null
+        logger.error(`Global user middleware error: ${error.message}`);
+        res.locals.user = null;
         next()
     }
 })
@@ -71,7 +73,11 @@ app.use('/user', userRoute)
 
 app.use('/', indexRoutes);
 
+
+app.use(pageNotFound);
+app.use(globalErrorHandler);
+
 const port = process.env.PORT || 4004;
 app.listen(port, () => {
-    console.log(`Server started at http://localhost:${port}`);
+    logger.info(`Server started at http://localhost:${port}`);
 });

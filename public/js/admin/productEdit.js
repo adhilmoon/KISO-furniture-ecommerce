@@ -663,7 +663,9 @@ function validateForm() {
     const optValue = $(`vOptValue-${id}`)?.value.trim();
     const price = parseFloat($(`vPrice-${id}`)?.value);
     const stock = parseInt($(`vStock-${id}`)?.value, 10);
-    const images = variantCroppedFiles[id] || []
+    // const newImagesCount = variantCroppedFiles[id]?.length || 0;
+    // const existingImagesCount = existingVariantImageCount[id] || 0;
+    // const totalImages = newImagesCount + existingImagesCount;
     if(!optType) {showVariantError(id, 'optType', 'Option type is required (e.g. Size, Color).'); valid = false;}
     else {clearVariantError(id, 'optType');}
 
@@ -676,10 +678,10 @@ function validateForm() {
     if(isNaN(stock) || stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
     else {clearVariantError(id, 'stock');}
 
-    if(images.length === 0) {
-      showToast(`Variant #${id} must have at least 1 image`, 'error');
-      valid = false;
-    }
+    // if(totalImages === 0) {
+    //   showToast(`Variant #${id} must have at least 1 image (existing or new).`, 'error');
+    //   valid = false;
+    // }
   });
 
   if(!valid) {

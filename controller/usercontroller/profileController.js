@@ -1,10 +1,10 @@
 import User from "../../model/User.js";
 import Address from "../../model/Address.js";
-import {STATUS_CODES} from "../../constants/statusCodes.js";
-import {MESSAGES} from "../../constants/messages.js";
+import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
 import * as otpsender from '../../utilities/sendEmail.js'
 import bcrypt from 'bcrypt'
 import { uploadToCloudinary } from "../../config/cloudinary.js";
+import logger from "../../utilities/logger.js";
 
 
 export const uploadProfilePic = async (req, res) => {
@@ -37,7 +37,7 @@ export const uploadProfilePic = async (req, res) => {
             avatar: imageUrl
         });
     } catch(error) {
-        console.error("Upload Error:", error);
+        logger.error(`Upload Error: ${error.message}`);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: error.message || MESSAGES.ERROR_UPLOADING_CLOUDINARY});
     }
 };
@@ -63,13 +63,13 @@ export const profile_Update = async (req, res) => {
         if(currentUser.name === name && currentUser.phone === phone) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "No changes detected. Please update at least one field."
+                message: MESSAGES.NO_CHANGES_DETECTED
             })
         }
         if(!name && !phone) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "Name and phone are required"
+                message: MESSAGES.NAME_PHONE_REQUIRED
             });
         }
         const updatedUser = await User.findByIdAndUpdate(userId, {
@@ -85,7 +85,7 @@ export const profile_Update = async (req, res) => {
         return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.PROFILE_UPDATED_SUCCESS, user: updatedUser})
 
     } catch(error) {
-        console.error("Profile update error:", error);
+        logger.error(`Profile update error: ${error.message}`);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR_PROFILE})
 
     }
@@ -101,7 +101,7 @@ export const addAddress = async (req, res) => {
         if(!fullName || !mobile || !pincode || !city || !state) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "Required fields are missing"
+                message: MESSAGES.REQUIRED_FIELDS_MISSING
             });
         }
 
@@ -124,7 +124,7 @@ export const addAddress = async (req, res) => {
         });
 
     } catch(error) {
-        console.error("Add Address Error:", error);
+        logger.error(`Add Address Error: ${error.message}`);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR_ADDRESS});
     }
 };
@@ -142,7 +142,7 @@ export const getAddress = async (req, res) => {
         if(!address) {
             return res.status(STATUS_CODES.NOT_FOUND).json({
                 success: false,
-                message: "Address not found"
+                message: MESSAGES.ADDRESS_NOT_FOUND
             });
         }
 
@@ -151,8 +151,8 @@ export const getAddress = async (req, res) => {
             address
         });
     } catch(error) {
-        console.error("Get Address Error:", error);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: "Failed to fetch address"});
+        logger.error(`Get Address Error: ${error.message}`);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.FETCH_ADDRESS_FAILED});
     }
 };
 
@@ -165,7 +165,7 @@ export const updateAddress = async (req, res) => {
         if(!fullName || !mobile || !pincode || !city || !state) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({
                 success: false,
-                message: "Required fields are missing"
+                message: MESSAGES.REQUIRED_FIELDS_MISSING
             });
         }
 
@@ -186,17 +186,17 @@ export const updateAddress = async (req, res) => {
         if(!updatedAddress) {
             return res.status(STATUS_CODES.NOT_FOUND).json({
                 success: false,
-                message: "Address not found"
+                message: MESSAGES.ADDRESS_NOT_FOUND
             });
         }
 
         return res.status(STATUS_CODES.OK).json({
             success: true,
-            message: "Address updated successfully",
+            message: MESSAGES.ADDRESS_UPDATED_SUCCESS,
             address: updatedAddress
         });
     } catch(error) {
-        console.error("Update Address Error:", error);
+        logger.error(`Update Address Error: ${error.message}`);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR_ADDRESS});
     }
 };
@@ -209,11 +209,11 @@ export const updateEmail = async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password)
         if(!isMatch) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: "Incorrect password"})
+            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.INCORRECT_PASSWORD})
         }
         const emailexist = await User.findOne({email, _id: {$ne: userId}})
         if(emailexist) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: "Email already in use"})
+            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.EMAIL_ALREADY_IN_USE})
         }
         if(isResend) {
             const tempUser = req.session.tempUserData;
@@ -224,7 +224,7 @@ export const updateEmail = async (req, res) => {
                 });
             }
             const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            console.log(`new OTP${newOtp}for this email${email}`)
+            // logger.debug(`new OTP ${newOtp} for this email ${email}`);
 
             req.session.tempUserData.otp = newOtp;
 
@@ -232,7 +232,7 @@ export const updateEmail = async (req, res) => {
             return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.NEW_OTP_SENT});
         }
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        console.log(`this is otp : ${otp}for this mail ${email}`)
+        // logger.debug(`this is otp : ${otp} for this mail ${email}`);
 
         req.session.tempUserData = {
             email,
@@ -269,9 +269,9 @@ export const changePassword = async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 12)
         user.password = hashedPassword;
         await user.save()
-        return res.status(STATUS_CODES.OK).json({success: true, message: "Password updated successfully"});
+        return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.PASSWORD_UPDATED_SUCCESS});
     } catch(error) {
-        console.log("change password issue")
+        logger.error(`Change password error: ${error.message}`);
         res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false,message:MESSAGES.INTERNAL_SERVER_ERROR})
     }
 }

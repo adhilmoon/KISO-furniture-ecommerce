@@ -5,6 +5,7 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { MESSAGES } from "../../constants/messages.js";
 import User from "../../model/User.js";
 import Order from "../../model/Order.js";
+import logger from "../../utilities/logger.js";
 
 export const auth = async (req, res) => {
     try {
@@ -31,7 +32,7 @@ export const auth = async (req, res) => {
             return res.status(STATUS_CODES.UNAUTHORIZED).json({ success: false, message: MESSAGES.WRONG_ADMIN_CREDENTIALS })
         }
     } catch(error) {
-        console.error("Auth Error:", error);
+        logger.error(`Admin Auth Error: ${error.message}`);
        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.ADMIN_AUTH_SERVER_ERROR });
     }
 }
@@ -39,19 +40,24 @@ export const auth = async (req, res) => {
 //////////----------//////////////////////
 
 export const logout = (req, res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
     req.session.destroy((err) => {
         if(err) {
-            console.log("Session destroy error:", err);
-            return res.status(500).json({success: false, message: "Logout failed"});
+            logger.error(`Session destroy error: ${err.message}`);
+            return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.LOGOUT_FAILED});
         }
 
         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         res.setHeader('Pragma', 'no-cache');
         res.setHeader('Expires', '0');
         
-        return res.status(200).json({
+        return res.status(STATUS_CODES.OK).json({
             success: true,
-            message: "Logged out successfully",
+            message: MESSAGES.LOGOUT_SUCCESS,
             redirectUrl: "/admin/login"
         });
     });
@@ -93,9 +99,9 @@ export const load_data = async (req, res) => {
 
         return res.status(STATUS_CODES.OK).json({ users: usersWithMeta });
     } catch (error) {
-        console.error("Load users search error:", error);
+        logger.error(`Load users search error: ${error.message}`);
         return res
             .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-            .json({ success: false, message: "Failed to load users" });
+            .json({ success: false, message: MESSAGES.LOAD_USERS_FAILED });
     }
 }

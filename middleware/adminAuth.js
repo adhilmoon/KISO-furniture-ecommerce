@@ -1,3 +1,5 @@
+import logger from "../utilities/logger.js";
+
 function adminauth(req, res, next) {
     if(req.session.Admin && req.session.Admin.role === 'admin') {
         next()
@@ -16,7 +18,7 @@ const isLogin = (req, res, next) => {
         }
         next(); 
     } catch (error) {
-        console.log(error.message);
+        logger.error(`isLogin Middleware Error: ${error.message}`);
     }
 };
 

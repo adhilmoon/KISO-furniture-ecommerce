@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer"
+import logger from "./logger.js"
 
 export const sendOTP = async (email, otp) => {
   const emailUser = process.env.EMAIL_USER?.trim();
@@ -24,9 +25,9 @@ export const sendOTP = async (email, otp) => {
       html: otpTemplate(otp)
     });
 
-    console.log(`OTP email sent to ${email}`);
+    logger.info(`OTP email sent to ${email}`);
   } catch(error) {
-    console.error("OTP email send failed:", error.message);
+    logger.error(`OTP email send failed: ${error.message}`);
     throw new Error("Unable to send OTP email. Check Gmail app password configuration.");
   }
 }

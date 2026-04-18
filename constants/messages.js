@@ -30,10 +30,49 @@ export const MESSAGES = Object.freeze({
     USER_NOT_AUTHENTICATED: "User not authenticated",
     PROFILE_UPDATED_SUCCESS: "Updated successfully",
     INTERNAL_SERVER_ERROR_PROFILE: "Internal server error",
+    NO_CHANGES_DETECTED: "No changes detected. Please update at least one field.",
+    NAME_PHONE_REQUIRED: "Name and phone are required",
+
+    // Category Messages
+    REQUIRED_FIELDS_MISSING: "Required fields are missing",
+    CATEGORY_CREATED_SUCCESS: "Category created successfully",
+    CATEGORY_UPDATED_SUCCESS: "Category updated successfully",
+    CATEGORY_DISABLED_SUCCESS: "Category disabled successfully",
+    CATEGORY_ENABLED_SUCCESS: "Category enabled successfully",
+    CATEGORY_ALREADY_EXISTS: "Category name already exists",
+    CATEGORY_NOT_FOUND: "Category not found",
+    FETCH_CATEGORY_FAILED: "Failed to fetch category",
+    LOAD_USERS_FAILED: "Failed to load users",
+
+    // General Auth & Session Messages
+    UNAUTHORIZED_ACCESS: "Unauthorized access",
+    SERVER_ERROR: "Server error",
+    SOMETHING_WENT_WRONG: "Something went wrong",
+    LOGOUT_SUCCESS: "Logged out successfully",
+    LOGOUT_FAILED: "Logout failed",
+    EMAIL_UPDATED_SUCCESS: "Email updated successfully",
+    OTP_VERIFIED: "OTP Verified",
+    PASSWORD_UPDATED_SUCCESS: "Password updated successfully",
+    EMAIL_ALREADY_IN_USE: "Email already in use",
 
     // Address Messages
     ADDRESS_ADDED_SUCCESS: "Address added successfully!",
+    ADDRESS_DELETED: "Address deleted",
+    ADDRESS_NOT_FOUND: "Address not found",
+    FETCH_ADDRESS_FAILED: "Failed to fetch address",
+    ADDRESS_UPDATED_SUCCESS: "Address updated successfully",
+    PRODUCT_NOT_FOUND: "Product not found",
     INTERNAL_SERVER_ERROR_ADDRESS: "Internal server error",
+
+    // Cart Messages
+    ADDED_TO_CART: "Added to cart",
+    CART_UPDATED: "Cart updated",
+    ITEM_REMOVED: "Item removed",
+    CART_CLEARED: "Cart cleared",
+
+    // Middleware Messages
+    UNAUTHORIZED_LOGIN: "Unauthorized: Please login.",
+    ACCOUNT_BLOCKED: "Your account is blocked.",
 
     // General Error Messages
     PAGE_NOT_FOUND: "Page not found. The requested resource does not exist.",
