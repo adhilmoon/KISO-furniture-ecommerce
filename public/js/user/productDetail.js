@@ -88,7 +88,7 @@ async function addToCart(productId) {
     if (error.response && error.response.status === 401) {
       window.location.href = '/user/login';
     } else {
-      showToast('An error occurred. Make sure you are logged in.', 'error');
+      showToast(error.response?.data?.message || 'An error occurred. Make sure you are logged in.', 'error');
     }
   } finally {
     btn.innerHTML = originalText;
@@ -123,7 +123,7 @@ async function buyNow(productId) {
     if (error.response && error.response.status === 401) {
       window.location.href = '/user/login';
     } else {
-      showToast('Something went wrong', 'error');
+      showToast(error.response?.data?.message || 'Something went wrong', 'error');
     }
   }
 }

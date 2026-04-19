@@ -93,7 +93,7 @@ function handleSearchDebounced() {
     const params = getActiveParams();
     const qs = buildQueryString(params, 1);
     window.location.href = '/user/store' + qs;
-  }, 500);
+  },600);
 }
 
 function clearSearch() {

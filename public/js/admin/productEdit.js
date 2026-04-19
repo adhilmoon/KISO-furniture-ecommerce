@@ -189,13 +189,12 @@ function removeVariantImage(variantId, idx) {
 
 function removeExistingVariantImage(url, variantId, vc, idx) {
 
-  // existingVariantImageCount is keyed by the numeric card index (vc),
-  // NOT the MongoDB _id — so decrement using vc.
+
   if((existingVariantImageCount[vc] || 0) > 0) {
     existingVariantImageCount[vc]--;
   }
 
-  // deletedVariantImages is sent to the backend and must use the real DB id.
+
   if(!deletedVariantImages[variantId]) {
     deletedVariantImages[variantId] = [];
   }
