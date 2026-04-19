@@ -20,15 +20,21 @@
 
       <!-- LEFT: Gallery -->
       <div class="flex flex-col gap-4">
-        <% let allImages=[]; if (product.variants && product.variants.length> 0) {
-          product.variants.forEach(v => {
-          if (v.images) allImages = allImages.concat(v.images);
+        <% 
+        let allImageObjects = []; 
+        if (product.variants && product.variants.length > 0) {
+          product.variants.forEach((v, vIdx) => {
+            if (v.images) {
+              v.images.forEach(img => {
+                allImageObjects.push({ url: img, variantIndex: vIdx });
+              });
+            }
           });
-          }
-          %>
+        }
+        %>
           <div
             class="relative aspect-square md:aspect-[4/3] bg-brand-bg2 rounded-2xl overflow-hidden border border-white/5">
-            <img id="mainImage" src="<%= allImages.length ? allImages[0] : '/images/placeholder.png' %>"
+            <img id="mainImage" src="<%= allImageObjects.length ? allImageObjects[0].url : '/images/placeholder.png' %>"
               class="w-full h-full object-cover transition-transform duration-300 cursor-zoom-in">
             <button
               class="absolute top-4 right-4 w-9 h-9 bg-brand-bg1/70 backdrop-blur-sm rounded-full flex items-center justify-center text-brand-muted hover:text-red-400 transition-colors"
@@ -42,12 +48,13 @@
           </div>
 
           <!-- Thumbnails -->
-          <div class="flex gap-3 overflow-x-auto pb-1 hide-scrollbar">
-            <% allImages.slice(0, 6).forEach((img, i)=> { %>
+          <div class="flex gap-3 overflow-x-auto pb-1 hide-scrollbar" id="thumbnailContainer">
+            <% allImageObjects.forEach((imgObj, i)=> { %>
               <button
-                onclick="document.getElementById('mainImage').src='<%= img %>'; document.querySelectorAll('.thumb-btn').forEach(b=>b.classList.remove('border-brand-accent')); this.classList.add('border-brand-accent')"
-                class="thumb-btn flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 <%= i === 0 ? 'border-brand-accent' : 'border-white/10 hover:border-white/30' %> bg-brand-bg2 p-1">
-                <img src="<%= img %>" alt="View <%= i+1 %>"
+                data-variant-index="<%= imgObj.variantIndex %>"
+                onclick="switchImage('<%= imgObj.url %>', this)"
+                class="thumb-btn flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 <%= imgObj.variantIndex === 0 ? '' : 'hidden' %> <%= i === 0 ? 'border-brand-accent' : 'border-white/10 hover:border-white/30' %> bg-brand-bg2 p-1">
+                <img src="<%= imgObj.url %>" alt="View <%= i+1 %>"
                   class="w-full h-full object-cover rounded-lg opacity-80 hover:opacity-100 transition-opacity">
               </button>
               <% }) %>
@@ -140,7 +147,7 @@
             <div class="flex gap-3 flex-wrap">
               <% product.variants.forEach((v, i)=> { %>
                 <button
-                  onclick="document.querySelectorAll('.variant-btn').forEach(b=>b.classList.replace('border-brand-accent', 'border-white/10')); this.classList.replace('border-white/10', 'border-brand-accent'); document.getElementById('product-price').innerText = '₹<%= v.price %>'; if('<%= v.images && v.images[0] ? v.images[0] : '' %>') document.getElementById('mainImage').src='<%= v.images && v.images.length > 0 ? v.images[0] : '/images/placeholder.png' %>';"
+                  onclick="selectVariant(this, '<%= v.price %>', '<%= v.images && v.images[0] ? v.images[0] : '' %>', <%= i %>)"
                   class="variant-btn flex flex-col items-center gap-2 border-2 rounded-xl p-2 transition-all <%= i === 0 ? 'border-brand-accent' : 'border-white/10 hover:border-white/30' %>">
                   <div class="w-16 h-16 rounded-lg overflow-hidden bg-brand-bg1 p-1">
                     <img src="<%= v.images && v.images[0] ? v.images[0] : '/images/placeholder.png' %>"
@@ -174,11 +181,11 @@
 
             <!-- CTA Buttons -->
             <div class="flex gap-4 mt-2">
-              <button type="button" id="add-to-cart-btn" data-product-id="<%= product._id %>"
+              <button type="button" id="add-to-cart-btn" onclick="addToCart('<%= product._id %>')"
                 class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-accent bg-brand-accent/10 border border-brand-accent rounded-xl hover:bg-brand-accent hover:text-brand-bg1 transition-all">
                 Add to Cart
               </button>
-              <button type="button"
+              <button type="button" onclick="buyNow('<%= product._id %>')"
                 class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-bg1 bg-brand-accent rounded-xl hover:opacity-90 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)]">
                 Buy Now
               </button>

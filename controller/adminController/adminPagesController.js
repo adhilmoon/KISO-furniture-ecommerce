@@ -19,9 +19,9 @@ export const toggleBlock = async (req, res) => {
         const user = await User.findById(userId);
         if(!user) return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: MESSAGES.USER_NOT_FOUND});
 
-        // Toggle block state
+       
         user.isBlocked = !user.isBlocked;
-        // Maintain status string for display
+      
         user.status = user.isBlocked ? 'Blocked' : (user.isActive ? 'Active' : 'Inactive');
 
         await user.save();
@@ -32,12 +32,31 @@ export const toggleBlock = async (req, res) => {
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.SERVER_ERROR});
     }
 }
-export const admindash = (req, res) => {
-    res.render('admin/dashboard', {
-        title: 'Admin dashboard',
-        layout: 'layouts/admin',
-        showSidebar: true
-    });
+export const admindash = async (req, res) => {
+    try {
+        const totalProducts = await Product.countDocuments();
+        const totalUsers = await User.countDocuments({ isActive: true, isBlocked: false });
+        const totalOrders = await Order.countDocuments({ orderStatus: { $ne: 'cancelled' } });
+        
+        const revenueResult = await Order.aggregate([
+            { $match: { orderStatus: { $ne: 'cancelled' } } },
+            { $group: { _id: null, total: { $sum: "$grandTotal" } } }
+        ]);
+        const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
+
+        res.render('admin/dashboard', {
+            title: 'Admin dashboard',
+            layout: 'layouts/admin',
+            totalProducts,
+            totalUsers,
+            totalOrders,
+            totalRevenue,
+            showSidebar: true
+        });
+    } catch (error) {
+        logger.error(`Dashboard error: ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.SERVER_ERROR);
+    }
 };
 export const users_mange = async (req, res) => {
     try {

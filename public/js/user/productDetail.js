@@ -15,124 +15,118 @@ function switchImage(src, btn) {
   btn.classList.remove('border-white/10');
 }
 
-function selectVariant(btn, name, price) {
-  document.querySelectorAll('#variantGroup .variant-btn').forEach(b => {
+function selectVariant(btn, price, imageUrl, variantIndex) {
+
+  document.querySelectorAll('.variant-btn').forEach(b => {
     b.classList.remove('border-brand-accent');
     b.classList.add('border-white/10');
   });
   btn.classList.add('border-brand-accent');
   btn.classList.remove('border-white/10');
-  document.getElementById('selectedVariant').textContent = name;
-}
 
-function selectOpt(btn, groupId, labelId, name) {
-  document.querySelectorAll(`#${groupId} button`).forEach(b => {
-    b.classList.remove('border-brand-accent', 'text-brand-light', 'bg-brand-accent/8');
-    b.classList.add('border-white/10', 'text-brand-muted');
-  });
-  btn.classList.add('border-brand-accent', 'text-brand-light', 'bg-brand-accent/8');
-  btn.classList.remove('border-white/10', 'text-brand-muted');
-  document.getElementById(labelId).textContent = name;
-}
+ 
+  const priceEl = document.getElementById('product-price');
+  if (priceEl) priceEl.innerText = '₹' + price;
 
-function showTab(name) {
-  ['desc', 'specs', 'reviews'].forEach(t => {
-    const el = document.getElementById('tab-' + t);
-    if(el) el.classList.add('hidden');
-  });
-  const active = document.getElementById('tab-' + name);
-  if(active) active.classList.remove('hidden');
+  const mainImg = document.getElementById('mainImage');
+  if (mainImg && imageUrl && imageUrl !== '') {
+    mainImg.src = imageUrl;
+  }
 
-  document.querySelectorAll('.tab-btn').forEach(b => {
-    const isActive = b.dataset.tab === name;
-    b.classList.toggle('text-brand-accent', isActive);
-    b.classList.toggle('border-brand-accent', isActive);
-    b.classList.toggle('text-brand-muted', !isActive);
-    b.classList.toggle('border-transparent', !isActive);
+
+  document.querySelectorAll('.thumb-btn').forEach(thumb => {
+    const thumbVariantIndex = parseInt(thumb.dataset.variantIndex);
+    if (thumbVariantIndex === variantIndex) {
+      thumb.classList.remove('hidden');
+      
+   
+      const thumbImg = thumb.querySelector('img');
+      if (thumbImg && thumbImg.getAttribute('src') === imageUrl) {
+        thumb.classList.add('border-brand-accent');
+        thumb.classList.remove('border-white/10');
+      } else {
+        thumb.classList.remove('border-brand-accent');
+        thumb.classList.add('border-white/10');
+      }
+    } else {
+      thumb.classList.add('hidden');
+    }
   });
 }
 
 async function addToCart(productId) {
-  try {
-    const response = await axios.post('/user/cart/add', {productId, quantity: qty});
-    if(response.data.success) {
-      showToast(response.data.message || 'Added to cart!', 'success');
-    }
-  } catch(err) {
-    showToast(err.response?.data?.message || 'Failed to add to cart', 'error');
-  }
-}
-
-async function buyNow(productId) {
-  try {
-    await axios.post('/user/cart/add', {productId, quantity: qty});
-    window.location.href = '/user/checkout';
-  } catch(err) {
-    showToast('Something went wrong', 'error');
-  }
-}
-
-async function toggleWishlist(productId) {
-  try {
-    const response = await axios.post('/user/wishlist/toggle', {productId});
-    const btn = document.getElementById('wishlistBtn');
-    if(response.data.wishlisted) {
-      btn.querySelector('svg').setAttribute('fill', 'currentColor');
-      btn.classList.add('text-red-400');
-      showToast('Added to wishlist', 'success');
-    } else {
-      btn.querySelector('svg').setAttribute('fill', 'none');
-      btn.classList.remove('text-red-400');
-      showToast('Removed from wishlist', 'info');
-    }
-  } catch(err) {
-    showToast('Please login first', 'error');
-  }
-}
-
-
-
-document.getElementById('add-to-cart-btn')?.addEventListener('click', async function () {
-  if(this.disabled) return;
+  const btn = document.getElementById('add-to-cart-btn');
+  if (btn.disabled) return;
 
   let currentVariantIndex = 0;
-  document.querySelectorAll('.variant-btn').forEach((btn, index) => {
-    if(btn.classList.contains('border-brand-accent')) {
+  document.querySelectorAll('.variant-btn').forEach((vBtn, index) => {
+    if (vBtn.classList.contains('border-brand-accent')) {
       currentVariantIndex = index;
     }
   });
 
-  const productId = this.dataset.productId;
   const qtyDisplay = document.getElementById('qtyDisplay');
-  const qty = parseInt(qtyDisplay ? qtyDisplay.innerText : 1);
+  const quantity = parseInt(qtyDisplay ? qtyDisplay.innerText : 1);
 
-  const originalText = this.innerHTML;
-  this.innerHTML = 'Adding...';
-  this.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = 'Adding...';
+  btn.disabled = true;
 
   try {
     const response = await axios.post('/user/cart/add', {
       productId,
       variantIndex: currentVariantIndex,
-      quantity: qty
+      quantity
     });
 
-    if(response.data.success) {
+    if (response.data.success) {
       showToast('Added to cart!', 'success');
     } else {
       showToast(response.data.message || 'Error adding to cart', 'error');
     }
-  } catch(error) {
-    if(error.response && error.response.status === 401) {
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
       window.location.href = '/user/login';
     } else {
       showToast('An error occurred. Make sure you are logged in.', 'error');
     }
   } finally {
-    this.innerHTML = originalText;
-    this.disabled = false;
+    btn.innerHTML = originalText;
+    btn.disabled = false;
   }
-});
+}
+
+async function buyNow(productId) {
+  let currentVariantIndex = 0;
+  document.querySelectorAll('.variant-btn').forEach((vBtn, index) => {
+    if (vBtn.classList.contains('border-brand-accent')) {
+      currentVariantIndex = index;
+    }
+  });
+
+  const qtyDisplay = document.getElementById('qtyDisplay');
+  const quantity = parseInt(qtyDisplay ? qtyDisplay.innerText : 1);
+
+  try {
+    const response = await axios.post('/user/cart/add', {
+      productId,
+      variantIndex: currentVariantIndex,
+      quantity
+    });
+    
+    if (response.data.success) {
+      window.location.href = '/user/cart';
+    } else {
+      showToast(response.data.message || 'Error processing request', 'error');
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/user/login';
+    } else {
+      showToast('Something went wrong', 'error');
+    }
+  }
+}
 
 function toggleWishlist(id) {
   showToast('Wishlist feature coming soon!', 'info');
