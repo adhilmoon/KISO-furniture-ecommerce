@@ -1,21 +1,22 @@
 import User from "../../model/User.js";
 import Address from "../../model/Address.js";
-import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
+import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 import * as otpsender from '../../utilities/sendEmail.js'
 import bcrypt from 'bcrypt'
-import { uploadToCloudinary } from "../../config/cloudinary.js";
+import {uploadToCloudinary} from "../../config/cloudinary.js";
 import logger from "../../utilities/logger.js";
+import {userService} from "../../service/user/userService.js";
 
 
 export const uploadProfilePic = async (req, res) => {
     try {
-        
+
         if(!req.file) {
             return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.PLEASE_UPLOAD_IMAGE});
         }
 
         const userId = req.session.user._id;
-        const result=await uploadToCloudinary(req.res.buffer,"kiso/users/profile");
+        const result = await uploadToCloudinary(req.res.buffer, "kiso/users/profile");
         const imageUrl = result.secure_url;
 
         // Database Update
@@ -92,7 +93,7 @@ export const profile_Update = async (req, res) => {
 
 
 }
-// add adderess
+
 
 export const addAddress = async (req, res) => {
     try {
@@ -129,7 +130,7 @@ export const addAddress = async (req, res) => {
     }
 };
 
-// Get single address by ID
+
 export const getAddress = async (req, res) => {
     try {
         const {id} = req.params;
@@ -156,7 +157,7 @@ export const getAddress = async (req, res) => {
     }
 };
 
-// Update address by ID
+
 export const updateAddress = async (req, res) => {
     try {
         const {id} = req.params;
@@ -224,7 +225,7 @@ export const updateEmail = async (req, res) => {
                 });
             }
             const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            // logger.debug(`new OTP ${newOtp} for this email ${email}`);
+           
 
             req.session.tempUserData.otp = newOtp;
 
@@ -232,8 +233,7 @@ export const updateEmail = async (req, res) => {
             return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.NEW_OTP_SENT});
         }
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        // logger.debug(`this is otp : ${otp} for this mail ${email}`);
-
+      
         req.session.tempUserData = {
             email,
             otp,
@@ -247,7 +247,8 @@ export const updateEmail = async (req, res) => {
 
 
     } catch(error) {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false,message:MESSAGES.INTERNAL_SERVER_ERROR})
+        logger.error(`Update email : ${error.message}`);
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR})
     }
 }
 
@@ -264,14 +265,14 @@ export const changePassword = async (req, res) => {
         }
         const isMatch = await bcrypt.compare(currentPassword, user.password)
         if(!isMatch) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false,message: MESSAGES.INCORRECT_PASSWORD})
+            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.INCORRECT_PASSWORD})
         }
-        const hashedPassword = await bcrypt.hash(newPassword, 12)
-        user.password = hashedPassword;
-        await user.save()
+        
+        await userService.updatePassword(user.email, newPassword);
+
         return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.PASSWORD_UPDATED_SUCCESS});
     } catch(error) {
         logger.error(`Change password error: ${error.message}`);
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false,message:MESSAGES.INTERNAL_SERVER_ERROR})
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR})
     }
 }

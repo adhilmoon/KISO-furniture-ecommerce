@@ -1,80 +1,82 @@
-import * as userService from "../../service/user/userService.js"
-import User from '../../model/User.js'
-import Address from "../../model/Address.js"
-import bcrypt from 'bcrypt'
-import * as otpsender from '../../utilities/sendEmail.js'
+import {userService} from "../../service/user/userService.js"
 import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 import logger from "../../utilities/logger.js";
 
 
+
 export const signup_post = async (req, res) => {
     try {
-
         const {name, email, password, referralCode, isResend} = req.body;
+        const result = await userService.signup({name, email, password, referralCode}, isResend)
         if(isResend) {
-            const tempUser = req.session.tempUserData;
-            if(!tempUser || tempUser.email !== email) {
-                return res.status(STATUS_CODES.BAD_REQUEST).json({
-                    success: false,
-                    message: MESSAGES.SESSION_EXPIRED
-                });
-            }
-            const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            console.log(`new OTP${newOtp}for this email${email}`)
-
-            req.session.tempUserData.otp = newOtp;
-
-            await otpsender.sendOTP(email, newOtp);
-            return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.NEW_OTP_SENT});
+            req.session.tempUserData.otp = result.otp
+            return res.status(STATUS_CODES.OK).json(result)
         }
+        req.session.tempUserData = result.tempData;
 
-        const userExist = await User.findOne({email: email});
-        if(userExist) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({
-                success: false,
-                message: MESSAGES.USER_ALREADY_EXISTS
-            })
-        }
-        const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        // logger.debug(`new OTP ${otp} for this email ${email}`);
-        req.session.tempUserData = {name, email, password, referralCode, otp};
-        await otpsender.sendOTP(email, otp);
-
-        return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.OTP_SENT});
+        return res.status(STATUS_CODES.OK).json({
+            success: true,
+            message: MESSAGES.OTP_SENT
+        })
 
 
     } catch(error) {
+        logger.error(`Signup Error ${error.message}`)
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: error.message || MESSAGES.SIGNUP_FAILED
-        })
+        });
     }
 }
 
-export const loginauth = async (req, res) => {
+export const verify_otp = async (req, res) => {
     try {
-        const { password } = req.body;
-        const user = req.user; // comes from middleware
+        const {otp: enteredOtp} = req.body;
+        const tempUser = req.session.tempUserData;
 
-        const valid = await bcrypt.compare(password, user.password);
+        const result = await userService.verifyOtp(enteredOtp, tempUser, tempUser?.purpose)
 
-        if (!valid) {
-            return res.status(STATUS_CODES.UNAUTHORIZED).json({
-                success: false,
-                message: MESSAGES.INCORRECT_PASSWORD
+        if(tempUser?.purpose === 'forgot_password') {
+            req.session.allowReset = true;
+            return res.status(STATUS_CODES.OK).json({
+                success: true,
+                message: MESSAGES.OTP_VERIFIED,
+                redirectUrl: '/user/reset-password'
             });
         }
+        if(tempUser?.purpose === 'update-email') {
+            delete req.session.tempUserData;
+            return res.status(STATUS_CODES.OK).json(result);
+        }
+        delete req.session.tempUserData;
+        return res.status(STATUS_CODES.CREATED).json({
+            success: true,
+            message: MESSAGES.USER_REGISTERED_SUCCESS,
+            redirectUrl: '/user/login'
+        });
+    } catch(error) {
+        logger.error(`OTP verification error: ${error.message}`);
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: error.message || MESSAGES.VERIFICATION_FAILED
+        });
+    }
 
-        req.session.user = {
-            _id: user._id,
-        };
+}
 
+
+export const loginauth = async (req, res) => {
+    try {
+        const {password} = req.body;
+        const user = req.user;
+
+        await userService.verifyPassword(password, user);
+        req.session.user = {_id: user._id};
         req.session.save((err) => {
-            if (err) {
-                return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-                    success: false,
-                    message: MESSAGES.SESSION_SAVE_ERROR
-                });
+            if(err) {
+                const error = new Error(MESSAGES.SESSION_SAVE_ERROR);
+                error.statusCode = STATUS_CODES.INTERNAL_SERVER_ERROR;
+               
             }
 
             return res.status(STATUS_CODES.OK).json({
@@ -84,11 +86,11 @@ export const loginauth = async (req, res) => {
             });
         });
 
-    } catch (error) {
+    } catch(error) {
         logger.error(`Login Auth Error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+        return res.status(error.statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: MESSAGES.INTERNAL_SERVER_ERROR
+            message: error.message || MESSAGES.LOGIN_FAILED
         });
     }
 };
@@ -112,6 +114,7 @@ export const logout = (req, res) => {
             });
         });
     } catch(error) {
+         logger.error(`Logout Error: ${error.message}`);
         return res.status(STATUS_CODES.UNAUTHORIZED).json({
             success: false,
             message: MESSAGES.SOMETHING_WENT_WRONG
@@ -120,57 +123,6 @@ export const logout = (req, res) => {
 
 };
 
-export const verify_otp = async (req, res) => {
-    try {
-        const {otp: entereOtp} = req.body;
-
-        const tempUser = req.session.tempUserData;
-
-        if(!tempUser) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.SESSION_EXPIRED});
-        }
-        const {name, email, password, referralCode, otp: sessionOtp, purpose} = tempUser;
-
-        if(String(sessionOtp) === String(entereOtp)) {
-
-            if(purpose === 'forgot_password') {
-
-                req.session.allowReset = true;
-                return res.status(STATUS_CODES.OK).json({
-                    success: true,
-                    message: MESSAGES.OTP_VERIFIED,
-                    redirectUrl: '/user/reset-password'
-                });
-            }
-
-            if(purpose === 'update-email') {
-                const {email} = req.session.tempUserData
-                const userId = req.session.user._id;
-                await User.findByIdAndUpdate(userId, {email})
-                return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.EMAIL_UPDATED_SUCCESS})
-            }
-            await userService.createUser({name, email, password, referralCode})
-            delete req.session.tempUserData;
-            return res.status(STATUS_CODES.CREATED).json({
-                success: true,
-                message: MESSAGES.USER_REGISTERED_SUCCESS,
-                redirectUrl: '/user/login'
-            });
-        } else {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({
-                success: false,
-                message: MESSAGES.INVALID_OTP
-            });
-        }
-    } catch(error) {
-        logger.error(`OTP verification error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            message: MESSAGES.VERIFICATION_FAILED
-        });
-    }
-
-}
 
 
 
@@ -196,9 +148,10 @@ export const googleAuthCallback = (req, res) => {
 export const deleteAddress = async (req, res) => {
     try {
         const addressId = req.params.id;
-        await Address.findByIdAndDelete(addressId);
+        await userService.deleteAddress(addressId)
         res.json({success: true, message: MESSAGES.ADDRESS_DELETED});
     } catch(error) {
+         logger.error(`delete Address controller: ${error.message}`);
         res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.SERVER_ERROR});
     }
 };
@@ -208,75 +161,54 @@ export const deleteAddress = async (req, res) => {
 
 export const forgot_password = async (req, res) => {
     try {
-        const {email, isResend} = req.body;
-        const user = await User.findOne({email});
+        const { email, isResend } = req.body;
 
-        if(!user) {
-            return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: MESSAGES.USER_NOT_FOUND});
-        }
-        if(isResend) {
-            const tempUser = req.session.tempUserData;
-            if(!tempUser || tempUser.email !== email) {
-                return res.status(STATUS_CODES.BAD_REQUEST).json({
-                    success: false,
-                    message: MESSAGES.SESSION_EXPIRED
-                });
-            }
-            const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            console.log(`new OTP${newOtp}for this email${email}`)
+       
+        const result = await userService.forgotPassword(email, isResend);
 
-            req.session.tempUserData.otp = newOtp;
+        req.session.tempUserData = result.tempData;
 
-            await otpsender.sendOTP(email, newOtp);
-            return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.NEW_OTP_SENT});
-        }
+        return res.status(STATUS_CODES.OK).json({
+            success: true,
+            message: result.message
+        });
 
-        const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        // logger.debug(`Forgot Password OTP: ${otp} for email ${email}`);
-
-        req.session.tempUserData = {
-            email,
-            otp,
-            purpose: 'forgot_password'
-        };
-
-        await otpsender.sendOTP(email, otp);
-        return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.OTP_SENT});
-
-    } catch(error) {
+    } catch (error) {
         logger.error(`Forgot password error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.SERVER_ERROR});
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: MESSAGES.INTERNAL_SERVER_ERROR
+        });
     }
 };
 export const update_password = async (req, res) => {
     try {
-        const {password} = req.body;
+        const { password } = req.body;
         const tempUser = req.session.tempUserData;
 
-        if(!tempUser || !req.session.allowReset) {
-            return res.status(STATUS_CODES.FORBIDDEN).json({success: false, message: MESSAGES.UNAUTHORIZED_ACCESS});
+        if (!tempUser || !req.session.allowReset) {
+            const error = new Error(MESSAGES.UNAUTHORIZED_ACCESS);
+            error.statusCode = STATUS_CODES.FORBIDDEN;
+            throw error;
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+       
+        const result = await userService.updatePassword(tempUser.email, password);
 
-
-        await User.findOneAndUpdate(
-            {email: tempUser.email},
-            {password: hashedPassword}
-        );
-
-
+       
         delete req.session.tempUserData;
         delete req.session.allowReset;
 
         return res.status(STATUS_CODES.OK).json({
-            success: true,
-            message: MESSAGES.PASSWORD_UPDATED_SUCCESS,
+            ...result,
             redirectUrl: '/user/login'
-        })
+        });
 
-    } catch(error) {
+    } catch (error) {
         logger.error(`Update password error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.INTERNAL_SERVER_ERROR});
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: MESSAGES.INTERNAL_SERVER_ERROR
+        });
     }
 };

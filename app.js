@@ -11,8 +11,8 @@ import path from 'path';
 import connectDB from './config/connectDB.js';
 import './config/passport.js'
 import passport from 'passport';
-import User from './model/User.js';
 import { fetchGlobalCategories } from './middleware/globalCategories.js';
+import { setUser } from './middleware/userAuth.js';
 import logger from './utilities/logger.js';
 
 
@@ -35,10 +35,12 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE),
         secure: false
     }
 }));
+
+app.use(setUser);
 
 app.use(passport.initialize())
 app.use(passport.session())

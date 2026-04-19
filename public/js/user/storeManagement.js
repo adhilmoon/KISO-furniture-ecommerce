@@ -1,9 +1,7 @@
 
 const $ = id => document.getElementById(id);
 
-// ─────────────────────────────────────────────────────────────────
-// Collect current filter values from the sidebar
-// ─────────────────────────────────────────────────────────────────
+
 function getActiveParams() {
   const search   = $('searchInput')?.value.trim()  || '';
   const category = document.querySelector('input[name="categoryFilter"]:checked')?.value || '';
@@ -12,9 +10,7 @@ function getActiveParams() {
   return { search, category, minPrice, maxPrice };
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Add to Cart from Store Page
-// ─────────────────────────────────────────────────────────────────
+
 async function addToCartFromStore(productId) {
   try {
     const response = await axios.post('/user/cart/add', {
@@ -42,9 +38,7 @@ function toggleWishlist(productId) {
   showToast('Wishlist feature coming soon!', 'info');
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Build a URL query-string from params
-// ─────────────────────────────────────────────────────────────────
+
 function buildQueryString(params, page = 1) {
   const p = new URLSearchParams();
   if (page > 1)          p.set('page',     page);
@@ -55,26 +49,17 @@ function buildQueryString(params, page = 1) {
   return p.toString() ? '?' + p.toString() : '';
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Apply filters → navigate (full-page reload so pagination, chips,
-// and sidebar state all reflect the new query cleanly)
-// ─────────────────────────────────────────────────────────────────
+
 function applyFilters() {
   const params = getActiveParams();
   const qs = buildQueryString(params, 1);
   window.location.href = '/user/store' + qs;
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Clear all filters
-// ─────────────────────────────────────────────────────────────────
 function clearFilters() {
   window.location.href = '/user/store';
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Individual chip remove helpers
-// ─────────────────────────────────────────────────────────────────
 function removeCategoryFilter() {
   const params = getActiveParams();
   params.category = '';
@@ -87,9 +72,7 @@ function removePriceFilter() {
   window.location.href = '/user/store' + buildQueryString(params, 1);
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Price preset buttons
-// ─────────────────────────────────────────────────────────────────
+
 function setPricePreset(min, max) {
   const minEl = $('minPrice');
   const maxEl = $('maxPrice');
@@ -97,9 +80,7 @@ function setPricePreset(min, max) {
   if (maxEl) maxEl.value = max > 0 ? max : '';
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Search — debounced, navigates on change
-// ─────────────────────────────────────────────────────────────────
+
 let searchTimeout;
 function handleSearchDebounced() {
   const clearBtn = $('clearSearchBtn');
@@ -125,17 +106,13 @@ function clearSearch() {
   window.location.href = '/user/store' + buildQueryString(params, 1);
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Filter accordion toggle
-// ─────────────────────────────────────────────────────────────────
+
 function toggleFilter(id) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle('hidden');
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Ready
-// ─────────────────────────────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Add direct DOM listener init logic here if needed
+  
 });

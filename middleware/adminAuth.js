@@ -1,14 +1,12 @@
 import logger from "../utilities/logger.js";
 
-function adminauth(req, res, next) {
-    if(req.session.Admin && req.session.Admin.role === 'admin') {
-        next()
-     } else {
-         return res.redirect('/admin/login')
-     }
+ const noCache = (req, res, next) => {
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Expires', '-1');
+    res.header('Pragma', 'no-cache');
+    next();
+};
 
-
-}
 
 const isLogin = (req, res, next) => {
     try {
@@ -22,17 +20,11 @@ const isLogin = (req, res, next) => {
     }
 };
 
-function isAdmin(req, res, next) {
-    if(req.session.Admin && req.session.Admin.role != 'user') {
-        next()
-     } else {
-         return res.redirect('/admin/login')
-     }
-}
- const noCache = (req, res, next) => {
-    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    res.header('Expires', '-1');
-    res.header('Pragma', 'no-cache');
-    next();
+const isAdmin = (req, res, next) => {
+    if (req.session.Admin && req.session.Admin.role === "admin") {
+        return next();
+    }
+    return res.redirect("/admin/login");
 };
-export {adminauth, isLogin, isAdmin,noCache}
+
+export { isLogin,isAdmin,noCache}
