@@ -111,7 +111,7 @@
     };
 
   
-    searchInput.addEventListener("input", debounce(handleSearch, 400));
+    searchInput.addEventListener("input", debounce(handleSearch,1000));
     statusFilter.addEventListener("change", render);
     
     clearSearchBtn.addEventListener("click", () => {

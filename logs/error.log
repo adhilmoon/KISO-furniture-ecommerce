@@ -69,3 +69,8 @@ Error: Could not find matching close tag for "<%#".
     at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
 2026-04-19T06:39:54.767Z [ERROR]: Add Category Error: E11000 duplicate key error collection: KISO.categories index: categoryName_1 dup key: { categoryName: "ddd" }
 2026-04-19T06:39:59.672Z [ERROR]: Add Category Error: E11000 duplicate key error collection: KISO.categories index: categoryName_1 dup key: { categoryName: "ddd" }
+2026-04-19T07:37:43.275Z [ERROR]: updateProduct error: At least one variant image is required
+2026-04-19T09:17:13.074Z [ERROR]: Add to cart error: its allready in the cart 
+2026-04-19T09:19:40.343Z [ERROR]: Add to cart error: its allready in the cart 
+2026-04-19T09:20:20.421Z [ERROR]: Add to cart error: its allready in the cart 
+2026-04-19T09:27:49.583Z [ERROR]: Add to cart error: its allready in the cart 

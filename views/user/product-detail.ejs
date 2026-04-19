@@ -166,12 +166,12 @@
             <div class="flex items-center gap-4 mt-4">
               <div class="flex items-center bg-brand-bg2 border border-white/10 rounded-xl overflow-hidden h-14 w-36">
                 <button type="button"
-                  onclick="let q=document.getElementById('qtyDisplay'); if(parseInt(q.innerText)>1) q.innerText=parseInt(q.innerText)-1;"
+                  onclick="changeQty(-1)"
                   class="w-12 h-full flex items-center justify-center text-brand-light hover:bg-white/5 transition-colors text-xl">−</button>
                 <span id="qtyDisplay"
                   class="flex-1 text-center text-lg font-bold border-x border-white/10 h-full flex items-center justify-center text-brand-light">1</span>
                 <button type="button"
-                  onclick="let q=document.getElementById('qtyDisplay'); q.innerText=parseInt(q.innerText)+1;"
+                  onclick="changeQty(1)"
                   class="w-12 h-full flex items-center justify-center text-brand-light hover:bg-white/5 transition-colors text-xl">+</button>
               </div>
               <span

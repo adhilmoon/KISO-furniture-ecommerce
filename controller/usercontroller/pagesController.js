@@ -194,7 +194,7 @@ export const user_store = async (req, res) => {
         const minPrice    = parseFloat(req.query.minPrice) || 0;
         const maxPrice    = parseFloat(req.query.maxPrice) || 0;
 
-        // ── Build filter ──────────────────────────────────────────────────
+
         const filter = {};
 
         if (searchQuery) {

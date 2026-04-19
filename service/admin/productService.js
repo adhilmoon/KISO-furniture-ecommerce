@@ -31,6 +31,7 @@ export const createProduct = async (body, files) => {
 
       customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
     } catch(e) {
+      console.error(e)
       customAttributes = [];
     }
   }
@@ -43,6 +44,7 @@ export const createProduct = async (body, files) => {
     try {
       variantsData = JSON.parse(body.variantsJSON);
     } catch(e) {
+      console.error(e)
       variantsData = [];
     }
   }
@@ -204,6 +206,9 @@ export const updateProduct = async (productId, body, files) => {
   );
 
 const variantImageMap = {};
+  if(!variantUploadResult || variantUploadResult.length === 0) {
+    throw new Error("At least one variant image is required");
+  }
   variantUploadResult.forEach(item => {
     if(!item) return;
     if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];

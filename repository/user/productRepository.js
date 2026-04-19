@@ -8,7 +8,7 @@ export const findRelatedProducts = async (categoryId, excludeId, limit = 4) => {
     return await Product.find({
         category: categoryId,
         _id: { $ne: excludeId },
-        // isListed: true // skipping for now based on store logic update
+       
     })
     .limit(limit)
     .lean();

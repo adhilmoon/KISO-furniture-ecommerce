@@ -58,6 +58,7 @@ export const updateCategories = async (req, res) => {
         })
 
     } catch(error) {
+        logger.error(`Updating Category Error: ${error.message}`);
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
              message: error.message || "edit category facing trouble"
@@ -80,6 +81,7 @@ export const disableCategories = async (req, res) => {
 
 
     } catch(error) {
+       logger.error(`Disable Category Error: ${error.message}`);
         return res.status(STATUS_CODES.BAD_REQUEST).json({
             success: false,
             message: "deletside probelm"
@@ -97,6 +99,7 @@ export const enableCategories = async (req, res) => {
         })
 
     } catch(error) {
+        logger.error(`Enable Category Error: ${error.message}`);
         return res.status(STATUS_CODES.BAD_REQUEST).json({
             success: false,
             message: "deletside probelm"
