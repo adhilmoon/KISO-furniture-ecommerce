@@ -6,7 +6,7 @@ import {MESSAGES} from "../../constants/messages.js";
 import User from "../../model/User.js";
 import Order from "../../model/Order.js";
 import logger from "../../utilities/logger.js";
-import {json} from "zod";
+
 
 export const auth = async (req, res) => {
     try {
@@ -40,7 +40,7 @@ export const auth = async (req, res) => {
 
 //////////----------//////////////////////
 
-export const logout = (req, res) => {
+export const logout = (req, res,next) => {
     try {
         req.session.destroy((err) => {
             if(err) {
@@ -59,6 +59,7 @@ export const logout = (req, res) => {
             });
         })
     } catch(error) {
+     next(error)
         return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success:false,
             message:MESSAGES.LOGOUT_FAILED

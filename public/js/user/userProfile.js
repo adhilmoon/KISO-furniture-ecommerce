@@ -88,20 +88,7 @@ function copyReferralCode() {
 function handleProfileImageChange(event) {
     const file = event.target.files[0];
     if(!file) return;
-    Image.openCropper({
-        file: file,
-        aspectRatio: 1,
-        onCrop: (blob, previewUrl) => {
-            const previewImg = document.getElementById('profilePreview');
-            const avatarLetter = document.getElementById('avatarLetter');
-            previewImg.src = previewUrl;
-            previewImg.classList.remove('hidden');
-            if(avatarLetter) avatarLetter.classList.add('hidden');
 
-            const formData= new formData();
-            formData.append('profileImage', blob, 'profile.jpg')
-        }
-    })
     if(!file.type.startsWith('image/')) {
         showMessage('Please select a valid image file', 'error');
         return;
@@ -113,46 +100,9 @@ function handleProfileImageChange(event) {
         return;
     }
 
+    openCropper(file)
+    currentInput = event.target;
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const previewImg = document.getElementById('profilePreview');
-        const avatarLetter = document.getElementById('avatarLetter');
-
-
-        previewImg.src = e.target.result;
-        previewImg.classList.remove('hidden');
-
-        if(avatarLetter) {
-            avatarLetter.classList.add('hidden');
-        }
-    };
-    reader.readAsDataURL(file);
-
-
-    const formData = new FormData();
-    formData.append('profileImage', file);
-
-    axios.patch('/user/profile/image', formData, {
-        headers: {'Content-Type': 'multipart/form-data'}
-    })
-        .then(response => {
-            showMessage(response.data.message || 'Profile picture updated successfully!', 'success');
-
-            const navprofileImgContainer = document.getElementById('nav-profile-img')
-
-
-            const newUrl = response.data.avatar;
-            if(navprofileImgContainer && newUrl) {
-                navprofileImgContainer.innerHTML = `<img src="${newUrl}" alt="Profile" class="w-full h-full object-cover">`
-
-            }
-
-            toggleEditMode();
-        })
-        .catch(error => {
-            showMessage(error.response?.data?.message || 'Failed to upload image', 'error');
-        });
 }
 
 
@@ -209,6 +159,80 @@ async function handleProfileUpdate(event) {
     }
 }
 
+////--------////-----//////----//////
+function openCropper(file) {
+    const img = $('cropImage');
+    const url = URL.createObjectURL(file)
+    img.src = url;
+
+    $('cropeModal').style.display = 'flex';
+
+    if(cropper) {cropper.destroy(); cropper = null}
+    img.onload = () => {
+        cropper = new Cropper(img, {
+            aspectRatio: NaN,
+            viewMode: 0,
+            autoCropArea: 0.8,
+            responsive: true,
+            zoomable: true,
+            scalable: true,
+            cropBoxResizable: true,
+            cropBoxMovable: true,
+            minCropBoxWidth: 50,
+            minCropBoxHeight: 50,
+        });
+    }
+}
+function closeCrop() {
+    $('cropeModal').style.display = 'none';
+    if(cropper) {cropper.destroy(); cropper = null}
+    if(currentInput) currentInput.value = "";
+}
+//--Crop confirm-----------------------------------------
+
+function confirmCrop() {
+
+    if(!cropper) return;
+
+    const canvas = cropper.getCroppedCanvas({width: 800, height: 800});
+
+
+    canvas.toBlob((blob) => {
+        if(!blob) return;
+
+        const file = new File(
+            [blob],
+            `cropped-${Date.now()}-${currentIndex}.jpg`,
+            {type: 'image/jpeg'}
+        );
+        croppedFiles.push(file);
+        currentIndex++;
+
+        if(currentIndex < imageQueue.length) {
+            // More images in queue — crop next
+            openCropper(imageQueue[currentIndex]);
+        } else {
+
+            if(currentVariantId !== null) {
+                // Store for this variant
+                if(!variantCroppedFiles[currentVariantId]) {variantCroppedFiles[currentVariantId] = [];}
+                croppedFiles.forEach(f => {
+                    if(variantCroppedFiles[currentVariantId].length < 3) {
+                        variantCroppedFiles[currentVariantId].push(f);
+                    }
+                });
+
+                const dt = new DataTransfer();
+                variantCroppedFiles[currentVariantId].forEach(f => dt.items.add(f));
+                currentInput.files = dt.files;
+
+                renderPreviews(variantCroppedFiles[currentVariantId], `vImgPreview-${currentVariantId}`, false);
+            }
+
+            closeCrop();
+        }
+    }, 'image/jpeg', 0.92);
+}
 
 function showMessage(msg, type) {
     showToast(msg, type)

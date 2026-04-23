@@ -10,6 +10,7 @@ export const signup_post = async (req, res) => {
         const result = await userService.signup({name, email, password, referralCode}, isResend)
         if(isResend) {
             req.session.tempUserData.otp = result.otp
+            req.session.tempUserData.otpExpiresAt = result.otpExpiresAt;
             return res.status(STATUS_CODES.OK).json(result)
         }
         req.session.tempUserData = result.tempData;

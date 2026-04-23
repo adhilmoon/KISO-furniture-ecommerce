@@ -13,27 +13,31 @@ export const userService={
        const{name,email,password,refferralCode}=data;
        if(isResend){
            const newOtp=Math.floor(1000+Math.random()*9000).toString();
+            const otpExpiresAt=Date.now()+60000
            await otpsender.sendOTP(email,newOtp);
-           return {success:true,message:MESSAGES.NEW_OTP_SENT,otp:newOtp};
+           return {success:true,message:MESSAGES.NEW_OTP_SENT,otp:newOtp,otpExpiresAt};
        } 
        const existingUser=await userRepository.findByEmail(email);
         if(existingUser){
             throw new Error(MESSAGES.USER_ALREADY_EXISTS)
         }
         const otp=Math.floor(1000+Math.random()*9000).toString();
+        const otpExpiresAt=Date.now()+60000
         await otpsender.sendOTP(email,otp);
 
         return {
             success:true,
             message:MESSAGES.OTP_SENT,
-            otp,
-            tempData:{name,email,password,refferralCode,otp}
+            tempData:{name,email,password,refferralCode,otp,otpExpiresAt}
         }
     },
 
      async verifyOtp(enteredOtp,tempUser,purpose){
         if(!tempUser){
             throw new Error(MESSAGES.SESSION_EXPIRED);
+        }
+        if(Date.now()>tempUser.otpExpiresAt){
+            throw new Error(MESSAGES.INVALID_OTP)
         }
         if(String(tempUser.otp)!==String(enteredOtp)){
             throw new Error(MESSAGES.INVALID_OTP)

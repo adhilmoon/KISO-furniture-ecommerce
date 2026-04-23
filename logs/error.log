@@ -74,3 +74,25 @@ Error: Could not find matching close tag for "<%#".
 2026-04-19T09:19:40.343Z [ERROR]: Add to cart error: its allready in the cart 
 2026-04-19T09:20:20.421Z [ERROR]: Add to cart error: its allready in the cart 
 2026-04-19T09:27:49.583Z [ERROR]: Add to cart error: its allready in the cart 
+2026-04-20T11:39:29.966Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-20T11:39:37.116Z [ERROR]: Signup Error Cannot read properties of undefined (reading 'otpExpiresAt')
+2026-04-20T11:39:40.628Z [ERROR]: Signup Error Cannot read properties of undefined (reading 'otpExpiresAt')
+2026-04-20T11:42:50.519Z [ERROR]: Signup Error Cannot read properties of undefined (reading 'otpExpiresAt')
+2026-04-20T11:45:33.909Z [ERROR]: Signup Error Cannot set properties of undefined (setting 'otp')
+2026-04-22T09:17:36.502Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-22T09:17:39.697Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-22T09:17:40.517Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-22T09:17:43.029Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-22T09:17:43.190Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-22T09:17:43.367Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-22T09:17:43.523Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T10:23:06.819Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T10:24:16.724Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T10:28:00.860Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T10:32:14.075Z [ERROR]: OTP verification error: Session expired. Please signup again.
+2026-04-23T10:32:19.984Z [ERROR]: Signup Error Cannot set properties of undefined (setting 'otp')
+2026-04-23T10:34:08.656Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T10:35:01.156Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T10:35:46.836Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T11:13:03.698Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T11:13:50.941Z [ERROR]: OTP verification error: Invalid OTP. Please try again.

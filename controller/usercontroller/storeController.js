@@ -5,8 +5,8 @@ import logger from "../../utilities/logger.js";
 
 export const getFilterOptions = async (req, res) => {
   try {
-
-    const categoryDocs = await Category.find().select('categoryName');
+     
+    const categoryDocs = await Category.find({isActive:true}).select('categoryName');
     const categories = categoryDocs.map(c => c.categoryName); 
     
     const materials = await Product.distinct('material');
