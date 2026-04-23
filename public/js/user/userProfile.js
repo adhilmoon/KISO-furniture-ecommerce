@@ -1,7 +1,8 @@
 
 let isEditMode = false;
 let originalData = {};
-
+let cropper = null;
+let currentInput = null;
 
 window.addEventListener('DOMContentLoaded', function () {
     originalData = {
@@ -9,7 +10,7 @@ window.addEventListener('DOMContentLoaded', function () {
         phone: document.getElementById('phone').value
     };
 });
-
+const $ = id => document.getElementById(id)
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
@@ -162,78 +163,84 @@ async function handleProfileUpdate(event) {
 ////--------////-----//////----//////
 function openCropper(file) {
     const img = $('cropImage');
-    const url = URL.createObjectURL(file)
-    img.src = url;
+    const url = URL.createObjectURL(file);
 
-    $('cropeModal').style.display = 'flex';
+    // Destroy any existing cropper first
+    if (cropper) { cropper.destroy(); cropper = null; }
 
-    if(cropper) {cropper.destroy(); cropper = null}
+    // Assign onload BEFORE setting src to avoid race condition with Blob URLs
     img.onload = () => {
         cropper = new Cropper(img, {
-            aspectRatio: NaN,
-            viewMode: 0,
+            aspectRatio: 1,
+            viewMode: 1,
             autoCropArea: 0.8,
+            background: false,
             responsive: true,
             zoomable: true,
             scalable: true,
-            cropBoxResizable: true,
             cropBoxMovable: true,
-            minCropBoxWidth: 50,
-            minCropBoxHeight: 50,
+            cropBoxResizable: true,
         });
-    }
+    };
+
+    img.src = url;
+    $('cropModal').style.display = 'flex';
 }
 function closeCrop() {
-    $('cropeModal').style.display = 'none';
-    if(cropper) {cropper.destroy(); cropper = null}
-    if(currentInput) currentInput.value = "";
+    $('cropModal').style.display = 'none';
+    if (cropper) { cropper.destroy(); cropper = null; }
+    if (currentInput) currentInput.value = '';
 }
 //--Crop confirm-----------------------------------------
 
 function confirmCrop() {
-
     if(!cropper) return;
 
-    const canvas = cropper.getCroppedCanvas({width: 800, height: 800});
+    const canvas = cropper.getCroppedCanvas({
+        width: 800,
+        height: 800
+    });
 
+    canvas.toBlob(async (blob) => {
+        if (!blob) return;
 
-    canvas.toBlob((blob) => {
-        if(!blob) return;
+        const file = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
 
-        const file = new File(
-            [blob],
-            `cropped-${Date.now()}-${currentIndex}.jpg`,
-            {type: 'image/jpeg'}
-        );
-        croppedFiles.push(file);
-        currentIndex++;
+        const formData = new FormData();
+        formData.append('profileImage', file);
 
-        if(currentIndex < imageQueue.length) {
-            // More images in queue — crop next
-            openCropper(imageQueue[currentIndex]);
-        } else {
+        try {
+            const response = await axios.patch('/user/profile/image', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
 
-            if(currentVariantId !== null) {
-                // Store for this variant
-                if(!variantCroppedFiles[currentVariantId]) {variantCroppedFiles[currentVariantId] = [];}
-                croppedFiles.forEach(f => {
-                    if(variantCroppedFiles[currentVariantId].length < 3) {
-                        variantCroppedFiles[currentVariantId].push(f);
-                    }
-                });
+            // Update preview image immediately without page reload
+            const previewImg = document.getElementById('profilePreview');
+            const avatarLetter = document.getElementById('avatarLetter');
+            const newUrl = response.data?.avatar || canvas.toDataURL('image/jpeg', 0.9);
 
-                const dt = new DataTransfer();
-                variantCroppedFiles[currentVariantId].forEach(f => dt.items.add(f));
-                currentInput.files = dt.files;
-
-                renderPreviews(variantCroppedFiles[currentVariantId], `vImgPreview-${currentVariantId}`, false);
+            if (previewImg) {
+                previewImg.src = newUrl;
+                previewImg.classList.remove('hidden');
+            }
+            if (avatarLetter) {
+                avatarLetter.classList.add('hidden');
             }
 
-            closeCrop();
-        }
-    }, 'image/jpeg', 0.92);
-}
+            // Update nav avatar if it exists
+            const navImg = document.querySelector('#nav-profile-img img');
+            if (navImg) navImg.src = newUrl;
 
+            showMessage('Profile photo updated!', 'success');
+            closeCrop();
+            if (isEditMode) toggleEditMode();
+
+        } catch (error) {
+            showMessage(error.response?.data?.message || 'Upload failed', 'error');
+        }
+
+    }, 'image/jpeg', 0.9);
+}
 function showMessage(msg, type) {
     showToast(msg, type)
 }

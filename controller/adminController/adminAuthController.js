@@ -42,7 +42,7 @@ export const auth = async (req, res) => {
 
 export const logout = (req, res,next) => {
     try {
-        req.session.destroy((err) => {
+         req.session.destroy((err) => {
             if(err) {
                 logger.error(`Session destroy error: ${err.message}`);
                 return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.LOGOUT_FAILED});

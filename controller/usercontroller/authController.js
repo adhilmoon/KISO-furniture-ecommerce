@@ -72,14 +72,12 @@ export const loginauth = async (req, res) => {
         const user = req.user;
 
         await userService.verifyPassword(password, user);
+
         req.session.user = {_id: user._id};
         req.session.save((err) => {
             if(err) {
-                const error = new Error(MESSAGES.SESSION_SAVE_ERROR);
-                error.statusCode = STATUS_CODES.INTERNAL_SERVER_ERROR;
-               
+                logger.error(`Session save error: ${err.message}`);
             }
-
             return res.status(STATUS_CODES.OK).json({
                 success: true,
                 message: MESSAGES.LOGIN_SUCCESS,
@@ -97,17 +95,16 @@ export const loginauth = async (req, res) => {
 };
 export const logout = (req, res) => {
     try {
-        req.session.destroy((error) => {
+      
+        delete req.session.user;
+        req.session.save((error) => {
             if(error) {
-                logger.error(`Session destroy error: ${error.message}`);
+                logger.error(`Session save error on user logout: ${error.message}`);
                 return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: MESSAGES.LOGOUT_FAILED});
             }
-
-            res.clearCookie('connect.sid', {path: '/'});
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
             res.setHeader('Pragma', 'no-cache');
             res.setHeader('Expires', '0');
-
             return res.status(STATUS_CODES.OK).json({
                 success: true,
                 message: MESSAGES.LOGOUT_SUCCESS,
@@ -115,13 +112,12 @@ export const logout = (req, res) => {
             });
         });
     } catch(error) {
-         logger.error(`Logout Error: ${error.message}`);
+        logger.error(`Logout Error: ${error.message}`);
         return res.status(STATUS_CODES.UNAUTHORIZED).json({
             success: false,
             message: MESSAGES.SOMETHING_WENT_WRONG
         });
     }
-
 };
 
 

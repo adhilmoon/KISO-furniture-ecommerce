@@ -96,3 +96,29 @@ Error: Could not find matching close tag for "<%#".
 2026-04-23T10:35:46.836Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
 2026-04-23T11:13:03.698Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
 2026-04-23T11:13:50.941Z [ERROR]: OTP verification error: Invalid OTP. Please try again.
+2026-04-23T18:21:36.641Z [ERROR]: Upload Error: Empty file
+2026-04-23T18:21:37.415Z [ERROR]: Upload Error: Empty file
+2026-04-23T18:21:37.461Z [ERROR]: Upload Error: Empty file
+2026-04-23T18:21:38.378Z [ERROR]: Upload Error: Empty file
+2026-04-23T18:21:38.965Z [ERROR]: Upload Error: Empty file
+2026-04-23T18:26:31.862Z [ERROR]: Upload Error: Empty file
+2026-04-23T18:26:33.656Z [ERROR]: Upload Error: Empty file
+2026-04-23T18:57:12.554Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:13.604Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:22.311Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:23.361Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:28.924Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:33.049Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:34.793Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:49.905Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:51.971Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:56.047Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:57:58.000Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:58:08.462Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:58:10.300Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:58:21.706Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:58:26.616Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T18:59:01.008Z [ERROR]: ❌ MongoDB connection failed: querySrv ECONNREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T19:13:17.122Z [ERROR]: ❌ MongoDB connection failed: querySrv EREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T19:13:31.271Z [ERROR]: ❌ MongoDB connection failed: querySrv EREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net
+2026-04-23T19:13:35.667Z [ERROR]: ❌ MongoDB connection failed: querySrv EREFUSED _mongodb._tcp.cluster0.ilgsjwn.mongodb.net

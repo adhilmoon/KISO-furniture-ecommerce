@@ -28,7 +28,6 @@ export const addProduct = async (req, res) => {
       });
     }
 
-    // ── Delegate to service ────────────────────────────────────────────────
     const product = await productService.createProduct(req.body, req.files || []);
 
     return res.status(STATUS_CODES.CREATED).json({
