@@ -29,13 +29,11 @@ export const userauth = async (req, res, next) => {
     const user = await User.findById(req.session.user._id);
 
     if(!user) {
-      req.session.destroy(() => {});
+      delete req.session.user;
       return res.redirect("/user/login");
     }
     if(user.isBlocked) {
-      req.session.destroy((err) => {
-        if(err) logger.error(`Session destroy error: ${err.message}`);
-      });
+      delete req.session.user;
 
       if(isJsonRequest(req)) {
         return res.status(STATUS_CODES.FORBIDDEN).json({
@@ -44,9 +42,7 @@ export const userauth = async (req, res, next) => {
         });
       }
 
-      return res.redirect(
-        "/user/login?status=blocked"
-      );
+      return res.redirect("/user/login?status=blocked");
     }
     req.currentUser = user;
     res.locals.user = user;

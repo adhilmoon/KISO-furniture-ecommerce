@@ -16,8 +16,6 @@ import { setUser } from './middleware/userAuth.js';
 import logger from './utilities/logger.js';
 
 
-// your existing code below
-
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,27 +23,41 @@ const __dirname = path.dirname(__filename)
 
 await connectDB()
 
-
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-app.use(session({
-    
+
+const sessionBase = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
         maxAge: parseInt(process.env.COOKIE_MAX_AGE),
-        secure: false
+        secure: false,
+        httpOnly: true,
     }
-}));
+};
+
+
+const adminSession = session({ ...sessionBase, name: 'admin.sid' });
+
+
+const userSession = session({ ...sessionBase, name: 'connect.sid' });
+
+
+app.use('/admin', adminSession);
+
+
+app.use('/user', userSession);
+app.use('/', userSession);
+
 
 app.use(setUser);
 
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(fetchGlobalCategories)
+app.use('/user', passport.initialize());
+app.use('/user', passport.session());
 
+app.use(fetchGlobalCategories);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -55,11 +67,9 @@ app.set('layout', 'layouts/user');
 
 app.use(express.static("public"));
 
-app.use('/admin', adminRoute)
-app.use('/user', userRoute)
-
+app.use('/admin', adminRoute);
+app.use('/user', userRoute);
 app.use('/', indexRoutes);
-
 
 app.use(pageNotFound);
 app.use(globalErrorHandler);

@@ -60,7 +60,7 @@ function openCropper(file) {
   const url = URL.createObjectURL(file)
   img.src = url;
 
-  $('cropeModal').style.display = 'flex';
+  $('cropModal').style.display = 'flex';
 
   if(cropper) {cropper.destroy(); cropper = null}
   img.onload = () => {
@@ -79,7 +79,7 @@ function openCropper(file) {
   }
 }
 function closeCrop() {
-  $('cropeModal').style.display = 'none';
+  $('cropModal').style.display = 'none';
   if(cropper) {cropper.destroy(); cropper = null}
   if(currentInput) currentInput.value = "";
 }

@@ -11,24 +11,34 @@ import {userService} from "../../service/user/userService.js";
 export const uploadProfilePic = async (req, res) => {
     try {
 
-        if(!req.file) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.PLEASE_UPLOAD_IMAGE});
+        if (!req.file) {
+            return res.status(STATUS_CODES.BAD_REQUEST).json({
+                success: false,
+                message: MESSAGES.PLEASE_UPLOAD_IMAGE
+            });
         }
 
         const userId = req.session.user._id;
-        const result = await uploadToCloudinary(req.res.buffer, "kiso/users/profile");
+
+       
+        const result = await uploadToCloudinary(req.file.buffer, "kiso/users/profile");
+
         const imageUrl = result.secure_url;
 
-        // Database Update
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            {avatar: imageUrl},
-            {new: true}
+            { avatar: imageUrl },
+            { new: true }
         );
-        if(!updatedUser) {
-            return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: MESSAGES.USER_NOT_FOUND});
+
+        if (!updatedUser) {
+            return res.status(STATUS_CODES.NOT_FOUND).json({
+                success: false,
+                message: MESSAGES.USER_NOT_FOUND
+            });
         }
-        if(req.session.user) {
+
+        if (req.session.user) {
             req.session.user.avatar = imageUrl;
         }
 
@@ -37,12 +47,15 @@ export const uploadProfilePic = async (req, res) => {
             message: MESSAGES.PROFILE_PIC_UPDATED,
             avatar: imageUrl
         });
-    } catch(error) {
+
+    } catch (error) {
         logger.error(`Upload Error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success: false, message: error.message || MESSAGES.ERROR_UPLOADING_CLOUDINARY});
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: error.message || MESSAGES.ERROR_UPLOADING_CLOUDINARY
+        });
     }
 };
-
 
 
 export const profile_Update = async (req, res) => {

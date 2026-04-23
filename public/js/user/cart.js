@@ -9,26 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
             item.querySelector('.item-total').innerText = itemTotal;
             subtotal += itemTotal;
         });
-        
+
         const summarySubtotal = document.getElementById('summary-subtotal');
         const summaryTotal = document.getElementById('summary-total');
-        if (summarySubtotal) summarySubtotal.innerText = subtotal;
-        if (summaryTotal) summaryTotal.innerText = subtotal;
+        if(summarySubtotal) summarySubtotal.innerText = subtotal;
+        if(summaryTotal) summaryTotal.innerText = subtotal;
     };
 
     const updateQuantity = async (itemId, newQty, inputEl) => {
         try {
-            originalValue = inputEl.value; 
-            inputEl.value = newQty; 
+            originalValue = inputEl.value;
+            inputEl.value = newQty;
             updateCartTotals();
 
-            const response = await axios.patch(`/user/cart/item/${itemId}`, { quantity: newQty });
-            if (!response.data.success) {
+            const response = await axios.patch(`/user/cart/item/${itemId}`, {quantity: newQty});
+            if(!response.data.success) {
                 throw new Error(response.data.message);
             }
-        } catch (error) {
+        } catch(error) {
             console.error('Failed to update qty:', error);
-            inputEl.value = originalValue; 
+            inputEl.value = originalValue;
             updateCartTotals();
             showToast(error.message || 'Failed to update quantity. Please try again.', 'error');
         }
@@ -38,16 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
         rowEl.style.opacity = '0.5';
         try {
             const response = await axios.delete(`/user/cart/item/${itemId}`);
-            if (response.data.success) {
+            if(response.data.success) {
                 rowEl.remove();
                 updateCartTotals();
-                if (document.querySelectorAll('.cart-item').length === 0) {
-                    window.location.reload(); 
+                if(document.querySelectorAll('.cart-item').length === 0) {
+                    window.location.reload();
                 }
             } else {
                 throw new Error(response.data.message);
             }
-        } catch (error) {
+        } catch(error) {
             console.error('Failed to remove item:', error);
             rowEl.style.opacity = '1';
             showToast(error.message || 'Failed to remove item. Please try again.', 'error');
@@ -55,10 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const clearCart = async () => {
-        if(!confirm('Are you sure you want to clear your entire cart?')) return;
+        const result = await confirmAction("Are you sure you want to clear cart")
+        if(!result.isConfirmed) return
         try {
             const response = await axios.delete('/user/cart');
-            if (response.data.success) {
+            if(response.data.success) {
                 window.location.reload();
             }
         } catch(error) {
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-   
+
     document.querySelectorAll('.cart-item').forEach(row => {
         const itemId = row.dataset.itemId;
         const input = row.querySelector('.qty-input');
@@ -77,14 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         minusBtn.addEventListener('click', () => {
             const currentObj = parseInt(input.value);
-            if (currentObj > 1) {
+            if(currentObj > 1) {
                 updateQuantity(itemId, currentObj - 1, input);
             }
         });
 
         plusBtn.addEventListener('click', () => {
             const currentObj = parseInt(input.value);
-            if (currentObj < stock && currentObj < 5) { // Assuming max 5 per person
+            if(currentObj < stock && currentObj < 5) { // Assuming max 5 per person
                 updateQuantity(itemId, currentObj + 1, input);
             } else {
                 showToast(`Maximum quantity reached for this item.`, 'warning');
@@ -97,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const clearBtn = document.getElementById('clear-cart-btn');
-    if (clearBtn) {
+    if(clearBtn) {
         clearBtn.addEventListener('click', clearCart);
     }
 

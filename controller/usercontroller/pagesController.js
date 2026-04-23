@@ -64,7 +64,13 @@ export const user_home = async (req, res) => {
     try {
 
 
-        const productList = await Product.find({isListed: true})
+        const activeCategories = await Category.find({isActive: true}).select('_id').lean();
+        const activeCategoryIds = activeCategories.map(c => c._id);
+
+        const productList = await Product.find({
+                isListed: true,
+                category: {$in: activeCategoryIds}
+            })
             .limit(4)
             .populate("category")
             .lean();
@@ -195,13 +201,23 @@ export const user_store = async (req, res) => {
         const maxPrice = parseFloat(req.query.maxPrice) || 0;
 
         // ── Build filter ──────────────────────────────────────────────────
-        const filter = {};
+        const activeCategories = await Category.find({isActive: true}).select('_id').lean();
+        const activeCategoryIds = activeCategories.map(c => c._id);
+
+        const filter = {
+            isListed: true,
+            category: {$in: activeCategoryIds}
+        };
 
         if(searchQuery) {
             filter.productName = {$regex: searchQuery, $options: "i"};
         }
         if(categoryId) {
-            filter.category = categoryId;
+            if(activeCategoryIds.some(id => id.toString() === categoryId)) {
+                filter.category = categoryId;
+            } else {
+                filter.category = null; // Return no products if category is inactive
+            }
         }
         if(minPrice > 0 || maxPrice > 0) {
             filter.basePrice = {};
@@ -229,7 +245,7 @@ export const user_store = async (req, res) => {
         });
 
         // ── Categories for sidebar ─────────────────────────────────────────
-        const categories = await Category.find({}, 'categoryName _id').lean();
+        const categories = await Category.find({isActive: true}, 'categoryName _id').lean();
 
         const activeFilters = {categoryId, minPrice, maxPrice};
 
