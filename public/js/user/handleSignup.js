@@ -23,7 +23,7 @@ async function signup_handle(event) {
     if(!signupData.email || !emailRegex.test(signupData.email)) {
         return showFieldError('email', 'Please enter a valid email address')
     }
-    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    const passRegex = /^.{6}$/;
     if(!signupData.password || !passRegex.test(signupData.password)) {
         return showFieldError('password', "pleas enter valid password");
     }

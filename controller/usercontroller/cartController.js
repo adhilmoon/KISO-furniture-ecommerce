@@ -17,7 +17,7 @@ export const getCartPage = async (req, res) => {
     }
 };
 
-export const addToCart = async (req, res) => {
+export const addToCart = async (req, res,next) => {
     try {
         const userId = req.session.user._id;
         const { productId, variantIndex, quantity } = req.body;
@@ -27,6 +27,7 @@ export const addToCart = async (req, res) => {
         res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.ADDED_TO_CART, cart });
     } catch (error) {
         logger.error(`Add to cart error: ${error.message}`);
+        next(error)
         res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: error.message });
     }
 };

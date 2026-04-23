@@ -37,7 +37,7 @@ function showOTPModal() {
     modal.classList.add('flex');
     const digits = document.querySelectorAll('otp-digit')
     digits.forEach(d => d.value = '')
-    
+
 
     startTimer();
 
@@ -55,7 +55,7 @@ function closeOTPModal() {
     const digits = document.querySelectorAll('.otp-digit');
     digits.forEach(d => d.value = '');
 
-    
+
 }
 async function verifyOTP() {
 
@@ -66,7 +66,7 @@ async function verifyOTP() {
 
 
     if(otp.length !== 4) {
-        showToast("Please enter all 4 digits","error")
+        showToast("Please enter all 4 digits", "error")
         return;
     }
 
@@ -77,7 +77,7 @@ async function verifyOTP() {
         }
     } catch(error) {
         const message = error.response?.data?.message || "Invalid OTP. Please try again.";
-          showToast(message,"error")
+        showToast(message, "error")
     }
 }
 async function resendOTP() {
@@ -105,11 +105,16 @@ async function resendOTP() {
             digits[0].focus();
 
 
-           
+            showToast(
+                response.data.message || "OTP sent to your email",
+                "success"
+            )
+
+
         }
     } catch(error) {
         const msg = error.response?.data?.message || "Failed to resend";
-        showToast(msg,"error")
+        showToast(msg, "error")
     }
 }
 

@@ -64,13 +64,13 @@ export const user_home = async (req, res) => {
     try {
 
 
-        const productList = await Product.find({ isListed: true })
+        const productList = await Product.find({isListed: true})
             .limit(4)
             .populate("category")
             .lean();
 
         const products = productList.map((product) => {
-        
+
             const allImages = product.variants?.flatMap(v => v.images) || [];
             return {
                 ...product,
@@ -169,7 +169,7 @@ export const user_address = async (req, res) => {
 
         const user = await User.findById(userId);
 
-       return res.render('user/address', {
+        return res.render('user/address', {
             addresses,
             user,
             currentPage: page,
@@ -185,37 +185,41 @@ export const user_address = async (req, res) => {
 
 export const user_store = async (req, res) => {
     try {
-        const page       = parseInt(req.query.page) || 1;
-        const perPage    = 6;
-        const skip       = (page - 1) * perPage;
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 6;
+        const skip = (page - 1) * perPage;
 
-        const searchQuery = req.query.search   || "";
-        const categoryId  = req.query.category || "";
-        const minPrice    = parseFloat(req.query.minPrice) || 0;
-        const maxPrice    = parseFloat(req.query.maxPrice) || 0;
+        const searchQuery = req.query.search || "";
+        const categoryId = req.query.category || "";
+        const minPrice = parseFloat(req.query.minPrice) || 0;
+        const maxPrice = parseFloat(req.query.maxPrice) || 0;
 
-
+        // ── Build filter ──────────────────────────────────────────────────
         const filter = {};
 
-        if (searchQuery) {
-            filter.productName = { $regex: searchQuery, $options: "i" };
+        if(searchQuery) {
+            filter.productName = {$regex: searchQuery, $options: "i"};
         }
-        if (categoryId) {
+        if(categoryId) {
             filter.category = categoryId;
         }
-        if (minPrice > 0 || maxPrice > 0) {
+        if(minPrice > 0 || maxPrice > 0) {
             filter.basePrice = {};
-            if (minPrice > 0) filter.basePrice.$gte = minPrice;
-            if (maxPrice > 0) filter.basePrice.$lte = maxPrice;
+            if(minPrice > 0) filter.basePrice.$gte = minPrice;
+            if(maxPrice > 0) filter.basePrice.$lte = maxPrice;
         }
 
         // ── Query ──────────────────────────────────────────────────────────
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
-            .populate('category', 'categoryName')
+            .populate({
+                path: 'category',
+                match: {isActive: true},
+                select: 'categoryName'
+            })
             .skip(skip)
             .limit(perPage)
-            .sort({ createdAt: -1 })
+            .sort({createdAt: -1})
             .lean();
 
         products.forEach(product => {
@@ -227,10 +231,10 @@ export const user_store = async (req, res) => {
         // ── Categories for sidebar ─────────────────────────────────────────
         const categories = await Category.find({}, 'categoryName _id').lean();
 
-        const activeFilters = { categoryId, minPrice, maxPrice };
+        const activeFilters = {categoryId, minPrice, maxPrice};
 
         // ── JSON response (AJAX calls from storeManagement.js) ─────────────
-        if (req.xhr || req.headers.accept?.includes("application/json")) {
+        if(req.xhr || req.headers.accept?.includes("application/json")) {
             return res.json({
                 success: true,
                 products,
@@ -252,8 +256,8 @@ export const user_store = async (req, res) => {
             activeFilters,
         });
 
-    } catch (error) {
+    } catch(error) {
         logger.error(`Store page error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render('404', { title: "Error" });
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render('404', {title: "Error"});
     }
 };
