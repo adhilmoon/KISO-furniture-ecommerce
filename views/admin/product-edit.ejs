@@ -91,7 +91,7 @@
                             (cm)</label>
                           <div class="relative">
                             <input type="number" id="dimWidth" name="dimensions[width]" placeholder="0" min="0"
-                              value="<%= product.dimensions?.width || 0 %>" step="0.1"
+                              value="<%= product.dimensions?.width ?? 0 %>" step="0.1"
                               class="field-input w-full pr-12" />
                             <span
                               class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted pointer-events-none">cm</span>
@@ -104,7 +104,7 @@
                             (cm)</label>
                           <div class="relative">
                             <input type="number" id="dimDepth" name="dimensions[depth]" placeholder="0" min="0"
-                              value="<%= product.dimensions?.depth || 0 %>" step="0.1"
+                              value="<%= product.dimensions?.depth ?? 0 %>" step="0.1"
                               class="field-input w-full pr-12" />
                             <span
                               class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted pointer-events-none">cm</span>
@@ -117,7 +117,7 @@
                             (cm)</label>
                           <div class="relative">
                             <input type="number" id="dimHeight" name="dimensions[height]" placeholder="0" min="0"
-                              value="<%= product.dimensions?.height || 0 %>" step="0.1"
+                              value="<%= product.dimensions?.height ?? 0 %>" step="0.1"
                               class="field-input w-full pr-12" />
                             <span
                               class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted pointer-events-none">cm</span>
@@ -336,5 +336,5 @@
         <%- include('./croperModal') %>
   </div>
   <%# end page wrapper %>
-    <div id="productDataPayload" data-product="<%= JSON.stringify(product) %>" class="hidden"></div>
+    <div id="productDataPayload" data-product='<%- JSON.stringify(product).replace(/'/g, "&#39;") %>' class="hidden"></div>
     <script src="/js/admin/productEdit.js"></script>

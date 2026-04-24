@@ -65,9 +65,9 @@ export const user_home = catchAsync(async (req, res) => {
     const activeCategoryIds = activeCategories.map(c => c._id);
 
     const productList = await Product.find({
-            isListed: true,
-            category: {$in: activeCategoryIds}
-        })
+        isListed: true,
+        category: {$in: activeCategoryIds}
+    })
         .limit(4)
         .populate("category")
         .lean();
@@ -186,7 +186,10 @@ export const user_store = catchAsync(async (req, res) => {
 
     const filter = {
         isListed: true,
-        category: {$in: activeCategoryIds}
+        category: {$in: activeCategoryIds},
+        variants: {
+            $elemMatch: {stock: {$gt: 0}}
+        }
     };
 
     if(searchQuery) {
@@ -224,7 +227,7 @@ export const user_store = catchAsync(async (req, res) => {
             : 0;
     });
 
-  
+
     const categories = await Category.find({isActive: true}, 'categoryName _id').lean();
 
     const activeFilters = {categoryId, minPrice, maxPrice};

@@ -11,7 +11,13 @@
                         <%= user.email %>
                     </p>
                 </div>
-                <button onclick="showEmailModal()" class="text-blue-600 hover:underline text-sm">Change Email</button>
+                <% if (!user.googleId) { %>
+                    <button onclick="showEmailModal()" class="text-blue-600 hover:underline text-sm">Change Email</button>
+                <% } else { %>
+                    <span class="text-xs bg-brand-bg2 px-3 py-1 rounded-full text-brand-muted border border-white/5">
+                        <i class="fab fa-google mr-1"></i> Google Auth User
+                    </span>
+                <% } %>
             </div>
         </div>
         <% if (!user.googleId) { %>

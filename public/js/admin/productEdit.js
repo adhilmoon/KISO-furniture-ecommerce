@@ -541,6 +541,17 @@ function populateEditData(product) {
         ? product.category._id
         : product.category;
   }
+
+  if(product.dimensions) {
+    if($('dimWidth') && product.dimensions.width != null)
+      $('dimWidth').value = product.dimensions.width;
+
+    if($('dimDepth') && product.dimensions.depth != null)
+      $('dimDepth').value = product.dimensions.depth;
+
+    if($('dimHeight') && product.dimensions.height != null)
+      $('dimHeight').value = product.dimensions.height;
+  }
   if(product.customAttributes && product.customAttributes.length) {
     product.customAttributes.forEach(attr => {
       addCustomAttribute();
@@ -662,9 +673,10 @@ function validateForm() {
     const optValue = $(`vOptValue-${id}`)?.value.trim();
     const price = parseFloat($(`vPrice-${id}`)?.value);
     const stock = parseInt($(`vStock-${id}`)?.value, 10);
-    // const newImagesCount = variantCroppedFiles[id]?.length || 0;
-    // const existingImagesCount = existingVariantImageCount[id] || 0;
-    // const totalImages = newImagesCount + existingImagesCount;
+    const newImagesCount = variantCroppedFiles[id]?.length || 0;
+    const existingImagesCount = existingVariantImageCount[id] || 0;
+    const totalImages = newImagesCount + existingImagesCount;
+
     if(!optType) {showVariantError(id, 'optType', 'Option type is required (e.g. Size, Color).'); valid = false;}
     else {clearVariantError(id, 'optType');}
 
@@ -677,10 +689,10 @@ function validateForm() {
     if(isNaN(stock) || stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
     else {clearVariantError(id, 'stock');}
 
-    // if(totalImages === 0) {
-    //   showToast(`Variant #${id} must have at least 1 image (existing or new).`, 'error');
-    //   valid = false;
-    // }
+    if(totalImages === 0) {
+      showToast(`Variant #${id} must have at least 1 image (existing or new).`, 'error');
+      valid = false;
+    }
   });
 
   if(!valid) {

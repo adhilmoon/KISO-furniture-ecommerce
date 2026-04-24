@@ -150,3 +150,20 @@ document.addEventListener("DOMContentLoaded", () => {
     img.style.transform = "scale(1)";
   });
 });
+function showTab(tabId, btn) {
+  // Hide all tab contents
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  
+  // Show selected tab content
+  const selectedTab = document.getElementById(tabId + 'Tab');
+  if (selectedTab) selectedTab.classList.remove('hidden');
+
+  // Update button styling
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('text-brand-accent', 'border-brand-accent');
+    b.classList.add('text-brand-muted', 'border-transparent');
+  });
+
+  btn.classList.add('text-brand-accent', 'border-brand-accent');
+  btn.classList.remove('text-brand-muted', 'border-transparent');
+}

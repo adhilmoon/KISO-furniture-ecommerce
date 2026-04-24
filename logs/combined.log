@@ -2561,3 +2561,644 @@ Error: Could not find matching close tag for "<%#".
 2026-04-24T05:47:03.820Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
 2026-04-24T05:47:03.823Z [INFO]: Server started at http://localhost:4004
 2026-04-24T05:47:03.824Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:12:43.076Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:12:43.755Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:12:43.760Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:14:10.420Z [INFO]: OTP email sent to beron23842@4heats.com
+2026-04-24T06:15:12.361Z [ERROR]: Unhandled Error: Invalid OTP. Please try again.
+Error: Invalid OTP. Please try again.
+    at Object.verifyOtp (file:///Users/muhammedadhilkp/Developer/kiso/service/user/userService.js:40:19)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/authController.js:28:38
+    at file:///Users/muhammedadhilkp/Developer/kiso/utilities/catchAsync.js:4:5
+    at Layer.handleRequest (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/layer.js:152:17)
+    at next (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/route.js:157:13)
+    at Route.dispatch (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/route.js:117:3)
+    at handle (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/index.js:435:11)
+    at Layer.handleRequest (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/layer.js:152:17)
+    at /Users/muhammedadhilkp/Developer/kiso/node_modules/router/index.js:295:15
+    at processParams (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/index.js:582:12)
+2026-04-24T06:15:21.209Z [INFO]: OTP email sent to beron23842@4heats.com
+2026-04-24T06:26:37.093Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:26:37.093Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:26:37.805Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:26:37.807Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:26:37.821Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:26:37.823Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:26:41.659Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:26:41.659Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:26:42.401Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:26:42.403Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:26:42.539Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:26:42.543Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:27:06.860Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:27:06.862Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:27:07.456Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:27:07.458Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:27:07.484Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:27:07.489Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:27:09.501Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:27:09.501Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:27:10.103Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:27:10.105Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:27:10.121Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:27:10.125Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:37.490Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:37.490Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:38.229Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:31:38.231Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:38.278Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:31:38.283Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:40.254Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:40.254Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:40.863Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:40.865Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:40.866Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:40.871Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:41.390Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:41.390Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:42.056Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:42.058Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:42.069Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:42.074Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:42.706Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:42.706Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:43.497Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:43.499Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:43.499Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:43.504Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:44.408Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:44.413Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:31:45.037Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:45.039Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:31:45.045Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:31:45.049Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:35:10.923Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:35:10.923Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:35:11.700Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:35:11.703Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:35:11.721Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T06:35:11.728Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:36:41.137Z [INFO]: OTP email sent to sosode3868@4heats.com
+2026-04-24T06:50:13.460Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:13.460Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:14.347Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T06:50:14.353Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:14.358Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:14.364Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:15.051Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:15.051Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:15.735Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:15.736Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:15.740Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:15.743Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:27.745Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:27.745Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:28.428Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:28.430Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:28.432Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:28.435Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:29.642Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:29.642Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:30.325Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:30.331Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:30.345Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:30.352Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:55.661Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:55.661Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:56.348Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:56.353Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:56.358Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:56.365Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:56.557Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:56.560Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:57.272Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:57.274Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:57.287Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:57.292Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:58.550Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:58.550Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:50:59.678Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:59.678Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:50:59.684Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:50:59.684Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:51:10.627Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:51:10.627Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:51:11.350Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:51:11.350Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:51:11.356Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:51:11.356Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:51:12.913Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:51:12.913Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:51:13.908Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:51:13.912Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:51:13.918Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T06:51:13.928Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:51:14.502Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:51:14.502Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:51:15.223Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:51:15.229Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:51:15.237Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:51:15.244Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:29.166Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:29.166Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:29.899Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T06:52:29.903Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:29.982Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:52:29.986Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:31.364Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:31.364Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:32.029Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:52:32.034Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:32.071Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:52:32.077Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:38.239Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:38.239Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:38.912Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:52:38.919Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:52:38.918Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:38.923Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:43.384Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:43.387Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:52:44.087Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:52:44.094Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:52:44.098Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:52:44.103Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:56:03.527Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:56:03.527Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:56:04.362Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:56:04.362Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T06:56:04.368Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:56:04.367Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:59:45.620Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:59:45.620Z [INFO]: Cloudinary credentials loaded
+2026-04-24T06:59:46.389Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T06:59:46.391Z [INFO]: Server started at http://localhost:4004
+2026-04-24T06:59:46.427Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T06:59:46.433Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:02:06.558Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:02:06.558Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:02:07.280Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:02:07.282Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:02:07.317Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:02:07.322Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:02:18.848Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:02:18.847Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:02:26.186Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:02:26.186Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:02:26.192Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:02:26.192Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:02:44.252Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productController.js:7:42
+2026-04-24T08:13:45.365Z [ERROR]: Unhandled Error: Only letters and spaces allowed
+Error: Only letters and spaces allowed
+    at Module.createCategory (file:///Users/muhammedadhilkp/Developer/kiso/service/admin/categoryService.js:15:15)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/adminController/adminCategory.js:17:27
+    at file:///Users/muhammedadhilkp/Developer/kiso/utilities/catchAsync.js:4:5
+    at Layer.handleRequest (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/layer.js:152:17)
+    at next (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/route.js:157:13)
+    at isAdmin (file:///Users/muhammedadhilkp/Developer/kiso/middleware/adminAuth.js:25:16)
+    at Layer.handleRequest (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/layer.js:152:17)
+    at next (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/route.js:157:13)
+    at Route.dispatch (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/route.js:117:3)
+    at handle (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/index.js:435:11)
+2026-04-24T08:15:38.740Z [ERROR]: Unhandled Error: At least one variant image is required
+Error: At least one variant image is required
+    at Module.createProduct (file:///Users/muhammedadhilkp/Developer/kiso/service/admin/productService.js:73:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/adminController/adminProduct.js:30:21
+2026-04-24T08:19:44.607Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:19:44.607Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:19:45.780Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:19:45.785Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:19:45.823Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:19:45.826Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:19:47.705Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:19:47.721Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:19:48.417Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:19:48.420Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:19:48.420Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:19:48.422Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:19:49.029Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:19:49.029Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:19:49.747Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:19:49.747Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:19:49.750Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:19:49.750Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:20:09.028Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:20:09.028Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:20:09.615Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:20:09.617Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:20:09.625Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:20:09.630Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:20:11.844Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:20:11.844Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:20:12.479Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:20:12.483Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:20:12.497Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:20:12.499Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:20:13.960Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:20:13.960Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:20:14.610Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:20:14.612Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:20:14.617Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:20:14.622Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:22:20.183Z [ERROR]: Unhandled Error: Description must be at least 10 characters
+Error: Description must be at least 10 characters
+    at Module.createProduct (file:///Users/muhammedadhilkp/Developer/kiso/service/admin/productService.js:13:11)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/adminController/adminProduct.js:30:42
+    at file:///Users/muhammedadhilkp/Developer/kiso/utilities/catchAsync.js:4:5
+    at Layer.handleRequest (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/layer.js:152:17)
+    at next (/Users/muhammedadhilkp/Developer/kiso/node_modules/router/lib/route.js:157:13)
+    at done (/Users/muhammedadhilkp/Developer/kiso/node_modules/multer/lib/make-middleware.js:69:7)
+    at indicateDone (/Users/muhammedadhilkp/Developer/kiso/node_modules/multer/lib/make-middleware.js:73:68)
+    at Multipart.<anonymous> (/Users/muhammedadhilkp/Developer/kiso/node_modules/multer/lib/make-middleware.js:243:7)
+    at Multipart.emit (node:events:524:28)
+    at emitCloseNT (node:internal/streams/destroy:147:10)
+2026-04-24T08:22:28.059Z [ERROR]: Unhandled Error: At least one variant image is required
+Error: At least one variant image is required
+    at Module.createProduct (file:///Users/muhammedadhilkp/Developer/kiso/service/admin/productService.js:72:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/adminController/adminProduct.js:30:21
+2026-04-24T08:25:29.859Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:25:29.859Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:25:30.558Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:25:30.561Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:25:30.580Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:25:30.583Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:25:40.322Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:25:40.322Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:25:41.074Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:25:41.074Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:25:41.076Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:25:41.077Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:25:57.210Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:25:57.211Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:25:57.823Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:25:57.823Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:25:57.825Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:25:57.826Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:27:32.404Z [ERROR]: Unhandled Error: At least one variant image is required
+Error: At least one variant image is required
+    at Module.createProduct (file:///Users/muhammedadhilkp/Developer/kiso/service/admin/productService.js:72:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/adminController/adminProduct.js:30:21
+2026-04-24T08:29:16.045Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:29:16.045Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:29:16.786Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:29:16.788Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:29:16.798Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:29:16.804Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:29:24.978Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:29:25.037Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:29:25.615Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:29:25.617Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:29:25.646Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:29:25.648Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:31:23.021Z [ERROR]: Unhandled Error: At least one variant image is required
+Error: At least one variant image is required
+    at Module.createProduct (file:///Users/muhammedadhilkp/Developer/kiso/service/admin/productService.js:72:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/adminController/adminProduct.js:30:21
+2026-04-24T08:31:45.880Z [ERROR]: Unhandled Error: At least one variant image is required
+Error: At least one variant image is required
+    at Module.createProduct (file:///Users/muhammedadhilkp/Developer/kiso/service/admin/productService.js:72:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/adminController/adminProduct.js:30:21
+2026-04-24T08:32:47.225Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:32:47.225Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:32:48.058Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:32:48.060Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:32:48.076Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:32:48.079Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:15.480Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:15.480Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:16.340Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:35:16.343Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:16.353Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:35:16.359Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:27.516Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:27.516Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:28.206Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:35:28.208Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:28.211Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:35:28.213Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:41.171Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:41.171Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:41.929Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:35:41.929Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:35:41.931Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:41.931Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:52.575Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:52.579Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:35:53.655Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:35:53.660Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:35:53.883Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:35:53.886Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:38:31.078Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:38:31.078Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:38:31.879Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:38:31.884Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:38:32.130Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:38:32.133Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:39:48.484Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:39:49.376Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:39:49.382Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:40:54.021Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:40:54.021Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:40:55.351Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:40:55.355Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:40:56.510Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:40:56.518Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:42:04.554Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:42:05.289Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:42:05.294Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:45:45.060Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:45:45.060Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:45:46.222Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:45:46.228Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:45:46.413Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:45:46.417Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:52:42.492Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:42.492Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:43.268Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:52:43.270Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:52:43.277Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:52:43.282Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:52:44.767Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:44.773Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:45.382Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:52:45.387Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:52:45.689Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:52:45.691Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:52:46.773Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:46.780Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:47.535Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:52:47.537Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:52:48.611Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:48.614Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:52:49.233Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:52:49.236Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:52:50.166Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:52:50.171Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:05.891Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:05.891Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:06.907Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:06.909Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:07.522Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:07.525Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:07.532Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:53:07.534Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:09.120Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:09.120Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:09.861Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:09.863Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:10.004Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:10.007Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:10.396Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:10.396Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:11.046Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:11.049Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:11.075Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:11.078Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:13.253Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:13.256Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:13.862Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:13.864Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:13.901Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:13.906Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:24.183Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:24.182Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:25.112Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:25.115Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:25.180Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:25.187Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:27.169Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:27.169Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:27.942Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:27.944Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:28.245Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:28.247Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:28.684Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:28.689Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:29.357Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:29.357Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:29.360Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:29.360Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:38.052Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:38.052Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:38.657Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:53:38.659Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:38.686Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:53:38.690Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:50.675Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:50.675Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:51.352Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:53:51.354Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:51.676Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:53:51.679Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:54.240Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:54.240Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:54.841Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:53:54.844Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:54.857Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:53:54.861Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:57.622Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:57.622Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:53:58.513Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:53:58.515Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:53:58.577Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T08:53:58.580Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:54:06.895Z [ERROR]: Unhandled Error: Can't use $exist with Array.
+Error: Can't use $exist with Array.
+    at SchemaArray.castForQuery (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/schema/array.js:545:13)
+    at cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/cast.js:363:39)
+    at Query.cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:5040:12)
+    at model.Query._countDocuments (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:2800:10)
+    at model.Query.exec (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:4652:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/pagesController.js:210:27
+2026-04-24T08:54:08.364Z [ERROR]: Unhandled Error: Can't use $exist with Array.
+Error: Can't use $exist with Array.
+    at SchemaArray.castForQuery (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/schema/array.js:545:13)
+    at cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/cast.js:363:39)
+    at Query.cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:5040:12)
+    at model.Query._countDocuments (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:2800:10)
+    at model.Query.exec (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:4652:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/pagesController.js:210:27
+2026-04-24T08:54:08.502Z [ERROR]: Unhandled Error: Can't use $exist with Array.
+Error: Can't use $exist with Array.
+    at SchemaArray.castForQuery (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/schema/array.js:545:13)
+    at cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/cast.js:363:39)
+    at Query.cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:5040:12)
+    at model.Query._countDocuments (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:2800:10)
+    at model.Query.exec (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:4652:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/pagesController.js:210:27
+2026-04-24T08:54:09.647Z [ERROR]: Unhandled Error: Can't use $exist with Array.
+Error: Can't use $exist with Array.
+    at SchemaArray.castForQuery (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/schema/array.js:545:13)
+    at cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/cast.js:363:39)
+    at Query.cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:5040:12)
+    at model.Query._countDocuments (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:2800:10)
+    at model.Query.exec (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:4652:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/pagesController.js:210:27
+2026-04-24T08:54:09.792Z [ERROR]: Unhandled Error: Can't use $exist with Array.
+Error: Can't use $exist with Array.
+    at SchemaArray.castForQuery (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/schema/array.js:545:13)
+    at cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/cast.js:363:39)
+    at Query.cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:5040:12)
+    at model.Query._countDocuments (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:2800:10)
+    at model.Query.exec (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:4652:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/pagesController.js:210:27
+2026-04-24T08:54:13.683Z [ERROR]: Unhandled Error: Can't use $exist with Array.
+Error: Can't use $exist with Array.
+    at SchemaArray.castForQuery (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/schema/array.js:545:13)
+    at cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/cast.js:363:39)
+    at Query.cast (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:5040:12)
+    at model.Query._countDocuments (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:2800:10)
+    at model.Query.exec (/Users/muhammedadhilkp/Developer/kiso/node_modules/mongoose/lib/query.js:4652:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/pagesController.js:210:27
+2026-04-24T08:55:33.689Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:55:33.689Z [INFO]: Cloudinary credentials loaded
+2026-04-24T08:55:34.473Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T08:55:34.475Z [INFO]: Server started at http://localhost:4004
+2026-04-24T08:55:34.563Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T08:55:34.565Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:46.227Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:46.227Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:46.951Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:46.953Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:46.953Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:46.955Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:47.754Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:47.759Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:48.380Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:48.383Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:48.389Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:48.394Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:52.202Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:52.203Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:52.932Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:52.934Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:52.953Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:52.955Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:54.229Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:54.242Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:54.945Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:54.947Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:55.197Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:55.199Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:56.522Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:56.540Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:57.144Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:57.146Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:57.164Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:57.167Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:57.535Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:57.535Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:58.201Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:58.203Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:58.205Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:58.208Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:59.087Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:59.092Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:00:59.727Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:59.729Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:00:59.846Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:00:59.848Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:14.812Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:14.812Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:15.488Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:15.490Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:15.523Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:15.529Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:25.385Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:25.385Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:25.996Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:25.999Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:26.127Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:26.129Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:26.632Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:26.632Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:27.261Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:27.266Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:27.466Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:27.468Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:31.684Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:31.684Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:32.309Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:32.314Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:32.747Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:32.749Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:36.018Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:36.017Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:36.664Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:36.666Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:36.677Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:36.682Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:39.418Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:39.422Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:40.147Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:40.149Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:40.169Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:01:40.174Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:54.572Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:54.572Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:01:55.571Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:01:55.573Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:01:55.665Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:01:55.670Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:02:32.906Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:02:32.906Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:02:33.712Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:02:33.714Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:02:33.954Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:02:33.960Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:02:43.608Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:02:43.614Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:02:44.344Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T09:02:44.348Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:02:44.473Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:02:44.475Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:06:48.644Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:06:48.644Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:06:49.567Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:06:49.569Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:06:49.840Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T09:06:49.845Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:06:50.455Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:06:50.455Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:06:51.079Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:06:51.081Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:06:51.086Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:06:51.090Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:11:05.629Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:11:05.629Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:11:06.375Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:11:06.377Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:11:06.703Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T09:11:06.709Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:12:07.383Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:12:08.241Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T09:12:08.245Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:34:46.572Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:34:46.572Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:34:47.470Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T09:34:47.474Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:34:47.522Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T09:34:47.528Z [INFO]: Server started at http://localhost:4004
+2026-04-24T09:52:11.797Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productController.js:7:42
+2026-04-24T09:55:10.537Z [INFO]: Cloudinary credentials loaded
+2026-04-24T09:55:11.518Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T09:55:11.522Z [INFO]: Server started at http://localhost:4004
