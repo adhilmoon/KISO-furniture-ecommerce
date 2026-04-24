@@ -3,7 +3,7 @@ import Address from "../../model/Address.js";
 import Product from "../../model/Product.js";
 import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 import Category from "../../model/Category.js";
-import logger from "../../utilities/logger.js";
+import catchAsync from "../../utilities/catchAsync.js";
 
 
 
@@ -60,46 +60,39 @@ const sampleProducts = [
 
 const pickRandomImage = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-export const user_home = async (req, res) => {
-    try {
+export const user_home = catchAsync(async (req, res) => {
+    const activeCategories = await Category.find({isActive: true}).select('_id').lean();
+    const activeCategoryIds = activeCategories.map(c => c._id);
+
+    const productList = await Product.find({
+            isListed: true,
+            category: {$in: activeCategoryIds}
+        })
+        .limit(4)
+        .populate("category")
+        .lean();
+
+    const products = productList.map((product) => {
+
+        const allImages = product.variants?.flatMap(v => v.images) || [];
+        return {
+            ...product,
+            img: pickRandomImage(allImages)
+        };
+    });
+
+    const rooms = sampleProducts.map((product) => ({
+        title: product.name,
+        img: pickRandomImage(product.rooms) || pickRandomImage(product.products)
+    }));
 
 
-        const activeCategories = await Category.find({isActive: true}).select('_id').lean();
-        const activeCategoryIds = activeCategories.map(c => c._id);
-
-        const productList = await Product.find({
-                isListed: true,
-                category: {$in: activeCategoryIds}
-            })
-            .limit(4)
-            .populate("category")
-            .lean();
-
-        const products = productList.map((product) => {
-
-            const allImages = product.variants?.flatMap(v => v.images) || [];
-            return {
-                ...product,
-                img: pickRandomImage(allImages)
-            };
-        });
-
-        const rooms = sampleProducts.map((product) => ({
-            title: product.name,
-            img: pickRandomImage(product.rooms) || pickRandomImage(product.products)
-        }));
-
-
-        res.render('user/homepage', {
-            title: 'homepagePage',
-            products,
-            rooms
-        });
-    } catch(error) {
-        logger.error(`User home page error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.INTERNAL_SERVER_ERROR);
-    }
-};
+    res.render('user/homepage', {
+        title: 'homepagePage',
+        products,
+        rooms
+    });
+});
 
 export const login_page = (req, res) => {
     res.render('user/login', {
@@ -117,29 +110,22 @@ export const reset_password_page = (req, res) => {
 }
 
 
-export const user_profile = async (req, res) => {
-    try {
-        const userId = req.session.user._id
-        if(!userId) {
-            return res.redirect('/login')
-        }
-        const user = await User.findById(userId)
-        if(!user) {
-            return res.send(MESSAGES.USER_NOT_FOUND)
-        }
-        return res.render('user/profile', {
-            user: user,
-            isProfilePage: true,
-            title: "My Profile"
-        })
-    } catch(error) {
-        logger.error(`User profile page error: ${error.message}`);
-        return res
-            .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-            .send(MESSAGES.INTERNAL_SERVER_ERROR);
+export const user_profile = catchAsync(async (req, res) => {
+    const userId = req.session.user._id
+    if(!userId) {
+        return res.redirect('/login')
     }
+    const user = await User.findById(userId)
+    if(!user) {
+        return res.send(MESSAGES.USER_NOT_FOUND)
+    }
+    return res.render('user/profile', {
+        user: user,
+        isProfilePage: true,
+        title: "My Profile"
+    })
+});
 
-}
 export const settings_page = (req, res) => {
     res.render('user/settings', {
         title: 'settings',
@@ -156,124 +142,113 @@ export const user_signup = (req, res) => {
     });
 }
 
-export const user_address = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const perPage = 5;
-        const skip = (page - 1) * perPage;
+export const user_address = catchAsync(async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 5;
+    const skip = (page - 1) * perPage;
 
-        const userId = req.session.user._id;
-
-
-        const totalAddresses = await Address.countDocuments({userId});
+    const userId = req.session.user._id;
 
 
-        const addresses = await Address.find({userId})
-            .skip(skip)
-            .limit(perPage)
-            .sort({createdAt: -1});
+    const totalAddresses = await Address.countDocuments({userId});
 
-        const user = await User.findById(userId);
 
-        return res.render('user/address', {
-            addresses,
-            user,
-            currentPage: page,
-            totalPages: Math.ceil(totalAddresses / perPage),
-            title: "My Addresses",
-            isProfilePage: true
-        });
-    } catch(error) {
-        logger.error(`User address page error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.INTERNAL_SERVER_ERROR);
+    const addresses = await Address.find({userId})
+        .skip(skip)
+        .limit(perPage)
+        .sort({createdAt: -1});
+
+    const user = await User.findById(userId);
+
+    return res.render('user/address', {
+        addresses,
+        user,
+        currentPage: page,
+        totalPages: Math.ceil(totalAddresses / perPage),
+        title: "My Addresses",
+        isProfilePage: true
+    });
+});
+
+export const user_store = catchAsync(async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 6;
+    const skip = (page - 1) * perPage;
+
+    const searchQuery = req.query.search || "";
+    const categoryId = req.query.category || "";
+    const minPrice = parseFloat(req.query.minPrice) || 0;
+    const maxPrice = parseFloat(req.query.maxPrice) || 0;
+
+    // ── Build filter ──────────────────────────────────────────────────
+    const activeCategories = await Category.find({isActive: true}).select('_id').lean();
+    const activeCategoryIds = activeCategories.map(c => c._id);
+
+    const filter = {
+        isListed: true,
+        category: {$in: activeCategoryIds}
+    };
+
+    if(searchQuery) {
+        filter.productName = {$regex: searchQuery, $options: "i"};
     }
-};
-
-export const user_store = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const perPage = 6;
-        const skip = (page - 1) * perPage;
-
-        const searchQuery = req.query.search || "";
-        const categoryId = req.query.category || "";
-        const minPrice = parseFloat(req.query.minPrice) || 0;
-        const maxPrice = parseFloat(req.query.maxPrice) || 0;
-
-        // ── Build filter ──────────────────────────────────────────────────
-        const activeCategories = await Category.find({isActive: true}).select('_id').lean();
-        const activeCategoryIds = activeCategories.map(c => c._id);
-
-        const filter = {
-            isListed: true,
-            category: {$in: activeCategoryIds}
-        };
-
-        if(searchQuery) {
-            filter.productName = {$regex: searchQuery, $options: "i"};
+    if(categoryId) {
+        if(activeCategoryIds.some(id => id.toString() === categoryId)) {
+            filter.category = categoryId;
+        } else {
+            filter.category = null; // Return no products if category is inactive
         }
-        if(categoryId) {
-            if(activeCategoryIds.some(id => id.toString() === categoryId)) {
-                filter.category = categoryId;
-            } else {
-                filter.category = null; // Return no products if category is inactive
-            }
-        }
-        if(minPrice > 0 || maxPrice > 0) {
-            filter.basePrice = {};
-            if(minPrice > 0) filter.basePrice.$gte = minPrice;
-            if(maxPrice > 0) filter.basePrice.$lte = maxPrice;
-        }
+    }
+    if(minPrice > 0 || maxPrice > 0) {
+        filter.basePrice = {};
+        if(minPrice > 0) filter.basePrice.$gte = minPrice;
+        if(maxPrice > 0) filter.basePrice.$lte = maxPrice;
+    }
 
-        // ── Query ──────────────────────────────────────────────────────────
-        const totalProducts = await Product.countDocuments(filter);
-        const products = await Product.find(filter)
-            .populate({
-                path: 'category',
-                match: {isActive: true},
-                select: 'categoryName'
-            })
-            .skip(skip)
-            .limit(perPage)
-            .sort({createdAt: -1})
-            .lean();
+    // ── Query ──────────────────────────────────────────────────────────
+    const totalProducts = await Product.countDocuments(filter);
+    const products = await Product.find(filter)
+        .populate({
+            path: 'category',
+            match: {isActive: true},
+            select: 'categoryName'
+        })
+        .skip(skip)
+        .limit(perPage)
+        .sort({createdAt: -1})
+        .lean();
 
-        products.forEach(product => {
-            product.totalQuantity = Array.isArray(product.variants)
-                ? product.variants.reduce((sum, v) => sum + (v.stock || 0), 0)
-                : 0;
-        });
+    products.forEach(product => {
+        product.totalQuantity = Array.isArray(product.variants)
+            ? product.variants.reduce((sum, v) => sum + (v.stock || 0), 0)
+            : 0;
+    });
 
-        // ── Categories for sidebar ─────────────────────────────────────────
-        const categories = await Category.find({isActive: true}, 'categoryName _id').lean();
+  
+    const categories = await Category.find({isActive: true}, 'categoryName _id').lean();
 
-        const activeFilters = {categoryId, minPrice, maxPrice};
+    const activeFilters = {categoryId, minPrice, maxPrice};
 
-        // ── JSON response (AJAX calls from storeManagement.js) ─────────────
-        if(req.xhr || req.headers.accept?.includes("application/json")) {
-            return res.json({
-                success: true,
-                products,
-                totalProducts,
-                currentPage: page,
-                totalPages: Math.ceil(totalProducts / perPage),
-            });
-        }
 
-        return res.render('user/store', {
-            title: 'Store - KISO',
+    if(req.xhr || req.headers.accept?.includes("application/json")) {
+        return res.json({
+            success: true,
             products,
+            totalProducts,
             currentPage: page,
             totalPages: Math.ceil(totalProducts / perPage),
-            searchQuery,
-            perPage,
-            totalProducts,
-            categories,
-            activeFilters,
         });
-
-    } catch(error) {
-        logger.error(`Store page error: ${error.message}`);
-        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render('404', {title: "Error"});
     }
-};
+
+    return res.render('user/store', {
+        title: 'Store - KISO',
+        products,
+        currentPage: page,
+        totalPages: Math.ceil(totalProducts / perPage),
+        searchQuery,
+        perPage,
+        totalProducts,
+        categories,
+        activeFilters,
+    });
+});
