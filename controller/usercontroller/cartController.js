@@ -1,74 +1,48 @@
 import * as cartService from "../../service/user/cartService.js";
 import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
-import logger from "../../utilities/logger.js";
+import catchAsync from "../../utilities/catchAsync.js";
 
-export const getCartPage = async (req, res) => {
-    try {
-        const userId = req.session.user._id;
-        const cart = await cartService.getCart(userId);
-        
-        res.render("user/cart", {
-            title: "Your Cart - KISO",
-            cart,
-        });
-    } catch (error) {
-        logger.error(`Error loading cart page: ${error.message}`);
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render("404", { title: "Error" });
-    }
-};
+export const getCartPage = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    const cart = await cartService.getCart(userId);
+    
+    res.render("user/cart", {
+        title: "Your Cart - KISO",
+        cart,
+    });
+});
 
-export const addToCart = async (req, res,next) => {
-    try {
-        const userId = req.session.user._id;
-        const { productId, variantIndex, quantity } = req.body;
+export const addToCart = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    const { productId, variantIndex, quantity } = req.body;
 
-        const cart = await cartService.addToCart(userId, productId, parseInt(variantIndex) || 0, parseInt(quantity) || 1);
+    const cart = await cartService.addToCart(userId, productId, parseInt(variantIndex) || 0, parseInt(quantity) || 1);
 
-        res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.ADDED_TO_CART, cart });
-    } catch (error) {
-        logger.error(`Add to cart error: ${error.message}`);
-        next(error)
-        res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: error.message });
-    }
-};
+    res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.ADDED_TO_CART, cart });
+});
 
-export const updateQuantity = async (req, res) => {
-    try {
-        const userId = req.session.user._id;
-        const { itemId } = req.params;
-        const { quantity } = req.body;
+export const updateQuantity = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    const { itemId } = req.params;
+    const { quantity } = req.body;
 
-        const cart = await cartService.updateQty(userId, itemId, parseInt(quantity));
+    const cart = await cartService.updateQty(userId, itemId, parseInt(quantity));
 
-        res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.CART_UPDATED, cart });
-    } catch (error) {
-        logger.error(`Update cart qty error: ${error.message}`);
-        res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: error.message });
-    }
-};
+    res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.CART_UPDATED, cart });
+});
 
-export const removeItem = async (req, res) => {
-    try {
-        const userId = req.session.user._id;
-        const { itemId } = req.params;
+export const removeItem = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    const { itemId } = req.params;
 
-        const cart = await cartService.removeItem(userId, itemId);
+    const cart = await cartService.removeItem(userId, itemId);
 
-        res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.ITEM_REMOVED, cart });
-    } catch (error) {
-        logger.error(`Remove cart item error: ${error.message}`);
-        res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: error.message });
-    }
-};
+    res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.ITEM_REMOVED, cart });
+});
 
-export const clearCart = async (req, res) => {
-    try {
-        const userId = req.session.user._id;
-        await cartService.clearCart(userId);
+export const clearCart = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    await cartService.clearCart(userId);
 
-        res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.CART_CLEARED });
-    } catch (error) {
-        logger.error(`Clear cart error: ${error.message}`);
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
-    }
-};
+    res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.CART_CLEARED });
+});

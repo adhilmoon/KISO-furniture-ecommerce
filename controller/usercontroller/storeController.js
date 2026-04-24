@@ -1,11 +1,9 @@
 import Product from "../../model/Product.js";
 import Category from "../../model/Category.js";
 import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
-import logger from "../../utilities/logger.js";
+import catchAsync from "../../utilities/catchAsync.js";
 
-export const getFilterOptions = async (req, res) => {
-  try {
-     
+export const getFilterOptions = catchAsync(async (req, res) => {
     const categoryDocs = await Category.find({isActive:true}).select('categoryName');
     const categories = categoryDocs.map(c => c.categoryName); 
     
@@ -24,8 +22,4 @@ export const getFilterOptions = async (req, res) => {
         colors
       }
     });
-  } catch (error) {
-    logger.error(`Error fetching filter options: ${error.message}`);
-    return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.SERVER_ERROR });
-  }
-};
+});

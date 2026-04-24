@@ -1,11 +1,10 @@
 import * as productService from "../../service/admin/productService.js";
 import {STATUS_CODES} from "../../constants/statusCodes.js";
-import logger from "../../utilities/logger.js";
+import catchAsync from "../../utilities/catchAsync.js";
 
 
 
-export const addProduct = async (req, res) => {
-  try {
+export const addProduct = catchAsync(async (req, res) => {
     const {productName, category, basePrice} = req.body;
 
 
@@ -35,27 +34,9 @@ export const addProduct = async (req, res) => {
       message: "Product created successfully.",
       productId: product._id,
     });
+});
 
-  } catch(error) {
-    logger.error(`addProduct error: ${error.message}`);
-
-    // Handle duplicate key errors (e.g. SKU if we add it back later)
-    if(error.code === 11000) {
-      return res.status(STATUS_CODES.BAD_REQUEST).json({
-        success: false,
-        message: "A product with those details already exists.",
-      });
-    }
-
-    return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: error.message || "Failed to add product. Please try again.",
-    });
-  }
-};
-
-export const updateProduct = async (req, res) => {
-  try {
+export const updateProduct = catchAsync(async (req, res) => {
     const productId = req.params.id;
     const {productName, category, basePrice} = req.body;
 
@@ -90,25 +71,8 @@ export const updateProduct = async (req, res) => {
       message: "Product updated successfully.",
       productId: updatedProduct._id,
     });
-
-  } catch(error) {
-    logger.error(`updateProduct error: ${error.message}`);
-
-    if(error.code === 11000) {
-      return res.status(STATUS_CODES.BAD_REQUEST).json({
-        success: false,
-        message: "A product with those details already exists.",
-      });
-    }
-
-    return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: error.message || "Failed to update product. Please try again.",
-    });
-  }
-};
-export const disableProduct = async (req, res) => {
-  try {
+});
+export const disableProduct = catchAsync(async (req, res) => {
     const productId = req.params.id;
     const updated = await productService.disableProduct(productId);
     if(!updated) {
@@ -122,14 +86,8 @@ export const disableProduct = async (req, res) => {
       success: true,
       message: "success fully product disabled"
     })
-
-
-  } catch(err) {
-    logger.error(`Product disable error: ${err.message}`);
-  }
-}
-export const enableProduct = async (req, res) => {
-  try {
+});
+export const enableProduct = catchAsync(async (req, res) => {
     const productId = req.params.id;
     const updated=await productService.enableProduct(productId)
     if(!updated){
@@ -142,9 +100,4 @@ export const enableProduct = async (req, res) => {
       success: true,
       message: "success fully product enabled"
     })
-
-
-  } catch(err) {
-    logger.error(`Product enable error: ${err.message}`);
-  }
-}
+});
