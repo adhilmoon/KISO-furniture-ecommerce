@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     const addBtn = document.getElementById('add-address-btn');
-    if (addBtn) {
+    if(addBtn) {
         addBtn.addEventListener('click', () => {
             toggleAddressModal();
         });
@@ -27,7 +27,7 @@ function toggleAddressModal() {
 
     const isOpen = !modal.classList.contains('hidden');
 
-    if (isOpen) {
+    if(isOpen) {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         form.reset();
@@ -42,15 +42,15 @@ function toggleAddressModal() {
 
 
 async function deleteAddress(addressId) {
-     const result=await confirmAction('Are you sure you want to delete this address?')
-     
-   if(!result.isConfirmed)return;
+    const result = await confirmAction('Are you sure you want to delete this address?')
+
+    if(!result.isConfirmed) return;
     try {
         const response = await axios.delete(`/user/address/delete/${addressId}`);
-        if (response.data.success) {
+        if(response.data.success) {
             window.location.reload();
         }
-    } catch (error) {
+    } catch(error) {
         console.error('Error deleting address:', error);
         alert('Failed to delete address. Please try again.');
     }
@@ -72,7 +72,7 @@ async function editAddress(addressId) {
         document.getElementById('addressForm').dataset.editId = addressId;
 
         toggleAddressModal();
-    } catch (error) {
+    } catch(error) {
         console.error('Error fetching address:', error);
         alert('Failed to load address');
     }
@@ -94,25 +94,38 @@ async function handleAddressSubmit(event) {
         pincode: document.getElementById('pincode').value.trim(),
         type: document.getElementById('type').value
     };
-    
-    if (!addressData.fullName || addressData.fullName.length < 3) {
+
+    if(!addressData.fullName || addressData.fullName.length < 3) {
         return showFieldError('fullName', "Full Name must be at least 3 characters");
     }
 
     const mobileRegex = /^[6-9]\d{9}$/;
-    if (!mobileRegex.test(addressData.mobile)) {
+    if(!mobileRegex.test(addressData.mobile)) {
         return showFieldError('mobile', "Please enter a valid 10-digit mobile number");
     }
 
-    if (!addressData.houseName) {
+    if(!addressData.houseName) {
         return showFieldError('houseName', "House Name/Area is required");
     }
+    const houseRegex = /^(?=.*[a-zA-Z0-9])(?!.*[.,/-]{2})[a-zA-Z0-9\s,./-]{3,}$/;
+    if(!houseRegex.test(addressData.houseName)) {
+        return showFieldError('houseName', "Enter a valid house name or area");
+    }
 
-    if (!addressData.city) return showFieldError('city', "City is required");
-    if (!addressData.state) return showFieldError('state', "State is required");
+    if(!addressData.city) return showFieldError('city', "City is required");
+    const cityRegex = /^[A-Za-z\s]{2,}$/;
+    if(!cityRegex.test(addressData.city)) {
+        return showFieldError('city', "Enter a valid city name");
+    }
+    if(!addressData.state) return showFieldError('state', "State is required");
+
+    const stateRegex = /^[A-Za-z\s]{2,}$/;
+    if(!stateRegex.test(addressData.state)) {
+        return showFieldError('state', "Enter a valid state name");
+    }
 
     const pinRegex = /^\d{6}$/;
-    if (!pinRegex.test(addressData.pincode)) {
+    if(!pinRegex.test(addressData.pincode)) {
         return showFieldError('pincode', "Pincode must be exactly 6 digits");
     }
 
@@ -122,11 +135,11 @@ async function handleAddressSubmit(event) {
 
         const response = await axios[method](url, addressData);
 
-        if (response.data.success) {
+        if(response.data.success) {
             showMessage(response.data.message || 'Address saved!', 'success');
             setTimeout(() => location.reload(), 800);
         }
-    } catch (error) {
+    } catch(error) {
         showMessage(error.response?.data?.message || 'Failed to save address', 'error');
     }
 }
@@ -141,8 +154,8 @@ function showFieldError(fieldId, message) {
     const errorEl = document.getElementById(`err-${fieldId}`);
     const inputEl = document.getElementById(fieldId);
 
-    if (errorEl) errorEl.innerText = message;
-    if (inputEl) {
+    if(errorEl) errorEl.innerText = message;
+    if(inputEl) {
         inputEl.classList.add('border-red-500', 'ring-1', 'ring-red-500');
         inputEl.focus();
     }

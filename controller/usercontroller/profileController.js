@@ -187,6 +187,13 @@ export const updateEmail = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
     const user = await User.findById(userId)
 
+    if (user.googleId) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: "Account managed by Google. Email cannot be changed here."
+        });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password)
     if(!isMatch) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.INCORRECT_PASSWORD})
@@ -227,6 +234,14 @@ export const changePassword = catchAsync(async (req, res) => {
     const {currentPassword, newPassword} = req.body
     const userId = req.session.user._id;
     const user = await User.findById(userId)
+
+    if (user.googleId) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: "Account managed by Google. Password cannot be changed here."
+        });
+    }
+
     const password = user.password;
     if(!password) {
         return res.status(STATUS_CODES.OK).json({

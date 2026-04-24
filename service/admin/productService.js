@@ -6,7 +6,7 @@ import * as productValidators from "../../validators/adminProducts.js";
 
 export const createProduct = async (body, files) => {
   const validation = productValidators.productSchema.safeParse(body);
-  if (!validation.success) {
+  if(!validation.success) {
     const errorMessage = validation.error.issues
       .map(issue => issue.message)
       .join(", ");
@@ -16,10 +16,16 @@ export const createProduct = async (body, files) => {
   const {productName, description, category, basePrice, material} = body;
 
 
+  const getDim = (key) => {
+    let val = body[`dimensions[${key}]`];
+    if (val === undefined && body.dimensions) val = body.dimensions[key];
+    return !isNaN(parseFloat(val)) ? parseFloat(val) : 0;
+  };
+
   const dimensions = {
-    width: parseFloat(body['dimensions[width]'] || 0) || 0,
-    depth: parseFloat(body['dimensions[depth]'] || 0) || 0,
-    height: parseFloat(body['dimensions[height]'] || 0) || 0,
+    width: getDim('width'),
+    depth: getDim('depth'),
+    height: getDim('height'),
   };
 
 
@@ -68,10 +74,10 @@ export const createProduct = async (body, files) => {
       return {idx, url: result.secure_url};
     })
   );
+
+
   const variantImageMap = {};
-  if(!variantUploadResult || variantUploadResult.length === 0) {
-    throw new Error("At least one variant image is required");
-  }
+
   variantUploadResult.forEach(item => {
     if(!item) return;
     if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];
@@ -116,7 +122,7 @@ export const createProduct = async (body, files) => {
 
 export const updateProduct = async (productId, body, files) => {
   const validation = productValidators.productSchema.safeParse(body);
-  if (!validation.success) {
+  if(!validation.success) {
     const errorMessage = validation.error.issues
       .map(issue => issue.message)
       .join(", ");
@@ -134,9 +140,15 @@ export const updateProduct = async (productId, body, files) => {
   product.basePrice = parseFloat(basePrice) || product.basePrice;
 
 
-  product.dimensions.width = parseFloat(body['dimensions[width]']) || product.dimensions.width || 0;
-  product.dimensions.depth = parseFloat(body['dimensions[depth]']) || product.dimensions.depth || 0;
-  product.dimensions.height = parseFloat(body['dimensions[height]']) || product.dimensions.height || 0;
+  const getUpdateDim = (key, fallback) => {
+    let val = body[`dimensions[${key}]`];
+    if (val === undefined && body.dimensions) val = body.dimensions[key];
+    return !isNaN(parseFloat(val)) ? parseFloat(val) : fallback;
+  };
+
+  product.dimensions.width = getUpdateDim('width', product.dimensions.width);
+  product.dimensions.depth = getUpdateDim('depth', product.dimensions.depth);
+  product.dimensions.height = getUpdateDim('height', product.dimensions.height);
 
   if(body.customAttributesJSON) {
     try {
@@ -205,10 +217,9 @@ export const updateProduct = async (productId, body, files) => {
     })
   );
 
-const variantImageMap = {};
-  if(!variantUploadResult || variantUploadResult.length === 0) {
-    throw new Error("At least one variant image is required");
-  }
+
+  const variantImageMap = {};
+
   variantUploadResult.forEach(item => {
     if(!item) return;
     if(!variantImageMap[item.idx]) variantImageMap[item.idx] = [];
@@ -251,6 +262,13 @@ const variantImageMap = {};
     id: v._id.toString(),
     imageCount: v.images.length
   })))}`);
+
+  // Final validation: Ensure every variant has at least one image
+  product.variants.forEach((v, index) => {
+    if(!v.images || v.images.length === 0) {
+      throw new Error(`Variant #${index + 1} must have at least one image`);
+    }
+  });
 
   return await product.save();
 };

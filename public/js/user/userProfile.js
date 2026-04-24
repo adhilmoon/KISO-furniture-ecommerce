@@ -166,7 +166,7 @@ function openCropper(file) {
     const url = URL.createObjectURL(file);
 
     // Destroy any existing cropper first
-    if (cropper) { cropper.destroy(); cropper = null; }
+    if(cropper) {cropper.destroy(); cropper = null;}
 
     // Assign onload BEFORE setting src to avoid race condition with Blob URLs
     img.onload = () => {
@@ -188,8 +188,8 @@ function openCropper(file) {
 }
 function closeCrop() {
     $('cropModal').style.display = 'none';
-    if (cropper) { cropper.destroy(); cropper = null; }
-    if (currentInput) currentInput.value = '';
+    if(cropper) {cropper.destroy(); cropper = null;}
+    if(currentInput) currentInput.value = '';
 }
 //--Crop confirm-----------------------------------------
 
@@ -202,45 +202,65 @@ function confirmCrop() {
     });
 
     canvas.toBlob(async (blob) => {
-        if (!blob) return;
+        if(!blob) return;
 
-        const file = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const file = new File([blob], `cropped-${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+        });
 
         const formData = new FormData();
         formData.append('profileImage', file);
 
+        // Show spinner
+        const spinner = document.getElementById('imageLoadingSpinner');
+        if(spinner) spinner.classList.remove('hidden');
+
         try {
             const response = await axios.patch('/user/profile/image', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: {'Content-Type': 'multipart/form-data'}
             });
 
-            // Update preview image immediately without page reload
+            console.log("API RESPONSE:", response.data);
+
             const previewImg = document.getElementById('profilePreview');
             const avatarLetter = document.getElementById('avatarLetter');
-            const newUrl = response.data?.avatar || canvas.toDataURL('image/jpeg', 0.9);
 
-            if (previewImg) {
+
+            const newUrl = (response.data?.avatar || canvas.toDataURL('image/jpeg', 0.9)) + `?t=${Date.now()}`;
+
+            if(previewImg) {
                 previewImg.src = newUrl;
                 previewImg.classList.remove('hidden');
             }
-            if (avatarLetter) {
+
+            if(avatarLetter) {
                 avatarLetter.classList.add('hidden');
             }
 
-            // Update nav avatar if it exists
-            const navImg = document.querySelector('#nav-profile-img img');
-            if (navImg) navImg.src = newUrl;
+
+            const navContainer = document.getElementById('nav-profile-img');
+            if(navContainer) {
+                navContainer.innerHTML = `
+                    <img src="${newUrl}" class="w-full h-full object-cover">
+                `;
+            }
 
             showMessage('Profile photo updated!', 'success');
             closeCrop();
-            if (isEditMode) toggleEditMode();
+            setTimeout(() => {
+                if(isEditMode) toggleEditMode();
+            }, 300);
 
-        } catch (error) {
+        } catch(error) {
             showMessage(error.response?.data?.message || 'Upload failed', 'error');
+        } finally {
+            // Hide spinner
+            if(spinner) spinner.classList.add('hidden');
         }
 
     }, 'image/jpeg', 0.9);
 }
+
 function showMessage(msg, type) {
     showToast(msg, type)
 }
