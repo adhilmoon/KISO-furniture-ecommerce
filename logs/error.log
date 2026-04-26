@@ -247,3 +247,345 @@ Error: Product not found
     at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productController.js:7:42
+2026-04-24T11:19:55.872Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productController.js:7:42
+2026-04-24T11:21:33.149Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T11:22:15.993Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T11:22:26.305Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productController.js:7:42
+2026-04-24T12:01:05.559Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:10.916Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:21.982Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:37.883Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:40.968Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:03:55.858Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:15:21.060Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:15:26.278Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:15:33.971Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:8
+2026-04-24T12:17:15.442Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T12:18:00.006Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T15:33:18.523Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T15:40:13.457Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T15:40:21.025Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/layouts/user.ejs:8
+    6|     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    7|     <title>
+ >> 8|         <%= title %> - KISO
+    9|     </title>
+    10|     <link href="/css/output.css" rel="stylesheet">
+    11|     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+title is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/layouts/user.ejs:8
+    6|     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    7|     <title>
+ >> 8|         <%= title %> - KISO
+    9|     </title>
+    10|     <link href="/css/output.css" rel="stylesheet">
+    11|     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+title is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/layouts/user.ejs":12:26)
+    at user (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at /Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:113:20
+    at renderTick (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:154:23)
+2026-04-24T15:53:31.373Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T16:25:56.893Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:26:01.389Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:26:18.980Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:40:39.291Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:45:59.368Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-25T06:40:29.433Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-26T06:26:25.433Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18

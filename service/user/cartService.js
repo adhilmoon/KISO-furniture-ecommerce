@@ -16,7 +16,7 @@ export const addToCart = async (userId, productId, variantIndex, quantity) => {
     }
 
     const product = await productRepository.findProductById(productId);
-    if (!product) throw new Error("Product not found");
+    if (!product || !product.isListed) throw new Error("Product not available");
 
     const price = product.variants && product.variants.length > 0 
                   ? product.variants[variantIndex]?.price 

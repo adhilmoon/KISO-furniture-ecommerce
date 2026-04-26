@@ -188,7 +188,8 @@ export const user_store = catchAsync(async (req, res) => {
         isListed: true,
         category: {$in: activeCategoryIds},
         variants: {
-            $elemMatch: {stock: {$gt: 0}}
+            $elemMatch: {stock: {$gt: 0}
+ }
         }
     };
 

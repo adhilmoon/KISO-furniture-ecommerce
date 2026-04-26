@@ -1,15 +1,18 @@
 import Product from "../../model/Product.js";
 
 export const findProductById = async (id) => {
-    const product = await Product.findOne({_id: id, isListed: true})
+    const product = await Product.findOne({_id: id})
         .populate({
             path: "category",
-            match: {isActive: true},
-            select: "categoryName"
+            select: "categoryName isActive"
         }).lean();
     
-  
-    if (product && !product.category) return null;
+    if (product) {
+        if (!product.category || !product.category.isActive) {
+            product.isListed = false;
+        }
+    }
+    
     return product;
 };
 
