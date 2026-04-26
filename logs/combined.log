@@ -3202,3 +3202,616 @@ Error: Product not found
 2026-04-24T09:55:10.537Z [INFO]: Cloudinary credentials loaded
 2026-04-24T09:55:11.518Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
 2026-04-24T09:55:11.522Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:06.911Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:07.770Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T10:20:07.773Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:08.527Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:09.265Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:20:09.267Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:12.225Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:12.947Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:20:12.949Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:23.392Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:24.117Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:20:24.119Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:48.969Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:49.687Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:20:49.690Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:52.736Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:53.467Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:20:53.469Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:57.028Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:58.194Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:20:58.200Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:20:58.994Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:20:59.751Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:20:59.753Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:24:29.239Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:24:30.111Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T10:24:30.115Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:24:54.690Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:24:55.441Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T10:24:55.446Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:24:56.862Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:24:57.681Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T10:24:57.686Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:30:26.350Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:30:27.434Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T10:30:27.439Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:31:29.022Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:31:29.929Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T10:31:29.931Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:31:32.809Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:31:33.772Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:31:33.776Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:31:39.821Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:31:40.592Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:31:40.597Z [INFO]: Server started at http://localhost:4004
+2026-04-24T10:32:43.033Z [INFO]: Cloudinary credentials loaded
+2026-04-24T10:32:43.883Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T10:32:43.888Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:19:55.872Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productController.js:7:42
+2026-04-24T11:21:33.149Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T11:22:15.993Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T11:22:26.305Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productController.js:7:42
+2026-04-24T11:30:59.845Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:31:20.530Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:31:21.201Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T11:31:21.205Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:31:53.495Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:31:54.233Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T11:31:54.236Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:32:37.398Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:32:38.457Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T11:32:38.460Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:34:06.289Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:34:07.625Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T11:34:07.631Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:46:43.759Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:46:44.548Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T11:46:44.551Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:46:49.774Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:46:50.478Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T11:46:50.484Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:50:32.811Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:50:33.594Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T11:50:33.596Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:50:34.371Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:50:35.187Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T11:50:35.193Z [INFO]: Server started at http://localhost:4004
+2026-04-24T11:50:49.818Z [INFO]: Cloudinary credentials loaded
+2026-04-24T11:50:50.505Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T11:50:50.511Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:01:05.559Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:10.916Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:21.982Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:37.883Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:01:40.968Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:03:55.858Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:15:16.882Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:15:18.050Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T12:15:18.055Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:15:21.060Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:15:26.278Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:15
+2026-04-24T12:15:31.977Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:15:32.681Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T12:15:32.689Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:15:33.971Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs:2
+    1| <div class="bg-brand-bg1 min-h-screen">
+ >> 2|   <% if (isUnavailable) { %>
+    3|     <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+    4| 
+    5|       <!-- Icon -->
+
+isUnavailable is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/user/product-detail.ejs":12:8)
+    at product-detail (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at res.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:77:18)
+    at file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:14:8
+2026-04-24T12:16:22.180Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:16:22.946Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T12:16:22.952Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:16:25.554Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:16:26.260Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T12:16:26.266Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:16:27.562Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:16:28.247Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T12:16:28.250Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:16:36.220Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:16:36.947Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T12:16:36.953Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:17:15.442Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T12:17:32.755Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:17:33.493Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T12:17:33.495Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:17:57.291Z [INFO]: Cloudinary credentials loaded
+2026-04-24T12:17:57.958Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T12:17:57.965Z [INFO]: Server started at http://localhost:4004
+2026-04-24T12:18:00.006Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T15:33:18.523Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T15:40:13.457Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T15:40:21.025Z [ERROR]: Unhandled Error: /Users/muhammedadhilkp/Developer/kiso/views/layouts/user.ejs:8
+    6|     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    7|     <title>
+ >> 8|         <%= title %> - KISO
+    9|     </title>
+    10|     <link href="/css/output.css" rel="stylesheet">
+    11|     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+title is not defined
+ReferenceError: /Users/muhammedadhilkp/Developer/kiso/views/layouts/user.ejs:8
+    6|     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    7|     <title>
+ >> 8|         <%= title %> - KISO
+    9|     </title>
+    10|     <link href="/css/output.css" rel="stylesheet">
+    11|     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+title is not defined
+    at eval ("/Users/muhammedadhilkp/Developer/kiso/views/layouts/user.ejs":12:26)
+    at user (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/Users/muhammedadhilkp/Developer/kiso/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:627:10)
+    at Function.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/response.js:923:7)
+    at /Users/muhammedadhilkp/Developer/kiso/node_modules/express-ejs-layouts/lib/express-layouts.js:113:20
+    at renderTick (/Users/muhammedadhilkp/Developer/kiso/node_modules/express/lib/view.js:154:23)
+2026-04-24T15:41:07.257Z [INFO]: Cloudinary credentials loaded
+2026-04-24T15:41:07.985Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T15:41:07.992Z [INFO]: Server started at http://localhost:4004
+2026-04-24T15:48:54.299Z [INFO]: Cloudinary credentials loaded
+2026-04-24T15:48:55.214Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T15:48:55.217Z [INFO]: Server started at http://localhost:4004
+2026-04-24T15:50:19.526Z [INFO]: Cloudinary credentials loaded
+2026-04-24T15:50:20.219Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T15:50:20.226Z [INFO]: Server started at http://localhost:4004
+2026-04-24T15:53:31.373Z [ERROR]: Unhandled Error: Product not found
+Error: Product not found
+    at Module.getProductDetail (file:///Users/muhammedadhilkp/Developer/kiso/service/user/productService.js:5:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/productDetailsController.js:6:42
+2026-04-24T16:22:30.956Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:22:31.562Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:22:31.568Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:22:45.062Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:22:45.600Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:22:45.605Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:25:56.893Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:26:01.389Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:26:18.980Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:32:58.712Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:32:59.309Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:32:59.312Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:34:01.190Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:34:01.762Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-24T16:34:01.770Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:34:26.336Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:34:27.050Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:34:27.056Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:34:30.035Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:34:30.551Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:34:30.557Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:35:30.823Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:35:31.393Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:35:31.395Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:35:34.090Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:35:34.578Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:35:34.582Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:35:37.450Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:35:38.135Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:35:38.142Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:35:43.461Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:35:44.159Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:35:44.165Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:35:47.648Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:35:48.164Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:35:48.167Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:35:51.084Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:35:51.577Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:35:51.580Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:35:52.122Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:35:52.608Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:35:52.614Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:00.585Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:01.184Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:36:01.190Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:03.753Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:04.496Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:36:04.502Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:12.696Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:13.197Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:36:13.202Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:18.476Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:19.013Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:36:19.020Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:27.098Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:27.957Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:36:27.962Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:34.179Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:34.757Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-24T16:36:34.763Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:35.262Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:35.762Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:36:35.765Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:41.558Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:42.045Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:36:42.048Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:44.063Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:44.620Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:36:44.626Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:46.950Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:47.612Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:36:47.618Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:51.205Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:51.860Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:36:51.864Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:53.435Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:53.998Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:36:54.003Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:36:54.713Z [INFO]: Cloudinary credentials loaded
+2026-04-24T16:36:55.215Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-24T16:36:55.220Z [INFO]: Server started at http://localhost:4004
+2026-04-24T16:40:39.291Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-24T16:45:59.368Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-25T06:40:29.433Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-25T06:45:05.651Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:45:06.249Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T06:45:06.251Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:45:09.329Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:45:10.019Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T06:45:10.021Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:45:10.768Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:45:11.253Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T06:45:11.258Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:45:13.316Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:45:13.819Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T06:45:13.821Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:45:16.682Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:45:17.182Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T06:45:17.185Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:45:21.819Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:45:22.291Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T06:45:22.293Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:45:59.570Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:46:03.536Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:46:04.101Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T06:46:04.105Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:48:41.019Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:48:41.658Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-25T06:48:41.660Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:49:44.786Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:49:45.381Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-25T06:49:45.383Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:50:12.212Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:50:12.913Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-25T06:50:12.916Z [INFO]: Server started at http://localhost:4004
+2026-04-25T06:51:47.241Z [INFO]: Cloudinary credentials loaded
+2026-04-25T06:51:48.067Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-25T06:51:48.072Z [INFO]: Server started at http://localhost:4004
+2026-04-25T07:48:55.651Z [INFO]: Cloudinary credentials loaded
+2026-04-25T07:49:02.324Z [INFO]: Cloudinary credentials loaded
+2026-04-25T07:49:51.000Z [INFO]: Cloudinary credentials loaded
+2026-04-25T07:50:30.840Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-25T07:50:30.845Z [INFO]: Server started at http://localhost:4004
+2026-04-25T08:01:42.680Z [INFO]: Cloudinary credentials loaded
+2026-04-25T08:01:43.596Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T08:01:43.598Z [INFO]: Server started at http://localhost:4004
+2026-04-25T10:50:47.300Z [INFO]: Cloudinary credentials loaded
+2026-04-25T10:50:47.956Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-25T10:50:47.959Z [INFO]: Server started at http://localhost:4004
+2026-04-26T05:12:15.982Z [INFO]: Cloudinary credentials loaded
+2026-04-26T05:12:17.024Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T05:12:17.030Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:16:47.465Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:16:48.385Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-26T06:16:48.388Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:17:13.700Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:17:14.445Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:17:14.447Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:17:17.235Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:17:18.143Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:17:18.145Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:26:25.433Z [ERROR]: Unhandled Error: Product not available
+Error: Product not available
+    at Module.addToCart (file:///Users/muhammedadhilkp/Developer/kiso/service/user/cartService.js:19:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/muhammedadhilkp/Developer/kiso/controller/usercontroller/cartController.js:19:18
+2026-04-26T06:45:12.744Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:45:13.675Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-02.ilgsjwn.mongodb.net
+2026-04-26T06:45:13.677Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:45:15.146Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:45:15.899Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:45:15.905Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:45:21.859Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:45:22.596Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:45:22.600Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:45:23.580Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:45:24.328Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:45:24.330Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:45:25.781Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:45:26.531Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:45:26.534Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:45:28.750Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:45:29.682Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:45:29.689Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:45:35.284Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:45:36.022Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:45:36.029Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:46:00.548Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:46:01.336Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-01.ilgsjwn.mongodb.net
+2026-04-26T06:46:01.339Z [INFO]: Server started at http://localhost:4004
+2026-04-26T06:47:38.580Z [INFO]: Cloudinary credentials loaded
+2026-04-26T06:47:39.455Z [INFO]: MongoDB Connected successfully with host: ac-w9t0wax-shard-00-00.ilgsjwn.mongodb.net
+2026-04-26T06:47:39.458Z [INFO]: Server started at http://localhost:4004

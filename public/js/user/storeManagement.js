@@ -29,7 +29,8 @@ async function addToCartFromStore(productId) {
       window.location.href = '/user/login';
     } else {
       console.error(error);
-      showToast('Failed to add product to cart. Please make sure you are logged in.', 'error');
+      const message=error.response?.data?.message||"something went rowng"
+      showToast(message,"error");
     }
   }
 }

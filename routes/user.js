@@ -6,6 +6,8 @@ import * as Pages from "../controller/usercontroller/pagesController.js";
 import * as authController from "../controller/usercontroller/authController.js";
 import * as profileController from "../controller/usercontroller/profileController.js";
 import * as storeController from "../controller/usercontroller/storeController.js";
+import * as productController from "../controller/usercontroller/productDetailsController.js";
+import * as cartController from "../controller/usercontroller/cartController.js";
 import {upload} from "../config/cloudinary.js";
 
 import passport from "passport";
@@ -49,11 +51,10 @@ router.get("/address/get/:id", userauth.userauth, profileController.getAddress);
 router.patch("/address/update/:id", userauth.userauth, profileController.updateAddress);
 router.delete("/address/delete/:id", userauth.userauth, authController.deleteAddress);
 
-import * as productController from "../controller/usercontroller/productController.js";
-import * as cartController from "../controller/usercontroller/cartController.js";
+
 
 //product listing page API
-router.get("/store", Pages.user_store)
+router.get("/store",Pages.user_store)
 router.get('/store/filter-options', storeController.getFilterOptions)
 router.get("/product/:id", productController.getProductDetail)
 
