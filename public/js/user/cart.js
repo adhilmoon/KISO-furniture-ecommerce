@@ -1,32 +1,68 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let selectedItemId = null;
+    let selectedRowEl = null;
+
+    const modal = document.getElementById('removeModal');
+    const confirmRemoveBtn = document.getElementById('confirmRemove');
+
+    const openRemoveModal = (id, row) => {
+        selectedItemId = id;
+        selectedRowEl = row;
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.remove('scale-95');
+        modal.querySelector('div').classList.add('scale-100');
+    };
+
+    window.closeRemoveModal = () => {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.add('scale-95');
+        modal.querySelector('div').classList.remove('scale-100');
+        selectedItemId = null;
+        selectedRowEl = null;
+    };
+
+    if (confirmRemoveBtn) {
+        confirmRemoveBtn.addEventListener('click', () => {
+            if (selectedItemId && selectedRowEl) {
+                removeItem(selectedItemId, selectedRowEl);
+                closeRemoveModal();
+            }
+        });
+    }
 
     const updateCartTotals = () => {
         let subtotal = 0;
         document.querySelectorAll('.cart-item').forEach(item => {
-            const price = parseFloat(item.querySelector('.item-price').textContent);
-            const qty = parseInt(item.querySelector('.qty-input').value);
-            const itemTotal = price * qty;
-            item.querySelector('.item-total').innerText = itemTotal;
-            subtotal += itemTotal;
+            
+            const isListed = item.dataset.isListed === 'true';
+            if (isListed) {
+                const price = parseFloat(item.querySelector('.item-price').textContent);
+                const qty = parseInt(item.querySelector('.qty-input').value);
+                const itemTotal = price * qty;
+                item.querySelector('.item-total').innerText = itemTotal;
+                subtotal += itemTotal;
+            } else {
+                item.querySelector('.item-total').innerText = '0';
+            }
         });
 
         const summarySubtotal = document.getElementById('summary-subtotal');
         const summaryTotal = document.getElementById('summary-total');
-        if(summarySubtotal) summarySubtotal.innerText = subtotal;
-        if(summaryTotal) summaryTotal.innerText = subtotal;
+        if (summarySubtotal) summarySubtotal.innerText = subtotal;
+        if (summaryTotal) summaryTotal.innerText = subtotal;
     };
 
     const updateQuantity = async (itemId, newQty, inputEl) => {
         try {
-            originalValue = inputEl.value;
+            const originalValue = inputEl.value;
             inputEl.value = newQty;
             updateCartTotals();
 
-            const response = await axios.patch(`/user/cart/item/${itemId}`, {quantity: newQty});
-            if(!response.data.success) {
+            const response = await axios.patch(`/user/cart/item/${itemId}`, { quantity: newQty });
+            if (!response.data.success) {
                 throw new Error(response.data.message);
             }
-        } catch(error) {
+        } catch (error) {
             console.error('Failed to update qty:', error);
             inputEl.value = originalValue;
             updateCartTotals();
@@ -38,16 +74,16 @@ document.addEventListener('DOMContentLoaded', () => {
         rowEl.style.opacity = '0.5';
         try {
             const response = await axios.delete(`/user/cart/item/${itemId}`);
-            if(response.data.success) {
+            if (response.data.success) {
                 rowEl.remove();
                 updateCartTotals();
-                if(document.querySelectorAll('.cart-item').length === 0) {
+                if (document.querySelectorAll('.cart-item').length === 0) {
                     window.location.reload();
                 }
             } else {
                 throw new Error(response.data.message);
             }
-        } catch(error) {
+        } catch (error) {
             console.error('Failed to remove item:', error);
             rowEl.style.opacity = '1';
             showToast(error.message || 'Failed to remove item. Please try again.', 'error');
@@ -55,53 +91,76 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const clearCart = async () => {
-        const result = await confirmAction("Are you sure you want to clear cart")
-        if(!result.isConfirmed) return
+        if (!confirm('Are you sure you want to clear your entire cart?')) return;
         try {
             const response = await axios.delete('/user/cart');
-            if(response.data.success) {
+            if (response.data.success) {
                 window.location.reload();
             }
-        } catch(error) {
+        } catch (error) {
             showToast('Failed to clear cart. Please try again.', 'error');
         }
     };
 
-
     document.querySelectorAll('.cart-item').forEach(row => {
         const itemId = row.dataset.itemId;
+        const isListed = row.dataset.isListed === 'true';
         const input = row.querySelector('.qty-input');
         const minusBtn = row.querySelector('.minus-btn');
         const plusBtn = row.querySelector('.plus-btn');
         const removeBtn = row.querySelector('.remove-btn');
         const stock = parseInt(input.dataset.stock);
+        const MAX_PER_USER = 3;
+
+        if (!isListed) {
+            input.disabled = true;
+            plusBtn.classList.add('opacity-20', 'cursor-not-allowed');
+            minusBtn.classList.add('opacity-20', 'cursor-not-allowed');
+            row.classList.add('grayscale-[0.5]');
+        }
 
         minusBtn.addEventListener('click', () => {
-            const currentObj = parseInt(input.value);
-            if(currentObj > 1) {
-                updateQuantity(itemId, currentObj - 1, input);
+            if (!isListed) {
+                showToast('This product is unavailable.', 'warning');
+                return;
+            }
+            const currentQty = parseInt(input.value);
+            if (currentQty > 1) {
+                updateQuantity(itemId, currentQty - 1, input);
             }
         });
 
         plusBtn.addEventListener('click', () => {
-            const currentObj = parseInt(input.value);
-            if(currentObj < stock && currentObj < 5) { // Assuming max 5 per person
-                updateQuantity(itemId, currentObj + 1, input);
-            } else {
-                showToast(`Maximum quantity reached for this item.`, 'warning');
+            if (!isListed) {
+                showToast('This product is unavailable. Please remove it.', 'warning');
+                openRemoveModal(itemId, row);
+                return;
             }
+            const currentQty = parseInt(input.value);
+            if (currentQty >= stock) {
+                showToast('Maximum available stock reached', 'warning');
+                return;
+            }
+            if (currentQty >= MAX_PER_USER) {
+                showToast(`Maximum ${MAX_PER_USER} units allowed per user`, 'warning');
+                return;
+            }
+            updateQuantity(itemId, currentQty + 1, input);
         });
 
         removeBtn.addEventListener('click', () => {
-            removeItem(itemId, row);
+            if (!isListed) {
+                openRemoveModal(itemId, row);
+            } else {
+                removeItem(itemId, row);
+            }
         });
     });
 
     const clearBtn = document.getElementById('clear-cart-btn');
-    if(clearBtn) {
+    if (clearBtn) {
         clearBtn.addEventListener('click', clearCart);
     }
 
-    // Run once on load to ensure initial totals are calculated
     updateCartTotals();
 });
