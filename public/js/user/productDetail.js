@@ -1,7 +1,10 @@
 let qty = 1;
 
 function changeQty(delta) {
-  qty = Math.max(1, Math.min(10, qty + delta));
+  const activeVariant = document.querySelector('.variant-btn.border-brand-accent');
+  const maxStock = activeVariant ? parseInt(activeVariant.dataset.stock) : 10;
+  
+  qty = Math.max(1, Math.min(maxStock, qty + delta));
   document.getElementById('qtyDisplay').textContent = qty;
 }
 
@@ -15,8 +18,45 @@ function switchImage(src, btn) {
   btn.classList.remove('border-white/10');
 }
 
-function selectVariant(btn, price, imageUrl, variantIndex) {
+function updateStockUI(stock) {
+  const stockBadge = document.getElementById('stock-status');
+  const addToCartBtn = document.getElementById('add-to-cart-btn');
+  const buyNowBtn = document.getElementById('buy-now-btn');
+  const qtyDisplay = document.getElementById('qtyDisplay');
 
+  if (!stockBadge) return;
+
+  if (stock > 0) {
+  
+    stockBadge.innerHTML = '● In Stock';
+    stockBadge.className = 'text-sm px-4 py-1.5 bg-green-500/10 border border-green-500/20 text-green-400 font-bold rounded-full transition-all duration-300';
+    
+    if (addToCartBtn) {
+      addToCartBtn.disabled = false;
+      addToCartBtn.innerText = 'Add to Cart';
+    }
+    if (buyNowBtn) buyNowBtn.disabled = false;
+
+ 
+    if (qty > stock) {
+      qty = stock;
+      if (qtyDisplay) qtyDisplay.textContent = qty;
+    }
+  } else {
+
+    stockBadge.innerHTML = '● Out of Stock';
+    stockBadge.className = 'text-sm px-4 py-1.5 bg-red-500/10 border border-red-500/20 text-red-400 font-bold rounded-full transition-all duration-300';
+    
+    if (addToCartBtn) {
+      addToCartBtn.disabled = true;
+      addToCartBtn.innerText = 'Out of Stock';
+    }
+    if (buyNowBtn) buyNowBtn.disabled = true;
+  }
+}
+
+function selectVariant(btn, price, imageUrl, variantIndex, stock) {
+ 
   document.querySelectorAll('.variant-btn').forEach(b => {
     b.classList.remove('border-brand-accent');
     b.classList.add('border-white/10');
@@ -28,10 +68,14 @@ function selectVariant(btn, price, imageUrl, variantIndex) {
   const priceEl = document.getElementById('product-price');
   if (priceEl) priceEl.innerText = '₹' + price;
 
+
   const mainImg = document.getElementById('mainImage');
   if (mainImg && imageUrl && imageUrl !== '') {
     mainImg.src = imageUrl;
   }
+
+
+  updateStockUI(stock);
 
 
   document.querySelectorAll('.thumb-btn').forEach(thumb => {
@@ -39,7 +83,6 @@ function selectVariant(btn, price, imageUrl, variantIndex) {
     if (thumbVariantIndex === variantIndex) {
       thumb.classList.remove('hidden');
       
-   
       const thumbImg = thumb.querySelector('img');
       if (thumbImg && thumbImg.getAttribute('src') === imageUrl) {
         thumb.classList.add('border-brand-accent');
@@ -88,7 +131,7 @@ async function addToCart(productId) {
     if (error.response && error.response.status === 401) {
       window.location.href = '/user/login';
     } else {
-      showToast(error.response?.data?.message || 'An error occurred. Make sure you are logged in.', 'error');
+      showToast(error.response?.data?.message || 'An error occurred.', 'error');
     }
   } finally {
     btn.innerHTML = originalText;
@@ -131,17 +174,22 @@ async function buyNow(productId) {
 function toggleWishlist(id) {
   showToast('Wishlist feature coming soon!', 'info');
 }
-document.addEventListener("DOMContentLoaded", () => {
-  const img = document.getElementById("mainImage");
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Initial stock check for the first variant
+  const activeVariant = document.querySelector('.variant-btn.border-brand-accent');
+  if (activeVariant) {
+    const initialStock = parseInt(activeVariant.dataset.stock);
+    updateStockUI(initialStock);
+  }
+
+  const img = document.getElementById("mainImage");
   if (!img) return;
 
   img.addEventListener("mousemove", (e) => {
     const rect = img.getBoundingClientRect();
-
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-
     img.style.transformOrigin = `${x}% ${y}%`;
     img.style.transform = "scale(2)";
   });
@@ -150,15 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
     img.style.transform = "scale(1)";
   });
 });
+
 function showTab(tabId, btn) {
-  // Hide all tab contents
   document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-  
-  // Show selected tab content
   const selectedTab = document.getElementById(tabId + 'Tab');
   if (selectedTab) selectedTab.classList.remove('hidden');
 
-  // Update button styling
   document.querySelectorAll('.tab-btn').forEach(b => {
     b.classList.remove('text-brand-accent', 'border-brand-accent');
     b.classList.add('text-brand-muted', 'border-transparent');
