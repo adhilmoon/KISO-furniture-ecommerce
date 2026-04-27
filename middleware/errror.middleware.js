@@ -16,6 +16,8 @@ export const globalErrorHandler = (err, req, res, next) => {
     const statusCode = err.status || STATUS_CODES.INTERNAL_SERVER_ERROR;
     const message = err.message || MESSAGES.INTERNAL_SERVER_ERROR;
 
+      console.error(err)
+
     if (req.xhr || req.headers.accept?.includes("application/json")) {
         return res.status(statusCode).json({
             success: false,
