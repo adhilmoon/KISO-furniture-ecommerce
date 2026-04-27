@@ -185,8 +185,9 @@
                   <div class="flex gap-3 flex-wrap">
                     <% product.variants.forEach((v, i)=> { %>
                       <button
-                        onclick="selectVariant(this, '<%= v.price %>', '<%= v.images && v.images[0] ? v.images[0] : '' %>', <%= i %>)"
-                        class="variant-btn flex flex-col items-center gap-2 border-2 rounded-xl p-2 transition-all <%= i === 0 ? 'border-brand-accent' : 'border-white/10 hover:border-white/30' %>">
+                        onclick="selectVariant(this, '<%= v.price %>', '<%= v.images && v.images[0] ? v.images[0] : '' %>', <%= i %>, <%= v.stock %>)"
+                        class="variant-btn flex flex-col items-center gap-2 border-2 rounded-xl p-2 transition-all <%= i === 0 ? 'border-brand-accent' : 'border-white/10 hover:border-white/30' %>"
+                        data-stock="<%= v.stock %>">
                         <div class="w-16 h-16 rounded-lg overflow-hidden bg-brand-bg1 p-1">
                           <img src="<%= v.images && v.images[0] ? v.images[0] : '/images/placeholder.png' %>"
                             alt="<%= v.optionValue %>" class="w-full h-full object-cover rounded-md">
@@ -211,19 +212,20 @@
                       <button type="button" onclick="changeQty(1)"
                         class="w-12 h-full flex items-center justify-center text-brand-light hover:bg-white/5 transition-colors text-xl">+</button>
                     </div>
-                    <span
-                      class="text-sm px-4 py-1.5 bg-green-500/10 border border-green-500/20 text-green-400 font-bold rounded-full">●
-                      In Stock</span>
+                    <span id="stock-status"
+                      class="text-sm px-4 py-1.5 font-bold rounded-full transition-all duration-300">
+                      <!-- Dynamically updated -->
+                    </span>
                   </div>
 
                   <!-- CTA Buttons -->
                   <div class="flex gap-4 mt-2">
                     <button type="button" id="add-to-cart-btn" onclick="addToCart('<%= product._id %>')"
-                      class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-accent bg-brand-accent/10 border border-brand-accent rounded-xl hover:bg-brand-accent hover:text-brand-bg1 transition-all">
+                      class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-accent bg-brand-accent/10 border border-brand-accent rounded-xl hover:bg-brand-accent hover:text-brand-bg1 transition-all disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed">
                       Add to Cart
                     </button>
-                    <button type="button" onclick="buyNow('<%= product._id %>')"
-                      class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-bg1 bg-brand-accent rounded-xl hover:opacity-90 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                    <button type="button" id="buy-now-btn" onclick="buyNow('<%= product._id %>')"
+                      class="flex-1 py-4 text-sm font-bold tracking-[0.15em] uppercase text-brand-bg1 bg-brand-accent rounded-xl hover:opacity-90 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed disabled:shadow-none">
                       Buy Now
                     </button>
                   </div>
