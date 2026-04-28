@@ -164,3 +164,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCartTotals();
 });
+const checkoutBtn = document.getElementById('proceedToCheckoutBtn');
+if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', async () => {
+        try {
+            checkoutBtn.disabled = true;
+            checkoutBtn.innerHTML = '<span class="animate-spin mr-2">◌</span> Processing...';
+            
+            const response = await axios.get('/user/checkout', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            if (response.data.success) {
+                window.location.href = response.data.redirectUrl;
+            } else {
+                showToast(response.data.message || 'Validation failed. Please check if items are available', 'error');
+                setTimeout(() => window.location.reload(), 2000);
+            }
+        } catch (error) {
+            console.error('checkout error:', error);
+            showToast('Something went wrong. Please try again.', 'error');
+        } finally {
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerHTML = 'Proceed to Checkout';
+        }
+    });
+}
+
+

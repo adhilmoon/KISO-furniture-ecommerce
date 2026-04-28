@@ -60,6 +60,7 @@ router.get("/product/:id", productController.getProductDetail)
 
 // Cart API
 router.get("/cart", userauth.userauth,cartController.getCartPage);
+router.get("/checkout",userauth.userauth, cartController.getCheckoutPage);
 router.post("/cart/add", userauth.userauth,cartController.addToCart);
 router.patch("/cart/item/:itemId", userauth.userauth,cartController.updateQuantity);
 router.delete("/cart/item/:itemId", userauth.userauth,cartController.removeItem);
