@@ -24,9 +24,22 @@ export const addToCart = async (userId, productId, variantIndex, quantity) => {
 
     if (!price) throw new Error("Invalid variant or price");
 
+    const stock = product.variants && product.variants.length > 0 
+                  ? product.variants[variantIndex]?.stock 
+                  : 0;
+
     const existingItemIndex = cart.items.findIndex(
         item => String(item.productId._id) === String(productId) && item.variantIndex === variantIndex
     );
+
+    let currentCartQty = 0;
+    if (existingItemIndex > -1) {
+        currentCartQty = cart.items[existingItemIndex].quantity;
+    }
+
+    if (currentCartQty + quantity > stock) {
+        throw new Error("Not enough stock available");
+    }
 
     if (existingItemIndex > -1) {
         cart.items[existingItemIndex].quantity += quantity;
@@ -43,6 +56,18 @@ export const updateQty = async (userId, itemId, newQty) => {
 
     const itemIndex = cart.items.findIndex(item => String(item._id) === String(itemId));
     if (itemIndex > -1) {
+        const item = cart.items[itemIndex];
+        const product = await productRepository.findProductById(item.productId._id);
+        if (!product || !product.isListed) throw new Error("Product not available");
+        
+        const stock = product.variants && product.variants.length > 0
+                      ? product.variants[item.variantIndex]?.stock
+                      : 0;
+                      
+        if (newQty > stock) {
+            throw new Error("Not enough stock available");
+        }
+
         cart.items[itemIndex].quantity = newQty;
         return await cartRepository.updateCartItems(userId, cart.items);
     }
