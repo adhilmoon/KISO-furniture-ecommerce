@@ -1,7 +1,12 @@
 import Cart from "../../model/Cart.js";
 
 export const findByUserId = async (userId) => {
-    return await Cart.findOne({ userId }).populate("items.productId").lean({ virtuals: true });
+    return await Cart.findOne({ userId })
+        .populate({
+            path: 'items.productId',
+            populate: { path: 'category' }
+        })
+        .lean({ virtuals: true });
 };
 
 export const createCart = async (userId, items = []) => {
@@ -13,7 +18,10 @@ export const updateCartItems = async (userId, items) => {
         { userId },
         { items },
         { new: true }
-    ).populate("items.productId").lean({ virtuals: true });
+    ).populate({
+        path: 'items.productId',
+        populate: { path: 'category' }
+    }).lean({ virtuals: true });
 };
 
 export const removeCart = async (userId) => {

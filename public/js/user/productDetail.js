@@ -1,10 +1,25 @@
 let qty = 1;
+const MAX_PER_USER = 3;
 
 function changeQty(delta) {
   const activeVariant = document.querySelector('.variant-btn.border-brand-accent');
   const maxStock = activeVariant ? parseInt(activeVariant.dataset.stock) : 10;
   
-  qty = Math.max(1, Math.min(maxStock, qty + delta));
+  const potentialQty = qty + delta;
+
+  if (potentialQty < 1) return;
+  
+  if (potentialQty > MAX_PER_USER) {
+    showToast(`Maximum ${MAX_PER_USER} units allowed per user`, 'warning');
+    return;
+  }
+  
+  if (potentialQty > maxStock) {
+    showToast('Maximum available stock reached', 'warning');
+    return;
+  }
+
+  qty = potentialQty;
   document.getElementById('qtyDisplay').textContent = qty;
 }
 
