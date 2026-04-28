@@ -187,9 +187,11 @@ export const user_store = catchAsync(async (req, res) => {
     const filter = {
         isListed: true,
         category: {$in: activeCategoryIds},
-        variants: {$exists: true, $not:{
-            $size: 0
-        }}
+        variants: {
+            $exists: true, $not: {
+                $size: 0
+            }
+        }
     };
 
     if(searchQuery) {

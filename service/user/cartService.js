@@ -1,6 +1,8 @@
 import * as cartRepository from "../../repository/user/cartRepository.js";
 import * as productRepository from "../../repository/user/productRepository.js";
 
+const MAX_PER_USER = 3;
+
 export const getCart = async (userId) => {
     let cart = await cartRepository.findByUserId(userId);
     if (!cart) {
@@ -41,6 +43,10 @@ export const addToCart = async (userId, productId, variantIndex, quantity) => {
         throw new Error("Not enough stock available");
     }
 
+    if (currentCartQty + quantity > MAX_PER_USER) {
+        throw new Error(`Maximum ${MAX_PER_USER} units allowed per user`);
+    }
+
     if (existingItemIndex > -1) {
         cart.items[existingItemIndex].quantity += quantity;
     } else {
@@ -66,6 +72,10 @@ export const updateQty = async (userId, itemId, newQty) => {
                       
         if (newQty > stock) {
             throw new Error("Not enough stock available");
+        }
+
+        if (newQty > MAX_PER_USER) {
+            throw new Error(`Maximum ${MAX_PER_USER} units allowed per user`);
         }
 
         cart.items[itemIndex].quantity = newQty;

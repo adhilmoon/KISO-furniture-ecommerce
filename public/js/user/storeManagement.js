@@ -11,11 +11,11 @@ function getActiveParams() {
 }
 
 
-async function addToCartFromStore(productId) {
+async function addToCartFromStore(productId, variantIndex = 0) {
   try {
     const response = await axios.post('/user/cart/add', {
       productId,
-      variantIndex: 0,
+      variantIndex,
       quantity: 1
     });
 
@@ -114,6 +114,3 @@ function toggleFilter(id) {
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  
-});
