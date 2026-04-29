@@ -7,7 +7,8 @@ function getActiveParams() {
   const category = document.querySelector('input[name="categoryFilter"]:checked')?.value || '';
   const minPrice = $('minPrice')?.value.trim()     || '';
   const maxPrice = $('maxPrice')?.value.trim()     || '';
-  return { search, category, minPrice, maxPrice };
+  const sort     = $('sortSelect')?.value          || 'newest';
+  return { search, category, minPrice, maxPrice, sort };
 }
 
 
@@ -61,7 +62,13 @@ function buildQueryString(params, page = 1) {
   if (params.category)   p.set('category', params.category);
   if (params.minPrice)   p.set('minPrice', params.minPrice);
   if (params.maxPrice)   p.set('maxPrice', params.maxPrice);
+  if (params.sort && params.sort !== 'newest') p.set('sort', params.sort);
   return p.toString() ? '?' + p.toString() : '';
+}
+
+
+function applySort() {
+  applyFilters();
 }
 
 
@@ -127,4 +134,55 @@ function toggleFilter(id) {
   if (el) el.classList.toggle('hidden');
 }
 
+// ── Dual Range Slider Logic ──────────────────────────────────────────
+function updatePriceSlider() {
+  const minSlider = document.getElementById('minPriceSlider');
+  const maxSlider = document.getElementById('maxPriceSlider');
+  const minDisplay = document.getElementById('minPriceDisplay');
+  const maxDisplay = document.getElementById('maxPriceDisplay');
+  const track = document.getElementById('sliderTrack');
+  const hiddenMin = document.getElementById('minPrice');
+  const hiddenMax = document.getElementById('maxPrice');
 
+  if (!minSlider || !maxSlider) return;
+
+  let minVal = parseInt(minSlider.value);
+  let maxVal = parseInt(maxSlider.value);
+  
+  const absMin = parseInt(minSlider.min);
+  const absMax = parseInt(maxSlider.max);
+  const range = absMax - absMin;
+
+  // Prevent crossing thumbs (gap of 100)
+  if (minVal >= maxVal - 100) {
+    if (this.id === 'minPriceSlider') {
+      minSlider.value = maxVal - 100;
+      minVal = parseInt(minSlider.value);
+    } else {
+      maxSlider.value = minVal + 100;
+      maxVal = parseInt(maxSlider.value);
+    }
+  }
+
+  // Update visual track (relative to dynamic min/max)
+  const minPercent = range > 0 ? ((minVal - absMin) / range) * 100 : 0;
+  const maxPercent = range > 0 ? ((maxVal - absMin) / range) * 100 : 100;
+  
+  if (track) {
+    track.style.left = minPercent + '%';
+    track.style.right = (100 - maxPercent) + '%';
+  }
+
+  // Update display text
+  if (minDisplay) minDisplay.textContent = '₹' + minVal.toLocaleString();
+  if (maxDisplay) maxDisplay.textContent = maxVal >= absMax ? '₹' + maxVal.toLocaleString() + '+' : '₹' + maxVal.toLocaleString();
+
+  // Update hidden inputs for getActiveParams
+  if (hiddenMin) hiddenMin.value = minVal > absMin ? minVal : '';
+  if (hiddenMax) hiddenMax.value = maxVal >= absMax ? '' : maxVal;
+}
+
+// Initialize slider on load
+document.addEventListener("DOMContentLoaded", () => {
+  updatePriceSlider();
+});
