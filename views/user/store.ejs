@@ -15,19 +15,34 @@
             <h1 class="text-4xl md:text-5xl font-bold text-brand-light mb-4"><%= pageTitle %></h1>
         </div>
 
-        <!-- ── Search ──────────────────────────────────────────── -->
-        <div class="flex items-center max-w-md mb-8 bg-brand-bg2/80 backdrop-blur-md border border-white/10
-            hover:border-brand-accent/40 focus-within:border-brand-accent rounded-xl px-4 py-3 gap-3
-            transition-all duration-300 shadow-sm focus-within:shadow-[0_0_0_2px_rgba(212,175,55,0.2)]">
-            <svg class="w-5 h-5 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input type="text" id="searchInput" placeholder="Search furniture..."
-                value="<%= searchQuery %>"
-                oninput="handleSearchDebounced()"
-                class="bg-transparent outline-none text-brand-light placeholder:text-brand-muted/60 text-sm w-full"/>
-            <button type="button" id="clearSearchBtn" onclick="clearSearch()"
-                class="<%= searchQuery ? '' : 'hidden' %> text-brand-muted hover:text-white text-lg transition">&times;</button>
+        <!-- ── Search & Sort ──────────────────────────────────────── -->
+        <div class="flex flex-col md:flex-row items-center gap-4 mb-8">
+            <!-- Search -->
+            <div class="flex items-center flex-1 bg-brand-bg2/80 backdrop-blur-md border border-white/10
+                hover:border-brand-accent/40 focus-within:border-brand-accent rounded-xl px-4 py-3 gap-3
+                transition-all duration-300 shadow-sm focus-within:shadow-[0_0_0_2px_rgba(212,175,55,0.2)]">
+                <svg class="w-5 h-5 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search furniture..."
+                    value="<%= searchQuery %>"
+                    oninput="handleSearchDebounced()"
+                    class="bg-transparent outline-none text-brand-light placeholder:text-brand-muted/60 text-sm w-full"/>
+                <button type="button" id="clearSearchBtn" onclick="clearSearch()"
+                    class="<%= searchQuery ? '' : 'hidden' %> text-brand-muted hover:text-white text-lg transition">&times;</button>
+            </div>
+
+            <!-- Sort -->
+            <div class="w-full md:w-64">
+                <select id="sortSelect" onchange="applySort()"
+                    class="w-full bg-brand-bg2/80 backdrop-blur-md border border-white/10 text-brand-light text-sm rounded-xl px-4 py-3 outline-none focus:border-brand-accent transition-all cursor-pointer appearance-none">
+                    <option value="newest" <%= activeSort === 'newest' ? 'selected' : '' %>>New Arrivals</option>
+                    <option value="price-low" <%= activeSort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
+                    <option value="price-high" <%= activeSort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
+                    <option value="a-z" <%= activeSort === 'a-z' ? 'selected' : '' %>>Name: A-Z</option>
+                    <option value="z-a" <%= activeSort === 'z-a' ? 'selected' : '' %>>Name: Z-A</option>
+                </select>
+            </div>
         </div>
 
         <!-- ── Active filter chips ──────────────────────────────── -->

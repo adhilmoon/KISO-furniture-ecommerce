@@ -21,22 +21,32 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
-            <div id="catFilter" class="space-y-2">
+            <div id="catFilter" class="space-y-2.5">
                 <% if (typeof categories !== 'undefined' && categories.length) { %>
+                    <label class="block cursor-pointer group">
+                        <input type="radio" name="categoryFilter" value=""
+                            class="peer hidden"
+                            onchange="applyFilters()"
+                            <%= !activeFilters.categoryId ? 'checked' : '' %>>
+                        <div class="px-4 py-2.5 rounded-xl border border-white/5 bg-brand-bg2/30 text-brand-muted text-sm font-medium transition-all duration-300
+                            peer-checked:bg-brand-accent/10 peer-checked:text-brand-accent peer-checked:border-brand-accent/30
+                            group-hover:bg-brand-bg2 group-hover:text-brand-light">
+                            All Categories
+                        </div>
+                    </label>
                     <% categories.forEach(cat => { %>
-                        <label class="flex items-center gap-2.5 text-sm text-brand-muted cursor-pointer hover:text-brand-light transition group">
+                        <label class="block cursor-pointer group">
                             <input type="radio" name="categoryFilter" value="<%= cat._id %>"
-                                class="accent-brand-accent"
+                                class="peer hidden"
+                                onchange="applyFilters()"
                                 <%= (activeFilters.categoryId === String(cat._id)) ? 'checked' : '' %>>
-                            <span class="group-hover:text-brand-light transition"><%= cat.categoryName %></span>
+                            <div class="px-4 py-2.5 rounded-xl border border-white/5 bg-brand-bg2/30 text-brand-muted text-sm font-medium transition-all duration-300
+                                peer-checked:bg-brand-accent/10 peer-checked:text-brand-accent peer-checked:border-brand-accent/30
+                                group-hover:bg-brand-bg2 group-hover:text-brand-light">
+                                <%= cat.categoryName %>
+                            </div>
                         </label>
                     <% }) %>
-                    <label class="flex items-center gap-2.5 text-sm text-brand-muted cursor-pointer hover:text-brand-light transition group">
-                        <input type="radio" name="categoryFilter" value=""
-                            class="accent-brand-accent"
-                            <%= !activeFilters.categoryId ? 'checked' : '' %>>
-                        <span class="group-hover:text-brand-light transition">All Categories</span>
-                    </label>
                 <% } else { %>
                     <p class="text-xs text-brand-muted">No categories found</p>
                 <% } %>
@@ -52,20 +62,36 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
-            <div id="priceFilter" class="space-y-3">
-                <div class="flex gap-2">
-                    <div class="flex-1">
-                        <label class="text-xs text-brand-muted mb-1 block">Min (₹)</label>
-                        <input type="number" id="minPrice" min="0" placeholder="0"
-                            value="<%= activeFilters.minPrice > 0 ? activeFilters.minPrice : '' %>"
-                            class="w-full bg-brand-bg2 border border-white/10 text-brand-light text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-brand-accent/50 transition">
+            <div id="priceFilter" class="pt-2 pb-4">
+                <div class="px-2">
+                    <!-- Display Values -->
+                    <div class="flex justify-between text-brand-light text-sm font-bold mb-6">
+                        <span id="minPriceDisplay">₹<%= storeMinPrice.toLocaleString() %></span>
+                        <span id="maxPriceDisplay">₹<%= storeMaxPrice.toLocaleString() %>+</span>
                     </div>
-                    <div class="flex-1">
-                        <label class="text-xs text-brand-muted mb-1 block">Max (₹)</label>
-                        <input type="number" id="maxPrice" min="0" placeholder="Any"
-                            value="<%= activeFilters.maxPrice > 0 ? activeFilters.maxPrice : '' %>"
-                            class="w-full bg-brand-bg2 border border-white/10 text-brand-light text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-brand-accent/50 transition">
+
+                    <!-- Dual Slider Track -->
+                    <div class="relative h-1.5 bg-white/10 rounded-full mb-4">
+                        <div id="sliderTrack" class="absolute h-full bg-brand-accent rounded-full z-10" style="left: 0%; right: 0%;"></div>
+                        
+                        <!-- Min Thumb -->
+                        <input type="range" id="minPriceSlider" min="<%= storeMinPrice %>" max="<%= storeMaxPrice %>" step="100" 
+                            value="<%= activeFilters.minPrice > 0 ? activeFilters.minPrice : storeMinPrice %>"
+                            oninput="updatePriceSlider()"
+                            class="absolute w-full -top-1.5 appearance-none bg-transparent pointer-events-none z-20
+                            [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-brand-accent [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,175,55,0.5)]">
+                            
+                        <!-- Max Thumb -->
+                        <input type="range" id="maxPriceSlider" min="<%= storeMinPrice %>" max="<%= storeMaxPrice %>" step="100" 
+                            value="<%= activeFilters.maxPrice > 0 ? activeFilters.maxPrice : storeMaxPrice %>"
+                            oninput="updatePriceSlider()"
+                            class="absolute w-full -top-1.5 appearance-none bg-transparent pointer-events-none z-20
+                            [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-brand-accent [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,175,55,0.5)]">
                     </div>
+
+                    <!-- Hidden inputs for legacy getActiveParams compatibility -->
+                    <input type="hidden" id="minPrice" value="<%= activeFilters.minPrice > 0 ? activeFilters.minPrice : '' %>">
+                    <input type="hidden" id="maxPrice" value="<%= activeFilters.maxPrice > 0 ? activeFilters.maxPrice : '' %>">
                 </div>
             </div>
         </div>

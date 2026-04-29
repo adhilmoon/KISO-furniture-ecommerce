@@ -182,8 +182,8 @@ export const user_store = catchAsync(async (req, res) => {
 
     const searchQuery = req.query.search || "";
     const categoryId = req.query.category || "";
-    const minPrice = parseFloat(req.query.minPrice) || 0;
-    const maxPrice = parseFloat(req.query.maxPrice) || 0;
+    const minPrice = parseFloat(req.query.minPrice);
+    const maxPrice = parseFloat(req.query.maxPrice);
 
     // ── Build filter ──────────────────────────────────────────────────
     const activeCategories = await Category.find({isActive: true}).select('_id').lean();
@@ -193,27 +193,49 @@ export const user_store = catchAsync(async (req, res) => {
         isListed: true,
         category: {$in: activeCategoryIds},
         variants: {
-            $exists: true, $not: {
-                $size: 0
-            }
+            $exists: true, 
+            $not: { $size: 0 }
         }
     };
 
     if(searchQuery) {
         filter.productName = {$regex: searchQuery, $options: "i"};
     }
+    
     if(categoryId) {
         if(activeCategoryIds.some(id => id.toString() === categoryId)) {
             filter.category = categoryId;
         } else {
-            filter.category = null; // Return no products if category is inactive
+            filter.category = null;
         }
     }
-    if(minPrice > 0 || maxPrice > 0) {
-        filter.basePrice = {};
-        if(minPrice > 0) filter.basePrice.$gte = minPrice;
-        if(maxPrice > 0) filter.basePrice.$lte = maxPrice;
+
+    // Improved Price Filtering
+    if(!isNaN(minPrice) || !isNaN(maxPrice)) {
+        filter['variants.price'] = {};
+        if(!isNaN(minPrice)) filter['variants.price'].$gte = minPrice;
+        if(!isNaN(maxPrice)) filter['variants.price'].$lte = maxPrice;
     }
+
+    // ── Sorting Logic ──────────────────────────────────────────────────
+    const sortKey = req.query.sort || 'newest';
+    const sortMapping = {
+        'price-low':  { 'variants.price': 1 },
+        'price_asc':  { 'variants.price': 1 },
+        'price-high': { 'variants.price': -1 },
+        'price_desc': { 'variants.price': -1 },
+        'a-z':        { productName: 1 },
+        'name_asc':   { productName: 1 },
+        'z-a':        { productName: -1 },
+        'name_desc':  { productName: -1 },
+        'newest':     { createdAt: -1 }
+    };
+    const sortCriteria = sortMapping[sortKey] || sortMapping['newest'];
+    
+    console.log('--- STORE DEBUG ---');
+    console.log('sortKey:', sortKey);
+    console.log('sortCriteria:', JSON.stringify(sortCriteria));
+    console.log('filter:', JSON.stringify(filter));
 
     // ── Query ──────────────────────────────────────────────────────────
     const totalProducts = await Product.countDocuments(filter);
@@ -225,7 +247,7 @@ export const user_store = catchAsync(async (req, res) => {
         })
         .skip(skip)
         .limit(perPage)
-        .sort({createdAt: -1})
+        .sort(sortCriteria)
         .lean();
 
     products.forEach(product => {
@@ -235,10 +257,24 @@ export const user_store = catchAsync(async (req, res) => {
     });
 
 
+    // ── Get Global Price Range for Slider ───────────────────────────────
+    const priceStats = await Product.aggregate([
+        { $match: { isListed: true } },
+        { $unwind: "$variants" },
+        {
+            $group: {
+                _id: null,
+                minPrice: { $min: "$variants.price" },
+                maxPrice: { $max: "$variants.price" }
+            }
+        }
+    ]);
+    const storeMinPrice = priceStats.length > 0 ? priceStats[0].minPrice : 0;
+    const storeMaxPrice = priceStats.length > 0 ? priceStats[0].maxPrice : 100000;
+
     const categories = await Category.find({isActive: true}, 'categoryName _id').lean();
 
     const activeFilters = {categoryId, minPrice, maxPrice};
-
 
     if(req.xhr || req.headers.accept?.includes("application/json")) {
         return res.json({
@@ -260,5 +296,8 @@ export const user_store = catchAsync(async (req, res) => {
         totalProducts,
         categories,
         activeFilters,
+        activeSort: sortKey,
+        storeMinPrice,
+        storeMaxPrice
     });
 });
