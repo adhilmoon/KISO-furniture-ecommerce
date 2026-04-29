@@ -1,6 +1,6 @@
 import Product from "../../model/Product.js";
 import Category from "../../model/Category.js";
-import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
+import { STATUS_CODES} from "../../constants/index.js";
 import catchAsync from "../../utilities/catchAsync.js";
 
 export const getFilterOptions = catchAsync(async (req, res) => {

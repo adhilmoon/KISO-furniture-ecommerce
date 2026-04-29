@@ -66,7 +66,12 @@ export const user_home = catchAsync(async (req, res) => {
 
     const productList = await Product.find({
         isListed: true,
-        category: {$in: activeCategoryIds}
+        category: {$in: activeCategoryIds},
+        variants: {
+            $exists: true, $not: {
+                $size: 0
+            }
+        }
     })
         .limit(4)
         .populate("category")
