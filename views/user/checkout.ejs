@@ -74,27 +74,29 @@
                             <span class="w-8 h-8 bg-brand-accent/10 border border-brand-accent/20 rounded-lg flex items-center justify-center text-brand-accent text-sm">2</span>
                             Delivery Address
                         </h2>
-                        <a href="/user/address?add=true" class="text-xs font-bold text-brand-accent hover:text-white transition-colors bg-brand-accent/10 px-4 py-2 rounded-lg border border-brand-accent/20">
+                        <button type="button" id="add-address-btn" class="text-xs font-bold text-brand-accent hover:text-white transition-colors bg-brand-accent/10 px-4 py-2 rounded-lg border border-brand-accent/20">
                             + Add New Address
-                        </a>
+                        </button>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <% if (addresses && addresses.length > 0) { %>
                             <% addresses.forEach((addr, index) => { %>
-                                <label class="relative group cursor-pointer">
-                                    <input type="radio" name="selectedAddress" value="<%= addr._id %>" <%= index === 0 ? 'checked' : '' %> class="peer sr-only">
+                                <label class="relative group cursor-pointer has-[:checked]:border-brand-accent">
+                                    <input type="radio" name="selectedAddress" value="<%= addr._id %>" <%= index === 0 ? 'checked' : '' %> class="sr-only">
                                     <div class="h-full p-6 bg-brand-bg2 border border-white/5 rounded-2xl transition-all duration-300
-                                        peer-checked:border-brand-accent peer-checked:bg-brand-accent/[0.03] peer-checked:shadow-[0_0_20px_rgba(212,175,55,0.05)]
-                                        group-hover:border-white/10">
+                                        group-has-[:checked]:border-brand-accent group-has-[:checked]:bg-brand-accent/[0.03] group-has-[:checked]:shadow-[0_0_20px_rgba(212,175,55,0.05)]
+                                        group-hover:border-white/10"
+                                        ondblclick="editAddress('<%= addr._id %>')">
                                         
                                         <div class="flex justify-between items-start mb-4">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-5 h-5 rounded-full border-2 border-brand-muted flex items-center justify-center peer-checked:border-brand-accent transition-colors">
-                                                    <div class="w-2.5 h-2.5 rounded-full bg-brand-accent opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                                                <div class="w-5 h-5 rounded-full border-2 border-brand-muted flex items-center justify-center group-has-[:checked]:border-brand-accent transition-colors">
+                                                    <div class="w-2.5 h-2.5 rounded-full bg-brand-accent opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></div>
                                                 </div>
                                                 <span class="text-xs font-bold uppercase tracking-wider text-brand-muted"><%= addr.type %></span>
                                             </div>
+
                                             <% if (addr.isDefault) { %>
                                                 <span class="text-[10px] px-2 py-0.5 bg-brand-accent/10 text-brand-accent rounded font-bold uppercase">Default</span>
                                             <% } %>
@@ -178,22 +180,9 @@
     </div>
 </div>
 
-<script>
-    document.getElementById('btnContinueToPayment').addEventListener('click', function() {
-        const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-        if (!selectedAddress) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Address Required',
-                text: 'Please select a delivery address to proceed.',
-                background: '#111111',
-                color: '#F8F9FA',
-                confirmButtonColor: '#D4AF37'
-            });
-            return;
-        }
+<%- include('../user/add-Address') %>
 
-        const addressId = selectedAddress.value;
-        window.location.href = `/checkout/payment?addressId=${addressId}`;
-    });
-</script>
+<script src="/js/user/address.js"></script>
+<script src="/js/user/checkout.js"></script>
+
+
