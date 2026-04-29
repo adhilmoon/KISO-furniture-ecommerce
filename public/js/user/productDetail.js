@@ -186,8 +186,34 @@ async function buyNow(productId) {
   }
 }
 
-function toggleWishlist(id) {
-  showToast('Wishlist feature coming soon!', 'info');
+async function toggleWishlist(productId) {
+  try {
+    const response = await axios.post('/user/wishlist/toggle', { productId });
+    if (response.data.success) {
+      showToast(response.data.message, 'success');
+      
+      // Update UI if button exists
+      const btn = document.getElementById('wishlistBtn');
+      if (btn) {
+        const svg = btn.querySelector('svg');
+        if (response.data.action === 'added') {
+          btn.classList.add('bg-brand-accent', 'text-brand-bg1', 'opacity-100');
+          btn.classList.remove('bg-brand-bg1/80', 'text-brand-muted');
+          if (svg) svg.setAttribute('fill', 'currentColor');
+        } else {
+          btn.classList.remove('bg-brand-accent', 'text-brand-bg1', 'opacity-100');
+          btn.classList.add('bg-brand-bg1/80', 'text-brand-muted');
+          if (svg) svg.setAttribute('fill', 'none');
+        }
+      }
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/user/login';
+    } else {
+      showToast(error.response?.data?.message || 'Error updating wishlist', 'error');
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

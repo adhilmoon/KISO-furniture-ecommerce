@@ -371,3 +371,21 @@ input[type="radio"]:checked {
         transform: rotate(360deg);
     }
 }
+/* ── Image Loading & Fallbacks ─────────────────────────────────────── */
+.img-loading {
+    background: linear-gradient(90deg, #1a1a1a 25%, #222222 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.5s infinite linear;
+}
+
+@keyframes skeleton-pulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.image-fallback {
+    opacity: 0.5;
+    filter: grayscale(1);
+    object-fit: contain !important;
+    padding: 2rem;
+}

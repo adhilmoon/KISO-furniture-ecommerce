@@ -60,3 +60,32 @@ window.confirmLogout = function() {
 window.confirmAction_Success = function(message = "Are you sure?") {
     return confirmAction(message, "success");
 };
+
+window.showLoadingModal = function(title = 'Processing...', text = 'Please wait') {
+    return Swal.fire({
+        title,
+        text,
+        background: '#0A0A0A',
+        color: '#F8F9FA',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+};
+
+window.showResultModal = function(title, html, icon = 'info', confirmButtonText = 'Great') {
+    return Swal.fire({
+        title,
+        html,
+        icon,
+        background: '#0A0A0A',
+        color: '#F8F9FA',
+        confirmButtonColor: '#D4AF37',
+        confirmButtonText,
+        customClass: {
+            popup: 'kiso-swal-popup',
+            confirmButton: 'kiso-swal-confirm'
+        }
+    });
+};

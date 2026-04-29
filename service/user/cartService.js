@@ -1,5 +1,6 @@
 import * as cartRepository from "../../repository/user/cartRepository.js";
 import * as productRepository from "../../repository/user/productRepository.js";
+import * as wishlistService from "./wishlistService.js";
 
 const MAX_PER_USER = 3;
 
@@ -53,7 +54,9 @@ export const addToCart = async (userId, productId, variantIndex, quantity) => {
         cart.items.push({ productId, variantIndex, quantity, price });
     }
 
-    return await cartRepository.updateCartItems(userId, cart.items);
+    const updatedCart = await cartRepository.updateCartItems(userId, cart.items);
+    await wishlistService.removeFromWishlist(userId, productId);
+    return updatedCart;
 };
 
 export const updateQty = async (userId, itemId, newQty) => {

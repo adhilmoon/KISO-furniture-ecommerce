@@ -21,6 +21,11 @@ export const findRelatedProducts = async (categoryId, excludeId, limit = 4) => {
         category: categoryId,
         isListed: true,
         _id: { $ne: excludeId },
+        variants:{
+            $exists: true,$not:{
+                $size: 0
+            }
+        }
     })
     .limit(limit)
     .lean();

@@ -35,8 +35,22 @@ async function addToCartFromStore(productId, variantIndex = 0) {
   }
 }
 
-function toggleWishlist(productId) {
-  showToast('Wishlist feature coming soon!', 'info');
+async function toggleWishlist(productId) {
+  try {
+    const response = await axios.post('/user/wishlist/toggle', { productId });
+    if (response.data.success) {
+      showToast(response.data.message, 'success');
+      
+      // The store grid usually doesn't need immediate UI update for heart color 
+      // unless we want to track state. For now, toast is sufficient.
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/user/login';
+    } else {
+      showToast(error.response?.data?.message || 'Error updating wishlist', 'error');
+    }
+  }
 }
 
 

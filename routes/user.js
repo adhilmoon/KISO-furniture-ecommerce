@@ -8,6 +8,7 @@ import * as profileController from "../controller/usercontroller/profileControll
 import * as storeController from "../controller/usercontroller/storeController.js";
 import * as productController from "../controller/usercontroller/productDetailsController.js";
 import * as cartController from "../controller/usercontroller/cartController.js";
+import * as wishlistController from "../controller/usercontroller/wishlistController.js";
 import {upload} from "../config/cloudinary.js";
 
 import passport from "passport";
@@ -65,6 +66,12 @@ router.post("/cart/add", userauth.userauth,cartController.addToCart);
 router.patch("/cart/item/:itemId", userauth.userauth,cartController.updateQuantity);
 router.delete("/cart/item/:itemId", userauth.userauth,cartController.removeItem);
 router.delete("/cart", userauth.userauth, cartController.clearCart);
+
+// Wishlist API
+router.get("/wishlist", userauth.userauth, wishlistController.getWishlistPage);
+router.post("/wishlist/toggle", userauth.userauth, wishlistController.toggleWishlist);
+router.post("/wishlist/add-all", userauth.userauth, wishlistController.addAllToCart);
+router.delete("/wishlist/item/:productId", userauth.userauth, wishlistController.removeItem);
 
 router.get("/session-check", (req, res) => {
   res.json({loggedIn: !!req.session.user});

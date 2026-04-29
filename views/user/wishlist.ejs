@@ -1,0 +1,120 @@
+<div class="min-h-screen bg-brand-bg1 pt-24 pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-bold text-brand-light mb-2">My Wishlist</h1>
+                <p class="text-brand-muted">Items you've saved for later</p>
+            </div>
+            
+            <% if (wishlist && wishlist.products && wishlist.products.length > 0) { %>
+                <button onclick="addAllToCart()" 
+                        class="px-8 py-4 bg-brand-accent text-brand-bg1 font-bold rounded-xl hover:bg-yellow-600 transition-all shadow-xl shadow-brand-accent/20 flex items-center gap-2 uppercase tracking-widest text-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add All to Cart
+                </button>
+            <% } %>
+        </div>
+
+        <% if (wishlist && wishlist.products && wishlist.products.length > 0) { %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <% wishlist.products.forEach(product => { %>
+                    <% 
+                        const isOutOfStock = !product.variants || product.variants.every(v => v.stock === 0);
+                        const firstAvailableVariantIndex = product.variants ? product.variants.findIndex(v => v.stock > 0) : -1;
+                        const displayVariantIndex = firstAvailableVariantIndex > -1 ? firstAvailableVariantIndex : 0;
+                        const displayVariant = product.variants ? product.variants[displayVariantIndex] : null;
+                    %>
+                    <div class="group relative bg-brand-bg2 rounded-2xl overflow-hidden border border-white/5 hover:border-brand-accent/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl flex flex-col">
+                        
+                        <!-- Product Image -->
+                        <div class="relative aspect-square overflow-hidden bg-brand-bg1">
+                            <a href="/user/product/<%= product._id %>" class="block w-full h-full">
+                                <img src="<%= displayVariant?.images?.[0] || '/images/placeholder.png' %>" 
+                                     alt="<%= product.productName %>"
+                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            </a>
+                            
+                            <!-- Remove Button -->
+                            <button onclick="removeFromWishlist('<%= product._id %>')" 
+                                    class="absolute top-3 right-3 w-8 h-8 bg-brand-bg1/80 backdrop-blur-md rounded-full flex items-center justify-center text-brand-muted hover:text-red-400 transition-colors shadow-lg z-10">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Out of Stock Badge -->
+                            <% if (isOutOfStock) { %>
+                                <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center p-4">
+                                    <span class="px-3 py-1.5 bg-red-500/90 text-white text-[10px] font-bold uppercase tracking-widest rounded-md shadow-xl text-center">
+                                        Out of Stock
+                                    </span>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <!-- Product Info -->
+                        <div class="p-5 flex flex-col flex-1">
+                            <div class="flex justify-between items-start mb-1 gap-2">
+                                <h3 class="text-base font-bold text-brand-light line-clamp-1 hover:text-brand-accent transition-colors">
+                                    <a href="/user/product/<%= product._id %>"><%= product.productName %></a>
+                                </h3>
+                            </div>
+                            <p class="text-[11px] text-brand-muted uppercase tracking-wider mb-3"><%= product.category?.categoryName %></p>
+                            
+                            <div class="mt-auto">
+                                <div class="mb-4">
+                                    <span class="text-lg font-bold text-brand-accent">
+                                        ₹<%= displayVariant?.price || product.basePrice %>
+                                    </span>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex gap-2">
+                                    <% if (isOutOfStock) { %>
+                                        <button disabled 
+                                                class="flex-1 px-3 py-2.5 bg-white/5 text-brand-muted font-bold rounded-lg cursor-not-allowed text-[10px] uppercase tracking-wider">
+                                            Sold Out
+                                        </button>
+                                    <% } else { %>
+                                        <button onclick="addFromWishlistToCart('<%= product._id %>', <%= displayVariantIndex %>)"
+                                                class="flex-1 px-3 py-2.5 bg-brand-accent text-brand-bg1 font-bold rounded-lg hover:bg-yellow-600 transition-all text-[10px] uppercase tracking-wider shadow-md">
+                                            Add to Cart
+                                        </button>
+                                    <% } %>
+                                    <a href="/user/product/<%= product._id %>" 
+                                       class="w-10 h-10 flex items-center justify-center border border-white/10 rounded-lg text-brand-muted hover:text-brand-light hover:border-brand-light transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="flex flex-col items-center justify-center py-24 text-center">
+                <div class="w-24 h-24 bg-brand-bg2 rounded-full flex items-center justify-center mb-8 border border-white/5">
+                    <svg class="w-12 h-12 text-brand-muted opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-brand-light mb-4">Your wishlist is empty</h2>
+                <p class="text-brand-muted mb-10 max-w-sm">Explore our collection and save your favorite pieces here.</p>
+                <a href="/user/store" 
+                   class="px-8 py-4 bg-brand-accent text-brand-bg1 font-bold rounded-xl hover:bg-yellow-600 transition-all shadow-xl shadow-brand-accent/20">
+                    Browse Collection
+                </a>
+            </div>
+        <% } %>
+
+    </div>
+</div>
+
+<script src="/js/user/wishlist.js"></script>
