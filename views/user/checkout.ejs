@@ -1,120 +1,110 @@
-<div class="min-h-screen bg-brand-bg1 pt-32 pb-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+<div class="min-h-screen bg-brand-bg1 pt-28 pb-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
         <!-- Breadcrumbs -->
-        <nav class="flex mb-8 text-sm font-medium" aria-label="Breadcrumb">
-            <ol class="flex items-center space-x-2">
-                <li><a href="/user/cart" class="text-brand-muted hover:text-brand-accent transition-colors">Cart</a></li>
+        <nav class="flex mb-10 text-sm font-medium" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-brand-muted">
+                <li><a href="/user/cart" class="hover:text-brand-accent transition-colors">Cart</a></li>
                 <li class="flex items-center space-x-2">
-                    <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="text-brand-light font-bold">Checkout</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <span class="text-brand-light font-semibold">Checkout</span>
                 </li>
                 <li class="flex items-center space-x-2 opacity-40">
-                    <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="text-brand-muted">Payment</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <span>Payment</span>
                 </li>
                 <li class="flex items-center space-x-2 opacity-40">
-                    <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="text-brand-muted">Confirm</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <span>Confirm</span>
                 </li>
             </ol>
         </nav>
 
-        <div class="flex flex-col lg:flex-row gap-12">
-            
-            <!-- Left Side: Items and Addresses -->
-            <div class="flex-1 space-y-12">
-                
+        <div class="flex flex-col lg:flex-row gap-10 items-start">
+
+            <!-- Left Column -->
+            <div class="flex-1 space-y-10 min-w-0">
+
                 <!-- Order Items -->
                 <section>
-                    <h2 class="text-2xl font-bold text-brand-light mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 bg-brand-accent/10 border border-brand-accent/20 rounded-lg flex items-center justify-center text-brand-accent text-sm">1</span>
-                        Order Items
-                    </h2>
-                    
-                    <div class="bg-brand-bg2 rounded-2xl border border-white/5 overflow-hidden">
-                        <div class="divide-y divide-white/5">
-                            <% cart.items.forEach(item => { %>
-                                <% 
-                                    const product = item.productId;
-                                    const variant = product.variants && product.variants.length > item.variantIndex ? product.variants[item.variantIndex] : null;
-                                    const image = variant && variant.images && variant.images.length > 0 ? variant.images[0] : (product.img || '/images/placeholder.png');
-                                %>
-                                <div class="p-6 flex gap-6 items-center">
-                                    <div class="w-24 h-24 bg-brand-bg1 rounded-xl overflow-hidden border border-white/5 shrink-0">
-                                        <img src="<%= image %>" alt="<%= product.productName %>" class="w-full h-full object-cover">
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="text-brand-light font-bold text-lg"><%= product.productName %></h3>
-                                        <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1">
-                                            <% if (variant) { %>
-                                                <p class="text-sm text-brand-muted"><%= variant.optionType %>: <span class="text-brand-light/80"><%= variant.optionValue %></span></p>
-                                            <% } %>
-                                            <p class="text-sm text-brand-muted">Qty: <span class="text-brand-light/80"><%= item.quantity %></span></p>
-                                        </div>
-                                        <p class="text-xs text-green-500/80 font-medium mt-2 flex items-center gap-1">
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-                                            In stock
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-brand-accent font-bold text-lg">₹<%= (item.price * item.quantity).toLocaleString() %></p>
-                                        <p class="text-xs text-brand-muted mt-1">₹<%= item.price.toLocaleString() %> each</p>
-                                    </div>
+                    <h2 class="text-xl font-bold text-brand-light mb-5">Order Items</h2>
+
+                    <div class="space-y-3">
+                        <% cart.items.forEach(item => { %>
+                            <%
+                                const product = item.productId;
+                                const variant = product.variants && product.variants.length > item.variantIndex ? product.variants[item.variantIndex] : null;
+                                const image = variant && variant.images && variant.images.length > 0 ? variant.images[0] : (product.img || '/images/placeholder.png');
+                            %>
+                            <div class="flex items-center gap-5 p-4 bg-brand-bg2 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+                                <div class="w-20 h-20 bg-brand-bg1 rounded-lg overflow-hidden border border-white/5 shrink-0">
+                                    <img src="<%= image %>" alt="<%= product.productName %>" class="w-full h-full object-cover">
                                 </div>
-                            <% }) %>
-                        </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-brand-light font-semibold text-base leading-snug truncate"><%= product.productName %></h3>
+                                    <p class="text-xs text-brand-muted mt-1">
+                                        <% if (variant) { %><span class="text-brand-light/70"><%= variant.optionValue %></span> &bull; <% } %>Qty <%= item.quantity %>
+                                    </p>
+                                    <p class="text-xs text-green-500/80 font-medium mt-1.5 flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+                                        In stock
+                                    </p>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <p class="text-brand-accent font-bold text-base">₹<%= (item.price * item.quantity).toLocaleString() %></p>
+                                    <p class="text-[11px] text-brand-muted mt-0.5">₹<%= item.price.toLocaleString() %> each</p>
+                                </div>
+                            </div>
+                        <% }) %>
                     </div>
                 </section>
 
                 <!-- Delivery Address -->
                 <section>
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-brand-light flex items-center gap-3">
-                            <span class="w-8 h-8 bg-brand-accent/10 border border-brand-accent/20 rounded-lg flex items-center justify-center text-brand-accent text-sm">2</span>
-                            Delivery Address
-                        </h2>
-                        <button type="button" id="add-address-btn" class="text-xs font-bold text-brand-accent hover:text-white transition-colors bg-brand-accent/10 px-4 py-2 rounded-lg border border-brand-accent/20">
+                    <div class="flex items-center justify-between mb-5">
+                        <h2 class="text-xl font-bold text-brand-light">Delivery Address</h2>
+                        <button type="button" id="add-address-btn"
+                            class="text-xs font-semibold text-brand-accent border border-brand-accent/30 bg-brand-accent/5 hover:bg-brand-accent/10 px-4 py-2 rounded-lg transition-colors">
                             + Add New Address
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-3">
                         <% if (addresses && addresses.length > 0) { %>
                             <% addresses.forEach((addr, index) => { %>
-                                <label class="relative group cursor-pointer has-[:checked]:border-brand-accent">
-                                    <input type="radio" name="selectedAddress" value="<%= addr._id %>" <%= index === 0 ? 'checked' : '' %> class="sr-only">
-                                    <div class="h-full p-6 bg-brand-bg2 border border-white/5 rounded-2xl transition-all duration-300
-                                        group-has-[:checked]:border-brand-accent group-has-[:checked]:bg-brand-accent/[0.03] group-has-[:checked]:shadow-[0_0_20px_rgba(212,175,55,0.05)]
-                                        group-hover:border-white/10"
-                                        ondblclick="editAddress('<%= addr._id %>')">
-                                        
-                                        <div class="flex justify-between items-start mb-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-5 h-5 rounded-full border-2 border-brand-muted flex items-center justify-center group-has-[:checked]:border-brand-accent transition-colors">
-                                                    <div class="w-2.5 h-2.5 rounded-full bg-brand-accent opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></div>
-                                                </div>
-                                                <span class="text-xs font-bold uppercase tracking-wider text-brand-muted"><%= addr.type %></span>
-                                            </div>
+                                <label class="group relative block cursor-pointer">
+                                    <input type="radio" name="selectedAddress" value="<%= addr._id %>" <%= index === 0 ? 'checked' : '' %> class="sr-only peer">
 
-                                            <% if (addr.isDefault) { %>
-                                                <span class="text-[10px] px-2 py-0.5 bg-brand-accent/10 text-brand-accent rounded font-bold uppercase">Default</span>
-                                            <% } %>
+                                    <div class="flex items-start gap-4 p-5 bg-brand-bg2 border border-white/5 rounded-xl
+                                        peer-checked:border-brand-accent peer-checked:bg-brand-accent/[0.04]
+                                        group-hover:border-white/10 transition-all duration-200"
+                                        ondblclick="editAddress('<%= addr._id %>')">
+
+                                        <div class="mt-0.5 w-4.5 h-4.5 rounded-full border-2 border-brand-muted flex items-center justify-center shrink-0
+                                            group-has-[:checked]:border-brand-accent">
+                                            <div class="w-2 h-2 rounded-full bg-brand-accent opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></div>
                                         </div>
 
-                                        <h4 class="text-brand-light font-bold mb-1"><%= addr.fullName %></h4>
-                                        <p class="text-sm text-brand-muted leading-relaxed">
-                                            <%= addr.houseName %>, <%= addr.city %><br>
-                                            <%= addr.state %> - <%= addr.pincode %><br>
-                                            <span class="inline-block mt-2 text-brand-light/60">Phone: <%= addr.mobile %></span>
-                                        </p>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="text-xs font-bold uppercase tracking-wider text-brand-light/60"><%= addr.type %></span>
+                                                <% if (addr.isDefault) { %>
+                                                    <span class="text-[10px] px-1.5 py-0.5 bg-brand-accent/10 text-brand-accent rounded font-bold uppercase tracking-wider">Default</span>
+                                                <% } %>
+                                            </div>
+                                            <p class="text-brand-light font-semibold text-sm"><%= addr.fullName %></p>
+                                            <p class="text-brand-muted text-xs mt-0.5 leading-relaxed">
+                                                <%= addr.houseName %>, <%= addr.city %>, <%= addr.state %> – <%= addr.pincode %><br>
+                                                <span class="text-brand-light/50">Phone: <%= addr.mobile %></span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </label>
                             <% }) %>
                         <% } else { %>
-                            <div class="col-span-full py-12 px-6 border-2 border-dashed border-white/5 rounded-3xl text-center">
-                                <p class="text-brand-muted mb-4">No addresses found in your account.</p>
-                                <a href="/user/address" class="inline-block px-8 py-3 bg-brand-accent text-brand-bg1 font-bold rounded-xl hover:bg-yellow-500 transition shadow-lg shadow-brand-accent/20">
+                            <div class="py-12 px-6 border-2 border-dashed border-white/5 rounded-2xl text-center">
+                                <p class="text-brand-muted text-sm mb-4">No addresses saved yet.</p>
+                                <a href="/user/address" class="inline-block px-6 py-2.5 bg-brand-accent text-brand-bg1 text-sm font-bold rounded-lg hover:bg-yellow-500 transition shadow-md shadow-brand-accent/20">
                                     Manage Addresses
                                 </a>
                             </div>
@@ -122,57 +112,51 @@
                     </div>
                 </section>
 
-                <!-- Payment Method Toggle -->
-                <section class="opacity-50 pointer-events-none">
-                     <h2 class="text-2xl font-bold text-brand-light mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 bg-brand-accent/10 border border-brand-accent/20 rounded-lg flex items-center justify-center text-brand-accent text-sm">3</span>
-                        Payment Method
-                    </h2>
-                    <div class="p-6 border border-dashed border-white/10 rounded-2xl text-brand-muted italic">
-                        Select an address to continue to payment options...
-                    </div>
-                </section>
-
             </div>
 
-            <!-- Right Side: Order Summary -->
-            <div class="lg:w-96">
-                <div class="bg-brand-bg2 rounded-3xl border border-white/5 p-8 sticky top-32 shadow-xl">
-                    <h3 class="text-2xl font-bold text-brand-light mb-8">Order Summary</h3>
-                    
-                    <div class="space-y-4 mb-8">
-                        <div class="flex justify-between text-brand-muted font-medium">
+            <!-- Right Column: Order Summary -->
+            <div class="lg:w-80 xl:w-96 w-full shrink-0">
+                <div class="bg-brand-bg2 rounded-2xl border border-white/5 p-7 sticky top-28">
+
+                    <h3 class="text-lg font-bold text-brand-light mb-6">Order Summary</h3>
+
+                    <div class="space-y-3 text-sm mb-6">
+                        <div class="flex justify-between text-brand-muted">
                             <span>Subtotal</span>
-                            <span class="text-brand-light">₹<%= cart.totalAmount.toLocaleString() %></span>
+                            <span class="text-brand-light font-medium">₹<%= cart.totalAmount.toLocaleString() %></span>
                         </div>
-                        <div class="flex justify-between text-brand-muted font-medium">
+                        <div class="flex justify-between text-brand-muted">
                             <span>Shipping</span>
-                            <span class="text-green-500 font-bold">FREE</span>
+                            <span class="text-green-500 font-semibold">FREE</span>
                         </div>
-                        <div class="flex justify-between text-brand-muted font-medium pt-4 border-t border-white/5">
-                            <span class="text-lg">Total</span>
-                            <span class="text-2xl font-bold text-brand-accent">₹<%= cart.totalAmount.toLocaleString() %></span>
-                        </div>
-                    </div>
-
-                    <!-- Coupon Code -->
-                    <div class="mb-8">
-                        <label for="coupon" class="block text-xs font-bold text-brand-muted uppercase tracking-widest mb-3">Have a coupon?</label>
-                        <div class="flex gap-2 p-1.5 bg-brand-bg1 border border-white/5 rounded-xl focus-within:border-brand-accent/40 transition-colors">
-                            <input type="text" id="coupon" placeholder="Enter code" class="bg-transparent border-none focus:ring-0 text-brand-light text-sm w-full px-3">
-                            <button class="px-4 py-2 bg-brand-bg2 hover:bg-white/5 text-brand-light text-xs font-bold rounded-lg border border-white/5 transition-all">Apply</button>
+                        <div class="flex justify-between pt-4 border-t border-white/5">
+                            <span class="text-brand-light font-semibold">Total</span>
+                            <span class="text-brand-accent font-bold text-lg">₹<%= cart.totalAmount.toLocaleString() %></span>
                         </div>
                     </div>
 
-                    <button id="btnContinueToPayment" class="w-full py-4 bg-brand-accent hover:bg-yellow-500 text-brand-bg1 font-bold rounded-xl transition-all shadow-lg shadow-brand-accent/20 transform active:scale-95 flex items-center justify-center gap-3">
+                    <div class="mb-6">
+                        <p class="text-[11px] font-bold text-brand-muted uppercase tracking-widest mb-2">Coupon Code</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="coupon" placeholder="Enter code"
+                                class="flex-1 bg-brand-bg1 border border-white/8 rounded-lg px-3 py-2.5 text-sm text-brand-light placeholder-brand-muted/40 focus:outline-none focus:border-brand-accent/40 transition-colors">
+                            <button class="px-4 py-2.5 bg-brand-bg1 hover:bg-white/5 text-brand-light text-xs font-bold rounded-lg border border-white/8 transition-all whitespace-nowrap">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="btnContinueToPayment"
+                        class="w-full py-3.5 bg-brand-accent hover:bg-yellow-500 text-brand-bg1 font-bold text-sm rounded-xl transition-all shadow-lg shadow-brand-accent/20 active:scale-95 flex items-center justify-center gap-2">
                         Continue to Payment
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7-7 7"/></svg>
                     </button>
 
-                    <p class="mt-6 text-center text-[10px] text-brand-muted leading-relaxed">
-                        Secure & Encrypted Checkout • 30-Day Return Guarantee<br>
-                        By clicking continue, you agree to our <a href="#" class="underline">Terms of Service</a>.
+                    <p class="mt-5 text-center text-[10px] text-brand-muted leading-relaxed">
+                        Secure &amp; Encrypted Checkout &bull; 30-Day Return Guarantee<br>
+                        By continuing you agree to our <a href="#" class="underline hover:text-brand-light transition-colors">Terms of Service</a>.
                     </p>
+
                 </div>
             </div>
 
@@ -184,5 +168,3 @@
 
 <script src="/js/user/address.js"></script>
 <script src="/js/user/checkout.js"></script>
-
-
