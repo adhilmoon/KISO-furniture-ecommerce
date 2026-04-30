@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.cart-item').forEach(item => {
             
             const isListed = item.dataset.isListed === 'true';
-            if (isListed) {
+            const isOutOfStock = item.dataset.isOutOfStock === 'true';
+            if (isListed && !isOutOfStock) {
                 const price = parseFloat(item.querySelector('.item-price').textContent);
                 const qty = parseInt(item.querySelector('.qty-input').value);
                 const itemTotal = price * qty;
@@ -105,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.cart-item').forEach(row => {
         const itemId = row.dataset.itemId;
         const isListed = row.dataset.isListed === 'true';
+        const isOutOfStock = row.dataset.isOutOfStock === 'true';
         const input = row.querySelector('.qty-input');
         const minusBtn = row.querySelector('.minus-btn');
         const plusBtn = row.querySelector('.plus-btn');
@@ -112,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const stock = parseInt(input.dataset.stock);
         const MAX_PER_USER = 3;
 
-        if (!isListed) {
+        if (!isListed || isOutOfStock) {
             input.disabled = true;
             plusBtn.classList.add('opacity-20', 'cursor-not-allowed');
             minusBtn.classList.add('opacity-20', 'cursor-not-allowed');
@@ -124,6 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('This product is unavailable.', 'warning');
                 return;
             }
+            if (isOutOfStock) {
+                showToast('This product is out of stock.', 'warning');
+                return;
+            }
             const currentQty = parseInt(input.value);
             if (currentQty > 1) {
                 updateQuantity(itemId, currentQty - 1, input);
@@ -133,6 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
         plusBtn.addEventListener('click', () => {
             if (!isListed) {
                 showToast('This product is unavailable. Please remove it.', 'warning');
+                openRemoveModal(itemId, row);
+                return;
+            }
+            if (isOutOfStock) {
+                showToast('This product is out of stock. Please remove it.', 'warning');
                 openRemoveModal(itemId, row);
                 return;
             }
@@ -149,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         removeBtn.addEventListener('click', () => {
-            if (!isListed) {
+            if (!isListed || isOutOfStock) {
                 openRemoveModal(itemId, row);
             } else {
                 removeItem(itemId, row);

@@ -41,9 +41,11 @@
                                         variant.images[0] : (product.img || '/images/placeholder.png');
                                         const isProductListed = product.isListed && (!product.category ||
                                         product.category.isActive);
+                                        const stock = variant ? variant.stock : (product.baseStock || 0);
+                                        const isOutOfStock = stock <= 0;
                                         %>
-                                        <div class="cart-item group md:grid grid-cols-12 gap-4 items-center p-4 transition hover:bg-white/[0.02] <%= !isProductListed ? 'opacity-60 bg-red-500/5' : '' %>"
-                                            data-item-id="<%= item._id %>" data-is-listed="<%= isProductListed %>">
+                                        <div class="cart-item group md:grid grid-cols-12 gap-4 items-center p-4 transition hover:bg-white/[0.02] <%= !isProductListed || isOutOfStock ? 'opacity-60 bg-red-500/5' : '' %>"
+                                            data-item-id="<%= item._id %>" data-is-listed="<%= isProductListed %>" data-is-out-of-stock="<%= isOutOfStock %>">
 
                                             <!-- Product Info -->
                                             <div class="col-span-6 flex gap-3 items-center mb-3 md:mb-0 relative">
@@ -73,7 +75,18 @@
                                                                     </svg>
                                                                     Currently Unavailable
                                                                 </span>
-                                                                <% } %>
+                                                                <% } else if (isOutOfStock) { %>
+                                                                    <span
+                                                                        class="text-[10px] font-bold text-orange-400 uppercase tracking-tighter mt-1 flex items-center gap-1">
+                                                                        <svg class="w-3 h-3" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round"
+                                                                                stroke-linejoin="round" stroke-width="2"
+                                                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                                        </svg>
+                                                                        Out of Stock
+                                                                    </span>
+                                                                    <% } %>
 
                                                                     <!-- Mobile Price & Remove -->
                                                                     <div class="md:hidden flex items-center gap-4 mt-2">
