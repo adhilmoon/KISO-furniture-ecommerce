@@ -9,6 +9,7 @@ import * as storeController from "../controller/usercontroller/storeController.j
 import * as productController from "../controller/usercontroller/productDetailsController.js";
 import * as cartController from "../controller/usercontroller/cartController.js";
 import * as wishlistController from "../controller/usercontroller/wishlistController.js";
+import * as paymentController from "../controller/usercontroller/paymentController.js";
 import {upload} from "../config/cloudinary.js";
 
 import passport from "passport";
@@ -59,13 +60,18 @@ router.get("/store",Pages.user_store)
 router.get('/store/filter-options', storeController.getFilterOptions)
 router.get("/product/:id", productController.getProductDetail)
 
-// Cart API
-router.get("/cart", userauth.userauth,cartController.getCartPage);
-router.get("/checkout",userauth.userauth, cartController.getCheckoutPage);
-router.post("/cart/add", userauth.userauth,cartController.addToCart);
-router.patch("/cart/item/:itemId", userauth.userauth,cartController.updateQuantity);
-router.delete("/cart/item/:itemId", userauth.userauth,cartController.removeItem);
+// Cart & Checkout API
+router.get("/cart", userauth.userauth, cartController.getCartPage);
+router.get("/checkout", userauth.userauth, cartController.getCheckoutPage);
+router.get("/checkout/payment", userauth.userauth, paymentController.getPaymentPage);
+router.post("/cart/add", userauth.userauth, cartController.addToCart);
+router.patch("/cart/item/:itemId", userauth.userauth, cartController.updateQuantity);
+router.delete("/cart/item/:itemId", userauth.userauth, cartController.removeItem);
 router.delete("/cart", userauth.userauth, cartController.clearCart);
+
+// Payment API
+router.post("/payment/create-order", userauth.userauth, paymentController.createOrder);
+router.post("/payment/verify", userauth.userauth, paymentController.verifyPayment);
 
 // Wishlist API
 router.get("/wishlist", userauth.userauth, wishlistController.getWishlistPage);
