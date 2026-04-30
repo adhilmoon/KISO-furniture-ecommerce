@@ -1,13 +1,59 @@
-document.getElementById('btnContinueToPayment').addEventListener('click', async () => {
-    const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-    const confirmMessage = 'Please select a delivery address to proceed.';
+document.addEventListener('DOMContentLoaded', () => {
+    const checkoutBtn = document.getElementById('btnContinueToPayment');
+    const applyCouponBtn = document.getElementById('applyCouponBtn');
+    const couponInput = document.getElementById('coupon');
 
-    if (!selectedAddress) {
-        await confirmAction(confirmMessage, 'info');
-        return;
+    // Handle Checkout Redirection
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', async () => {
+            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+            
+            if (!selectedAddress) {
+                if (typeof confirmAction === 'function') {
+                    await confirmAction('Please select a delivery address to proceed.', 'info');
+                } else {
+                    alert('Please select a delivery address to proceed.');
+                }
+                return;
+            }
+
+            // Show Loading State
+            const originalText = checkoutBtn.innerHTML;
+            checkoutBtn.disabled = true;
+            checkoutBtn.innerHTML = `<svg class="animate-spin h-5 w-5 text-brand-bg1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg> Processing...`;
+
+            const addressId = selectedAddress.value;
+            
+            // Redirect to payment (Note: Ensure this route exists in your backend)
+            setTimeout(() => {
+                window.location.href = `/user/checkout/payment?addressId=${addressId}`;
+            }, 800);
+        });
     }
 
-    const addressId = selectedAddress.value;
-    window.location.href = `/checkout/payment?addressId=${addressId}`;
+    // Handle Coupon Application
+    if (applyCouponBtn) {
+        applyCouponBtn.addEventListener('click', () => {
+            const couponCode = couponInput.value.trim();
+            if (!couponCode) {
+                if (window.showToast) showToast('Please enter a coupon code', 'warning');
+                return;
+            }
+
+            // Placeholder for coupon validation
+            applyCouponBtn.disabled = true;
+            applyCouponBtn.innerText = 'Checking...';
+
+            setTimeout(() => {
+                if (window.showToast) showToast('Invalid or expired coupon code', 'error');
+                applyCouponBtn.disabled = false;
+                applyCouponBtn.innerText = 'Apply';
+                couponInput.value = '';
+            }, 1000);
+        });
+    }
 });
 
