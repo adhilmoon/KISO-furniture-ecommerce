@@ -72,6 +72,8 @@ router.delete("/cart", userauth.userauth, cartController.clearCart);
 // Payment API
 router.post("/payment/create-order", userauth.userauth, paymentController.createOrder);
 router.post("/payment/verify", userauth.userauth, paymentController.verifyPayment);
+router.get("/order/confirmation/:orderId", userauth.userauth, paymentController.getOrderConfirmation);
+router.get("/payment/failed", userauth.userauth, paymentController.getPaymentFailed);
 
 // Wishlist API
 router.get("/wishlist", userauth.userauth, wishlistController.getWishlistPage);

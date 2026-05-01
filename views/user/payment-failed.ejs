@@ -1,0 +1,77 @@
+<div class="min-h-screen bg-brand-bg1 pt-28 pb-24">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center">
+
+        <!-- Failure Animation -->
+        <div class="relative mb-10">
+            <div class="w-24 h-24 mx-auto rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center">
+                <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-light mb-3">Payment Failed</h1>
+        <p class="text-brand-muted text-base mb-6 max-w-md mx-auto leading-relaxed">
+            We couldn't process your payment. Don't worry — no amount has been deducted from your account.
+        </p>
+
+        <!-- Reason Card -->
+        <% if (locals.reason) { %>
+        <div class="bg-red-500/5 border border-red-500/15 rounded-xl p-5 mb-8 max-w-md mx-auto">
+            <div class="flex items-start gap-3 text-left">
+                <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div>
+                    <p class="text-red-400 font-bold text-sm mb-0.5">Reason</p>
+                    <p class="text-red-300/80 text-xs leading-relaxed"><%= reason %></p>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- What to do next -->
+        <div class="bg-brand-bg2 rounded-2xl border border-white/5 p-8 mb-10 text-left max-w-md mx-auto">
+            <h3 class="text-brand-light font-bold text-sm mb-4">What you can try</h3>
+            <ul class="space-y-3">
+                <li class="flex items-start gap-3">
+                    <div class="w-6 h-6 rounded-full bg-brand-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <span class="text-brand-accent text-xs font-bold">1</span>
+                    </div>
+                    <p class="text-brand-muted text-xs leading-relaxed">Check if your card or bank account has sufficient balance and try again.</p>
+                </li>
+                <li class="flex items-start gap-3">
+                    <div class="w-6 h-6 rounded-full bg-brand-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <span class="text-brand-accent text-xs font-bold">2</span>
+                    </div>
+                    <p class="text-brand-muted text-xs leading-relaxed">Try using a different payment method like UPI, Net Banking, or another card.</p>
+                </li>
+                <li class="flex items-start gap-3">
+                    <div class="w-6 h-6 rounded-full bg-brand-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <span class="text-brand-accent text-xs font-bold">3</span>
+                    </div>
+                    <p class="text-brand-muted text-xs leading-relaxed">If the issue persists, please contact your bank or our support team.</p>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/user/checkout" class="px-8 py-3.5 bg-brand-accent hover:bg-yellow-500 text-brand-bg1 font-bold text-sm rounded-xl transition-all shadow-lg shadow-brand-accent/20 active:scale-95 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Retry Payment
+            </a>
+            <a href="/user/store" class="px-8 py-3.5 bg-brand-bg2 hover:bg-white/5 text-brand-light font-bold text-sm rounded-xl border border-white/10 transition-all flex items-center justify-center gap-2">
+                Continue Shopping
+            </a>
+        </div>
+
+        <!-- Support Note -->
+        <p class="mt-10 text-[10px] text-brand-muted leading-relaxed">
+            If any amount was deducted, it will be refunded within 5–7 business days.<br>
+            Need help? <a href="#" class="text-brand-accent underline hover:text-yellow-400 transition-colors">Contact Support</a>
+        </p>
+
+    </div>
+</div>

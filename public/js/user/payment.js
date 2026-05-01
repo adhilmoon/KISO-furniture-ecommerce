@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         payNowBtn.addEventListener('click', async () => {
             const amount = payNowBtn.dataset.amount;
             const razorpayKey = payNowBtn.dataset.razorpayKey;
+            const addressId = payNowBtn.dataset.addressId;
 
             try {
                 // Disable button and show loading
@@ -28,44 +29,39 @@ document.addEventListener('DOMContentLoaded', () => {
                     currency: order.currency,
                     name: "KISO Furniture",
                     description: "Order Payment",
-                    image: "/images/logo.png", // Ensure you have a logo or use a placeholder
                     order_id: order.id,
                     handler: async function (response) {
                         try {
                             // Show verifying state
-                            payNowBtn.innerHTML = `<svg class="animate-spin h-5 w-5 text-brand-bg1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Verifying...`;
+                            payNowBtn.innerHTML = `<svg class="animate-spin h-5 w-5 text-brand-bg1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Verifying Payment...`;
 
                             // 3. Verify Payment on Backend
                             const verifyResponse = await axios.post('/user/payment/verify', {
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_signature: response.razorpay_signature
+                                razorpay_signature: response.razorpay_signature,
+                                addressId
                             });
 
                             if (verifyResponse.data.success) {
-                                if (window.showToast) showToast('Order placed successfully!', 'success');
-                                
-                                // Redirect to success page or profile/orders
-                                setTimeout(() => {
-                                    window.location.href = '/user/profile?order=success';
-                                }, 1500);
+                                // Redirect to order confirmation page
+                                window.location.href = `/user/order/confirmation/${verifyResponse.data.orderId}`;
                             } else {
-                                throw new Error('Payment verification failed');
+                                throw new Error(verifyResponse.data.message || 'Payment verification failed');
                             }
                         } catch (error) {
                             console.error('Verification Error:', error);
-                            if (window.showToast) showToast(error.message || 'Verification failed', 'error');
-                            payNowBtn.disabled = false;
-                            payNowBtn.innerHTML = originalContent;
+                            const reason = encodeURIComponent(error.response?.data?.message || error.message || 'Payment verification failed');
+                            window.location.href = `/user/payment/failed?reason=${reason}`;
                         }
                     },
                     prefill: {
-                        name: "", // You can pass user data here if available in window.user
+                        name: "",
                         email: "",
                         contact: ""
                     },
                     theme: {
-                        color: "#EAB308" // Brand Accent Color
+                        color: "#EAB308"
                     },
                     modal: {
                         ondismiss: function() {
@@ -77,18 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const rzp1 = new Razorpay(options);
                 rzp1.on('payment.failed', function (response) {
-                    if (window.showToast) showToast('Payment failed: ' + response.error.description, 'error');
-                    payNowBtn.disabled = false;
-                    payNowBtn.innerHTML = originalContent;
+                    const reason = encodeURIComponent(response.error.description || 'Payment was declined by the bank');
+                    window.location.href = `/user/payment/failed?reason=${reason}`;
                 });
 
                 rzp1.open();
 
             } catch (error) {
                 console.error('Payment Error:', error);
-                if (window.showToast) showToast(error.response?.data?.message || error.message || 'Payment failed', 'error');
-                payNowBtn.disabled = false;
-                payNowBtn.innerHTML = `Pay with Razorpay <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>`;
+                const reason = encodeURIComponent(error.response?.data?.message || error.message || 'Could not initiate payment');
+                window.location.href = `/user/payment/failed?reason=${reason}`;
             }
         });
     }
