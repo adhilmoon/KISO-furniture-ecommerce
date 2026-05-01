@@ -187,10 +187,32 @@ if (checkoutBtn) {
             });
 
             if (response.data.success) {
-                window.location.href = response.data.redirectUrl;
+                const invalidItems = response.data.invalidItems || [];
+                if (invalidItems.length > 0) {
+                    const listHtml = `<ul class="text-left list-disc pl-5 space-y-2 text-sm text-brand-muted mt-4">
+                        ${invalidItems.map(item => `<li>${item}</li>`).join('')}
+                    </ul>`;
+
+                    // Use global themed modal
+                    await showResultModal(
+                        'Items Unavailable',
+                        `<p class="text-sm text-brand-light text-left">Some items are no longer available and will be filtered out from your checkout:</p>${listHtml}`,
+                        'warning',
+                        'Proceed to Checkout'
+                    ).then(() => {
+                        window.location.href = response.data.redirectUrl;
+                    });
+                } else {
+                    window.location.href = response.data.redirectUrl;
+                }
             } else {
-                showToast(response.data.message || 'Validation failed. Please check if items are available', 'error');
-                setTimeout(() => window.location.reload(), 2000);
+                // Use global themed modal for error
+                await showResultModal(
+                    'Checkout Blocked',
+                    response.data.message || 'No valid items available for checkout.',
+                    'error',
+                    'Back to Cart'
+                ).then(() => window.location.reload());
             }
         } catch (error) {
             console.error('checkout error:', error);
