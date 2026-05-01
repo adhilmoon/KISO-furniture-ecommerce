@@ -53,8 +53,12 @@ export const getCheckoutPage = catchAsync(async (req, res) => {
         if (validItems.length === 0) {
             return res.json({ success: false, message: "No valid items in your cart to checkout." });
         }
-        // Proceed even if some items are invalid (they will be filtered out on the checkout page)
-        return res.json({ success: true, redirectUrl: "/user/checkout" });
+        // Proceed even if some items are invalid, but return the list so frontend can warn the user
+        return res.json({ 
+            success: true, 
+            redirectUrl: "/user/checkout",
+            invalidItems: invalidItems 
+        });
     }
 
     if (validItems.length === 0) return res.redirect("/user/cart");
