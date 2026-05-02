@@ -1,4 +1,5 @@
 import cloudinary from "../config/cloudinary.js";
+import logger from "../utilities/logger.js";
 
 const DEFAULT_FOLDER = "kiso_furniture";
 
@@ -11,7 +12,7 @@ const MAGIC_BYTES = [
 
 /**
  * Checks whether a buffer matches a known image magic-byte signature.
- * This prevents spoofed MIME types from reaching Cloudinary.
+ * Prevents spoofed MIME types from reaching Cloudinary.
  * @param {Buffer} buffer
  * @returns {boolean}
  */
@@ -51,4 +52,49 @@ export const uploadToCloudinary = (fileBuffer, folderName = DEFAULT_FOLDER) => {
     );
     stream.end(fileBuffer);
   });
+};
+
+/**
+ * Extracts the Cloudinary public_id from a secure URL.
+ * e.g. "https://res.cloudinary.com/<cloud>/image/upload/v123/kiso/products/abc.webp"
+ *   → "kiso/products/abc"
+ * @param {string} url - Cloudinary secure_url.
+ * @returns {string|null}
+ */
+export const extractPublicId = (url) => {
+  try {
+    const parts = url.split("/upload/");
+    if (parts.length < 2) return null;
+    // Strip optional version segment (v1234567890/) then file extension
+    const withoutVersion = parts[1].replace(/^v\d+\//, "");
+    return withoutVersion.replace(/\.[^/.]+$/, "");
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Deletes one or more images from Cloudinary by their secure URLs.
+ * Skips non-Cloudinary URLs. Errors are logged but never thrown so a
+ * failed delete never blocks the main operation.
+ * @param {string|string[]} urls - One or more Cloudinary secure_url strings.
+ * @returns {Promise<void>}
+ */
+export const deleteFromCloudinary = async (urls) => {
+  const list = Array.isArray(urls) ? urls : [urls];
+  const cloudinaryUrls = list.filter(
+    (u) => typeof u === "string" && u.includes("res.cloudinary.com")
+  );
+
+  await Promise.allSettled(
+    cloudinaryUrls.map(async (url) => {
+      const publicId = extractPublicId(url);
+      if (!publicId) {
+        logger.warn(`deleteFromCloudinary: could not extract public_id from "${url}"`);
+        return;
+      }
+      const result = await cloudinary.uploader.destroy(publicId);
+      logger.info(`Cloudinary delete "${publicId}": ${result.result}`);
+    })
+  );
 };
