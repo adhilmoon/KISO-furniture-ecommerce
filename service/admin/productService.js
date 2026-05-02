@@ -1,4 +1,4 @@
-import {uploadToCloudinary} from "../../config/cloudinary.js";
+import { uploadToCloudinary } from "../../utilities/uploadToCloudinary.js";
 import Product from "../../model/Product.js";
 import logger from "../../utilities/logger.js";
 import * as productValidators from "../../validators/adminProducts.js";
