@@ -9,7 +9,7 @@ import * as storeController from "../controller/usercontroller/storeController.j
 import * as productController from "../controller/usercontroller/productDetailsController.js";
 import * as cartController from "../controller/usercontroller/cartController.js";
 import * as wishlistController from "../controller/usercontroller/wishlistController.js";
-import {upload} from "../config/cloudinary.js";
+import { upload } from "../config/multer.js";
 
 import passport from "passport";
 

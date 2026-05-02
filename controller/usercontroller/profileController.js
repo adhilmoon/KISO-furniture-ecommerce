@@ -3,7 +3,7 @@ import Address from "../../model/Address.js";
 import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 import * as otpsender from '../../utilities/sendEmail.js'
 import bcrypt from 'bcrypt'
-import {uploadToCloudinary} from "../../config/cloudinary.js";
+import { uploadToCloudinary } from "../../utilities/uploadToCloudinary.js";
 import logger from "../../utilities/logger.js";
 import {userService} from "../../service/user/userService.js";
 import catchAsync from "../../utilities/catchAsync.js";
@@ -17,7 +17,7 @@ export const uploadProfilePic = catchAsync(async (req, res) => {
             message: MESSAGES.PLEASE_UPLOAD_IMAGE
         });
     }
-
+   console.log(req.file)
     const userId = req.session.user._id;
 
    
