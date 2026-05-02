@@ -37,7 +37,9 @@ const UserSchema = new mongoose.Schema({
     avatar: {
         type: String,
     },
-
+    avatarId:{
+        type:String,
+    },
     isBlocked: {
         type: Boolean,
         default: false
