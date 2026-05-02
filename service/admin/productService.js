@@ -1,4 +1,4 @@
-import { uploadToCloudinary } from "../../utilities/uploadToCloudinary.js";
+import { uploadToCloudinary, deleteFromCloudinary } from "../../utilities/uploadToCloudinary.js";
 import Product from "../../model/Product.js";
 import logger from "../../utilities/logger.js";
 import * as productValidators from "../../validators/adminProducts.js";
@@ -169,11 +169,16 @@ export const updateProduct = async (productId, body, files) => {
       const parsedDeletedVariantImages = JSON.parse(body.deletedVariantImages);
       logger.debug(`parsedDeletedVariantImages: ${JSON.stringify(parsedDeletedVariantImages)}`);
 
+      // Collect all URLs that will be removed from DB so we can delete from Cloudinary
+      const urlsToDelete = [];
+
       product.variants.forEach(variant => {
         const vId = variant._id.toString();
         if(parsedDeletedVariantImages[vId] && Array.isArray(parsedDeletedVariantImages[vId])) {
           const beforeCount = variant.images.length;
           logger.debug(`Variant ${vId} BEFORE deletion: ${variant.images}`);
+
+          urlsToDelete.push(...parsedDeletedVariantImages[vId]);
 
           variant.images = variant.images.filter(
             img => !parsedDeletedVariantImages[vId].includes(img)
@@ -184,6 +189,11 @@ export const updateProduct = async (productId, body, files) => {
           logger.debug(`Variant ${vId}: removed ${beforeCount - afterCount} images`);
         }
       });
+
+      // Delete from Cloudinary (non-blocking — errors are logged internally)
+      if(urlsToDelete.length > 0) {
+        await deleteFromCloudinary(urlsToDelete);
+      }
     } catch(e) {
       logger.debug(`variant delete error: ${e.message}`);
     }
