@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const checkoutBtn = document.getElementById('btnContinueToPayment');
+    const applyCouponBtn = document.getElementById('applyCouponBtn');
+    const couponInput = document.getElementById('coupon');
 
+    // Handle Checkout Redirection
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', async () => {
             const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
@@ -24,10 +27,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const addressId = selectedAddress.value;
             
-            // Redirect to payment
+            // Redirect to payment (Note: Ensure this route exists in your backend)
             setTimeout(() => {
                 window.location.href = `/user/checkout/payment?addressId=${addressId}`;
             }, 800);
+        });
+    }
+
+    // Handle Coupon Application
+    if (applyCouponBtn) {
+        applyCouponBtn.addEventListener('click', () => {
+            const couponCode = couponInput.value.trim();
+            if (!couponCode) {
+                if (window.showToast) showToast('Please enter a coupon code', 'warning');
+                return;
+            }
+
+            // Placeholder for coupon validation
+            applyCouponBtn.disabled = true;
+            applyCouponBtn.innerText = 'Checking...';
+
+            setTimeout(() => {
+                if (window.showToast) showToast('Invalid or expired coupon code', 'error');
+                applyCouponBtn.disabled = false;
+                applyCouponBtn.innerText = 'Apply';
+                couponInput.value = '';
+            }, 1000);
         });
     }
 });

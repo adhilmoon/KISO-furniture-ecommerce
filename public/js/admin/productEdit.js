@@ -215,9 +215,40 @@ function viewImage(src) {
 
 
 
+// ── Image file validation ─────────────────────────────────────────────────
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const MAX_PRODUCT_IMAGE_MB = 8;
+
+/**
+ * Validates an array of File objects for type and size.
+ * Shows a toast for each invalid file and returns only the valid ones.
+ * @param {File[]} files
+ * @returns {File[]}
+ */
+function validateImageFiles(files) {
+  const valid = [];
+  files.forEach(file => {
+    if(!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      showToast(`"${file.name}" is not allowed. Only JPG, PNG, and WebP are accepted.`, 'error');
+      return;
+    }
+    if(file.size > MAX_PRODUCT_IMAGE_MB * 1024 * 1024) {
+      showToast(`"${file.name}" exceeds the ${MAX_PRODUCT_IMAGE_MB} MB limit.`, 'error');
+      return;
+    }
+    valid.push(file);
+  });
+  return valid;
+}
+
+
 function handleVariantImages(input, variantId) {
-  const files = Array.from(input.files);
-  if(!files.length) return;
+  const raw = Array.from(input.files);
+  if(!raw.length) return;
+
+  // ── Validate type & size first ───────────────────────────────────────────────
+  const files = validateImageFiles(raw);
+  if(!files.length) { input.value = ''; return; }
 
   const total = getTotalImageCount(variantId);
   if(total + files.length > 3) {
@@ -234,6 +265,7 @@ function handleVariantImages(input, variantId) {
   openCropper(imageQueue[0]);
   input.value = '';
 }
+
 
 
 

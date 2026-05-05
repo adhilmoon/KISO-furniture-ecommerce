@@ -90,21 +90,25 @@ function handleProfileImageChange(event) {
     const file = event.target.files[0];
     if(!file) return;
 
-    if(!file.type.startsWith('image/')) {
-        showMessage('Please select a valid image file', 'error');
+    // ── File type check ───────────────────────────────────────────────────────
+    const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if(!ALLOWED_TYPES.includes(file.type)) {
+        showMessage('Invalid file type. Only JPG, PNG, and WebP images are allowed.', 'error');
+        event.target.value = '';
         return;
     }
 
-
+    // ── File size check (5 MB) ────────────────────────────────────────────────
     if(file.size > 5 * 1024 * 1024) {
-        showMessage('Image size should be less than 5MB', 'error');
+        showMessage('Image is too large. Maximum allowed size is 5 MB.', 'error');
+        event.target.value = '';
         return;
     }
 
-    openCropper(file)
+    openCropper(file);
     currentInput = event.target;
-
 }
+
 
 
 async function handleProfileUpdate(event) {

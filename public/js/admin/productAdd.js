@@ -179,12 +179,38 @@ function viewImage(src) {
 }
 
 
+// ── Image file validation ─────────────────────────────────────────────────
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const MAX_PRODUCT_IMAGE_MB = 8;
+
+
+function validateImageFiles(files) {
+  const valid = [];
+  files.forEach(file => {
+    if(!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      showToast(`"${file.name}" is not allowed. Only JPG, PNG, and WebP are accepted.`, 'error');
+      return;
+    }
+    if(file.size > MAX_PRODUCT_IMAGE_MB * 1024 * 1024) {
+      showToast(`"${file.name}" exceeds the ${MAX_PRODUCT_IMAGE_MB} MB limit.`, 'error');
+      return;
+    }
+    valid.push(file);
+  });
+  return valid;
+}
+
 //__________variant image handler_________________________________
 
 
 function handleVariantImages(input, variantId) {
-  const files = Array.from(input.files);
-  if(!files.length) return;
+  const raw = Array.from(input.files);
+  if(!raw.length) return;
+
+ 
+  const files = validateImageFiles(raw);
+  if(!files.length) { input.value = ''; return; }
+
   const existingCount = existingVariantImageCount[variantId] || 0;
 
   const newCount = variantCroppedFiles[variantId]?.length || 0;
@@ -203,6 +229,7 @@ function handleVariantImages(input, variantId) {
   openCropper(imageQueue[0]);
   input.value = '';
 }
+
 
 //______________Custom attributes___________________________________
 
