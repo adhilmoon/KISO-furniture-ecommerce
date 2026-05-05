@@ -1,7 +1,7 @@
 import User from "../../model/User.js";
 import Address from "../../model/Address.js";
 import Product from "../../model/Product.js";
-import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
+import { MESSAGES} from "../../constants/index.js";
 import Category from "../../model/Category.js";
 import catchAsync from "../../utilities/catchAsync.js";
 
@@ -232,10 +232,6 @@ export const user_store = catchAsync(async (req, res) => {
     };
     const sortCriteria = sortMapping[sortKey] || sortMapping['newest'];
     
-    console.log('--- STORE DEBUG ---');
-    console.log('sortKey:', sortKey);
-    console.log('sortCriteria:', JSON.stringify(sortCriteria));
-    console.log('filter:', JSON.stringify(filter));
 
     // ── Query ──────────────────────────────────────────────────────────
     const totalProducts = await Product.countDocuments(filter);
