@@ -3,7 +3,7 @@ import Address from "../../model/Address.js";
 import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
 import * as otpsender from '../../utilities/sendEmail.js'
 import bcrypt from 'bcrypt'
-import {uploadToCloudinary} from "../../config/cloudinary.js";
+import { uploadToCloudinary, deleteFromCloudinary } from "../../utilities/uploadToCloudinary.js";
 import logger from "../../utilities/logger.js";
 import {userService} from "../../service/user/userService.js";
 import catchAsync from "../../utilities/catchAsync.js";
@@ -20,14 +20,20 @@ export const uploadProfilePic = catchAsync(async (req, res) => {
 
     const userId = req.session.user._id;
 
-   
-    const result = await uploadToCloudinary(req.file.buffer, "kiso/users/profile");
+    // ── Delete old avatar from Cloudinary if one exists ───────────────────────
+    const currentUser = await User.findById(userId).select("avatar avatarId");
+    if (currentUser?.avatar) {
+        await deleteFromCloudinary(currentUser.avatar);
+    }
 
+    // ── Upload new avatar ─────────────────────────────────────────────────────
+    const result = await uploadToCloudinary(req.file.buffer, "kiso/users/profile");
     const imageUrl = result.secure_url;
+    const publicId = result.public_id;
 
     const updatedUser = await User.findByIdAndUpdate(
         userId,
-        { avatar: imageUrl },
+        { avatar: imageUrl, avatarId: publicId },
         { new: true }
     );
 

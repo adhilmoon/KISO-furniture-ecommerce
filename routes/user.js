@@ -10,7 +10,7 @@ import * as productController from "../controller/usercontroller/productDetailsC
 import * as cartController from "../controller/usercontroller/cartController.js";
 import * as wishlistController from "../controller/usercontroller/wishlistController.js";
 import * as paymentController from "../controller/usercontroller/paymentController.js";
-import {upload} from "../config/cloudinary.js";
+import { upload } from "../config/multer.js";
 
 import passport from "passport";
 

@@ -5,7 +5,7 @@ import * as adminPages from "../controller/adminController/adminPagesController.
 import * as adminController from "../controller/adminController/adminAuthController.js";
 import * as adminCategory from "../controller/adminController/adminCategory.js";
 import * as adminProduct from "../controller/adminController/adminProduct.js";
-import { uploadProduct } from "../config/cloudinary.js";
+import { uploadProduct } from "../config/multer.js";
 
 router.use(adminauth.noCache);
 
