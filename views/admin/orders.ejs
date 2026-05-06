@@ -1,0 +1,263 @@
+<div class="p-4 sm:p-8 max-w-7xl mx-auto w-full font-sans transition-colors duration-300">
+
+  <!-- Page Header -->
+  <header class="mb-10">
+    <h1 class="text-3xl font-bold text-kiso-text tracking-tight mb-1">Order Management</h1>
+    <p class="text-sm text-brand-muted">
+      <span class="text-brand-light font-semibold"><%= totalOrders %></span> total orders
+    </p>
+  </header>
+
+  <!-- Filters & Search -->
+  <form method="GET" action="/admin/orders" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-8">
+    <!-- Search -->
+    <div class="relative w-full sm:flex-1">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input
+        type="text"
+        name="search"
+        value="<%= search %>"
+        placeholder="Search by order ID..."
+        class="w-full pl-12 pr-4 py-3 bg-brand-bg1 border border-white/10 rounded-xl text-kiso-text placeholder-brand-muted focus:outline-none focus:border-brand-accent transition-colors shadow-lg shadow-black/10"
+      />
+    </div>
+
+    <!-- Status Filter -->
+    <div class="relative w-full sm:w-52">
+      <select
+        name="status"
+        class="w-full pl-4 pr-10 py-3 bg-brand-bg1 border border-white/10 rounded-xl text-kiso-text focus:outline-none focus:border-brand-accent transition-colors appearance-none shadow-lg shadow-black/10"
+      >
+        <option value="" <%= status === '' ? 'selected' : '' %>>All Statuses</option>
+        <% STATUS_OPTIONS.forEach(function(s) { %>
+          <option value="<%= s %>" <%= status === s ? 'selected' : '' %>>
+            <%= s === 'out_for_delivery' ? 'Out for Delivery' : s.charAt(0).toUpperCase() + s.slice(1) %>
+          </option>
+        <% }); %>
+      </select>
+      <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+        <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Sort -->
+    <div class="relative w-full sm:w-48">
+      <select
+        name="sort"
+        class="w-full pl-4 pr-10 py-3 bg-brand-bg1 border border-white/10 rounded-xl text-kiso-text focus:outline-none focus:border-brand-accent transition-colors appearance-none shadow-lg shadow-black/10"
+      >
+        <option value="newest"     <%= sort === 'newest'     ? 'selected' : '' %>>Newest First</option>
+        <option value="oldest"     <%= sort === 'oldest'     ? 'selected' : '' %>>Oldest First</option>
+        <option value="total-high" <%= sort === 'total-high' ? 'selected' : '' %>>Total: High to Low</option>
+        <option value="total-low"  <%= sort === 'total-low'  ? 'selected' : '' %>>Total: Low to High</option>
+      </select>
+      <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+        <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Apply -->
+    <button
+      type="submit"
+      class="px-6 py-3 bg-brand-accent text-kiso-bg font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors shadow-lg shadow-brand-accent/20 whitespace-nowrap"
+    >
+      Apply
+    </button>
+
+    <!-- Clear -->
+    <a
+      href="/admin/orders"
+      class="px-6 py-3 bg-brand-bg1 border border-white/10 text-brand-muted font-semibold rounded-xl hover:bg-white/5 hover:text-kiso-text transition-colors shadow-lg shadow-black/10 text-center whitespace-nowrap"
+    >
+      Clear
+    </a>
+  </form>
+
+  <!-- Orders Table -->
+  <div class="border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20 mb-12">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-brand-bg1 border-b border-white/10 text-brand-muted uppercase tracking-wider text-[11px]">
+          <tr>
+            <th class="px-6 py-5 font-semibold">Order ID</th>
+            <th class="px-6 py-5 font-semibold">Date</th>
+            <th class="px-6 py-5 font-semibold">Customer</th>
+            <th class="px-6 py-5 font-semibold text-center">Items</th>
+            <th class="px-6 py-5 font-semibold">Total</th>
+            <th class="px-6 py-5 font-semibold text-center">Status</th>
+            <th class="px-6 py-5 font-semibold text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-white/5 bg-brand-bg2/50 backdrop-blur-sm">
+          <% if (orders.length === 0) { %>
+            <tr>
+              <td colspan="7" class="px-6 py-20 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <svg class="w-14 h-14 text-brand-muted/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                  </svg>
+                  <p class="text-brand-muted font-medium text-base">No orders found</p>
+                  <% if (search || status) { %>
+                    <p class="text-brand-muted/60 text-sm">Try adjusting your filters</p>
+                  <% } %>
+                </div>
+              </td>
+            </tr>
+          <% } else { %>
+            <% orders.forEach(function(order) { %>
+              <%
+                var statusClasses = {
+                  pending:          'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+                  confirmed:        'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                  processing:       'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                  shipped:          'bg-purple-500/10 text-purple-400 border-purple-500/20',
+                  out_for_delivery: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+                  delivered:        'bg-green-500/10 text-green-400 border-green-500/20',
+                  cancelled:        'bg-red-500/10 text-red-400 border-red-500/20',
+                  return_requested: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+                  returned:         'bg-gray-500/10 text-gray-400 border-gray-500/20'
+                };
+                var statusLabels = {
+                  pending:          'Pending',
+                  confirmed:        'Confirmed',
+                  processing:       'Processing',
+                  shipped:          'Shipped',
+                  out_for_delivery: 'Out for Delivery',
+                  delivered:        'Delivered',
+                  cancelled:        'Cancelled',
+                  return_requested: 'Return Requested',
+                  returned:         'Returned'
+                };
+                var cls = statusClasses[order.orderStatus] || 'bg-gray-500/10 text-gray-400 border-gray-500/20';
+                var lbl = statusLabels[order.orderStatus] || order.orderStatus;
+              %>
+              <tr class="hover:bg-white/5 transition-colors group">
+                <!-- Order ID -->
+                <td class="px-6 py-4 whitespace-nowrap border-l-2 border-transparent group-hover:border-brand-accent/70">
+                  <span class="font-mono text-sm font-semibold text-brand-light"><%= order.displayId %></span>
+                </td>
+
+                <!-- Date -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-brand-muted">
+                    <%= new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </span>
+                </td>
+
+                <!-- Customer -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <% if (order.userId) { %>
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-brand-bg1 border border-white/10 flex items-center justify-center text-kiso-bg font-bold text-xs flex-shrink-0" style="background-color: #9A8478;">
+                        <%= order.userId.name ? order.userId.name.charAt(0).toUpperCase() : '?' %>
+                      </div>
+                      <div>
+                        <p class="text-sm font-semibold text-brand-light"><%= order.userId.name || 'N/A' %></p>
+                        <p class="text-xs text-brand-muted truncate max-w-[160px]"><%= order.userId.email || '' %></p>
+                      </div>
+                    </div>
+                  <% } else { %>
+                    <span class="text-brand-muted">Deleted User</span>
+                  <% } %>
+                </td>
+
+                <!-- Items -->
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="text-sm font-bold text-kiso-text"><%= order.orderItems ? order.orderItems.length : 0 %></span>
+                </td>
+
+                <!-- Total -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm font-semibold text-kiso-text">
+                    &#8377;<%= (order.grandTotal || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                  </span>
+                </td>
+
+                <!-- Status -->
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-3 py-1 border rounded-full text-xs font-semibold tracking-wide <%= cls %>">
+                    <%= lbl %>
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <a
+                    href="/admin/orders/<%= order._id %>"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-bg1 border border-white/10 text-brand-light rounded-lg text-xs font-semibold hover:bg-white/5 hover:border-brand-accent/40 transition-colors shadow-lg shadow-black/10"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    View
+                  </a>
+                </td>
+              </tr>
+            <% }); %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 0) { %>
+      <div class="bg-brand-bg1 px-6 py-4 border-t border-white/5">
+        <div class="flex items-center justify-between">
+          <p class="text-[13px] font-medium text-brand-muted">
+            <% if (orders.length > 0) { %>
+              Showing <span class="text-brand-light"><%= ((pageNum - 1) * 10) + 1 %></span>
+              to <span class="text-brand-light"><%= Math.min(pageNum * 10, totalOrders) %></span>
+              of <span class="text-brand-light"><%= totalOrders %></span> orders
+            <% } else { %>
+              No orders found
+            <% } %>
+          </p>
+
+          <% if (totalPages > 1) { %>
+            <div class="flex items-center gap-2">
+              <% if (pageNum > 1) { %>
+                <a
+                  href="?page=<%= pageNum - 1 %>&search=<%= encodeURIComponent(search) %>&status=<%= encodeURIComponent(status) %>&sort=<%= encodeURIComponent(sort) %>"
+                  class="px-3 py-2 bg-brand-bg2 border border-white/10 rounded-lg text-kiso-text hover:bg-white/5 transition-colors shadow-lg shadow-black/10 flex items-center justify-center"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                  </svg>
+                </a>
+              <% } %>
+
+              <% for (var i = 1; i <= totalPages; i++) { %>
+                <a
+                  href="?page=<%= i %>&search=<%= encodeURIComponent(search) %>&status=<%= encodeURIComponent(status) %>&sort=<%= encodeURIComponent(sort) %>"
+                  class="w-10 h-10 flex items-center justify-center rounded-lg text-[13px] font-bold transition-all shadow-lg shadow-black/10 <%= i === pageNum ? 'bg-brand-accent text-kiso-bg shadow-brand-accent/20' : 'bg-brand-bg2 text-brand-muted border border-white/10 hover:bg-white/5 hover:text-brand-light' %>"
+                >
+                  <%= i %>
+                </a>
+              <% } %>
+
+              <% if (pageNum < totalPages) { %>
+                <a
+                  href="?page=<%= pageNum + 1 %>&search=<%= encodeURIComponent(search) %>&status=<%= encodeURIComponent(status) %>&sort=<%= encodeURIComponent(sort) %>"
+                  class="px-3 py-2 bg-brand-bg2 border border-white/10 rounded-lg text-kiso-text hover:bg-white/5 transition-colors shadow-lg shadow-black/10 flex items-center justify-center"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+</div>
