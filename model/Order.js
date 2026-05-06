@@ -43,12 +43,13 @@ const OrderSchema = new mongoose.Schema({
     },
     status: { 
       type: String, 
-      enum: ['processing', 'shipped', 'delivered', 'cancelled', 'returned'],
+      enum: ['processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned'],
       default: 'processing'
     },
     // Milestone timestamps
     shippedAt: { type: Date },
     deliveredAt: { type: Date },
+    cancellationReason: { type: String },
     // Return tracking (only if status is 'returned')
     returnReason: { type: String },
     returnImage: { type: String },
@@ -100,18 +101,31 @@ const OrderSchema = new mongoose.Schema({
   // Order Status
   orderStatus: {
     type: String,
-    enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
+    enum: ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'return_requested', 'returned'],
     default: 'pending',
     index: true
   },
 
   // Additional Info
+  orderId: { type: String, sparse: true, unique: true, index: true },
+  cancellationReason: { type: String },
   notes: { type: String },
-  
+
 }, { timestamps: true });
 
 // Index for faster queries
 OrderSchema.index({ userId: 1, createdAt: -1 });
+
+OrderSchema.pre('save', async function() {
+  if (this.isNew && !this.orderId) {
+    const d = new Date();
+    const yy = String(d.getFullYear()).slice(-2);
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    this.orderId = `KISO${yy}${mm}${dd}${rand}`;
+  }
+});
 
 
 const Order = mongoose.model('Order', OrderSchema);
