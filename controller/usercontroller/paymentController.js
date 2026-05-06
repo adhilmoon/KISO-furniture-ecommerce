@@ -22,7 +22,7 @@ export const getPaymentPage = catchAsync(async (req, res) => {
         return res.redirect("/user/cart");
     }
 
-    // Filter valid items (same logic as checkout page)
+   
     const validItems = [];
     for (const item of cart.items) {
         const product = item.productId;
@@ -144,7 +144,9 @@ export const verifyPayment = catchAsync(async (req, res) => {
         shippingCost: 0,
         discount: 0,
         grandTotal: subtotal,
-        orderStatus: 'confirmed'
+        orderStatus: 'confirmed',
+        paymentMethod: 'razorpay',
+        paymentStatus: 'paid'
     });
 
     // 5. Deduct stock for each purchased variant
@@ -190,5 +192,83 @@ export const getPaymentFailed = catchAsync(async (req, res) => {
     res.render("user/payment-failed", {
         title: "Payment Failed - KISO",
         reason: reason || "The payment could not be completed. Please try again."
+    });
+});
+
+export const placeCODOrder = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    const { addressId } = req.body;
+
+    const cart = await cartService.getCart(userId);
+    const address = await Address.findById(addressId);
+
+    if (!cart || !cart.items || cart.items.length === 0 || !address) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: "Cart or address not found."
+        });
+    }
+
+    const orderItems = [];
+    for (const item of cart.items) {
+        const product = item.productId;
+        const variant = product?.variants?.[item.variantIndex];
+        const isProductListed = product?.isListed && (!product?.category || product.category.isActive);
+
+        if (product && isProductListed && variant && variant.stock > 0) {
+            const purchaseQty = Math.min(item.quantity, variant.stock);
+            orderItems.push({
+                productId: product._id,
+                variantIndex: item.variantIndex,
+                quantity: purchaseQty,
+                price: variant.price,
+                status: 'processing'
+            });
+        }
+    }
+
+    if (orderItems.length === 0) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: "All items are out of stock."
+        });
+    }
+
+    const subtotal = orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+    const newOrder = await Order.create({
+        userId,
+        shippingAddress: {
+            name: address.fullName,
+            phone: address.mobile,
+            streetAddress: address.houseName,
+            city: address.city,
+            state: address.state,
+            pincode: address.pincode,
+            addressType: address.type?.toLowerCase() || 'home'
+        },
+        orderItems,
+        subtotal,
+        shippingCost: 0,
+        discount: 0,
+        grandTotal: subtotal,
+        orderStatus: 'confirmed',
+        paymentMethod: 'cod',
+        paymentStatus: 'pending'
+    });
+
+    for (const item of orderItems) {
+        await Product.updateOne(
+            { _id: item.productId },
+            { $inc: { [`variants.${item.variantIndex}.stock`]: -item.quantity } }
+        );
+    }
+
+    await cartService.clearCart(userId);
+
+    res.json({
+        success: true,
+        message: "Order placed successfully",
+        orderId: newOrder._id
     });
 });

@@ -84,16 +84,22 @@
                                 </div>
                             </label>
 
-                            <!-- COD (Disabled for now as per requirement) -->
-                            <div class="flex items-center gap-5 p-5 bg-brand-bg1/50 border border-white/5 rounded-xl opacity-40 grayscale cursor-not-allowed">
-                                <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
-                                    <svg class="w-7 h-7 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                            <!-- Cash on Delivery -->
+                            <label class="relative block cursor-pointer group">
+                                <input type="radio" name="paymentMethod" value="cod" class="sr-only peer">
+                                <div class="flex items-center gap-5 p-5 bg-brand-bg1 border border-white/10 rounded-xl peer-checked:border-brand-accent peer-checked:bg-brand-accent/[0.04] group-hover:border-white/20 transition-all duration-300">
+                                    <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                                        <svg class="w-7 h-7 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-brand-light font-bold">Cash on Delivery</p>
+                                        <p class="text-xs text-brand-muted mt-0.5 leading-relaxed">Pay in cash when your order arrives</p>
+                                    </div>
+                                    <div class="w-5 h-5 rounded-full border-2 border-brand-muted flex items-center justify-center shrink-0 peer-checked:border-brand-accent group-has-[:checked]:border-brand-accent">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-brand-accent opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></div>
+                                    </div>
                                 </div>
-                                <div class="flex-1">
-                                    <p class="text-brand-muted font-bold">Cash on Delivery</p>
-                                    <p class="text-xs text-brand-muted/60 mt-0.5">Currently unavailable</p>
-                                </div>
-                            </div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -123,7 +129,7 @@
 
                     <button id="payNowBtn" data-amount="<%= cart.totalAmount %>" data-razorpay-key="<%= razorpayKeyId %>" data-address-id="<%= address._id %>"
                         class="w-full py-4 bg-brand-accent hover:bg-yellow-500 text-brand-bg1 font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-brand-accent/20 active:scale-95 flex items-center justify-center gap-3">
-                        Pay with Razorpay
+                        <span id="payBtnLabel">Pay with Razorpay</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                     </button>
 
