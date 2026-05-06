@@ -12,26 +12,86 @@ function getActiveParams() {
 }
 
 
-async function addToCartFromStore(productId, variantIndex = 0) {
-  try {
-    const response = await axios.post('/user/cart/add', {
-      productId,
-      variantIndex,
-      quantity: 1
-    });
+function buildQtyControlHTML(itemId, qty) {
+  return `<div class="flex items-center justify-between bg-brand-bg1 rounded-lg overflow-hidden border border-brand-accent/40">
+    <button onclick="decrementStore('${itemId}', this)" class="px-4 py-3 text-brand-accent hover:bg-brand-accent/10 font-bold text-xl transition-colors leading-none">−</button>
+    <span class="qty-display text-brand-light font-semibold">${qty}</span>
+    <button onclick="incrementStore('${itemId}', this)" class="px-4 py-3 text-brand-accent hover:bg-brand-accent/10 font-bold text-xl transition-colors leading-none">+</button>
+  </div>`;
+}
 
+function buildAddToCartHTML(productId, variantIndex) {
+  return `<button onclick="addToCartFromStore('${productId}', ${variantIndex}, this)"
+    class="w-full px-4 py-3 bg-brand-accent hover:bg-yellow-600 text-brand-bg1 font-semibold rounded-lg transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+    </svg>
+    Add to Cart
+  </button>`;
+}
+
+async function addToCartFromStore(productId, variantIndex, btn) {
+  try {
+    const response = await axios.post('/user/cart/add', { productId, variantIndex, quantity: 1 });
     if (response.data.success) {
+      const cart = response.data.cart;
+      const item = cart.items.find(i => {
+        const pid = String(i.productId?._id || i.productId);
+        return pid === String(productId) && i.variantIndex == variantIndex;
+      });
+      if (item) {
+        const area = btn.closest('.cart-action-area');
+        area.innerHTML = buildQtyControlHTML(item._id, item.quantity);
+      }
       showToast('Product added to cart!', 'success');
     } else {
       showToast(response.data.message || 'Error adding to cart', 'error');
     }
   } catch (error) {
-    if (error.response && error.response.status === 401) {
+    if (error.response?.status === 401) {
       window.location.href = '/user/login';
     } else {
-      console.error(error);
-      const message=error.response?.data?.message||"something went rowng"
-      showToast(message,"error");
+      showToast(error.response?.data?.message || 'Something went wrong', 'error');
+    }
+  }
+}
+
+async function incrementStore(itemId, btn) {
+  const area = btn.closest('.cart-action-area');
+  const qtyEl = area.querySelector('.qty-display');
+  const currentQty = parseInt(qtyEl.textContent);
+  try {
+    const res = await axios.patch(`/user/cart/item/${itemId}`, { quantity: currentQty + 1 });
+    if (res.data.success) {
+      qtyEl.textContent = currentQty + 1;
+    }
+  } catch (err) {
+    showToast(err.response?.data?.message || 'Error updating cart', 'error');
+  }
+}
+
+async function decrementStore(itemId, btn) {
+  const area = btn.closest('.cart-action-area');
+  const qtyEl = area.querySelector('.qty-display');
+  const currentQty = parseInt(qtyEl.textContent);
+  const productId = area.dataset.productId;
+  const variantIndex = parseInt(area.dataset.variantIndex);
+
+  if (currentQty <= 1) {
+    try {
+      await axios.delete(`/user/cart/item/${itemId}`);
+      area.innerHTML = buildAddToCartHTML(productId, variantIndex);
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Error removing item', 'error');
+    }
+  } else {
+    try {
+      const res = await axios.patch(`/user/cart/item/${itemId}`, { quantity: currentQty - 1 });
+      if (res.data.success) {
+        qtyEl.textContent = currentQty - 1;
+      }
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Error updating cart', 'error');
     }
   }
 }
@@ -41,9 +101,6 @@ async function toggleWishlist(productId) {
     const response = await axios.post('/user/wishlist/toggle', { productId });
     if (response.data.success) {
       showToast(response.data.message, 'success');
-      
-      // The store grid usually doesn't need immediate UI update for heart color 
-      // unless we want to track state. For now, toast is sufficient.
     }
   } catch (error) {
     if (error.response && error.response.status === 401) {
