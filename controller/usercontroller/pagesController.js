@@ -1,9 +1,14 @@
 import User from "../../model/User.js";
 import Address from "../../model/Address.js";
 import Product from "../../model/Product.js";
-import { MESSAGES} from "../../constants/index.js";
+import {MESSAGES} from "../../constants/index.js";
 import Category from "../../model/Category.js";
 import catchAsync from "../../utilities/catchAsync.js";
+import * as cartServiece from '../../service/user/cartService.js'
+import items from "razorpay/dist/types/items.js";
+import {ca} from "zod/v4/locales";
+
+
 
 
 
@@ -193,15 +198,15 @@ export const user_store = catchAsync(async (req, res) => {
         isListed: true,
         category: {$in: activeCategoryIds},
         variants: {
-            $exists: true, 
-            $not: { $size: 0 }
+            $exists: true,
+            $not: {$size: 0}
         }
     };
 
     if(searchQuery) {
         filter.productName = {$regex: searchQuery, $options: "i"};
     }
-    
+
     if(categoryId) {
         if(activeCategoryIds.some(id => id.toString() === categoryId)) {
             filter.category = categoryId;
@@ -220,18 +225,18 @@ export const user_store = catchAsync(async (req, res) => {
     // ── Sorting Logic ──────────────────────────────────────────────────
     const sortKey = req.query.sort || 'newest';
     const sortMapping = {
-        'price-low':  { 'variants.price': 1 },
-        'price_asc':  { 'variants.price': 1 },
-        'price-high': { 'variants.price': -1 },
-        'price_desc': { 'variants.price': -1 },
-        'a-z':        { productName: 1 },
-        'name_asc':   { productName: 1 },
-        'z-a':        { productName: -1 },
-        'name_desc':  { productName: -1 },
-        'newest':     { createdAt: -1 }
+        'price-low': {'variants.price': 1},
+        'price_asc': {'variants.price': 1},
+        'price-high': {'variants.price': -1},
+        'price_desc': {'variants.price': -1},
+        'a-z': {productName: 1},
+        'name_asc': {productName: 1},
+        'z-a': {productName: -1},
+        'name_desc': {productName: -1},
+        'newest': {createdAt: -1}
     };
     const sortCriteria = sortMapping[sortKey] || sortMapping['newest'];
-    
+
 
     // ── Query ──────────────────────────────────────────────────────────
     const totalProducts = await Product.countDocuments(filter);
@@ -255,16 +260,24 @@ export const user_store = catchAsync(async (req, res) => {
 
     // ── Get Global Price Range for Slider ───────────────────────────────
     const priceStats = await Product.aggregate([
-        { $match: { isListed: true } },
-        { $unwind: "$variants" },
+        {$match: {isListed: true}},
+        {$unwind: "$variants"},
         {
             $group: {
                 _id: null,
-                minPrice: { $min: "$variants.price" },
-                maxPrice: { $max: "$variants.price" }
+                minPrice: {$min: "$variants.price"},
+                maxPrice: {$max: "$variants.price"}
             }
         }
     ]);
+    const cartItemMap = {};
+    if (req.session.user) {
+        const cart = await cartServiece.getCart(req.session.user._id);
+        (cart?.items || []).forEach(item => {
+            const key = `${item.productId?._id || item.productId}_${item.variantIndex}`;
+            cartItemMap[key] = { itemId: String(item._id), quantity: item.quantity };
+        });
+    }
     const storeMinPrice = priceStats.length > 0 ? priceStats[0].minPrice : 0;
     const storeMaxPrice = priceStats.length > 0 ? priceStats[0].maxPrice : 100000;
 
@@ -294,6 +307,7 @@ export const user_store = catchAsync(async (req, res) => {
         activeFilters,
         activeSort: sortKey,
         storeMinPrice,
-        storeMaxPrice
+        storeMaxPrice,
+        cartItemMap
     });
 });

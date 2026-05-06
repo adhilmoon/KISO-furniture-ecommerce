@@ -150,18 +150,34 @@
                                                 <% } %>
                                             </div>
 
-                                            <!-- Add to Cart -->
-                                            <button <%= product.totalQuantity === 0 ? 'disabled' : '' %>
-                                                onclick="addToCartFromStore('<%= product._id %>', <%= finalVariantIndex %>)"
-                                                class="w-full px-4 py-3 bg-brand-accent hover:bg-yellow-600 text-brand-bg1 font-semibold
-                                                rounded-lg transition-all transform hover:scale-105 active:scale-95
-                                                flex items-center justify-center gap-2
-                                                disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                                                </svg>
-                                                <%= product.totalQuantity === 0 ? 'Unavailable' : 'Add to Cart' %>
-                                            </button>
+                                            <!-- Cart Action -->
+                                            <%
+                                               const cartKey = `${product._id}_${finalVariantIndex}`;
+                                               const cartItem = cartItemMap && cartItemMap[cartKey];
+                                            %>
+                                            <div class="cart-action-area" data-product-id="<%= product._id %>" data-variant-index="<%= finalVariantIndex %>">
+                                            <% if (product.totalQuantity === 0) { %>
+                                                <button disabled class="w-full px-4 py-3 bg-brand-accent text-brand-bg1 font-semibold rounded-lg flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
+                                                    Unavailable
+                                                </button>
+                                            <% } else if (cartItem) { %>
+                                                <div class="flex items-center justify-between bg-brand-bg1 rounded-lg overflow-hidden border border-brand-accent/40">
+                                                    <button onclick="decrementStore('<%= cartItem.itemId %>', this)" class="px-4 py-3 text-brand-accent hover:bg-brand-accent/10 font-bold text-xl transition-colors leading-none">−</button>
+                                                    <span class="qty-display text-brand-light font-semibold"><%= cartItem.quantity %></span>
+                                                    <button onclick="incrementStore('<%= cartItem.itemId %>', this)" class="px-4 py-3 text-brand-accent hover:bg-brand-accent/10 font-bold text-xl transition-colors leading-none">+</button>
+                                                </div>
+                                            <% } else { %>
+                                                <button onclick="addToCartFromStore('<%= product._id %>', <%= finalVariantIndex %>, this)"
+                                                    class="w-full px-4 py-3 bg-brand-accent hover:bg-yellow-600 text-brand-bg1 font-semibold
+                                                    rounded-lg transition-all transform hover:scale-105 active:scale-95
+                                                    flex items-center justify-center gap-2">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                                    </svg>
+                                                    Add to Cart
+                                                </button>
+                                            <% } %>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
