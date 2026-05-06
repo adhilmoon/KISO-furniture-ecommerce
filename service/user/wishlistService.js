@@ -1,15 +1,27 @@
 import * as wishlistRepository from "../../repository/user/wishlistRepository.js";
 import Product from "../../model/Product.js";
+import * as  cartRepository from "../../repository/user/cartRepository.js"
 
 export const getWishlist = async (userId) => {
-    let wishlist = await wishlistRepository.findByUserId(userId);
+    let [wishlist, cart] = await Promise.all([
+        wishlistRepository.findByUserId(userId),
+        cartRepository.findByUserId(userId)
+    ]);
+
     if (!wishlist) {
         wishlist = await wishlistRepository.createWishlist(userId, []);
     }
-    
-    wishlist.products = wishlist.products.filter(product => {
-        return product.isListed && (!product.category || product.category.isActive);
-    });
+
+    const cartProductIds = new Set(
+        cart?.items.map(item => String(item.productId._id ?? item.productId)) ?? []
+    );
+
+    wishlist.products = wishlist.products
+        .filter(product => product.isListed && (!product.category || product.category.isActive))
+        .map(product => ({
+            ...product,
+            isInCart: cartProductIds.has(String(product._id))
+        }));
 
     return wishlist;
 };
@@ -23,6 +35,14 @@ export const toggleWishlist = async (userId, productId) => {
     const product = await Product.findById(productId).populate('category');
     if (!product || !product.isListed || (product.category && !product.category.isActive)) {
         throw new Error("Product is not available");
+    }
+    const cart = await cartRepository.findByUserId(userId);
+    const isInCart = cart?.items.some(
+        item => String(item.productId._id ?? item.productId) === String(productId)
+    );
+
+    if (isInCart) {
+        return { action: "in_cart", wishlist };
     }
 
     const productIndex = wishlist.products.indexOf(productId);
