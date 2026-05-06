@@ -169,7 +169,8 @@ export const verifyPayment = catchAsync(async (req, res) => {
 });
 
 // Order Confirmation Page
-export const getOrderConfirmation = catchAsync(async (req, res) => {
+export const 
+getOrderConfirmation = catchAsync(async (req, res) => {
     const { orderId } = req.params;
     const userId = req.session.user._id;
 

@@ -1,0 +1,67 @@
+import Order from '../../model/Order.js';
+
+export const getOrders = async ({ page, perPage, search, status, sort }) => {
+  const filter = {};
+  if (search) {
+    filter.$or = [
+      { orderId: { $regex: search, $options: 'i' } }
+    ];
+  }
+  if (status) filter.orderStatus = status;
+
+  const sortMap = {
+    newest:       { createdAt: -1 },
+    oldest:       { createdAt:  1 },
+    'total-high': { grandTotal: -1 },
+    'total-low':  { grandTotal:  1 }
+  };
+  const sortCriteria = sortMap[sort] || sortMap.newest;
+  const skip = (page - 1) * perPage;
+
+  const [total, orders] = await Promise.all([
+    Order.countDocuments(filter),
+    Order.find(filter)
+      .populate('userId', 'name email phone')
+      .populate('orderItems.productId', 'productName variants')
+      .sort(sortCriteria)
+      .skip(skip)
+      .limit(perPage)
+      .lean()
+  ]);
+  return { total, orders };
+};
+
+export const getOrder = async (id) => {
+  return Order.findById(id)
+    .populate('userId', 'name email phone')
+    .populate('orderItems.productId', 'productName variants')
+    .lean();
+};
+
+export const updateStatus = async (id, newStatus) => {
+  const order = await Order.findById(id);
+  if (!order) throw new Error('Order not found');
+
+  order.orderStatus = newStatus;
+
+  const itemStatusMap = {
+    shipped:          'shipped',
+    out_for_delivery: 'shipped',
+    delivered:        'delivered',
+    cancelled:        'cancelled'
+  };
+  const itemStatus = itemStatusMap[newStatus];
+
+  if (itemStatus) {
+    for (const item of order.orderItems) {
+      if (item.status !== 'cancelled' && item.status !== 'returned') {
+        item.status = itemStatus;
+        if (newStatus === 'delivered') item.deliveredAt = new Date();
+        if (newStatus === 'shipped' || newStatus === 'out_for_delivery') item.shippedAt = new Date();
+      }
+    }
+  }
+
+  await order.save();
+  return order;
+};

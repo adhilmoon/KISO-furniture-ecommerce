@@ -10,6 +10,7 @@ import * as productController from "../controller/usercontroller/productDetailsC
 import * as cartController from "../controller/usercontroller/cartController.js";
 import * as wishlistController from "../controller/usercontroller/wishlistController.js";
 import * as paymentController from "../controller/usercontroller/paymentController.js";
+import * as orderController from "../controller/usercontroller/orderController.js";
 import { upload } from "../config/multer.js";
 
 import passport from "passport";
@@ -75,6 +76,14 @@ router.post("/payment/verify", userauth.userauth, paymentController.verifyPaymen
 router.post("/payment/cod", userauth.userauth, paymentController.placeCODOrder);
 router.get("/order/confirmation/:orderId", userauth.userauth, paymentController.getOrderConfirmation);
 router.get("/payment/failed", userauth.userauth, paymentController.getPaymentFailed);
+
+// Order Management
+router.get("/orders", userauth.userauth, orderController.getOrders);
+router.get("/orders/:id", userauth.userauth, orderController.getOrderDetail);
+router.post("/orders/:id/cancel", userauth.userauth, orderController.cancelOrder);
+router.post("/orders/:id/items/:itemId/cancel", userauth.userauth, orderController.cancelItem);
+router.post("/orders/:id/return", userauth.userauth, orderController.returnOrder);
+router.get("/orders/:id/invoice", userauth.userauth, orderController.downloadInvoice);
 
 // Wishlist API
 router.get("/wishlist", userauth.userauth, wishlistController.getWishlistPage);
