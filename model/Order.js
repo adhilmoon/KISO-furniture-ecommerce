@@ -56,9 +56,19 @@ const OrderSchema = new mongoose.Schema({
   }],
 
   // Payment Information
-  paymentId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Payment' 
+  paymentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Payment'
+  },
+  paymentMethod: {
+    type: String,
+    enum: ['razorpay', 'cod'],
+    required: true
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'paid', 'failed'],
+    default: 'pending'
   },
   
   // Pricing
