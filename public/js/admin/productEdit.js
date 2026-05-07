@@ -219,12 +219,7 @@ function viewImage(src) {
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_PRODUCT_IMAGE_MB = 8;
 
-/**
- * Validates an array of File objects for type and size.
- * Shows a toast for each invalid file and returns only the valid ones.
- * @param {File[]} files
- * @returns {File[]}
- */
+
 function validateImageFiles(files) {
   const valid = [];
   files.forEach(file => {
@@ -704,7 +699,7 @@ function validateForm() {
     const optType = $(`vOptType-${id}`)?.value.trim();
     const optValue = $(`vOptValue-${id}`)?.value.trim();
     const price = parseFloat($(`vPrice-${id}`)?.value);
-    const stock = parseInt($(`vStock-${id}`)?.value, 10);
+    const stock = parseInt($(`vStock-${id}`)?.value||'0', 10);
     const newImagesCount = variantCroppedFiles[id]?.length || 0;
     const existingImagesCount = existingVariantImageCount[id] || 0;
     const totalImages = newImagesCount + existingImagesCount;
