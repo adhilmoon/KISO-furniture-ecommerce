@@ -585,7 +585,7 @@ function validateForm() {
     const optType = $(`vOptType-${id}`)?.value.trim();
     const optValue = $(`vOptValue-${id}`)?.value.trim();
     const price = parseFloat($(`vPrice-${id}`)?.value);
-    const stock = parseInt($(`vStock-${id}`)?.value, 10);
+    const stock = parseInt($(`vStock-${id}`)?.value||'0',10);
 
     const images = variantCroppedFiles[id] || [];
 
@@ -598,7 +598,7 @@ function validateForm() {
     if(isNaN(price) || price < 0) {showVariantError(id, 'price', 'Enter a valid price (₹ 0 or more).'); valid = false;}
     else {clearVariantError(id, 'price');}
 
-    if(isNaN(stock) || stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
+    if(isNaN(stock)|| stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
     else {clearVariantError(id, 'stock');}
     if(images.length === 0) {
       showToast(`Variant #${id} must have at least 1 image`, 'error');
