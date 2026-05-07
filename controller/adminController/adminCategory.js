@@ -24,10 +24,7 @@ export const addCategory = catchAsync(async (req, res) => {
 export const updateCategories = catchAsync(async (req, res) => {
     const {id} = req.params;
     const {categoryName, description} = req.body;
-    const isDublicate = await Category.findOne({
-        categoryName: {$regex: categoryName, $options: "i"},
-        _id: {$ne: id}
-    })
+    const isDublicate = await categoryService.isDublicate(categoryName,id)
     if(isDublicate) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({
             success: false,
