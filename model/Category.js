@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {required} from "zod/mini";
 let schema = mongoose.Schema;
 
 const categoryScheama = new schema({
@@ -6,6 +7,11 @@ const categoryScheama = new schema({
         type: String,
         unique: true,
         required: true
+    },
+    slug:{
+        type:String,
+        required:true,
+        unique:true
     },
     description: {
         type: String,
