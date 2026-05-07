@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import {required} from "zod/mini";
 let schema = mongoose.Schema;
 
 const categoryScheama = new schema({
