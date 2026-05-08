@@ -7,10 +7,10 @@ import normalize from "../../utilities/normalizeCategory.js"
 export const createCategory = async (data) => {
     const {categoryName, description} = data;
     const slug=normalize(categoryName);
-    const exist=Category.find(slug)
+    const exist = await Category.findOne({slug})
 
     if(exist){
-       throw new Error(`Category already exists as ${exist.name}`)
+       throw new Error(`Category already exists as ${exist.categoryName}`)
     }
 
     const validation = catValidators.categorySchema.safeParse(data);
