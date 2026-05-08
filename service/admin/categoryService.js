@@ -8,7 +8,7 @@ export const createCategory = async (data) => {
     const {categoryName, description} = data;
     const slug=normalize(categoryName);
     console.log(slug)
-    const exist = await Category.findOne(slug)
+    const exist = await Category.findOne({ slug })
 
     if(exist){
        throw new Error(`Category already exists as ${exist.categoryName}`)
