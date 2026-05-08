@@ -1,5 +1,5 @@
  const normalize=(name)=>{
-    name
+    return name
     .toLowerCase()
     .trim()
     .replace(/[\s\-_]+/g,"")
