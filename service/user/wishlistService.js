@@ -13,7 +13,7 @@ export const getWishlist = async (userId) => {
     }
 
     const cartProductIds = new Set(
-        cart?.items.map(item => String(item.productId._id ?? item.productId)) ?? []
+        cart?.items.filter(item => item.productId != null).map(item => String(item.productId._id ?? item.productId)) ?? []
     );
 
     wishlist.products = wishlist.products
@@ -38,7 +38,7 @@ export const toggleWishlist = async (userId, productId) => {
     }
     const cart = await cartRepository.findByUserId(userId);
     const isInCart = cart?.items.some(
-        item => String(item.productId._id ?? item.productId) === String(productId)
+        item => item.productId != null && String(item.productId._id ?? item.productId) === String(productId)
     );
 
     if (isInCart) {
