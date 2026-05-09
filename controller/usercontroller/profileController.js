@@ -99,12 +99,20 @@ export const profile_Update = catchAsync(async (req, res) => {
 
 export const addAddress = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
-    const {fullName, mobile, houseName, pincode, city, state, type} = req.body;
+    const {fullName, mobile, houseName, pincode, city, state, type, isDefault} = req.body;
     if(!fullName || !mobile || !pincode || !city || !state) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({
             success: false,
             message: MESSAGES.REQUIRED_FIELDS_MISSING
         });
+    }
+
+    const existingAddressesCount = await Address.countDocuments({ userId });
+    
+    let shouldBeDefault = existingAddressesCount === 0 || isDefault === true || isDefault === 'on';
+
+    if (shouldBeDefault && existingAddressesCount > 0) {
+        await Address.updateMany({ userId }, { isDefault: false });
     }
 
     const newAddress = new Address({
@@ -115,7 +123,8 @@ export const addAddress = catchAsync(async (req, res) => {
         pincode,
         city,
         state,
-        type: type || "Home"
+        type: type || "Home",
+        isDefault: shouldBeDefault
     });
 
     await newAddress.save();
@@ -151,7 +160,8 @@ export const getAddress = catchAsync(async (req, res) => {
 
 export const updateAddress = catchAsync(async (req, res) => {
     const {id} = req.params;
-    const {fullName, mobile, houseName, pincode, city, state, type} = req.body;
+    const userId = req.session.user._id;
+    const {fullName, mobile, houseName, pincode, city, state, type, isDefault} = req.body;
 
     if(!fullName || !mobile || !pincode || !city || !state) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({
@@ -160,8 +170,14 @@ export const updateAddress = catchAsync(async (req, res) => {
         });
     }
 
+    const shouldBeDefault = isDefault === true || isDefault === 'on';
+
+    if (shouldBeDefault) {
+        await Address.updateMany({ userId }, { isDefault: false });
+    }
+
     const updatedAddress = await Address.findOneAndUpdate(
-        {_id: id, userId: req.session.user._id},
+        {_id: id, userId},
         {
             fullName,
             mobile,
@@ -169,7 +185,8 @@ export const updateAddress = catchAsync(async (req, res) => {
             pincode,
             city,
             state,
-            type: type || "Home"
+            type: type || "Home",
+            ...(shouldBeDefault && { isDefault: true })
         },
         {new: true}
     );
@@ -185,6 +202,28 @@ export const updateAddress = catchAsync(async (req, res) => {
         success: true,
         message: MESSAGES.ADDRESS_UPDATED_SUCCESS,
         address: updatedAddress
+    });
+});
+
+export const setDefaultAddress = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.session.user._id;
+
+    const address = await Address.findOne({ _id: id, userId });
+    if (!address) {
+        return res.status(STATUS_CODES.NOT_FOUND).json({
+            success: false,
+            message: MESSAGES.ADDRESS_NOT_FOUND
+        });
+    }
+
+    await Address.updateMany({ userId }, { isDefault: false });
+    address.isDefault = true;
+    await address.save();
+
+    return res.status(STATUS_CODES.OK).json({
+        success: true,
+        message: "Default address updated successfully"
     });
 });
 
