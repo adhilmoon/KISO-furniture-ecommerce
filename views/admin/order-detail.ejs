@@ -92,12 +92,12 @@
 
   <!-- Delivery Progress Tracker -->
   <%
-    var trackerOrder   = ['pending', 'shipped', 'out_for_delivery', 'delivered'];
+    var trackerOrder   = ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered'];
     var cancelledSet   = ['cancelled', 'return_requested', 'returned'];
     var isCancelled    = cancelledSet.includes(order.orderStatus);
     var curTrackerIdx  = trackerOrder.indexOf(order.orderStatus);
     var trackerSteps   = [
-      { label: 'Order Placed',     statuses: ['pending'] },
+      { label: 'Order Placed',     statuses: ['pending', 'confirmed', 'processing'] },
       { label: 'Shipped',          statuses: ['shipped'] },
       { label: 'Out for Delivery', statuses: ['out_for_delivery'] },
       { label: 'Delivered',        statuses: ['delivered'] }

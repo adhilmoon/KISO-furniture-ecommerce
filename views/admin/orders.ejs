@@ -85,8 +85,8 @@
       <table class="w-full text-left text-sm">
         <thead class="bg-brand-bg1 border-b border-white/10 text-brand-muted uppercase tracking-wider text-[11px]">
           <tr>
-            <th class="px-6 py-5 font-semibold">Order ID</th>
-            <th class="px-6 py-5 font-semibold">Date</th>
+            <th class="px-6 py-5 font-semibold">Order Info</th>
+            <th class="px-6 py-5 font-semibold">Dates</th>
             <th class="px-6 py-5 font-semibold">Customer</th>
             <th class="px-6 py-5 font-semibold text-center">Items</th>
             <th class="px-6 py-5 font-semibold">Total</th>
@@ -139,16 +139,48 @@
                 var lbl = statusLabels[order.orderStatus] || order.orderStatus;
               %>
               <tr class="hover:bg-white/5 transition-colors group">
-                <!-- Order ID -->
+                <!-- Order Info (Image + ID) -->
                 <td class="px-6 py-4 whitespace-nowrap border-l-2 border-transparent group-hover:border-brand-accent/70">
-                  <span class="font-mono text-sm font-semibold text-brand-light"><%= order.displayId %></span>
+                  <div class="flex items-center gap-3">
+                    <% 
+                      let firstImage = null;
+                      if (order.orderItems && order.orderItems.length > 0) {
+                        const firstItem = order.orderItems[0];
+                        if (firstItem.productId && firstItem.productId.variants && firstItem.productId.variants.length > 0) {
+                          const variant = firstItem.productId.variants[firstItem.variantIndex || 0] || firstItem.productId.variants[0];
+                          if (variant.images && variant.images.length > 0) {
+                            firstImage = variant.images[0];
+                          }
+                        }
+                      }
+                    %>
+                    <div class="w-10 h-10 rounded-lg overflow-hidden border border-white/10 bg-brand-bg1 flex-shrink-0 flex items-center justify-center">
+                      <% if (firstImage) { %>
+                        <img src="<%= firstImage %>" alt="Product thumbnail" class="w-full h-full object-cover" />
+                      <% } else { %>
+                        <svg class="w-5 h-5 text-brand-muted/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z"/>
+                        </svg>
+                      <% } %>
+                    </div>
+                    <span class="font-mono text-sm font-semibold text-brand-light"><%= order.displayId %></span>
+                  </div>
                 </td>
 
-                <!-- Date -->
+                <!-- Dates (Placed + Arriving) -->
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="text-brand-muted">
-                    <%= new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
-                  </span>
+                  <div class="flex flex-col">
+                    <span class="text-brand-light font-medium">
+                      Placed: <%= new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                    </span>
+                    <% 
+                      let arrivingDate = new Date(order.createdAt);
+                      arrivingDate.setDate(arrivingDate.getDate() + 5);
+                    %>
+                    <span class="text-xs text-brand-accent mt-0.5 font-medium">
+                      Arriving: <%= arrivingDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                    </span>
+                  </div>
                 </td>
 
                 <!-- Customer -->
