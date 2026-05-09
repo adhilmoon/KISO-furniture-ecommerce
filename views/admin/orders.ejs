@@ -8,6 +8,20 @@
     </p>
   </header>
 
+  <%
+    var globalStatusLabels = {
+      pending:          'Order Placed',
+      confirmed:        'Order Placed',
+      processing:       'Order Placed',
+      shipped:          'Shipped',
+      out_for_delivery: 'Out for Delivery',
+      delivered:        'Delivered',
+      cancelled:        'Cancelled',
+      return_requested: 'Return Requested',
+      returned:         'Returned'
+    };
+  %>
+
   <!-- Filters & Search -->
   <form method="GET" action="/admin/orders" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-8">
     <!-- Search -->
@@ -33,7 +47,7 @@
         <option value="" <%= status === '' ? 'selected' : '' %>>All Statuses</option>
         <% STATUS_OPTIONS.forEach(function(s) { %>
           <option value="<%= s %>" <%= status === s ? 'selected' : '' %>>
-            <%= s === 'out_for_delivery' ? 'Out for Delivery' : s.charAt(0).toUpperCase() + s.slice(1) %>
+            <%= globalStatusLabels[s] || s %>
           </option>
         <% }); %>
       </select>
@@ -125,9 +139,9 @@
                   returned:         'bg-gray-500/10 text-gray-400 border-gray-500/20'
                 };
                 var statusLabels = {
-                  pending:          'Pending',
-                  confirmed:        'Confirmed',
-                  processing:       'Processing',
+                  pending:          'Order Placed',
+                  confirmed:        'Order Placed',
+                  processing:       'Order Placed',
                   shipped:          'Shipped',
                   out_for_delivery: 'Out for Delivery',
                   delivered:        'Delivered',

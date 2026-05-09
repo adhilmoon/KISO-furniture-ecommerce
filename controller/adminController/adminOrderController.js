@@ -5,7 +5,7 @@ import * as orderService from '../../service/admin/adminOrderService.js';
 const displayOrderId = (order) =>
   order.orderId || `#${order._id.toString().slice(-8).toUpperCase()}`;
 
-const STATUS_OPTIONS = ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'];
+const STATUS_OPTIONS = ['pending', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'];
 
 export const getOrders = catchAsync(async (req, res) => {
   const page    = parseInt(req.query.page)  || 1;
