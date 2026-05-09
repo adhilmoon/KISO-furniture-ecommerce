@@ -103,13 +103,13 @@
 
         <!-- Delivery Progress Tracker -->
         <%
-            const statusOrder = ['pending',  'shipped', 'out_for_delivery', 'delivered'];
+            const statusOrder = ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered'];
             const cancelledStatuses = ['cancelled', 'return_requested', 'returned'];
             const isCancelled = cancelledStatuses.includes(order.orderStatus);
             const currentIdx = statusOrder.indexOf(order.orderStatus);
 
             const steps = [
-                { label: 'Order Placed',     statuses: ['pending'] },
+                { label: 'Order Placed',     statuses: ['pending', 'confirmed', 'processing'] },
                 { label: 'Shipped',          statuses: ['shipped'] },
                 { label: 'Out for Delivery', statuses: ['out_for_delivery'] },
                 { label: 'Delivered',        statuses: ['delivered'] }
