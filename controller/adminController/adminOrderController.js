@@ -55,3 +55,8 @@ export const updateOrderStatus = catchAsync(async (req, res) => {
   await orderService.updateStatus(req.params.id, status);
   res.json({ success: true, message: 'Order status updated' });
 });
+
+export const markCODPaid = catchAsync(async (req, res) => {
+  await orderService.markCODPaid(req.params.id);
+  res.json({ success: true, message: 'Payment marked as paid' });
+});

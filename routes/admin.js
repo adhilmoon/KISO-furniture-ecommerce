@@ -39,6 +39,7 @@ router.get('/logout', adminController.logout);
 router.get('/orders', adminauth.isAdmin, adminOrderController.getOrders);
 router.get('/orders/:id', adminauth.isAdmin, adminOrderController.getOrderDetail);
 router.patch('/orders/:id/status', adminauth.isAdmin, adminOrderController.updateOrderStatus);
+router.patch('/orders/:id/mark-paid', adminauth.isAdmin, adminOrderController.markCODPaid);
 
 // Inventory
 router.get('/inventory', adminauth.isAdmin, adminInventoryController.getInventory);
