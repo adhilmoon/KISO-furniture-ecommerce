@@ -94,6 +94,10 @@ export const adminCategory_load = catchAsync(async (req, res) => {
         .limit(perPage)
         .sort({createdAt: -1})
         .lean()
+        
+    for (let cat of categories) {
+        cat.productCount = await Product.countDocuments({ category: cat._id });
+    }
     if(req.xhr || req.headers.accept?.includes('application/json')) {
         return res.json({
             success: true,
