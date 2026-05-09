@@ -43,8 +43,8 @@
                     };
                     const statusColor = statusColors[order.orderStatus] || statusColors.pending;
                     const statusLabel = {
-                        pending: 'Pending', confirmed: 'Confirmed', processing: 'Processing',
-                        shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled',
+                        pending: 'Order Placed', confirmed: 'Order Placed', processing: 'Order Placed',
+                        shipped: 'Shipped', out_for_delivery: 'Out for Delivery', delivered: 'Delivered', cancelled: 'Cancelled',
                         return_requested: 'Return Requested', returned: 'Returned'
                     }[order.orderStatus] || order.orderStatus;
                 %>
