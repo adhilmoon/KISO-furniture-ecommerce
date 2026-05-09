@@ -52,6 +52,7 @@ router.get("/address", userauth.userauth, Pages.user_address);
 router.post("/address/add", userauth.userauth, profileController.addAddress);
 router.get("/address/get/:id", userauth.userauth, profileController.getAddress);
 router.patch("/address/update/:id", userauth.userauth, profileController.updateAddress);
+router.patch("/address/default/:id", userauth.userauth, profileController.setDefaultAddress);
 router.delete("/address/delete/:id", userauth.userauth, authController.deleteAddress);
 
 

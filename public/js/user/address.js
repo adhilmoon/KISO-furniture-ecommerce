@@ -56,6 +56,19 @@ async function deleteAddress(addressId) {
     }
 }
 
+async function setDefaultAddress(addressId) {
+    try {
+        const response = await axios.patch(`/user/address/default/${addressId}`);
+        if(response.data.success) {
+            showMessage('Default address updated!', 'success');
+            setTimeout(() => location.reload(), 800);
+        }
+    } catch(error) {
+        console.error('Error setting default address:', error);
+        showMessage('Failed to set default address', 'error');
+    }
+}
+
 async function editAddress(addressId) {
     try {
         const response = await axios.get(`/user/address/get/${addressId}`);
@@ -68,6 +81,7 @@ async function editAddress(addressId) {
         document.getElementById('state').value = addr.state;
         document.getElementById('pincode').value = addr.pincode;
         document.getElementById('type').value = addr.type;
+        document.getElementById('isDefault').checked = addr.isDefault || false;
         document.querySelector('#addressModal h3').innerText = "Edit Address";
         document.getElementById('addressForm').dataset.editId = addressId;
 
@@ -92,7 +106,8 @@ async function handleAddressSubmit(event) {
         city: document.getElementById('city').value.trim(),
         state: document.getElementById('state').value.trim(),
         pincode: document.getElementById('pincode').value.trim(),
-        type: document.getElementById('type').value
+        type: document.getElementById('type').value,
+        isDefault: document.getElementById('isDefault').checked
     };
 
     if(!addressData.fullName || addressData.fullName.length < 3) {
