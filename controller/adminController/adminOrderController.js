@@ -60,3 +60,8 @@ export const markCODPaid = catchAsync(async (req, res) => {
   await orderService.markCODPaid(req.params.id);
   res.json({ success: true, message: 'Payment marked as paid' });
 });
+
+export const approveReturn = catchAsync(async (req, res) => {
+  await orderService.approveReturn(req.params.id);
+  res.json({ success: true, message: 'Return approved and payment refunded' });
+});

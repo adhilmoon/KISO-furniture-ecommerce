@@ -79,3 +79,17 @@ export const markCODPaid = async (id) => {
   await order.save();
   return order;
 };
+
+export const approveReturn = async (id) => {
+  const order = await Order.findById(id);
+  if (!order) throw new Error('Order not found');
+  if (order.orderStatus !== 'return_requested') throw new Error('No pending return request');
+  order.orderStatus = 'returned';
+  order.paymentStatus = 'refunded';
+  order.returnApprovedAt = new Date();
+  for (const item of order.orderItems) {
+    if (item.status === 'returned') item.returnRequestedAt = item.returnRequestedAt || new Date();
+  }
+  await order.save();
+  return order;
+};

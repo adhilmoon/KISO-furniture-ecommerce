@@ -3,6 +3,7 @@ import Product from '../../model/Product.js';
 import catchAsync from '../../utilities/catchAsync.js';
 import { STATUS_CODES } from '../../constants/index.js';
 import PDFDocument from 'pdfkit';
+import { uploadToCloudinary } from '../../utilities/uploadToCloudinary.js';
 
 const CANCELLABLE_STATUSES = ['pending', 'confirmed', 'processing'];
 
@@ -127,15 +128,18 @@ export const cancelItem = catchAsync(async (req, res) => {
   res.json({ success: true, message: 'Item cancelled successfully' });
 });
 
+const IMAGE_REQUIRED_REASONS = ['damaged', 'wrong_item', 'defective'];
+
 export const returnOrder = catchAsync(async (req, res) => {
   const userId = req.session.user._id;
   const { reason } = req.body;
 
   if (!reason || !reason.trim()) {
-    return res.status(STATUS_CODES.BAD_REQUEST).json({
-      success: false,
-      message: 'Return reason is required'
-    });
+    return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Return reason is required' });
+  }
+
+  if (IMAGE_REQUIRED_REASONS.includes(reason) && !req.file) {
+    return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Image proof is required for this return reason' });
   }
 
   const order = await Order.findOne({ _id: req.params.id, userId });
@@ -143,21 +147,27 @@ export const returnOrder = catchAsync(async (req, res) => {
 
   const hasDelivered = order.orderItems.some(i => i.status === 'delivered');
   if (!hasDelivered && order.orderStatus !== 'delivered') {
-    return res.status(STATUS_CODES.BAD_REQUEST).json({
-      success: false,
-      message: 'Order must be delivered before requesting a return'
-    });
+    return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Order must be delivered before requesting a return' });
+  }
+
+  let imageUrl = null;
+  if (req.file) {
+    const result = await uploadToCloudinary(req.file.buffer, 'kiso_returns');
+    imageUrl = result.secure_url;
   }
 
   for (const item of order.orderItems) {
     if (item.status === 'delivered') {
       item.status = 'returned';
       item.returnReason = reason.trim();
+      item.returnImage = imageUrl;
       item.returnRequestedAt = new Date();
     }
   }
 
   order.orderStatus = 'return_requested';
+  order.returnReason = reason.trim();
+  order.returnImage = imageUrl;
   await order.save();
 
   res.json({ success: true, message: 'Return request submitted successfully' });

@@ -83,7 +83,7 @@ router.get("/orders", userauth.userauth, orderController.getOrders);
 router.get("/orders/:id", userauth.userauth, orderController.getOrderDetail);
 router.post("/orders/:id/cancel", userauth.userauth, orderController.cancelOrder);
 router.post("/orders/:id/items/:itemId/cancel", userauth.userauth, orderController.cancelItem);
-router.post("/orders/:id/return", userauth.userauth, orderController.returnOrder);
+router.post("/orders/:id/return", userauth.userauth, upload.single("returnImage"), userauth.handleUploadErrors, orderController.returnOrder);
 router.get("/orders/:id/invoice", userauth.userauth, orderController.downloadInvoice);
 
 // Wishlist API
