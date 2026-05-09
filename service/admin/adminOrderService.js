@@ -62,6 +62,20 @@ export const updateStatus = async (id, newStatus) => {
     }
   }
 
+  if (newStatus === 'delivered' && order.paymentMethod === 'cod' && order.paymentStatus !== 'paid') {
+    order.paymentStatus = 'paid';
+  }
+
+  await order.save();
+  return order;
+};
+
+export const markCODPaid = async (id) => {
+  const order = await Order.findById(id);
+  if (!order) throw new Error('Order not found');
+  if (order.paymentMethod !== 'cod') throw new Error('Not a COD order');
+  if (order.paymentStatus === 'paid') throw new Error('Already paid');
+  order.paymentStatus = 'paid';
   await order.save();
   return order;
 };
