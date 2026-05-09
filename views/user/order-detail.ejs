@@ -374,13 +374,36 @@
 <div id="returnModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
     <div class="bg-brand-bg2 rounded-2xl border border-white/10 p-6 w-full max-w-md">
         <h3 class="text-lg font-bold text-brand-light mb-1">Request Return</h3>
-        <p class="text-brand-muted text-sm mb-5">Please provide a reason for returning this order. Our team will review your request.</p>
-        <div class="mb-5">
+        <p class="text-brand-muted text-sm mb-5">Select a reason and upload proof if required. Our team will review your request.</p>
+
+        <!-- Reason dropdown -->
+        <div class="mb-4">
             <label class="block text-sm font-semibold text-brand-light mb-2">Return Reason <span class="text-red-400">*</span></label>
-            <textarea id="returnReason" rows="4" placeholder="Describe the reason for return (required)..."
-                class="w-full bg-brand-bg1 border border-white/10 rounded-xl px-4 py-3 text-brand-light placeholder:text-brand-muted/60 text-sm outline-none focus:border-brand-accent/40 transition-all resize-none"></textarea>
-            <p id="returnReasonError" class="text-red-400 text-xs mt-1 hidden">Return reason is required</p>
+            <select id="returnReason" onchange="handleReturnReasonChange(this.value)"
+                class="w-full bg-brand-bg1 border border-white/10 rounded-xl px-4 py-3 text-brand-light text-sm outline-none focus:border-brand-accent/40 transition-all appearance-none">
+                <option value="">-- Select a reason --</option>
+                <option value="damaged">Product Damaged</option>
+                <option value="wrong_item">Wrong Item Delivered</option>
+                <option value="defective">Defective / Not Working</option>
+                <option value="not_satisfied">Not Satisfied with Product</option>
+                <option value="other">Other</option>
+            </select>
+            <p id="returnReasonError" class="text-red-400 text-xs mt-1 hidden">Please select a return reason</p>
         </div>
+
+        <!-- Image upload (conditional) -->
+        <div id="returnImageSection" class="mb-4 hidden">
+            <label class="block text-sm font-semibold text-brand-light mb-2">
+                Upload Image Proof <span id="returnImageRequired" class="text-red-400">*</span>
+                <span id="returnImageOptional" class="text-brand-muted font-normal hidden">(optional)</span>
+            </label>
+            <input type="file" id="returnImage" accept="image/jpeg,image/png,image/webp" onchange="handleReturnImageChange(this)"
+                class="w-full bg-brand-bg1 border border-white/10 rounded-xl px-4 py-3 text-brand-muted text-sm outline-none focus:border-brand-accent/40 transition-all file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-accent/10 file:text-brand-accent cursor-pointer"/>
+            <p id="returnImagePreviewName" class="text-brand-muted text-xs mt-1 hidden"></p>
+            <p id="returnImageError" class="text-red-400 text-xs mt-1 hidden">Image proof is required for this reason</p>
+            <p id="returnImageTypeError" class="text-red-400 text-xs mt-1 hidden">Only JPG, PNG, WebP allowed</p>
+        </div>
+
         <div class="flex gap-3">
             <button onclick="closeReturnModal()" class="flex-1 px-4 py-2.5 border border-white/10 text-brand-light font-semibold text-sm rounded-xl hover:bg-white/5 transition-all">Cancel</button>
             <button onclick="submitReturn()" class="flex-1 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm rounded-xl transition-all">Submit Return</button>

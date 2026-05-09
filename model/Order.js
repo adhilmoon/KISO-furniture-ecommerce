@@ -68,7 +68,7 @@ const OrderSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    enum: ['pending', 'paid', 'failed'],
+    enum: ['pending', 'paid', 'failed', 'refunded'],
     default: 'pending'
   },
   
@@ -109,6 +109,9 @@ const OrderSchema = new mongoose.Schema({
   // Additional Info
   orderId: { type: String, sparse: true, unique: true, index: true },
   cancellationReason: { type: String },
+  returnReason: { type: String },
+  returnImage: { type: String },
+  returnApprovedAt: { type: Date },
   notes: { type: String },
 
 }, { timestamps: true });

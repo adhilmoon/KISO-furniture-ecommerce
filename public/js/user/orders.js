@@ -49,13 +49,52 @@ function closeCancelItemModal() {
     document.getElementById('cancelItemModal').classList.replace('flex', 'hidden');
     document.getElementById('cancelItemReason').value = '';
 }
+const IMAGE_REQUIRED_REASONS = ['damaged', 'wrong_item', 'defective'];
+const IMAGE_OPTIONAL_REASONS = ['not_satisfied', 'other'];
+
 function openReturnModal() {
     document.getElementById('returnModal').classList.replace('hidden', 'flex');
 }
 function closeReturnModal() {
     document.getElementById('returnModal').classList.replace('flex', 'hidden');
     document.getElementById('returnReason').value = '';
+    document.getElementById('returnImage').value = '';
     document.getElementById('returnReasonError').classList.add('hidden');
+    document.getElementById('returnImageError').classList.add('hidden');
+    document.getElementById('returnImageTypeError').classList.add('hidden');
+    document.getElementById('returnImagePreviewName').classList.add('hidden');
+    document.getElementById('returnImageSection').classList.add('hidden');
+}
+
+function handleReturnReasonChange(value) {
+    const section = document.getElementById('returnImageSection');
+    const required = document.getElementById('returnImageRequired');
+    const optional = document.getElementById('returnImageOptional');
+    if (!value) { section.classList.add('hidden'); return; }
+    section.classList.remove('hidden');
+    if (IMAGE_REQUIRED_REASONS.includes(value)) {
+        required.classList.remove('hidden');
+        optional.classList.add('hidden');
+    } else {
+        required.classList.add('hidden');
+        optional.classList.remove('hidden');
+    }
+}
+
+function handleReturnImageChange(input) {
+    const ALLOWED = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const typeErr = document.getElementById('returnImageTypeError');
+    const preview = document.getElementById('returnImagePreviewName');
+    typeErr.classList.add('hidden');
+    preview.classList.add('hidden');
+    if (!input.files[0]) return;
+    if (!ALLOWED.includes(input.files[0].type)) {
+        typeErr.classList.remove('hidden');
+        input.value = '';
+        return;
+    }
+    preview.textContent = input.files[0].name;
+    preview.classList.remove('hidden');
 }
 
 async function submitCancelOrder() {
@@ -88,14 +127,30 @@ async function submitCancelItem() {
 }
 
 async function submitReturn() {
-    const reason = document.getElementById('returnReason').value.trim();
+    const reasonEl = document.getElementById('returnReason');
+    const imageEl  = document.getElementById('returnImage');
+    const reason   = reasonEl.value;
+
+    document.getElementById('returnReasonError').classList.add('hidden');
+    document.getElementById('returnImageError').classList.add('hidden');
+
     if (!reason) {
         document.getElementById('returnReasonError').classList.remove('hidden');
         return;
     }
-    document.getElementById('returnReasonError').classList.add('hidden');
+    if (IMAGE_REQUIRED_REASONS.includes(reason) && !imageEl.files[0]) {
+        document.getElementById('returnImageError').classList.remove('hidden');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('reason', reason);
+    if (imageEl.files[0]) formData.append('returnImage', imageEl.files[0]);
+
     try {
-        const res = await axios.post(`/user/orders/${ORDER_ID}/return`, { reason });
+        const res = await axios.post(`/user/orders/${ORDER_ID}/return`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
         if (res.data.success) {
             showToast(res.data.message, 'success');
             setTimeout(() => window.location.reload(), 1200);
