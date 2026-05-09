@@ -10,7 +10,8 @@
       delivered:        'bg-green-500/10 text-green-400 border-green-500/20',
       cancelled:        'bg-red-500/10 text-red-400 border-red-500/20',
       return_requested: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-      returned:         'bg-gray-500/10 text-gray-400 border-gray-500/20'
+      returned:         'bg-gray-500/10 text-gray-400 border-gray-500/20',
+      refunded:         'bg-green-500/10 text-green-400 border-green-500/20'
     };
     var statusLabels = {
       pending:          'Order Placed',
@@ -21,12 +22,35 @@
       delivered:        'Delivered',
       cancelled:        'Cancelled',
       return_requested: 'Return Requested',
-      returned:         'Returned'
+      returned:         'Returned',
+      refunded:         'Refunded'
     };
     var currentCls = statusClasses[order.orderStatus] || 'bg-gray-500/10 text-gray-400 border-gray-500/20';
     var currentLbl = statusLabels[order.orderStatus] || order.orderStatus;
     var allCancelled = order.orderItems && order.orderItems.length > 0 &&
       order.orderItems.every(function(i) { return i.status === 'cancelled'; });
+
+    // Forward-only status transitions
+    var nextStatusMap = {
+      pending:          ['shipped', 'cancelled'],
+      confirmed:        ['shipped', 'cancelled'],
+      processing:       ['shipped', 'cancelled'],
+      shipped:          ['out_for_delivery', 'cancelled'],
+      out_for_delivery: ['delivered', 'cancelled'],
+      delivered:        [],
+      cancelled:        [],
+      return_requested: [],
+      returned:         []
+    };
+    var availableStatuses = nextStatusMap[order.orderStatus] || [];
+    var statusLocked = availableStatuses.length === 0 || allCancelled;
+    var statusLockedReason = allCancelled
+      ? 'All items cancelled'
+      : order.orderStatus === 'delivered'
+        ? 'Order delivered — no further status changes'
+        : ['cancelled','return_requested','returned'].includes(order.orderStatus)
+          ? 'Status is final'
+          : null;
   %>
 
   <!-- Back Link -->
@@ -56,12 +80,12 @@
   <!-- Status Update -->
   <div class="bg-brand-bg1 border border-white/10 rounded-2xl p-6 mb-6 shadow-lg shadow-black/20">
     <h2 class="text-sm font-semibold text-brand-muted uppercase tracking-wider mb-4">Update Order Status</h2>
-    <% if (allCancelled) { %>
-      <div class="flex items-center gap-2 text-sm text-red-400 font-semibold">
+    <% if (statusLocked) { %>
+      <div class="flex items-center gap-2 text-sm text-brand-muted font-semibold">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
         </svg>
-        All items cancelled — status update disabled
+        <%= statusLockedReason %>
       </div>
     <% } else { %>
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -70,10 +94,8 @@
             id="statusSelect"
             class="w-full pl-4 pr-10 py-3 bg-brand-bg2 border border-white/10 rounded-xl text-kiso-text focus:outline-none focus:border-brand-accent transition-colors appearance-none shadow-lg shadow-black/10"
           >
-            <% STATUS_OPTIONS.forEach(function(s) { %>
-              <option value="<%= s %>" <%= order.orderStatus === s ? 'selected' : '' %>>
-                <%= statusLabels[s] || s %>
-              </option>
+            <% availableStatuses.forEach(function(s) { %>
+              <option value="<%= s %>"><%= statusLabels[s] || s %></option>
             <% }); %>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
@@ -94,14 +116,14 @@
   </div>
 
   <!-- COD Payment Status -->
-  <% if (order.paymentMethod === 'cod') { %>
+  <% if (order.paymentMethod === 'cod' && order.paymentStatus !== 'refunded') { %>
     <div class="bg-brand-bg1 border border-white/10 rounded-2xl p-6 mb-6 shadow-lg shadow-black/20">
       <h2 class="text-sm font-semibold text-brand-muted uppercase tracking-wider mb-4">Payment Status (COD)</h2>
       <div class="flex items-center justify-between gap-4">
         <span class="text-sm font-semibold <%= order.paymentStatus === 'paid' ? 'text-green-400' : 'text-yellow-400' %>">
           <%= order.paymentStatus === 'paid' ? 'Paid' : 'Pending' %>
         </span>
-        <% if (order.paymentStatus !== 'paid') { %>
+        <% if (order.paymentStatus === 'pending') { %>
           <button
             id="markPaidBtn"
             onclick="markCODPaid()"
