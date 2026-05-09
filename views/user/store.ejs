@@ -33,7 +33,7 @@
             </div>
 
             <!-- Sort -->
-            <div class="w-full md:w-64">
+            <div class="w-full md:w-64 relative">
                 <select id="sortSelect" onchange="applySort()"
                     class="w-full bg-brand-bg2/80 backdrop-blur-md border border-white/10 text-brand-light text-sm rounded-xl px-4 py-3 outline-none focus:border-brand-accent transition-all cursor-pointer appearance-none">
                     <option value="newest" <%= activeSort === 'newest' ? 'selected' : '' %>>New Arrivals</option>
@@ -42,6 +42,11 @@
                     <option value="a-z" <%= activeSort === 'a-z' ? 'selected' : '' %>>Name: A-Z</option>
                     <option value="z-a" <%= activeSort === 'z-a' ? 'selected' : '' %>>Name: Z-A</option>
                 </select>
+                <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                    <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
             </div>
         </div>
 

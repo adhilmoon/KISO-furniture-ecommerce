@@ -22,7 +22,12 @@
                     <% addresses.forEach(addr=> { %>
                         <tr class="text-sm text-brand-light hover:bg-brand-bg2/50 transition-colors">
                             <td class="py-4 px-2 font-medium text-brand-light">
-                                <%= addr.fullName %>
+                                <div class="flex items-center gap-2">
+                                    <%= addr.fullName %>
+                                    <% if(addr.isDefault) { %>
+                                        <span class="px-2 py-0.5 bg-brand-accent/10 text-brand-accent rounded text-[10px] uppercase font-bold tracking-widest">Default</span>
+                                    <% } %>
+                                </div>
                             </td>
                             <td class="py-4 px-2 text-brand-muted">
                                 <%= addr.mobile || user.phone || "No number available" %>
@@ -39,6 +44,10 @@
                                 </span>
                             </td>
                             <td class="py-4 px-2 text-right space-x-3 font-medium">
+                                <% if(!addr.isDefault) { %>
+                                    <button onclick="setDefaultAddress('<%= addr._id %>')"
+                                        class="text-brand-accent hover:underline text-xs">Make Default</button>
+                                <% } %>
                                 <button onclick="editAddress('<%= addr._id %>')"
                                     class="text-brand-light hover:underline">Edit</button>
                                 <button onclick="deleteAddress('<%= addr._id %>')"
