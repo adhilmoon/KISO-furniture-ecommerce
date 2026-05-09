@@ -58,28 +58,54 @@
                             </div>
                             <div class="hidden sm:block w-px h-8 bg-white/10"></div>
                             <div class="hidden sm:block">
-                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest">Date</p>
+                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest">ORDER PLACED</p>
                                 <p class="text-brand-light text-sm font-medium">
                                     <%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
                                 </p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="px-3 py-1 rounded-full text-xs font-bold border <%= statusColor %>"><%= statusLabel %></span>
-                            <span class="text-brand-accent font-extrabold text-base">₹<%= order.grandTotal.toLocaleString() %></span>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right sm:text-left">
+                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest mb-1">Status</p>
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-bold border inline-block <%= statusColor %>"><%= statusLabel %></span>
+                            </div>
+                            <div class="hidden sm:block w-px h-8 bg-white/10"></div>
+                            <div class="text-right sm:text-left">
+                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest mb-1">Total</p>
+                                <p class="text-brand-accent font-extrabold text-sm sm:text-base tracking-wide">₹<%= order.grandTotal.toLocaleString() %></p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Items preview -->
                     <div class="px-5 py-4">
+                        <% 
+                            let arrivingDate = new Date(order.createdAt);
+                            arrivingDate.setDate(arrivingDate.getDate() + 5);
+                        %>
+                        <p class="text-xs font-semibold text-brand-accent mb-3 uppercase tracking-widest">Arriving: <span class="text-brand-light capitalize"><%= arrivingDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span></p>
+
                         <div class="space-y-2 mb-4">
                             <% const previewItems = order.orderItems.slice(0, 2); %>
                             <% previewItems.forEach(item => { %>
+                                <%
+                                    let img = null;
+                                    if (item.productId && item.productId.variants && item.productId.variants.length > 0) {
+                                        let variant = item.productId.variants[item.variantIndex || 0] || item.productId.variants[0];
+                                        if (variant && variant.images && variant.images.length > 0) {
+                                            img = variant.images[0];
+                                        }
+                                    }
+                                %>
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-brand-bg1 border border-white/5 flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                                        </svg>
+                                    <div class="w-10 h-10 rounded-lg bg-brand-bg1 border border-white/5 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                        <% if (img) { %>
+                                            <img src="<%= img %>" alt="Product thumbnail" class="w-full h-full object-cover">
+                                        <% } else { %>
+                                            <svg class="w-5 h-5 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                            </svg>
+                                        <% } %>
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         <p class="text-brand-light text-sm font-medium truncate">
