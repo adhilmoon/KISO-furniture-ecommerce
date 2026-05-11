@@ -1,7 +1,7 @@
 import catchAsync from '../../utilities/catchAsync.js';
 import { STATUS_CODES } from '../../constants/index.js';
 import * as inventoryService from '../../service/admin/adminInventoryService.js';
-import Category from '../../model/Category.js';
+import * as adminPageService from '../../service/admin/adminPageService.js';
 
 export const getInventory = catchAsync(async (req, res) => {
   const page        = parseInt(req.query.page) || 1;
@@ -10,8 +10,10 @@ export const getInventory = catchAsync(async (req, res) => {
   const stockFilter = req.query.stock || '';
   const categoryId  = req.query.category || '';
 
-  const categories = await Category.find({ isActive: true }, 'categoryName').lean();
-  const { products, total } = await inventoryService.getInventory({ page, perPage, search, stockFilter, categoryId });
+  const [categories, { products, total }] = await Promise.all([
+    adminPageService.getActiveCategories(),
+    inventoryService.getInventory({ page, perPage, search, stockFilter, categoryId })
+  ]);
 
   const outOfStock = products.filter(p => p.stockStatus === 'out').length;
   const lowStock   = products.filter(p => p.stockStatus === 'low').length;

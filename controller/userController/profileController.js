@@ -1,304 +1,82 @@
-import User from "../../model/User.js";
-import Address from "../../model/Address.js";
-import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
-import * as otpsender from '../../utilities/sendEmail.js'
-import bcrypt from 'bcrypt'
-import { uploadToCloudinary, deleteFromCloudinary } from "../../utilities/uploadToCloudinary.js";
-import logger from "../../utilities/logger.js";
-import {userService} from "../../service/user/userService.js";
-import catchAsync from "../../utilities/catchAsync.js";
-
+import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
+import * as profileService from '../../service/user/profileService.js';
+import catchAsync from '../../utilities/catchAsync.js';
 
 export const uploadProfilePic = catchAsync(async (req, res) => {
-
     if (!req.file) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: MESSAGES.PLEASE_UPLOAD_IMAGE
-        });
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: MESSAGES.PLEASE_UPLOAD_IMAGE });
     }
-
     const userId = req.session.user._id;
-
-    // ── Delete old avatar from Cloudinary if one exists ───────────────────────
-    const currentUser = await User.findById(userId).select("avatar avatarId");
-    if (currentUser?.avatar) {
-        await deleteFromCloudinary(currentUser.avatar);
-    }
-
-    // ── Upload new avatar ─────────────────────────────────────────────────────
-    const result = await uploadToCloudinary(req.file.buffer, "kiso/users/profile");
-    const imageUrl = result.secure_url;
-    const publicId = result.public_id;
-
-    const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { avatar: imageUrl, avatarId: publicId },
-        { new: true }
-    );
-
+    const updatedUser = await profileService.uploadProfilePic(userId, req.file);
     if (!updatedUser) {
-        return res.status(STATUS_CODES.NOT_FOUND).json({
-            success: false,
-            message: MESSAGES.USER_NOT_FOUND
-        });
+        return res.status(STATUS_CODES.NOT_FOUND).json({ success: false, message: MESSAGES.USER_NOT_FOUND });
     }
-
-    if (req.session.user) {
-        req.session.user.avatar = imageUrl;
-    }
-
-    return res.status(STATUS_CODES.OK).json({
-        success: true,
-        message: MESSAGES.PROFILE_PIC_UPDATED,
-        avatar: imageUrl
-    });
+    if (req.session.user) req.session.user.avatar = updatedUser.avatar;
+    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.PROFILE_PIC_UPDATED, avatar: updatedUser.avatar });
 });
 
 
 export const profile_Update = catchAsync(async (req, res) => {
-    const {name, phone} = req.body
+    const { name, phone } = req.body;
     const userId = req.session.user?._id;
-
-    if(!userId) {
-        return res.status(STATUS_CODES.UNAUTHORIZED).json({success: false, message: MESSAGES.USER_NOT_AUTHENTICATED});
+    if (!userId) {
+        return res.status(STATUS_CODES.UNAUTHORIZED).json({ success: false, message: MESSAGES.USER_NOT_AUTHENTICATED });
     }
-    const currentUser = await User.findById(userId)
-    if(!currentUser) {
-        return res.status(STATUS_CODES.NOT_FOUND).json({
-            success: false,
-            message: MESSAGES.USER_NOT_FOUND
-        })
-    }
-
-    if(currentUser.name === name && currentUser.phone === phone) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: MESSAGES.NO_CHANGES_DETECTED
-        })
-    }
-    if(!name && !phone) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: MESSAGES.NAME_PHONE_REQUIRED
-        });
-    }
-    const updatedUser = await User.findByIdAndUpdate(userId, {
-        name: name,
-        phone: phone
-    },
-        {new: true}
-    )
-    if(!updatedUser) {
-        return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: MESSAGES.USER_NOT_FOUND});
-    }
-    req.session.user.name = name
-    return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.PROFILE_UPDATED_SUCCESS, user: updatedUser})
+    const updatedUser = await profileService.updateProfile(userId, name, phone);
+    req.session.user.name = name;
+    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.PROFILE_UPDATED_SUCCESS, user: updatedUser });
 });
 
 
 export const addAddress = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
-    const {fullName, mobile, houseName, pincode, city, state, type, isDefault} = req.body;
-    if(!fullName || !mobile || !pincode || !city || !state) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: MESSAGES.REQUIRED_FIELDS_MISSING
-        });
+    const { fullName, mobile, houseName, pincode, city, state, type, isDefault } = req.body;
+    if (!fullName || !mobile || !pincode || !city || !state) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: MESSAGES.REQUIRED_FIELDS_MISSING });
     }
-
-    const existingAddressesCount = await Address.countDocuments({ userId });
-    
-    let shouldBeDefault = existingAddressesCount === 0 || isDefault === true || isDefault === 'on';
-
-    if (shouldBeDefault && existingAddressesCount > 0) {
-        await Address.updateMany({ userId }, { isDefault: false });
-    }
-
-    const newAddress = new Address({
-        userId,
-        fullName,
-        mobile,
-        houseName,
-        pincode,
-        city,
-        state,
-        type: type || "Home",
-        isDefault: shouldBeDefault
-    });
-
-    await newAddress.save();
-
-    return res.status(STATUS_CODES.OK).json({
-        success: true,
-        message: MESSAGES.ADDRESS_ADDED_SUCCESS
-    });
+    await profileService.addAddress(userId, { fullName, mobile, houseName, pincode, city, state, type, isDefault });
+    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.ADDRESS_ADDED_SUCCESS });
 });
 
 
 export const getAddress = catchAsync(async (req, res) => {
-    const {id} = req.params;
-    const address = await Address.findOne({
-        _id: id,
-        userId: req.session.user._id
-    });
-
-
-    if(!address) {
-        return res.status(STATUS_CODES.NOT_FOUND).json({
-            success: false,
-            message: MESSAGES.ADDRESS_NOT_FOUND
-        });
-    }
-
-    return res.status(STATUS_CODES.OK).json({
-        success: true,
-        address
-    });
+    const address = await profileService.getAddress(req.params.id, req.session.user._id);
+    return res.status(STATUS_CODES.OK).json({ success: true, address });
 });
 
 
 export const updateAddress = catchAsync(async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     const userId = req.session.user._id;
-    const {fullName, mobile, houseName, pincode, city, state, type, isDefault} = req.body;
-
-    if(!fullName || !mobile || !pincode || !city || !state) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: MESSAGES.REQUIRED_FIELDS_MISSING
-        });
+    const { fullName, mobile, houseName, pincode, city, state, type, isDefault } = req.body;
+    if (!fullName || !mobile || !pincode || !city || !state) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: MESSAGES.REQUIRED_FIELDS_MISSING });
     }
-
-    const shouldBeDefault = isDefault === true || isDefault === 'on';
-
-    if (shouldBeDefault) {
-        await Address.updateMany({ userId }, { isDefault: false });
-    }
-
-    const updatedAddress = await Address.findOneAndUpdate(
-        {_id: id, userId},
-        {
-            fullName,
-            mobile,
-            houseName,
-            pincode,
-            city,
-            state,
-            type: type || "Home",
-            ...(shouldBeDefault && { isDefault: true })
-        },
-        {new: true}
-    );
-
-    if(!updatedAddress) {
-        return res.status(STATUS_CODES.NOT_FOUND).json({
-            success: false,
-            message: MESSAGES.ADDRESS_NOT_FOUND
-        });
-    }
-
-    return res.status(STATUS_CODES.OK).json({
-        success: true,
-        message: MESSAGES.ADDRESS_UPDATED_SUCCESS,
-        address: updatedAddress
-    });
+    const updated = await profileService.updateAddress(id, userId, { fullName, mobile, houseName, pincode, city, state, type, isDefault });
+    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.ADDRESS_UPDATED_SUCCESS, address: updated });
 });
 
 export const setDefaultAddress = catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const userId = req.session.user._id;
-
-    const address = await Address.findOne({ _id: id, userId });
-    if (!address) {
-        return res.status(STATUS_CODES.NOT_FOUND).json({
-            success: false,
-            message: MESSAGES.ADDRESS_NOT_FOUND
-        });
-    }
-
-    await Address.updateMany({ userId }, { isDefault: false });
-    address.isDefault = true;
-    await address.save();
-
-    return res.status(STATUS_CODES.OK).json({
-        success: true,
-        message: "Default address updated successfully"
-    });
+    await profileService.setDefaultAddress(req.params.id, req.session.user._id);
+    return res.status(STATUS_CODES.OK).json({ success: true, message: 'Default address updated successfully' });
 });
 
 export const updateEmail = catchAsync(async (req, res) => {
-    const {email, password, isResend} = req.body
+    const { email, password, isResend } = req.body;
     const userId = req.session.user._id;
-    const user = await User.findById(userId)
-
-    if (user.googleId) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: "Account managed by Google. Email cannot be changed here."
-        });
+    const result = await profileService.initiateEmailUpdate(userId, email, password, isResend, req.session.tempUserData);
+    if (isResend) {
+        req.session.tempUserData.otp = result.otp;
+        return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.NEW_OTP_SENT });
     }
-
-    const isMatch = await bcrypt.compare(password, user.password)
-    if(!isMatch) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.INCORRECT_PASSWORD})
-    }
-    const emailexist = await User.findOne({email, _id: {$ne: userId}})
-    if(emailexist) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.EMAIL_ALREADY_IN_USE})
-    }
-    if(isResend) {
-        const tempUser = req.session.tempUserData;
-        if(!tempUser || tempUser.email !== email) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({
-                success: false,
-                message: MESSAGES.SESSION_EXPIRED
-            });
-        }
-        const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
-       
-
-        req.session.tempUserData.otp = newOtp;
-
-        await otpsender.sendOTP(email, newOtp);
-        return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.NEW_OTP_SENT});
-    }
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
-  
-    req.session.tempUserData = {
-        email,
-        otp,
-        purpose: 'update-email'
-    };
-
-    await otpsender.sendOTP(email, otp);
-    return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.OTP_SENT});
+    req.session.tempUserData = { email, otp: result.otp, purpose: 'update-email' };
+    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.OTP_SENT });
 });
 
 export const changePassword = catchAsync(async (req, res) => {
-    const {currentPassword, newPassword} = req.body
+    const { currentPassword, newPassword } = req.body;
     const userId = req.session.user._id;
-    const user = await User.findById(userId)
-
-    if (user.googleId) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: "Account managed by Google. Password cannot be changed here."
-        });
-    }
-
-    const password = user.password;
-    if(!password) {
-        return res.status(STATUS_CODES.OK).json({
-            redirectUrl: '/user/reset-password'
-        })
-    }
-    const isMatch = await bcrypt.compare(currentPassword, user.password)
-    if(!isMatch) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({success: false, message: MESSAGES.INCORRECT_PASSWORD})
-    }
-    
-    await userService.updatePassword(user.email, newPassword);
-
-    return res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.PASSWORD_UPDATED_SUCCESS});
+    const result = await profileService.changePassword(userId, currentPassword, newPassword);
+    if (result?.redirectUrl) return res.status(STATUS_CODES.OK).json(result);
+    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.PASSWORD_UPDATED_SUCCESS });
 });
