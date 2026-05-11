@@ -5,7 +5,7 @@ import expressLayouts from 'express-ejs-layouts';
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
 import indexRoutes from "./routes/indexRoutes.js"
-import { pageNotFound, globalErrorHandler } from "./middleware/errror.middleware.js";
+import { pageNotFound, globalErrorHandler } from "./middleware/error.middleware.js";
 import {fileURLToPath} from 'url';
 import path from 'path';
 import connectDB from './config/connectDB.js';

@@ -1,7 +1,7 @@
-import * as cartService from "../../service/user/cartService.js";
-import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
-import catchAsync from "../../utilities/catchAsync.js";
-import Address from "../../model/Address.js";
+import * as cartService from '../../service/user/cartService.js';
+import * as profileService from '../../service/user/profileService.js';
+import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
+import catchAsync from '../../utilities/catchAsync.js';
 
 
 export const getCartPage = catchAsync(async (req, res) => {
@@ -64,7 +64,7 @@ export const getCheckoutPage = catchAsync(async (req, res) => {
     if (validItems.length === 0) return res.redirect("/user/cart");
 
     const totalAmount = validItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const addresses = await Address.find({ userId }).sort({ isDefault: -1, createdAt: -1 });
+    const addresses = await profileService.getAddresses(userId);
 
     res.render("user/checkout", {
         title: "Checkout - KISO",
