@@ -1,11 +1,8 @@
-import User from "../../model/User.js";
-import Order from "../../model/Order.js";
-import Category from "../../model/Category.js";
-import Product from "../../model/Product.js";
-import {STATUS_CODES, MESSAGES} from "../../constants/index.js";
-import catchAsync from "../../utilities/catchAsync.js";
+import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
+import catchAsync from '../../utilities/catchAsync.js';
+import * as adminPageService from '../../service/admin/adminPageService.js';
 
-export const adminlogin = (req, res) => {
+export const adminlogin = (req, res)  => {
     res.render('admin/login', {
         title: 'Admin Login',
         layout: 'layouts/admin',
@@ -14,59 +11,26 @@ export const adminlogin = (req, res) => {
 };
 
 export const toggleBlock = catchAsync(async (req, res) => {
-    const userId = req.params.id;
-    const user = await User.findById(userId);
-    if(!user) return res.status(STATUS_CODES.NOT_FOUND).json({success: false, message: MESSAGES.USER_NOT_FOUND});
-
-
-    user.isBlocked = !user.isBlocked;
-
-    user.status = user.isBlocked ? 'Blocked' : (user.isActive ? 'Active' : 'Inactive');
-
-    await user.save();
-
-    return res.json({success: true, isBlocked: user.isBlocked, status: user.status});
+    const result = await adminPageService.toggleUserBlock(req.params.id);
+    return res.json({ success: true, ...result });
 });
+
 export const admindash = catchAsync(async (req, res) => {
-    const totalProducts = await Product.countDocuments();
-    const totalUsers = await User.countDocuments({isActive: true, isBlocked: false});
-    const totalOrders = await Order.countDocuments({orderStatus: {$ne: 'cancelled'}});
-
-    const revenueResult = await Order.aggregate([
-        {$match: {orderStatus: {$ne: 'cancelled'}}},
-        {$group: {_id: null, total: {$sum: "$grandTotal"}}}
-    ]);
-    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
-
+    const stats = await adminPageService.getDashboardStats();
     res.render('admin/dashboard', {
         title: 'Admin dashboard',
         layout: 'layouts/admin',
-        totalProducts,
-        totalUsers,
-        totalOrders,
-        totalRevenue,
-        showSidebar: true
+        showSidebar: true,
+        ...stats
     });
 });
+
 export const users_mange = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const perPage = 10;
-    const skip = (page - 1) * perPage;
-    const totalUsers = await User.countDocuments()
-    const users = await User.find()
-        .skip(skip)
-        .limit(perPage)
-        .sort({createdAt: -1})
-        .lean();
-
-    //Add order count for each users
-    for(let user of users) {
-        const ordercount = await Order.countDocuments({userId: user._id})
-        user.ordercount = ordercount;
-        user.status = user.isBlocked ? 'Blocked' : user.isActive ? 'Active' : 'Inactive';
-    }
+    const { total: totalUsers, users } = await adminPageService.getUsers(page, perPage);
     res.render('admin/users', {
-        title: "CustomerManagement",
+        title: 'CustomerManagement',
         layout: 'layouts/admin',
         showSidebar: true,
         users,
@@ -74,51 +38,28 @@ export const users_mange = catchAsync(async (req, res) => {
         currentPage: page,
         totalPages: Math.ceil(totalUsers / perPage),
         perPage
-
-    })
+    });
 });
 
 export const adminCategory_load = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const searchQuery = req.query.search || "";
     const perPage = 5;
-    const skip = (page - 1) * perPage;
-
-    const filter = {};
-    if(searchQuery) {
-        filter.categoryName = {$regex: searchQuery, $options: 'i'};
-    }
-    const totalCategories = await Category.countDocuments()
-    const categories = await Category.find(filter)
-        .skip(skip)
-        .limit(perPage)
-        .sort({createdAt: -1})
-        .lean()
-        
-    for (let cat of categories) {
-        cat.productCount = await Product.countDocuments({ category: cat._id });
-    }
-    if(req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({
-            success: true,
-            categories,
-            totalCategories,
-            currentPage: page,
-            totalPages: Math.ceil(totalCategories / perPage)
-        })
+    const search = req.query.search || '';
+    const { total: totalCategories, categories } = await adminPageService.getCategoryPage({ search, page, perPage });
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.json({ success: true, categories, totalCategories, currentPage: page, totalPages: Math.ceil(totalCategories / perPage) });
     }
     res.render('admin/category', {
-        title: "categoryManagement",
-        layout: "layouts/admin",
+        title: 'categoryManagement',
+        layout: 'layouts/admin',
         showSidebar: true,
         categories,
         totalCategories,
         currentPage: page,
         perPage,
         totalPages: Math.ceil(totalCategories / perPage),
-        searchQuery,
-
-    })
+        searchQuery: search
+    });
 });
 
 export const adminCategoryAdd_load = (req, res) => {
@@ -131,98 +72,43 @@ export const adminCategoryAdd_load = (req, res) => {
 };
 
 export const adminCategoryEdit_load = catchAsync(async (req, res) => {
-    const categoryId = req.params.id;
-    const category = await Category.findById(categoryId).lean();
-
-    if(!category) {
-        return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.CATEGORY_NOT_FOUND);
-    }
-
-    res.render('admin/category-add', {
-        title: "Edit Category",
-        layout: "layouts/admin",
-        showSidebar: true,
-        category // Pass existing data
-    });
+    const category = await adminPageService.getCategoryById(req.params.id);
+    if (!category) return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.CATEGORY_NOT_FOUND);
+    res.render('admin/category-add', { title: 'Edit Category', layout: 'layouts/admin', showSidebar: true, category });
 });
 
 export const adminProduct_Management = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const searchQuery = req.query.search || "";
     const perPage = 5;
-    const skip = (page - 1) * perPage;
-
-    const filter = {};
-    if(searchQuery) {
-        filter.productName = {$regex: searchQuery, $options: "i"}
-    }
-    const totalProducts = await Product.countDocuments(filter);
-    const products = await Product.find(filter)
-        .populate('category', 'categoryName')
-        .skip(skip)
-        .limit(perPage)
-        .sort({createdAt: -1})
-        .lean()
-    products.forEach(product => {
-        if(product.variants && Array.isArray(product.variants)) {
-            product.totalQuantity = product.variants.reduce((sum, v) => {
-                return sum + (v.stock || 0)
-            }
-                , 0)
-        } else {
-            product.totalQuantity = 0;
-        }
-
-    });
-    if(req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({
-            success: true,
-            products,
-            totalProducts,
-            currentPage: page,
-            totalPages: Math.ceil(totalProducts / perPage)
-        });
+    const search = req.query.search || '';
+    const { total: totalProducts, products } = await adminPageService.getProductPage({ search, page, perPage });
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.json({ success: true, products, totalProducts, currentPage: page, totalPages: Math.ceil(totalProducts / perPage) });
     }
     res.render('admin/product', {
-        title: "productManagment",
-        layout: "layouts/admin",
+        title: 'productManagment',
+        layout: 'layouts/admin',
         showSidebar: true,
         currentPage: page,
         perPage,
         totalProducts,
         products,
-        searchQuery,
+        searchQuery: search,
         totalPages: Math.ceil(totalProducts / perPage)
-
-    })
+    });
 });
 
 export const addProductPage = catchAsync(async (req, res) => {
-    const categories = await Category.find({isActive: true})
-        .lean();
-    res.render("admin/product-add", {
-        title: "Add Product",
-        layout: "layouts/admin",
-        showSidebar: true,
-        categories,
-    });
+    const categories = await adminPageService.getActiveCategories();
+    res.render('admin/product-add', { title: 'Add Product', layout: 'layouts/admin', showSidebar: true, categories });
 });
 
 export const editProductPage = catchAsync(async (req, res) => {
-    const productId = req.params.id;
-    const product = await Product.findById(productId)
-        .populate('category', 'categoryName')
-        .lean();
-    if(!product) {
-        return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.PRODUCT_NOT_FOUND);
-    }
-    const categories = await Category.find({isActive: true}).lean();
-    res.render("admin/product-edit", {
-        title: "Edit Product",
-        layout: "layouts/admin",
-        showSidebar: true,
-        categories,
-        product
-    });
+    const [product, categories] = await Promise.all([
+        adminPageService.getProductForEdit(req.params.id),
+        adminPageService.getActiveCategories()
+    ]);
+    if (!product) return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.PRODUCT_NOT_FOUND);
+    res.render('admin/product-edit', { title: 'Edit Product', layout: 'layouts/admin', showSidebar: true, categories, product });
 });
 

@@ -76,3 +76,5 @@ export const enableCategory = async (categoryId) => {
         {isActive: true}
     )
 }
+
+export const getCategoryById = async (id) => Category.findById(id).lean();

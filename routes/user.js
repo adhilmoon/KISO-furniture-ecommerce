@@ -2,15 +2,15 @@ import express from "express";
 const router = express.Router();
 
 import * as userauth from "../middleware/userAuth.js";
-import * as Pages from "../controller/usercontroller/pagesController.js";
-import * as authController from "../controller/usercontroller/authController.js";
-import * as profileController from "../controller/usercontroller/profileController.js";
-import * as storeController from "../controller/usercontroller/storeController.js";
-import * as productController from "../controller/usercontroller/productDetailsController.js";
-import * as cartController from "../controller/usercontroller/cartController.js";
-import * as wishlistController from "../controller/usercontroller/wishlistController.js";
-import * as paymentController from "../controller/usercontroller/paymentController.js";
-import * as orderController from "../controller/usercontroller/orderController.js";
+import * as Pages from "../controller/userController/pagesController.js";
+import * as authController from "../controller/userController/authController.js";
+import * as profileController from "../controller/userController/profileController.js";
+import * as storeController from "../controller/userController/storeController.js";
+import * as productController from "../controller/userController/productDetailsController.js";
+import * as cartController from "../controller/userController/cartController.js";
+import * as wishlistController from "../controller/userController/wishlistController.js";
+import * as paymentController from "../controller/userController/paymentController.js";
+import * as orderController from "../controller/userController/orderController.js";
 import { upload } from "../config/multer.js";
 
 import passport from "passport";
