@@ -17,16 +17,16 @@ export const findProductById = async (id) => {
 };
 
 export const findRelatedProducts = async (categoryId, excludeId, limit = 4) => {
-    return await Product.find({
+    return Product.find({
         category: categoryId,
         isListed: true,
         _id: { $ne: excludeId },
-        variants:{
-            $exists: true,$not:{
-                $size: 0
-            }
-        }
-    })
-    .limit(limit)
-    .lean();
+        variants: { $exists: true, $not: { $size: 0 } }
+    }).limit(limit).lean();
 };
+
+export const updateVariantStock = async (productId, variantIndex, delta) =>
+    Product.updateOne(
+        { _id: productId },
+        { $inc: { [`variants.${variantIndex}.stock`]: delta } }
+    );

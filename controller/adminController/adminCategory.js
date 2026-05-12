@@ -1,7 +1,6 @@
-import { STATUS_CODES, MESSAGES } from "../../constants/index.js";
-import * as categoryService from "../../service/admin/categoryService.js"
-import Category from "../../model/Category.js"
-import catchAsync from "../../utilities/catchAsync.js";
+import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
+import * as categoryService from '../../service/admin/categoryService.js';
+import catchAsync from '../../utilities/catchAsync.js';
 
 // add category
 export const addCategory = catchAsync(async (req, res) => {
@@ -66,22 +65,12 @@ export const enableCategories = catchAsync(async (req, res) => {
 })
 
 export const getCategory = catchAsync(async (req, res) => {
-    const {id} = req.params;
-    const category = await Category.findOne({_id: id})
-    if(!category) {
-        return res.status(STATUS_CODES.NOT_FOUND).json({
-            success: false,
-            message: MESSAGES.CATEGORY_NOT_FOUND
-        });
+    const category = await categoryService.getCategoryById(req.params.id);
+    if (!category) {
+        return res.status(STATUS_CODES.NOT_FOUND).json({ success: false, message: MESSAGES.CATEGORY_NOT_FOUND });
     }
-    if(!category.isActive) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({
-            success: false,
-            message: MESSAGES.UNAUTHORIZED_ACCESS
-        })
+    if (!category.isActive) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: MESSAGES.UNAUTHORIZED_ACCESS });
     }
-    return res.status(STATUS_CODES.OK).json({
-        success: true,
-        category
-    })
-})
+    return res.status(STATUS_CODES.OK).json({ success: true, category });
+});
