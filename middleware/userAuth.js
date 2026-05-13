@@ -138,3 +138,17 @@ export const checkUserActive = (req, res, next) => {
     });
   }
 };
+
+export const checkTempdata = (req, res, next) => {
+  try {
+    if(!req.session.tempUserData) {
+      if(isJsonRequest(req)) {
+        return res.status(401).json({ success: false, message: 'Session expired. Please try again.' });
+      }
+      return res.redirect("/user/login");
+    }
+    next();
+  } catch(error) {
+    logger.error(`checkTempdataMiddilware:${error.message}`)
+  }
+}
