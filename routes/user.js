@@ -36,7 +36,7 @@ router.post("/signup", authController.signup_post);
 router.post("/verify-otp", authController.verify_otp);
 router.post("/forgot-password", authController.forgot_password);
 router.get('/reset-password', Pages.reset_password_page)
-router.patch("/reset-password", authController.update_password);
+router.patch("/reset-password",userauth.checkTempdata,authController.update_password);
 router.get("/settings", userauth.userauth, Pages.settings_page);
 router.patch("/update-email", userauth.userauth, profileController.updateEmail)
 router.patch("/change-password", userauth.userauth, profileController.changePassword);

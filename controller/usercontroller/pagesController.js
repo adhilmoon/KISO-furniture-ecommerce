@@ -27,6 +27,9 @@ export const login_page = (req, res) => {
 };
 
 export const reset_password_page = (req, res) => {
+    if (!req.session.allowReset) {
+        return res.redirect('/user/login?error=Session expired. Please try again.');
+    }
     res.render('user/reset-password', { title: 'Forgot Password', query: req.query || {} });
 };
 

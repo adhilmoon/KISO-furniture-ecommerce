@@ -75,7 +75,10 @@ async function verifyOTP() {
     try {
         const response = await axios.post('/user/verify-otp', {otp: otp});
         if(response.data.success) {
-            window.location.replace(response.data.redirectUrl || '/user/login');
+            if(response.data.message) showToast(response.data.message, 'success');
+            setTimeout(() => {
+                window.location.replace(response.data.redirectUrl || '/user/login');
+            }, 800);
         }
     } catch(error) {
         const message = error.response?.data?.message || "Invalid OTP. Please try again.";

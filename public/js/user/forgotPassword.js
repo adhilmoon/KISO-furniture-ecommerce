@@ -41,6 +41,7 @@ async function handleForgotPassword(event) {
     } catch(error) {
         const message = error.response?.data?.message || "Something went wrong";
         showToast(message,'error')
+       
     }
 }
 
@@ -76,10 +77,10 @@ async function handleResetPassword(event) {
         return;
     }
 
-    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    const passRegex = /^.{6,}$/
 
     if(!passRegex.test(newPassword)) {
-        showToast("Password must be 8+ chars with upper, lower, number & symbol.", 'error')
+        showToast('Password must be at least 6 characters', 'error')
         return;
     }
 
@@ -88,11 +89,18 @@ async function handleResetPassword(event) {
 
         if(response.data.success) {
             showToast("Password reset successfully!",'success');
-            window.location.href = '/user/login';
+            setTimeout(()=>{
+               window.location.href = '/user/login';
+            },300)
+            
         }
     } catch(error) {
         const message = error.response?.data?.message || "Failed to reset password";
         showToast(message,'error')
+         setTimeout(()=>{
+            window.location.href = '/user/login'
+            console.error(error.message)
+        },200)
     }
 }
 
