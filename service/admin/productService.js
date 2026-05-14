@@ -92,8 +92,12 @@ export const createProduct = async (body, files) => {
     images: variantImageMap[index] || [],
   }));
   variants.forEach((v, i) => {
-    if(!v.images || v.images.length === 0) {
-      throw new Error(`Variant #${i + 1} must have at least one image`);
+    const count = v.images?.length || 0;
+    if(count < 3) {
+      throw new Error(`Variant #${i + 1} must have at least 3 images`);
+    }
+    if(count > 5) {
+      throw new Error(`Variant #${i + 1} can have maximum 5 images`);
     }
   });
   const sku =
@@ -273,10 +277,14 @@ export const updateProduct = async (productId, body, files) => {
     imageCount: v.images.length
   })))}`);
 
-  // Final validation: Ensure every variant has at least one image
+  // Final validation: Ensure every variant has 3-5 images
   product.variants.forEach((v, index) => {
-    if(!v.images || v.images.length === 0) {
-      throw new Error(`Variant #${index + 1} must have at least one image`);
+    const count = v.images.length;
+    if(count < 3) {
+      throw new Error(`Variant #${index + 1} must have at least 3 images`);
+    }
+    if(count > 5) {
+      throw new Error(`Variant #${index + 1} can have maximum 5 images`);
     }
   });
 
