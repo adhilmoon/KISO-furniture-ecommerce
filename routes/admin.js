@@ -5,6 +5,8 @@ import * as adminPages from "../controller/adminController/adminPagesController.
 import * as adminController from "../controller/adminController/adminAuthController.js";
 import * as adminCategory from "../controller/adminController/adminCategory.js";
 import * as adminProduct from "../controller/adminController/adminProduct.js";
+import * as adminOrderController from "../controller/adminController/adminOrderController.js";
+import * as adminInventoryController from "../controller/adminController/adminInventoryController.js";
 import { uploadProduct } from "../config/multer.js";
 
 router.use(adminauth.noCache);
@@ -32,5 +34,16 @@ router.patch('/category/enable/:id', adminauth.isAdmin, adminCategory.enableCate
 router.patch('/user/:id/block', adminauth.isAdmin, adminPages.toggleBlock);
 router.get("/users/search", adminauth.isAdmin, adminController.load_data);
 router.get('/logout', adminController.logout);
+
+// Orders
+router.get('/orders', adminauth.isAdmin, adminOrderController.getOrders);
+router.get('/orders/:id', adminauth.isAdmin, adminOrderController.getOrderDetail);
+router.patch('/orders/:id/status', adminauth.isAdmin, adminOrderController.updateOrderStatus);
+router.patch('/orders/:id/mark-paid', adminauth.isAdmin, adminOrderController.markCODPaid);
+router.patch('/orders/:id/approve-return', adminauth.isAdmin, adminOrderController.approveReturn);
+
+// Inventory
+router.get('/inventory', adminauth.isAdmin, adminInventoryController.getInventory);
+router.patch('/inventory/stock', adminauth.isAdmin, adminInventoryController.updateStock);
 
 export default router;

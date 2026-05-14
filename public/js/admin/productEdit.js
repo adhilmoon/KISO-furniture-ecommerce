@@ -114,10 +114,10 @@ function confirmCrop() {
           variantCroppedFiles[currentVariantId] = [];
         }
         croppedFiles.forEach(f => {
-          if(getTotalImageCount(currentVariantId) < 3) {
+          if(getTotalImageCount(currentVariantId) < 5) {
             variantCroppedFiles[currentVariantId].push(f);
           } else {
-            showToast('Max 3 images allowed for this variant.', 'error');
+            showToast('Max 5 images allowed for this variant.', 'error');
           }
         });
 
@@ -219,12 +219,7 @@ function viewImage(src) {
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_PRODUCT_IMAGE_MB = 8;
 
-/**
- * Validates an array of File objects for type and size.
- * Shows a toast for each invalid file and returns only the valid ones.
- * @param {File[]} files
- * @returns {File[]}
- */
+
 function validateImageFiles(files) {
   const valid = [];
   files.forEach(file => {
@@ -251,9 +246,9 @@ function handleVariantImages(input, variantId) {
   if(!files.length) { input.value = ''; return; }
 
   const total = getTotalImageCount(variantId);
-  if(total + files.length > 3) {
+  if(total + files.length > 5) {
     input.value = '';
-    showToast(`Max 3 images allowed. You currently have ${total}.`, 'error');
+    showToast(`Max 5 images allowed per variant. You currently have ${total}.`, 'error');
     return;
   }
   currentInput = input;
@@ -704,7 +699,7 @@ function validateForm() {
     const optType = $(`vOptType-${id}`)?.value.trim();
     const optValue = $(`vOptValue-${id}`)?.value.trim();
     const price = parseFloat($(`vPrice-${id}`)?.value);
-    const stock = parseInt($(`vStock-${id}`)?.value, 10);
+    const stock = parseInt($(`vStock-${id}`)?.value||'0', 10);
     const newImagesCount = variantCroppedFiles[id]?.length || 0;
     const existingImagesCount = existingVariantImageCount[id] || 0;
     const totalImages = newImagesCount + existingImagesCount;
@@ -721,8 +716,11 @@ function validateForm() {
     if(isNaN(stock) || stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
     else {clearVariantError(id, 'stock');}
 
-    if(totalImages === 0) {
-      showToast(`Variant #${id} must have at least 1 image (existing or new).`, 'error');
+    if(totalImages < 3) {
+      showToast(`Variant #${id} must have at least 3 images (existing or new).`, 'error');
+      valid = false;
+    } else if(totalImages > 5) {
+      showToast(`Variant #${id} can have maximum 5 images.`, 'error');
       valid = false;
     }
   });

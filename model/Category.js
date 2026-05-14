@@ -7,6 +7,11 @@ const categoryScheama = new schema({
         unique: true,
         required: true
     },
+    slug:{
+        type:String,
+        required:true,
+        unique:true
+    },
     description: {
         type: String,
         required: true
@@ -21,21 +26,7 @@ const categoryScheama = new schema({
         ref: "Offer",
         default: null
     },
-    variantAttributes: [{
-        code: {type: String, required: true},
-        label: {type: String, required: true},
-        type: {
-            type: String,
-            enum: ["dropdown", "text", "number", "file"],
-            required: true
-        },
-        required: {type: Boolean, default: false},
-        filterable: {type: Boolean, default: false},
-        options: [{ // used for dropdown types
-            value: {type: String},
-            label: {type: String}
-        }]
-    }]
+    
 }, {timestamps: true})
 
 export default mongoose.model("Category", categoryScheama)

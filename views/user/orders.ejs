@@ -1,0 +1,177 @@
+<div class="w-full max-w-4xl mx-auto px-4">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-brand-light">My Orders</h1>
+            <p class="text-brand-muted text-sm mt-1"><%= totalOrders %> order<%= totalOrders !== 1 ? 's' : '' %> total</p>
+        </div>
+
+        <!-- Search -->
+        <form method="GET" action="/user/orders" class="flex items-center gap-2">
+            <div class="flex items-center bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 gap-2 focus-within:border-brand-accent/40 transition-all">
+                <svg class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="text" name="search" value="<%= search %>" placeholder="Search by order ID..."
+                    class="bg-transparent outline-none text-brand-light placeholder:text-brand-muted/60 text-sm w-40 sm:w-52"/>
+                <% if (search) { %>
+                    <a href="/user/orders" class="text-brand-muted hover:text-white text-lg leading-none">&times;</a>
+                <% } %>
+            </div>
+            <button type="submit" class="px-4 py-2.5 bg-brand-accent hover:bg-yellow-600 text-brand-bg1 font-semibold text-sm rounded-xl transition-all">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <% if (orders && orders.length > 0) { %>
+
+        <div class="space-y-4">
+            <% orders.forEach(order => { %>
+                <%
+                    const oid = order.orderId || ('#' + order._id.toString().slice(-8).toUpperCase());
+                    const statusColors = {
+                        pending:          'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+                        confirmed:        'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                        processing:       'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                        shipped:          'bg-purple-500/10 text-purple-400 border-purple-500/20',
+                        delivered:        'bg-green-500/10 text-green-400 border-green-500/20',
+                        cancelled:        'bg-red-500/10 text-red-400 border-red-500/20',
+                        return_requested: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+                        returned:         'bg-gray-500/10 text-gray-400 border-gray-500/20'
+                    };
+                    const statusColor = statusColors[order.orderStatus] || statusColors.pending;
+                    const statusLabel = {
+                        pending: 'Order Placed', confirmed: 'Order Placed', processing: 'Order Placed',
+                        shipped: 'Shipped', out_for_delivery: 'Out for Delivery', delivered: 'Delivered', cancelled: 'Cancelled',
+                        return_requested: 'Return Requested', returned: 'Returned'
+                    }[order.orderStatus] || order.orderStatus;
+                %>
+                <div class="bg-brand-bg2 rounded-xl border border-white/5 hover:border-brand-accent/20 transition-all overflow-hidden">
+                    <!-- Order Header -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-white/5">
+                        <div class="flex items-center gap-4">
+                            <div>
+                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest">Order ID</p>
+                                <p class="text-brand-accent font-extrabold text-sm tracking-wide"><%= oid %></p>
+                            </div>
+                            <div class="hidden sm:block w-px h-8 bg-white/10"></div>
+                            <div class="hidden sm:block">
+                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest">ORDER PLACED</p>
+                                <p class="text-brand-light text-sm font-medium">
+                                    <%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right sm:text-left">
+                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest mb-1">Status</p>
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-bold border inline-block <%= statusColor %>"><%= statusLabel %></span>
+                            </div>
+                            <div class="hidden sm:block w-px h-8 bg-white/10"></div>
+                            <div class="text-right sm:text-left">
+                                <p class="text-[10px] font-bold text-brand-muted uppercase tracking-widest mb-1">Total</p>
+                                <p class="text-brand-accent font-extrabold text-sm sm:text-base tracking-wide">₹<%= order.grandTotal.toLocaleString() %></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items preview -->
+                    <div class="px-5 py-4">
+                        <% 
+                            let arrivingDate = new Date(order.createdAt);
+                            arrivingDate.setDate(arrivingDate.getDate() + 5);
+                        %>
+                        <p class="text-xs font-semibold text-brand-accent mb-3 uppercase tracking-widest">Arriving: <span class="text-brand-light capitalize"><%= arrivingDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span></p>
+
+                        <div class="space-y-2 mb-4">
+                            <% const previewItems = order.orderItems.slice(0, 2); %>
+                            <% previewItems.forEach(item => { %>
+                                <%
+                                    let img = null;
+                                    if (item.productId && item.productId.variants && item.productId.variants.length > 0) {
+                                        let variant = item.productId.variants[item.variantIndex || 0] || item.productId.variants[0];
+                                        if (variant && variant.images && variant.images.length > 0) {
+                                            img = variant.images[0];
+                                        }
+                                    }
+                                %>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-brand-bg1 border border-white/5 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                        <% if (img) { %>
+                                            <img src="<%= img %>" alt="Product thumbnail" class="w-full h-full object-cover">
+                                        <% } else { %>
+                                            <svg class="w-5 h-5 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                            </svg>
+                                        <% } %>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-brand-light text-sm font-medium truncate">
+                                            <%= item.productId?.productName || 'Product' %>
+                                        </p>
+                                        <p class="text-brand-muted text-xs">Qty: <%= item.quantity %> &middot; ₹<%= item.price.toLocaleString() %></p>
+                                    </div>
+                                </div>
+                            <% }) %>
+                            <% if (order.orderItems.length > 2) { %>
+                                <p class="text-brand-muted text-xs pl-11">+<%= order.orderItems.length - 2 %> more item<%= order.orderItems.length - 2 > 1 ? 's' : '' %></p>
+                            <% } %>
+                        </div>
+
+                        <a href="/user/orders/<%= order._id %>"
+                            class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-accent hover:text-yellow-500 transition-colors">
+                            View Details
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages > 1) { %>
+            <div class="flex items-center justify-center gap-2 mt-8 flex-wrap">
+                <a href="/user/orders?page=<%= Math.max(1, pageNum - 1) %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+                    class="p-2 border border-white/10 rounded-lg hover:bg-brand-bg2 text-brand-muted hover:text-brand-light transition-colors <%= pageNum === 1 ? 'opacity-40 pointer-events-none' : '' %>">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </a>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="/user/orders?page=<%= i %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+                        class="px-4 py-2 rounded-lg text-sm font-medium transition-all
+                        <%= i === pageNum ? 'bg-brand-accent text-brand-bg1' : 'border border-white/10 text-brand-light hover:bg-brand-bg2' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+                <a href="/user/orders?page=<%= Math.min(totalPages, pageNum + 1) %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+                    class="p-2 border border-white/10 rounded-lg hover:bg-brand-bg2 text-brand-muted hover:text-brand-light transition-colors <%= pageNum === totalPages ? 'opacity-40 pointer-events-none' : '' %>">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <p class="text-center text-sm text-brand-muted mt-3">
+                Page <span class="text-brand-accent font-semibold"><%= pageNum %></span> of <span class="text-brand-accent font-semibold"><%= totalPages %></span>
+            </p>
+        <% } %>
+
+    <% } else { %>
+        <div class="flex flex-col items-center justify-center py-24 text-center">
+            <div class="w-20 h-20 rounded-full bg-brand-bg2 border border-white/5 flex items-center justify-center mb-6">
+                <svg class="w-10 h-10 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+            <% if (search) { %>
+                <h3 class="text-xl font-bold text-brand-light mb-2">No orders found</h3>
+                <p class="text-brand-muted text-sm mb-6">No orders match "<%= search %>"</p>
+                <a href="/user/orders" class="px-6 py-2.5 bg-brand-accent text-brand-bg1 font-semibold text-sm rounded-xl hover:bg-yellow-600 transition-all">Clear Search</a>
+            <% } else { %>
+                <h3 class="text-xl font-bold text-brand-light mb-2">No orders yet</h3>
+                <p class="text-brand-muted text-sm mb-6">Start shopping and your orders will appear here</p>
+                <a href="/user/store" class="px-6 py-2.5 bg-brand-accent text-brand-bg1 font-semibold text-sm rounded-xl hover:bg-yellow-600 transition-all">Browse Store</a>
+            <% } %>
+        </div>
+    <% } %>
+</div>

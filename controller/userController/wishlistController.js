@@ -18,8 +18,10 @@ export const toggleWishlist = catchAsync(async (req, res) => {
 
     const { action } = await wishlistService.toggleWishlist(userId, productId);
 
-    const message = action === "added" 
-        ? "Product added to wishlist" 
+    const message = action === "added"
+        ? "Product added to wishlist"
+        : action === "in_cart"
+        ? "This product is already in your cart"
         : "Product removed from wishlist";
 
     res.status(STATUS_CODES.OK).json({

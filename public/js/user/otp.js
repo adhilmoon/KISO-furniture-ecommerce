@@ -35,14 +35,12 @@ function showOTPModal() {
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    const digits = document.querySelectorAll('otp-digit')
-    digits.forEach(d => d.value = '')
-
+    const digits = document.querySelectorAll('.otp-digit');
+    digits.forEach(d => d.value = '');
 
     startTimer();
 
-
-    setTimeout(() => digits[0]?.focus(), 100)
+    setTimeout(() => digits[0]?.focus(), 100);
 }
 
 function closeOTPModal() {
@@ -52,10 +50,14 @@ function closeOTPModal() {
 
     clearInterval(timerInterval);
 
-    const digits = document.querySelectorAll('.otp-digit');
-    digits.forEach(d => d.value = '');
+    document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
 
-
+    const submitBtn = document.querySelector('#userSignupForm button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Up';
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
 }
 async function verifyOTP() {
 
@@ -73,7 +75,10 @@ async function verifyOTP() {
     try {
         const response = await axios.post('/user/verify-otp', {otp: otp});
         if(response.data.success) {
-            window.location.replace(response.data.redirectUrl || '/user/login');
+            if(response.data.message) showToast(response.data.message, 'success');
+            setTimeout(() => {
+                window.location.replace(response.data.redirectUrl || '/user/login');
+            }, 800);
         }
     } catch(error) {
         const message = error.response?.data?.message || "Invalid OTP. Please try again.";
@@ -123,32 +128,44 @@ async function resendOTP() {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    function setDigitFilled(input, filled) {
+        if (filled) {
+            input.classList.remove('border-gray-100', 'bg-[#FAFAFA]');
+            input.classList.add('border-[#A67B5B]', 'bg-brand-bg1');
+        } else {
+            input.classList.remove('border-[#A67B5B]', 'bg-brand-bg1');
+            input.classList.add('border-gray-100', 'bg-[#FAFAFA]');
+        }
+    }
+
     function initOTPInputs() {
         const digits = document.querySelectorAll('.otp-digit');
 
         digits.forEach((input, i) => {
 
-
             input.addEventListener('input', () => {
-
                 input.value = input.value.replace(/\D/g, '');
-
+                setDigitFilled(input, !!input.value);
                 if(input.value.length === 1 && i < digits.length - 1) {
                     digits[i + 1].focus();
                 }
             });
 
+            input.addEventListener('blur', () => {
+                if (!input.value) setDigitFilled(input, false);
+            });
 
             input.addEventListener('keydown', (e) => {
                 if(e.key === 'Backspace') {
                     if(input.value) {
                         input.value = '';
+                        setDigitFilled(input, false);
                     } else if(i > 0) {
                         digits[i - 1].focus();
                         digits[i - 1].value = '';
+                        setDigitFilled(digits[i - 1], false);
                     }
                 }
-
 
                 if(e.key === 'ArrowLeft' && i > 0) digits[i - 1].focus();
                 if(e.key === 'ArrowRight' && i < digits.length - 1) digits[i + 1].focus();

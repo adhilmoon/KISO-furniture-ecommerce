@@ -104,7 +104,7 @@ function confirmCrop() {
         // Store for this variant
         if(!variantCroppedFiles[currentVariantId]) {variantCroppedFiles[currentVariantId] = [];}
         croppedFiles.forEach(f => {
-          if(variantCroppedFiles[currentVariantId].length < 3) {
+          if(variantCroppedFiles[currentVariantId].length < 5) {
             variantCroppedFiles[currentVariantId].push(f);
           }
         });
@@ -212,12 +212,11 @@ function handleVariantImages(input, variantId) {
   if(!files.length) { input.value = ''; return; }
 
   const existingCount = existingVariantImageCount[variantId] || 0;
-
   const newCount = variantCroppedFiles[variantId]?.length || 0;
-  const currentCount = variantCroppedFiles[variantId] ? variantCroppedFiles[variantId].length : 0;
-  if(currentCount + files.length > 3) {
+  const currentCount = existingCount + newCount;
+  if(currentCount + files.length > 5) {
     input.value = '';
-    showToast(`You can upload up to 3 images per variant. (Currently have ${currentCount})`, 'error');
+    showToast(`You can upload up to 5 images per variant. (Currently have ${currentCount})`, 'error');
     return;
   }
   currentInput = input;
@@ -585,7 +584,7 @@ function validateForm() {
     const optType = $(`vOptType-${id}`)?.value.trim();
     const optValue = $(`vOptValue-${id}`)?.value.trim();
     const price = parseFloat($(`vPrice-${id}`)?.value);
-    const stock = parseInt($(`vStock-${id}`)?.value, 10);
+    const stock = parseInt($(`vStock-${id}`)?.value||'0',10);
 
     const images = variantCroppedFiles[id] || [];
 
@@ -598,10 +597,13 @@ function validateForm() {
     if(isNaN(price) || price < 0) {showVariantError(id, 'price', 'Enter a valid price (₹ 0 or more).'); valid = false;}
     else {clearVariantError(id, 'price');}
 
-    if(isNaN(stock) || stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
+    if(isNaN(stock)|| stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
     else {clearVariantError(id, 'stock');}
-    if(images.length === 0) {
-      showToast(`Variant #${id} must have at least 1 image`, 'error');
+    if(images.length < 3) {
+      showToast(`Variant #${id} must have at least 3 images`, 'error');
+      valid = false;
+    } else if(images.length > 5) {
+      showToast(`Variant #${id} can have maximum 5 images`, 'error');
       valid = false;
     }
   });

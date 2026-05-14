@@ -41,10 +41,15 @@ function updateStockUI(stock) {
 
   if (!stockBadge) return;
 
-  if (stock > 0) {
-  
+  if (stock > 0 && stock <= 5) {
+    stockBadge.innerHTML = `● Only ${stock} left`;
+    stockBadge.className = 'text-sm px-4 py-1.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 font-bold rounded-full transition-all duration-300';
+  } else if (stock > 5) {
     stockBadge.innerHTML = '● In Stock';
     stockBadge.className = 'text-sm px-4 py-1.5 bg-green-500/10 border border-green-500/20 text-green-400 font-bold rounded-full transition-all duration-300';
+  }
+
+  if (stock > 0) {
     
     if (addToCartBtn) {
       addToCartBtn.disabled = false;

@@ -2,14 +2,15 @@ import express from "express";
 const router = express.Router();
 
 import * as userauth from "../middleware/userAuth.js";
-import * as Pages from "../controller/usercontroller/pagesController.js";
-import * as authController from "../controller/usercontroller/authController.js";
-import * as profileController from "../controller/usercontroller/profileController.js";
-import * as storeController from "../controller/usercontroller/storeController.js";
-import * as productController from "../controller/usercontroller/productDetailsController.js";
-import * as cartController from "../controller/usercontroller/cartController.js";
-import * as wishlistController from "../controller/usercontroller/wishlistController.js";
-import * as paymentController from "../controller/usercontroller/paymentController.js";
+import * as Pages from "../controller/userController/pagesController.js";
+import * as authController from "../controller/userController/authController.js";
+import * as profileController from "../controller/userController/profileController.js";
+import * as storeController from "../controller/userController/storeController.js";
+import * as productController from "../controller/userController/productDetailsController.js";
+import * as cartController from "../controller/userController/cartController.js";
+import * as wishlistController from "../controller/userController/wishlistController.js";
+import * as paymentController from "../controller/userController/paymentController.js";
+import * as orderController from "../controller/userController/orderController.js";
 import { upload } from "../config/multer.js";
 
 import passport from "passport";
@@ -35,7 +36,7 @@ router.post("/signup", authController.signup_post);
 router.post("/verify-otp", authController.verify_otp);
 router.post("/forgot-password", authController.forgot_password);
 router.get('/reset-password', Pages.reset_password_page)
-router.patch("/reset-password", authController.update_password);
+router.patch("/reset-password",userauth.checkTempdata,authController.update_password);
 router.get("/settings", userauth.userauth, Pages.settings_page);
 router.patch("/update-email", userauth.userauth, profileController.updateEmail)
 router.patch("/change-password", userauth.userauth, profileController.changePassword);
@@ -51,6 +52,7 @@ router.get("/address", userauth.userauth, Pages.user_address);
 router.post("/address/add", userauth.userauth, profileController.addAddress);
 router.get("/address/get/:id", userauth.userauth, profileController.getAddress);
 router.patch("/address/update/:id", userauth.userauth, profileController.updateAddress);
+router.patch("/address/default/:id", userauth.userauth, profileController.setDefaultAddress);
 router.delete("/address/delete/:id", userauth.userauth, authController.deleteAddress);
 
 
@@ -72,6 +74,17 @@ router.delete("/cart", userauth.userauth, cartController.clearCart);
 // Payment API
 router.post("/payment/create-order", userauth.userauth, paymentController.createOrder);
 router.post("/payment/verify", userauth.userauth, paymentController.verifyPayment);
+router.post("/payment/cod", userauth.userauth, paymentController.placeCODOrder);
+router.get("/order/confirmation/:orderId", userauth.userauth, paymentController.getOrderConfirmation);
+router.get("/payment/failed", userauth.userauth, paymentController.getPaymentFailed);
+
+// Order Management
+router.get("/orders", userauth.userauth, orderController.getOrders);
+router.get("/orders/:id", userauth.userauth, orderController.getOrderDetail);
+router.post("/orders/:id/cancel", userauth.userauth, orderController.cancelOrder);
+router.post("/orders/:id/items/:itemId/cancel", userauth.userauth, orderController.cancelItem);
+router.post("/orders/:id/return", userauth.userauth, upload.single("returnImage"), userauth.handleUploadErrors, orderController.returnOrder);
+router.get("/orders/:id/invoice", userauth.userauth, orderController.downloadInvoice);
 
 // Wishlist API
 router.get("/wishlist", userauth.userauth, wishlistController.getWishlistPage);

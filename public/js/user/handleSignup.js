@@ -2,6 +2,8 @@
 async function signup_handle(event) {
     event.preventDefault()
     resetValidation();
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
     const form = event.target;
     const signupData = {
         name: document.getElementById('name').value.trim(),
@@ -11,11 +13,6 @@ async function signup_handle(event) {
         referralCode: document.getElementById('referralCode').value.trim()
     }
 
-    // const errorDisplay = document.getElementById('local-error')
-
-
-
-
     if(!signupData.name || signupData.name.length < 3) {
         return showFieldError('name', "Full Name must be at least 3 characters");
     }
@@ -23,15 +20,24 @@ async function signup_handle(event) {
     if(!signupData.email || !emailRegex.test(signupData.email)) {
         return showFieldError('email', 'Please enter a valid email address')
     }
-    const passRegex = /^.{6}$/;
-    if(!signupData.password || !passRegex.test(signupData.password)) {
+    if(!signupData.password) {
         return showFieldError('password', "pleas enter valid password");
+    }
+
+    const passRegex = /^.{6,}$/
+    if(!passRegex.test(signupData.password)) {
+        return showFieldError('password', 'Password must be at least 6 characters');
     }
 
     if(signupData.confirmPassword !== signupData.password) {
         return showFieldError("confirmPassword", 'Password not match pleas enter exact password ');
     }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending OTP...';
+    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
     const {email, password, name, referralCode} = signupData;
+
     try {
         const response = await axios.post('/user/signup', {email, password, name, referralCode});
         if(response.data.success) {
@@ -47,7 +53,9 @@ async function signup_handle(event) {
 
     } catch(error) {
         showToast(error.response?.data?.message || "Signup failed. Please try again.", "error")
-
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         console.error("Login error:", error);
     }
 }
@@ -56,7 +64,7 @@ function showFieldError(fieldId, message) {
     const errorEl = document.getElementById(`err-${fieldId}`);
     const inputEl = document.getElementById(fieldId);
     if(errorEl) errorEl.innerText = message;
-     if (inputEl) {
+    if(inputEl) {
         inputEl.classList.remove('focus:border-kiso-brown');
         inputEl.classList.add('border-red-500', 'ring-1', 'ring-red-500');
         inputEl.focus();
@@ -66,11 +74,11 @@ function showFieldError(fieldId, message) {
 function resetValidation() {
     document.querySelectorAll('[id^="err-"]').forEach(el => el.innerText = '')
     document.querySelectorAll('#userSignupForm input,#userSignupForm select')
-    .forEach(input=>{
-        input.classList.remove('border-red-500', 'ring-1', 'ring-red-500');
-        input.classList.add('focus:border-kiso-brown')
+        .forEach(input => {
+            input.classList.remove('border-red-500', 'ring-1', 'ring-red-500');
+            input.classList.add('focus:border-kiso-brown')
 
-    })
+        })
 }
 function togglePasswordVisibility() {
     const passwordInput = document.getElementById('password');

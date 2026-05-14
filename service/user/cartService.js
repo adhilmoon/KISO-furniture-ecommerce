@@ -32,7 +32,7 @@ export const addToCart = async (userId, productId, variantIndex, quantity) => {
                   : 0;
 
     const existingItemIndex = cart.items.findIndex(
-        item => String(item.productId._id) === String(productId) && item.variantIndex === variantIndex
+        item => item.productId != null && String(item.productId._id ?? item.productId) === String(productId) && item.variantIndex === variantIndex
     );
 
     let currentCartQty = 0;
