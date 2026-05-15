@@ -39,6 +39,8 @@ export const cancelOrder = async (orderId, userId, reason) => {
 };
 
 export const cancelItem = async (orderId, itemId, userId, reason) => {
+ 
+     
     const order = await orderRepository.findOrderDoc(orderId, userId);
     if (!order) throw Object.assign(new Error('Order not found'), { status: 404 });
     const item = order.orderItems.id(itemId);
@@ -48,9 +50,14 @@ export const cancelItem = async (orderId, itemId, userId, reason) => {
     }
     item.status = 'cancelled';
     item.cancellationReason = reason || '';
+    console.log(`${item.productId}and ${item.variantIndex}and ${item.quantity}`)
     await productRepository.updateVariantStock(item.productId, item.variantIndex, item.quantity);
     if (order.orderItems.every(i => i.status === 'cancelled')) order.orderStatus = 'cancelled';
     await order.save();
+       throw {
+        message:"now iam in the cancel serveise"
+    }
+    
 };
 
 export const requestReturn = async (orderId, userId, reason, imageUrl) => {

@@ -96,3 +96,4 @@ export const placeCODOrder = catchAsync(async (req, res) => {
     const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'cod', 'pending');
     res.json({ success: true, message: 'Order placed successfully', orderId: newOrder._id });
 });
+

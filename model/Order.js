@@ -1,24 +1,24 @@
 import mongoose from 'mongoose';
 
 const OrderSchema = new mongoose.Schema({
-  userId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
     index: true
   },
-  
+
   // Shipping Information
   shippingAddress: {
-    name: { type: String, required: true },
-    phone: { type: Number, required: true },
-    streetAddress: { type: String, required: true },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    pincode: { type: Number, required: true },
-    landmark: { type: String },
-    addressType: { 
-      type: String, 
+    name: {type: String, required: true},
+    phone: {type: Number, required: true},
+    streetAddress: {type: String, required: true},
+    city: {type: String, required: true},
+    state: {type: String, required: true},
+    pincode: {type: Number, required: true},
+    landmark: {type: String},
+    addressType: {
+      type: String,
       enum: ['home', 'work', 'other'],
       default: 'home'
     }
@@ -26,34 +26,40 @@ const OrderSchema = new mongoose.Schema({
 
   // Order Items
   orderItems: [{
-    productId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Product', 
-      required: true 
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true
     },
-    quantity: { 
-      type: Number, 
+    variantIndex: {
+      type: Number,
+      required: true,
+      default: 0,
+
+    },
+    quantity: {
+      type: Number,
       required: true,
       min: 1
     },
-    price: { 
-      type: Number, 
+    price: {
+      type: Number,
       required: true,
       min: 0
     },
-    status: { 
-      type: String, 
+    status: {
+      type: String,
       enum: ['processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned'],
       default: 'processing'
     },
     // Milestone timestamps
-    shippedAt: { type: Date },
-    deliveredAt: { type: Date },
-    cancellationReason: { type: String },
+    shippedAt: {type: Date},
+    deliveredAt: {type: Date},
+    cancellationReason: {type: String},
     // Return tracking (only if status is 'returned')
-    returnReason: { type: String },
-    returnImage: { type: String },
-    returnRequestedAt: { type: Date }
+    returnReason: {type: String},
+    returnImage: {type: String},
+    returnRequestedAt: {type: Date}
   }],
 
   // Payment Information
@@ -71,14 +77,14 @@ const OrderSchema = new mongoose.Schema({
     enum: ['pending', 'paid', 'failed', 'refunded'],
     default: 'pending'
   },
-  
+
   // Pricing
-  subtotal: { 
+  subtotal: {
     type: Number,
     required: true,
     min: 0
   },
-  shippingCost: { 
+  shippingCost: {
     type: Number,
     default: 0,
     min: 0
@@ -88,11 +94,11 @@ const OrderSchema = new mongoose.Schema({
     default: 0,
     min: 0
   },
-  couponId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Coupon' 
+  couponId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coupon'
   },
-  grandTotal: { 
+  grandTotal: {
     type: Number,
     required: true,
     min: 0
@@ -107,20 +113,20 @@ const OrderSchema = new mongoose.Schema({
   },
 
   // Additional Info
-  orderId: { type: String, sparse: true, unique: true, index: true },
-  cancellationReason: { type: String },
-  returnReason: { type: String },
-  returnImage: { type: String },
-  returnApprovedAt: { type: Date },
-  notes: { type: String },
+  orderId: {type: String, sparse: true, unique: true, index: true},
+  cancellationReason: {type: String},
+  returnReason: {type: String},
+  returnImage: {type: String},
+  returnApprovedAt: {type: Date},
+  notes: {type: String},
 
-}, { timestamps: true });
+}, {timestamps: true});
 
 // Index for faster queries
-OrderSchema.index({ userId: 1, createdAt: -1 });
+OrderSchema.index({userId: 1, createdAt: -1});
 
-OrderSchema.pre('save', async function() {
-  if (this.isNew && !this.orderId) {
+OrderSchema.pre('save', async function () {
+  if(this.isNew && !this.orderId) {
     const d = new Date();
     const yy = String(d.getFullYear()).slice(-2);
     const mm = String(d.getMonth() + 1).padStart(2, '0');
