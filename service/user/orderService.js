@@ -54,9 +54,7 @@ export const cancelItem = async (orderId, itemId, userId, reason) => {
     await productRepository.updateVariantStock(item.productId, item.variantIndex, item.quantity);
     if (order.orderItems.every(i => i.status === 'cancelled')) order.orderStatus = 'cancelled';
     await order.save();
-       throw {
-        message:"now iam in the cancel serveise"
-    }
+   
     
 };
 
