@@ -88,8 +88,26 @@ export const approveReturn = async (id) => {
   order.paymentStatus = 'refunded';
   order.returnApprovedAt = new Date();
   for (const item of order.orderItems) {
-    if (item.status === 'returned') item.returnRequestedAt = item.returnRequestedAt || new Date();
+    if (item.status === 'return_requested') {
+      item.status = 'returned';
+      item.returnRequestedAt = item.returnRequestedAt || new Date();
+    }
   }
+  await order.save();
+  return order;
+};
+
+export const rejectReturn = async (id, reason) => {
+  const order = await Order.findById(id);
+  if (!order) throw new Error('Order not found');
+  if (order.orderStatus !== 'return_requested') throw new Error('No pending return request');
+  if (!reason || !reason.trim()) throw new Error('Rejection reason required');
+  for (const item of order.orderItems) {
+    if (item.status === 'return_requested') item.status = 'delivered';
+  }
+  order.orderStatus = 'return_rejected';
+  order.returnRejectionReason = reason.trim();
+  order.returnRejectedAt = new Date();
   await order.save();
   return order;
 };

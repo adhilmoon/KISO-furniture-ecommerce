@@ -6,6 +6,7 @@ const STATUS_COLORS = {
     delivered:        'bg-green-500/10 text-green-400 border-green-500/20',
     cancelled:        'bg-red-500/10 text-red-400 border-red-500/20',
     return_requested: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+    return_rejected:  'bg-red-500/10 text-red-400 border-red-500/20',
     returned:         'bg-gray-500/10 text-gray-400 border-gray-500/20',
 };
 
@@ -17,6 +18,7 @@ const STATUS_LABELS = {
     delivered:        'Delivered',
     cancelled:        'Cancelled',
     return_requested: 'Return Requested',
+    return_rejected:  'Return Rejected',
     returned:         'Returned',
 };
 
@@ -170,3 +172,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+async function cancelReturnRequest() {
+    if (!confirm('Cancel return request? You will need to submit again if you change your mind.')) return;
+    try {
+        const res = await axios.post(`/user/orders/${ORDER_ID}/return/cancel`);
+        if (res.data.success) {
+            showToast(res.data.message, 'success');
+            setTimeout(() => location.reload(), 1200);
+        }
+    } catch (err) {
+        showToast(err.response?.data?.message || 'Error', 'error');
+    }
+}

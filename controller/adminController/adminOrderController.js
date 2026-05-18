@@ -65,3 +65,9 @@ export const approveReturn = catchAsync(async (req, res) => {
   await orderService.approveReturn(req.params.id);
   res.json({ success: true, message: 'Return approved and payment refunded' });
 });
+
+export const rejectReturn = catchAsync(async (req, res) => {
+  const { reason } = req.body;
+  await orderService.rejectReturn(req.params.id, reason);
+  res.json({ success: true, message: 'Return rejected' });
+});

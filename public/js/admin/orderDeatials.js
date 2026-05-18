@@ -1,6 +1,4 @@
 
-  const ORDER_ID = '<%= order._id %>';
-
   function showToast(message, success) {
     var toast      = document.getElementById('toast');
     var toastInner = document.getElementById('toastInner');
@@ -86,3 +84,38 @@
         btn.textContent = 'Approve Return & Refund';
       });
   }
+
+  function openRejectReturnModal() {
+    document.getElementById('rejectReturnModal').classList.replace('hidden', 'flex');
+  }
+  function closeRejectReturnModal() {
+    document.getElementById('rejectReturnModal').classList.replace('flex', 'hidden');
+    document.getElementById('rejectReturnReason').value = '';
+  }
+  function submitRejectReturn() {
+    var reason = document.getElementById('rejectReturnReason').value.trim();
+    if (!reason) { showToast('Reason is required', false); return; }
+    var btn = document.getElementById('submitRejectReturnBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Rejecting...';
+    axios.patch('/admin/orders/' + ORDER_ID + '/reject-return', { reason: reason })
+      .then(function(res) {
+        showToast(res.data.message || 'Return rejected', true);
+        setTimeout(function() { window.location.reload(); }, 1200);
+      })
+      .catch(function(err) {
+        var msg = err.response && err.response.data && err.response.data.message
+          ? err.response.data.message
+          : 'Failed to reject return';
+        showToast(msg, false);
+        btn.disabled    = false;
+        btn.textContent = 'Reject Return';
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('rejectReturnModal');
+    if (modal) modal.addEventListener('click', function(e) {
+      if (e.target === this) closeRejectReturnModal();
+    });
+  });

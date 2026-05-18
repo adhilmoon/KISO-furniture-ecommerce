@@ -76,6 +76,12 @@ export const returnOrder = catchAsync(async (req, res) => {
     res.json({ success: true, message: 'Return request submitted successfully' });
 });
 
+export const cancelReturnRequest = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    await orderService.cancelReturnRequest(req.params.id, userId);
+    res.json({ success: true, message: 'Return request cancelled' });
+});
+
 export const downloadInvoice = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
     const order = await orderService.getOrderForInvoice(req.params.id, userId);

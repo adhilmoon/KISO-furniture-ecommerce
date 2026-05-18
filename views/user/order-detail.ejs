@@ -8,16 +8,18 @@
         delivered:        'bg-green-500/10 text-green-400 border-green-500/20',
         cancelled:        'bg-red-500/10 text-red-400 border-red-500/20',
         return_requested: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+        return_rejected:  'bg-red-500/10 text-red-400 border-red-500/20',
         returned:         'bg-gray-500/10 text-gray-400 border-gray-500/20'
     };
     const statusLabel = {
         pending: 'Order Placed', confirmed: 'Order Placed', processing: 'Order Placed',
         shipped: 'Shipped', out_for_delivery: 'Out for Delivery', delivered: 'Delivered',
-        cancelled: 'Cancelled', return_requested: 'Return Requested', returned: 'Returned'
+        cancelled: 'Cancelled', return_requested: 'Return Requested', return_rejected: 'Return Rejected', returned: 'Returned'
     };
     const canCancelOrder = ['pending', 'confirmed', 'processing'].includes(order.orderStatus);
     const canReturn = order.orderStatus === 'delivered' || order.orderItems.some(i => i.status === 'delivered');
-    const isReturnRequested = order.orderStatus === 'return_requested' || order.orderStatus === 'returned';
+    const isReturnPending = order.orderStatus === 'return_requested';
+    const isReturnFinal = order.orderStatus === 'returned' || order.orderStatus === 'return_rejected';
 %>
 
 <div class="w-full max-w-4xl mx-auto px-4">
@@ -104,7 +106,7 @@
         <!-- Delivery Progress Tracker -->
         <%
             const statusOrder = ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered'];
-            const cancelledStatuses = ['cancelled', 'return_requested', 'returned'];
+            const cancelledStatuses = ['cancelled', 'return_requested', 'returned', 'return_rejected'];
             const isCancelled = cancelledStatuses.includes(order.orderStatus);
             const currentIdx = statusOrder.indexOf(order.orderStatus);
 
@@ -307,7 +309,7 @@
         <% } %>
 
         <!-- Action buttons -->
-        <% if (canCancelOrder || (canReturn && !isReturnRequested)) { %>
+        <% if (canCancelOrder || (canReturn && !isReturnPending && !isReturnFinal)) { %>
             <div class="flex flex-wrap gap-3">
                 <% if (canCancelOrder) { %>
                     <button onclick="openCancelOrderModal()"
@@ -315,7 +317,7 @@
                         Cancel Order
                     </button>
                 <% } %>
-                <% if (canReturn && !isReturnRequested) { %>
+                <% if (canReturn && !isReturnPending && !isReturnFinal) { %>
                     <button onclick="openReturnModal()"
                         class="px-6 py-3 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-semibold text-sm rounded-xl border border-orange-500/20 transition-all">
                         Request Return
@@ -323,12 +325,29 @@
                 <% } %>
             </div>
         <% } %>
-        <% if (isReturnRequested) { %>
-            <div class="bg-orange-500/5 border border-orange-500/20 rounded-xl p-4 flex items-center gap-3">
-                <svg class="w-5 h-5 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="text-orange-400 text-sm font-medium">Return request submitted. Our team will process it within 3-5 business days.</p>
+
+        <% if (isReturnPending) { %>
+            <div class="bg-orange-500/5 border border-orange-500/20 rounded-xl p-4">
+                <p class="text-orange-400 text-sm font-medium mb-2">Return Requested — Please Wait. Our team will review within 3-5 days.</p>
+                <p class="text-brand-muted text-xs mb-3">You can cancel this request until our team reviews it.</p>
+                <button onclick="cancelReturnRequest()"
+                    class="px-4 py-2 bg-white/5 hover:bg-white/10 text-brand-light text-sm font-semibold rounded-lg border border-white/10">
+                    Cancel Return Request
+                </button>
+            </div>
+        <% } %>
+
+        <% if (order.orderStatus === 'return_rejected') { %>
+            <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4">
+                <p class="text-xs font-bold text-red-400 uppercase mb-1">Return Rejected</p>
+                <p class="text-brand-light text-sm"><%= order.returnRejectionReason %></p>
+                <p class="text-brand-muted text-xs mt-2">Attempts used: <%= order.returnAttempts || 0 %> / 3</p>
+            </div>
+        <% } %>
+
+        <% if (order.orderStatus === 'returned') { %>
+            <div class="bg-gray-500/5 border border-gray-500/20 rounded-xl p-4">
+                <p class="text-green-400 text-sm font-medium">Return Approved. Refund processed.</p>
             </div>
         <% } %>
 
