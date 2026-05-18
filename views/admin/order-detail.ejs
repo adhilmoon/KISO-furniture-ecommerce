@@ -1,4 +1,4 @@
-<div id="orderDetailRoot" data-order-id="<%= order._id %>" class="p-4 sm:p-8 max-w-5xl mx-auto w-full font-sans transition-colors duration-300">
+<div class="p-4 sm:p-8 max-w-5xl mx-auto w-full font-sans transition-colors duration-300">
 
   <%
     var statusClasses = {
@@ -139,6 +139,14 @@
       </div>
     </div>
   <% } %>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div id="toastInner" class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl border text-sm font-semibold transition-all">
+      <svg id="toastIcon" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+      <span id="toastMsg"></span>
+    </div>
+  </div>
 
   <!-- Delivery Progress Tracker -->
   <%
@@ -497,6 +505,7 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
 <!-- Reject Return Modal -->
 <div id="rejectReturnModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
   <div class="bg-brand-bg1 rounded-2xl border border-white/10 p-6 w-full max-w-md">
@@ -514,4 +523,5 @@
   </div>
 </div>
 
+<script>const ORDER_ID = '<%= order._id %>';</script>
 <script src="/js/admin/orderDeatials.js"></script>

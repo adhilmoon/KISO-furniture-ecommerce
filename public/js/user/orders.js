@@ -1,5 +1,3 @@
-
-
 const STATUS_COLORS = {
     pending:          'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
     confirmed:        'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -176,8 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function cancelReturnRequest() {
-    const result = await confirmAction('Cancel return request? You will need to submit again if you change your mind.')
-     if(!result.isConfirmed) return;
+    if (!confirm('Cancel return request? You will need to submit again if you change your mind.')) return;
     try {
         const res = await axios.post(`/user/orders/${ORDER_ID}/return/cancel`);
         if (res.data.success) {

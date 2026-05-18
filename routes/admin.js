@@ -41,7 +41,7 @@ router.get('/orders/:id', adminauth.isAdmin, adminOrderController.getOrderDetail
 router.patch('/orders/:id/status', adminauth.isAdmin, adminOrderController.updateOrderStatus);
 router.patch('/orders/:id/mark-paid', adminauth.isAdmin, adminOrderController.markCODPaid);
 router.patch('/orders/:id/approve-return', adminauth.isAdmin, adminOrderController.approveReturn);
-router.patch('/orders/:id/reject-return',adminauth.isAdmin,adminOrderController.rejectReturn)
+router.patch('/orders/:id/reject-return', adminauth.isAdmin, adminOrderController.rejectReturn);
 
 // Inventory
 router.get('/inventory', adminauth.isAdmin, adminInventoryController.getInventory);
