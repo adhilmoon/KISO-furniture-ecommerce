@@ -49,7 +49,7 @@ const OrderSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      enum: ['processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned'],
+      enum: ['processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled','return_requested','returned'],
       default: 'processing'
     },
     // Milestone timestamps
@@ -107,7 +107,7 @@ const OrderSchema = new mongoose.Schema({
   // Order Status
   orderStatus: {
     type: String,
-    enum: ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'return_requested', 'returned'],
+    enum: ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'return_requested', 'returned','return_rejected'],
     default: 'pending',
     index: true
   },
@@ -118,6 +118,12 @@ const OrderSchema = new mongoose.Schema({
   returnReason: {type: String},
   returnImage: {type: String},
   returnApprovedAt: {type: Date},
+  returnRequestedAt:     {type: Date},
+  returnRejectionReason: {type: String},
+  returnRejectedAt:      {type: Date},
+  returnCancelledAt:     {type: Date},
+  returnAttempts:        {type: Number, default: 0},
+
   notes: {type: String},
 
 }, {timestamps: true});

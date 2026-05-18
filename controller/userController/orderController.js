@@ -3,6 +3,7 @@ import { STATUS_CODES } from '../../constants/index.js';
 import PDFDocument from 'pdfkit';
 import { uploadToCloudinary } from '../../utilities/uploadToCloudinary.js';
 import * as orderService from '../../service/user/orderService.js';
+import {success} from 'zod';
 
 const IMAGE_REQUIRED_REASONS = ['damaged', 'wrong_item', 'defective'];
 
@@ -76,6 +77,13 @@ export const returnOrder = catchAsync(async (req, res) => {
     await orderService.requestReturn(req.params.id, userId, reason, imageUrl);
     res.json({ success: true, message: 'Return request submitted successfully' });
 });
+
+export const cancelReturnRequest = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    await orderService.cancelReturnRequest(req.params.id, userId);
+    res.json({ success: true, message: 'Return request cancelled' });
+});
+
 
 export const downloadInvoice = catchAsync(async (req, res) => {
     const userId = req.session.user._id;

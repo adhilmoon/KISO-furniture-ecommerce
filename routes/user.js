@@ -14,6 +14,7 @@ import * as orderController from "../controller/userController/orderController.j
 import { upload } from "../config/multer.js";
 
 import passport from "passport";
+import Order from "../model/Order.js";
 
 
 
@@ -84,6 +85,7 @@ router.get("/orders/:id", userauth.userauth, orderController.getOrderDetail);
 router.post("/orders/:id/cancel", userauth.userauth, orderController.cancelOrder);
 router.post("/orders/:id/items/:itemId/cancel", userauth.userauth, orderController.cancelItem);
 router.post("/orders/:id/return", userauth.userauth, upload.single("returnImage"), userauth.handleUploadErrors, orderController.returnOrder);
+router.post('/orders/:id/return/cancel',userauth.userauth,orderController.cancelReturnRequest)
 router.get("/orders/:id/invoice", userauth.userauth, orderController.downloadInvoice);
 
 // Wishlist API

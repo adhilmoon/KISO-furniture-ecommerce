@@ -1,6 +1,7 @@
 import catchAsync from '../../utilities/catchAsync.js';
 import { STATUS_CODES } from '../../constants/index.js';
 import * as orderService from '../../service/admin/adminOrderService.js';
+import {success} from 'zod';
 
 const displayOrderId = (order) =>
   order.orderId || `#${order._id.toString().slice(-8).toUpperCase()}`;
@@ -64,4 +65,9 @@ export const markCODPaid = catchAsync(async (req, res) => {
 export const approveReturn = catchAsync(async (req, res) => {
   await orderService.approveReturn(req.params.id);
   res.json({ success: true, message: 'Return approved and payment refunded' });
+});
+export const rejectReturn = catchAsync(async (req, res) => {
+  const { reason } = req.body;
+  await orderService.rejectReturn(req.params.id, reason);
+  res.json({ success: true, message: 'Return rejected' });
 });
