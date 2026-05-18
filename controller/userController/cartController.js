@@ -66,10 +66,17 @@ export const getCheckoutPage = catchAsync(async (req, res) => {
     const totalAmount = validItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const addresses = await profileService.getAddresses(userId);
 
+    const appliedCoupon = req.session.appliedCoupon || null;
+    const couponDiscount = appliedCoupon ? Math.min(appliedCoupon.discount || 0, totalAmount) : 0;
+    const finalAmount = Math.max(totalAmount - couponDiscount, 0);
+
     res.render("user/checkout", {
         title: "Checkout - KISO",
         cart: { ...cart, items: validItems, totalAmount },
         addresses,
+        appliedCoupon,
+        couponDiscount,
+        finalAmount,
         user: req.session.user
     });
 });

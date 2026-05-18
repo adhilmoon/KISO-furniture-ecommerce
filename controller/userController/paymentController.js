@@ -59,7 +59,9 @@ export const verifyPayment = catchAsync(async (req, res) => {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'All items are out of stock.' });
     }
 
-    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'razorpay', 'paid');
+    const appliedCoupon = req.session.appliedCoupon || null;
+    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'razorpay', 'paid', appliedCoupon);
+    delete req.session.appliedCoupon;
 
     res.json({ success: true, message: 'Payment verified and order placed successfully', orderId: newOrder._id });
 });
@@ -93,6 +95,8 @@ export const placeCODOrder = catchAsync(async (req, res) => {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'All items are out of stock.' });
     }
 
-    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'cod', 'pending');
+    const appliedCoupon = req.session.appliedCoupon || null;
+    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'cod', 'pending', appliedCoupon);
+    delete req.session.appliedCoupon;
     res.json({ success: true, message: 'Order placed successfully', orderId: newOrder._id });
 });

@@ -3,6 +3,7 @@ import * as cartService from './cartService.js';
 import * as orderRepository from '../../repository/user/orderRepository.js';
 import * as productRepository from '../../repository/user/productRepository.js';
 import { userRepository } from '../../repository/user/userRepository.js';
+import * as couponService from './couponService.js';
 
 export const verifyRazorpaySignature = (razorpayOrderId, paymentId, signature) => {
     const sign = `${razorpayOrderId}|${paymentId}`;
@@ -32,11 +33,19 @@ export const buildValidOrderItems = (cartItems) => {
     return items;
 };
 
-export const createOrder = async (userId, addressId, orderItems, paymentMethod, paymentStatus) => {
+export const createOrder = async (userId, addressId, orderItems, paymentMethod, paymentStatus, appliedCoupon = null) => {
     const address = await userRepository.findAddressById(addressId);
     if (!address) throw Object.assign(new Error('Address not found'), { status: 400 });
 
     const subtotal = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+    let couponId, couponCode, couponDiscount = 0;
+    if (appliedCoupon && appliedCoupon.couponId) {
+        couponId = appliedCoupon.couponId;
+        couponCode = appliedCoupon.code;
+        couponDiscount = Math.min(appliedCoupon.discount || 0, subtotal);
+    }
+    const grandTotal = Math.max(subtotal - couponDiscount, 0);
 
     const order = await orderRepository.createOrder({
         userId,
@@ -52,8 +61,11 @@ export const createOrder = async (userId, addressId, orderItems, paymentMethod, 
         orderItems,
         subtotal,
         shippingCost: 0,
-        discount: 0,
-        grandTotal: subtotal,
+        discount: couponDiscount,
+        couponId,
+        couponCode,
+        couponDiscount,
+        grandTotal,
         orderStatus: 'confirmed',
         paymentMethod,
         paymentStatus
@@ -61,6 +73,10 @@ export const createOrder = async (userId, addressId, orderItems, paymentMethod, 
 
     for (const item of orderItems) {
         await productRepository.updateVariantStock(item.productId, item.variantIndex, -item.quantity);
+    }
+
+    if (couponId) {
+        await couponService.recordUsage(couponId, userId, order._id);
     }
 
     await cartService.clearCart(userId);

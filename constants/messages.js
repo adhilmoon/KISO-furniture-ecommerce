@@ -78,4 +78,20 @@ export const MESSAGES = Object.freeze({
     PAGE_NOT_FOUND: "Page not found. The requested resource does not exist.",
     ROUTE_NOT_FOUND: "The page you are looking for might have been removed or is temporarily unavailable.",
     GO_BACK_HOME: "Click here to return to the homepage.",
+
+    // Coupon Messages
+    COUPON_CREATED: "Coupon created successfully",
+    COUPON_DELETED: "Coupon deleted successfully",
+    COUPON_UPDATED: "Coupon updated successfully",
+    COUPON_CODE_EXISTS: "Coupon code already exists",
+    COUPON_NOT_FOUND: "Coupon not found",
+    COUPON_INACTIVE: "This coupon is not active",
+    COUPON_EXPIRED: "This coupon has expired",
+    COUPON_MIN_PURCHASE: "Order amount does not meet minimum purchase requirement",
+    COUPON_USAGE_LIMIT_REACHED: "Coupon usage limit reached",
+    COUPON_USER_LIMIT_REACHED: "You have already used this coupon",
+    COUPON_APPLIED: "Coupon applied successfully",
+    COUPON_REMOVED: "Coupon removed",
+    COUPON_ALREADY_APPLIED: "A coupon is already applied to this cart",
+    COUPON_CODE_REQUIRED: "Please enter a coupon code",
 });

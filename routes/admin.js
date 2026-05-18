@@ -7,6 +7,7 @@ import * as adminCategory from "../controller/adminController/adminCategory.js";
 import * as adminProduct from "../controller/adminController/adminProduct.js";
 import * as adminOrderController from "../controller/adminController/adminOrderController.js";
 import * as adminInventoryController from "../controller/adminController/adminInventoryController.js";
+import * as adminCouponController from "../controller/adminController/adminCouponController.js";
 import { uploadProduct } from "../config/multer.js";
 
 router.use(adminauth.noCache);
@@ -46,5 +47,11 @@ router.patch('/orders/:id/reject-return', adminauth.isAdmin, adminOrderControlle
 // Inventory
 router.get('/inventory', adminauth.isAdmin, adminInventoryController.getInventory);
 router.patch('/inventory/stock', adminauth.isAdmin, adminInventoryController.updateStock);
+
+// Coupons
+router.get('/coupons', adminauth.isAdmin, adminCouponController.getCoupons);
+router.post('/coupons', adminauth.isAdmin, adminCouponController.createCoupon);
+router.delete('/coupons/:id', adminauth.isAdmin, adminCouponController.deleteCoupon);
+router.patch('/coupons/:id/toggle', adminauth.isAdmin, adminCouponController.toggleCouponActive);
 
 export default router;

@@ -1,5 +1,6 @@
 import * as orderRepository from '../../repository/user/orderRepository.js';
 import * as productRepository from '../../repository/user/productRepository.js';
+import * as couponService from './couponService.js';
 
 const CANCELLABLE_STATUSES = ['pending', 'confirmed', 'processing'];
 const RETURN_WINDOW_DAYS = 30;
@@ -74,6 +75,9 @@ export const cancelOrder = async (orderId, userId, reason) => {
     order.orderStatus = 'cancelled';
     order.cancellationReason = reason || '';
     await order.save();
+    if (order.couponId) {
+        await couponService.revokeUsage(order.couponId, order._id);
+    }
 };
 
 export const cancelItem = async (orderId, itemId, userId, reason) => {
@@ -87,8 +91,12 @@ export const cancelItem = async (orderId, itemId, userId, reason) => {
     item.status = 'cancelled';
     item.cancellationReason = reason || '';
     await productRepository.updateVariantStock(item.productId, item.variantIndex, item.quantity);
-    if (order.orderItems.every(i => i.status === 'cancelled')) order.orderStatus = 'cancelled';
+    const allCancelled = order.orderItems.every(i => i.status === 'cancelled');
+    if (allCancelled) order.orderStatus = 'cancelled';
     await order.save();
+    if (allCancelled && order.couponId) {
+        await couponService.revokeUsage(order.couponId, order._id);
+    }
 };
 
 export const requestReturn = async (orderId, userId, reason, imageUrl) => {
