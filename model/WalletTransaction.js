@@ -25,7 +25,7 @@ const WalletTransactionSchema = new mongoose.Schema({
   },
   source: {
     type: String,
-    enum: ['refund_cancel', 'refund_return', 'checkout_pay', 'admin_credit', 'admin_debit', 'referral_bonus'],
+    enum: ['refund_cancel', 'refund_return', 'checkout_pay', 'admin_credit', 'admin_debit', 'referral_bonus', 'wallet_topup'],
     required: true
   },
   orderId: {

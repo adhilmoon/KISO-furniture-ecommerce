@@ -2,6 +2,7 @@
 import bcrypt from 'bcrypt'
 import * as otpsender from '../../utilities/sendEmail.js';
 import  {userRepository} from '../../repository/user/userRepository.js';
+import * as referralService from './referralService.js';
 import { MESSAGES } from '../../constants/index.js';
 
 
@@ -49,12 +50,21 @@ export const userService={
             return {success:true};
         }
         const hashedPassword=await bcrypt.hash(tempUser.password,10);
-        await userRepository.createUser({
+        const newReferralCode = await referralService.generateUniqueReferralCode();
+        const newUser = await userRepository.createUser({
             name:tempUser.name,
             email:tempUser.email,
             password:hashedPassword,
-            referralCode:tempUser.referralCode
+            referralCode: newReferralCode
         })
+        const referredByCode = tempUser.refferralCode || tempUser.referralCode;
+        if (referredByCode && String(referredByCode).trim()) {
+            try {
+                await referralService.applyReferralBonus(newUser._id, referredByCode);
+            } catch (e) {
+                // referral failure must not block signup; ignore invalid codes
+            }
+        }
 
         return {success:true,message:MESSAGES.USER_REGISTERED_SUCCESS}
 

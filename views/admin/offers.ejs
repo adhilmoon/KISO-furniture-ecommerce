@@ -1,0 +1,181 @@
+<div class="w-full">
+
+  <!-- Header -->
+  <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-kiso-text">Offer Management</h1>
+      <p class="text-brand-muted text-sm mt-1">Create and manage product, category, and referral offers</p>
+    </div>
+    <button onclick="openCreateOfferModal()"
+      class="px-5 py-2.5 bg-brand-accent text-kiso-bg font-semibold text-sm rounded-xl hover:bg-brand-accent/90 transition-colors shadow-lg shadow-brand-accent/20 whitespace-nowrap">
+      + New Offer
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <form method="GET" action="/admin/offers" class="mb-6 flex flex-col sm:flex-row gap-3">
+    <div class="flex items-center flex-1 bg-brand-bg2 border border-white/10 rounded-lg px-4 py-3 gap-3">
+      <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+      </svg>
+      <input type="text" name="search" value="<%= search || '' %>" placeholder="Search by name"
+        class="bg-transparent flex-1 text-sm text-brand-light placeholder:text-brand-muted/60 outline-none" />
+    </div>
+    <select name="type" class="bg-brand-bg2 border border-white/10 rounded-lg px-4 py-3 text-brand-light text-sm outline-none">
+      <option value="" <%= !typeFilter ? 'selected' : '' %>>All Types</option>
+      <option value="product" <%= typeFilter === 'product' ? 'selected' : '' %>>Product</option>
+      <option value="category" <%= typeFilter === 'category' ? 'selected' : '' %>>Category</option>
+      <option value="referral" <%= typeFilter === 'referral' ? 'selected' : '' %>>Referral</option>
+    </select>
+    <button type="submit" class="px-5 py-3 bg-brand-bg2 border border-white/10 text-brand-light text-sm font-semibold rounded-lg hover:bg-white/5">Filter</button>
+  </form>
+
+  <!-- Table -->
+  <div class="bg-brand-bg1 border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-brand-bg2/80 border-b border-white/5 text-brand-muted uppercase tracking-wider text-[11px]">
+          <tr>
+            <th class="px-6 py-4 text-left font-semibold">Name</th>
+            <th class="px-6 py-4 text-left font-semibold">Type</th>
+            <th class="px-6 py-4 text-left font-semibold">Target</th>
+            <th class="px-6 py-4 text-right font-semibold">Value</th>
+            <th class="px-6 py-4 text-center font-semibold">Expiry</th>
+            <th class="px-6 py-4 text-center font-semibold">Status</th>
+            <th class="px-6 py-4 text-right font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          <% if (!offers || offers.length === 0) { %>
+            <tr><td colspan="7" class="px-6 py-10 text-center text-brand-muted">No offers found</td></tr>
+          <% } else { %>
+            <% offers.forEach(function(o) {
+              const isExpired = new Date(o.expiresAt).getTime() < Date.now();
+              const statusCls = !o.isActive
+                ? 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+                : isExpired
+                  ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                  : 'bg-green-500/10 text-green-400 border-green-500/20';
+              const statusLbl = !o.isActive ? 'Inactive' : isExpired ? 'Expired' : 'Active';
+              const target = o.type === 'product'
+                ? (o.productId?.productName || '-')
+                : o.type === 'category'
+                  ? (o.categoryId?.categoryName || '-')
+                  : 'All users';
+            %>
+              <tr class="hover:bg-white/5 transition-colors">
+                <td class="px-6 py-4 font-semibold text-brand-light"><%= o.name %></td>
+                <td class="px-6 py-4 text-brand-muted capitalize"><%= o.type %></td>
+                <td class="px-6 py-4 text-brand-muted"><%= target %></td>
+                <td class="px-6 py-4 text-right text-brand-light font-semibold">
+                  <%= o.discountType === 'percentage' ? o.discountValue + '%' : '₹' + o.discountValue.toLocaleString() %>
+                </td>
+                <td class="px-6 py-4 text-center text-brand-muted">
+                  <%= new Date(o.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 border rounded-full text-xs font-bold <%= statusCls %>"><%= statusLbl %></span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex justify-end gap-2">
+                    <button onclick="toggleOffer('<%= o._id %>')" class="text-xs font-semibold text-blue-400 border border-blue-400/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/10">
+                      <%= o.isActive ? 'Disable' : 'Enable' %>
+                    </button>
+                    <button onclick="deleteOffer('<%= o._id %>')" class="text-xs font-semibold text-red-400 border border-red-400/30 px-3 py-1.5 rounded-lg hover:bg-red-500/10">
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <% if (totalPages > 1) { %>
+    <div class="flex justify-center gap-2 mt-6">
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/admin/offers?page=<%= i %><%= search ? '&search=' + search : '' %><%= typeFilter ? '&type=' + typeFilter : '' %>"
+          class="px-3 py-1.5 text-xs rounded-lg border <%= i === pageNum ? 'bg-brand-accent border-brand-accent text-kiso-bg' : 'border-white/10 text-brand-muted hover:bg-white/5' %>">
+          <%= i %>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Create Offer Modal -->
+<div id="createOfferModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-brand-bg1 rounded-2xl border border-white/10 p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <h3 class="text-lg font-bold text-brand-light mb-4">Create Offer</h3>
+    <form id="createOfferForm" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Name <span class="text-red-400">*</span></label>
+        <input type="text" name="name" required class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Description</label>
+        <input type="text" name="description" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Type <span class="text-red-400">*</span></label>
+          <select name="type" id="offerType" required onchange="toggleOfferTargetFields()" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40">
+            <option value="product">Product</option>
+            <option value="category">Category</option>
+            <option value="referral">Referral</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Discount Type <span class="text-red-400">*</span></label>
+          <select name="discountType" required class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40">
+            <option value="percentage">Percentage (%)</option>
+            <option value="flat">Flat (₹)</option>
+          </select>
+        </div>
+      </div>
+      <div id="productField">
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Product</label>
+        <select name="productId" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40">
+          <option value="">Select product...</option>
+          <% products.forEach(function(p) { %>
+            <option value="<%= p._id %>"><%= p.productName %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div id="categoryField" class="hidden">
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Category</label>
+        <select name="categoryId" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40">
+          <option value="">Select category...</option>
+          <% categories.forEach(function(c) { %>
+            <option value="<%= c._id %>"><%= c.categoryName %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Discount Value <span class="text-red-400">*</span></label>
+          <input type="number" name="discountValue" required min="0" step="0.01" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Max Discount (₹)</label>
+          <input type="number" name="maxDiscount" min="0" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Expires At <span class="text-red-400">*</span></label>
+        <input type="datetime-local" name="expiresAt" required class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeCreateOfferModal()" class="flex-1 px-4 py-2.5 border border-white/10 text-brand-light font-semibold text-sm rounded-xl hover:bg-white/5">Cancel</button>
+        <button type="submit" class="flex-1 px-4 py-2.5 bg-brand-accent text-kiso-bg font-bold text-sm rounded-xl hover:bg-brand-accent/90">Create Offer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="/js/admin/offers.js"></script>

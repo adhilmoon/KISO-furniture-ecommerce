@@ -80,11 +80,14 @@ router.delete("/coupon", userauth.userauth, couponController.removeCoupon);
 // Wallet
 router.get("/wallet", userauth.userauth, walletController.getWalletPage);
 router.get("/wallet/balance", userauth.userauth, walletController.getBalance);
+router.post("/wallet/topup/create-order", userauth.userauth, walletController.createTopupOrder);
+router.post("/wallet/topup/verify", userauth.userauth, walletController.verifyTopup);
 
 // Payment API
 router.post("/payment/create-order", userauth.userauth, paymentController.createOrder);
 router.post("/payment/verify", userauth.userauth, paymentController.verifyPayment);
 router.post("/payment/cod", userauth.userauth, paymentController.placeCODOrder);
+router.post("/payment/wallet", userauth.userauth, paymentController.placeWalletOrder);
 router.get("/order/confirmation/:orderId", userauth.userauth, paymentController.getOrderConfirmation);
 router.get("/payment/failed", userauth.userauth, paymentController.getPaymentFailed);
 

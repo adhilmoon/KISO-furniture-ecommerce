@@ -8,6 +8,8 @@ import * as adminProduct from "../controller/adminController/adminProduct.js";
 import * as adminOrderController from "../controller/adminController/adminOrderController.js";
 import * as adminInventoryController from "../controller/adminController/adminInventoryController.js";
 import * as adminCouponController from "../controller/adminController/adminCouponController.js";
+import * as adminOfferController from "../controller/adminController/adminOfferController.js";
+import * as adminSalesReportController from "../controller/adminController/adminSalesReportController.js";
 import { uploadProduct } from "../config/multer.js";
 
 router.use(adminauth.noCache);
@@ -15,6 +17,7 @@ router.use(adminauth.noCache);
 router.get("/login", adminauth.isLogin, adminPages.adminlogin);
 router.post('/login', adminController.auth);
 router.get('/dashboard', adminauth.isAdmin, adminPages.admindash);
+router.get('/dashboard/chart-data', adminauth.isAdmin, adminPages.dashboardChartData);
 router.get('/customers', adminauth.isAdmin, adminPages.users_mange);
 router.get('/categories', adminauth.isAdmin, adminPages.adminCategory_load);
 router.get('/products', adminauth.isAdmin, adminPages.adminProduct_Management);
@@ -53,5 +56,16 @@ router.get('/coupons', adminauth.isAdmin, adminCouponController.getCoupons);
 router.post('/coupons', adminauth.isAdmin, adminCouponController.createCoupon);
 router.delete('/coupons/:id', adminauth.isAdmin, adminCouponController.deleteCoupon);
 router.patch('/coupons/:id/toggle', adminauth.isAdmin, adminCouponController.toggleCouponActive);
+
+// Offers
+router.get('/offers', adminauth.isAdmin, adminOfferController.getOffers);
+router.post('/offers', adminauth.isAdmin, adminOfferController.createOffer);
+router.delete('/offers/:id', adminauth.isAdmin, adminOfferController.deleteOffer);
+router.patch('/offers/:id/toggle', adminauth.isAdmin, adminOfferController.toggleOfferActive);
+
+// Sales Reports
+router.get('/sales-report', adminauth.isAdmin, adminSalesReportController.getSalesReportPage);
+router.get('/sales-report/download/pdf', adminauth.isAdmin, adminSalesReportController.downloadSalesReportPdf);
+router.get('/sales-report/download/excel', adminauth.isAdmin, adminSalesReportController.downloadSalesReportExcel);
 
 export default router;

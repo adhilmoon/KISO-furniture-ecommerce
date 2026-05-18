@@ -104,4 +104,19 @@ export const MESSAGES = Object.freeze({
     WALLET_REFUND_CANCEL: "Refund credited to wallet for cancelled order",
     WALLET_REFUND_RETURN: "Refund credited to wallet for returned order",
     WALLET_PAYMENT: "Paid using wallet",
+    WALLET_TOPUP_INITIATED: "Top-up initiated",
+    WALLET_TOPUP_SUCCESS: "Wallet topped up successfully",
+    WALLET_TOPUP_FAILED: "Wallet top-up verification failed",
+    WALLET_MIN_TOPUP: "Top-up amount must be at least ₹1",
+
+    // Offer Messages
+    OFFER_CREATED: "Offer created successfully",
+    OFFER_UPDATED: "Offer updated successfully",
+    OFFER_DELETED: "Offer deleted successfully",
+    OFFER_NOT_FOUND: "Offer not found",
+    OFFER_INACTIVE: "This offer is not active",
+    OFFER_EXPIRED: "This offer has expired",
+    OFFER_TARGET_REQUIRED: "Offer target (product or category) is required",
+    REFERRAL_BONUS_CREDITED: "Referral bonus credited",
+    REFERRAL_INVALID: "Invalid referral code",
 });

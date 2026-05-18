@@ -2,13 +2,24 @@ import catchAsync from '../../utilities/catchAsync.js';
 import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
 import * as couponService from '../../service/user/couponService.js';
 import * as cartService from '../../service/user/cartService.js';
+import * as offerService from '../../service/user/offerService.js';
 
-const computeCartSubtotal = (cart) =>
-    cart.items.reduce((sum, item) => {
-        const variant = item.productId?.variants?.[item.variantIndex];
-        const price = variant?.price ?? item.price ?? 0;
-        return sum + price * item.quantity;
-    }, 0);
+const computeCartSubtotal = async (cart) => {
+    let sum = 0;
+    for (const item of cart.items) {
+        const product = item.productId;
+        const variant = product?.variants?.[item.variantIndex];
+        const basePrice = variant?.price ?? item.price ?? 0;
+        const categoryId = product?.category?._id || product?.category;
+        const { effectivePrice } = await offerService.getBestOfferForProduct({
+            productId: product?._id,
+            categoryId,
+            basePrice
+        });
+        sum += effectivePrice * item.quantity;
+    }
+    return sum;
+};
 
 export const applyCoupon = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
@@ -22,7 +33,7 @@ export const applyCoupon = catchAsync(async (req, res) => {
     if (!cart || !cart.items || cart.items.length === 0) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: MESSAGES.CART_IS_EMPTY });
     }
-    const subtotal = computeCartSubtotal(cart);
+    const subtotal = await computeCartSubtotal(cart);
 
     const { coupon, discount } = await couponService.applyCoupon(code, userId, subtotal);
 

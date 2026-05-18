@@ -5,6 +5,7 @@ import * as productRepository from '../../repository/user/productRepository.js';
 import { userRepository } from '../../repository/user/userRepository.js';
 import * as couponService from './couponService.js';
 import * as walletService from './walletService.js';
+import * as offerService from './offerService.js';
 
 export const verifyRazorpaySignature = (razorpayOrderId, paymentId, signature) => {
     const sign = `${razorpayOrderId}|${paymentId}`;
@@ -15,18 +16,27 @@ export const verifyRazorpaySignature = (razorpayOrderId, paymentId, signature) =
     return signature === expected;
 };
 
-export const buildValidOrderItems = (cartItems) => {
+export const buildValidOrderItems = async (cartItems) => {
     const items = [];
     for (const item of cartItems) {
         const product = item.productId;
         const variant = product?.variants?.[item.variantIndex];
         const isListed = product?.isListed && (!product?.category || product.category.isActive);
         if (product && isListed && variant && variant.stock > 0) {
+            const categoryId = product.category?._id || product.category;
+            const { offer, discount, effectivePrice } = await offerService.getBestOfferForProduct({
+                productId: product._id,
+                categoryId,
+                basePrice: variant.price
+            });
             items.push({
                 productId: product._id,
                 variantIndex: item.variantIndex,
                 quantity: Math.min(item.quantity, variant.stock),
-                price: variant.price,
+                price: effectivePrice,
+                originalPrice: variant.price,
+                offerDiscount: discount,
+                offerId: offer?._id || undefined,
                 status: 'processing'
             });
         }

@@ -1,6 +1,7 @@
 import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
 import catchAsync from '../../utilities/catchAsync.js';
 import * as adminPageService from '../../service/admin/adminPageService.js';
+import * as dashboardService from '../../service/admin/dashboardService.js';
 
 export const adminlogin = (req, res)  => {
     res.render('admin/login', {
@@ -16,13 +17,33 @@ export const toggleBlock = catchAsync(async (req, res) => {
 });
 
 export const admindash = catchAsync(async (req, res) => {
-    const stats = await adminPageService.getDashboardStats();
+    const period = req.query.period || 'monthly';
+    const { startDate, endDate } = req.query;
+    const [stats, chart, top] = await Promise.all([
+        adminPageService.getDashboardStats(),
+        dashboardService.getChartData({ period, startDate, endDate }),
+        dashboardService.getTopAnalytics({ period, startDate, endDate, limit: 10 })
+    ]);
     res.render('admin/dashboard', {
         title: 'Admin dashboard',
         layout: 'layouts/admin',
         showSidebar: true,
+        period,
+        startDate: startDate || '',
+        endDate: endDate || '',
+        chart,
+        topProducts: top.products,
+        topCategories: top.categories,
+        topBrands: top.brands,
         ...stats
     });
+});
+
+export const dashboardChartData = catchAsync(async (req, res) => {
+    const period = req.query.period || 'monthly';
+    const { startDate, endDate } = req.query;
+    const chart = await dashboardService.getChartData({ period, startDate, endDate });
+    res.json({ success: true, chart });
 });
 
 export const users_mange = catchAsync(async (req, res) => {

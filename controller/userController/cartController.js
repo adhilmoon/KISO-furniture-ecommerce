@@ -1,6 +1,7 @@
 import * as cartService from '../../service/user/cartService.js';
 import * as profileService from '../../service/user/profileService.js';
 import * as walletService from '../../service/user/walletService.js';
+import * as offerService from '../../service/user/offerService.js';
 import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
 import catchAsync from '../../utilities/catchAsync.js';
 
@@ -43,10 +44,19 @@ export const getCheckoutPage = catchAsync(async (req, res) => {
         }
 
         const purchaseQty = Math.min(item.quantity, variant.stock);
+        const categoryId = product.category?._id || product.category;
+        const { offer, discount, effectivePrice } = await offerService.getBestOfferForProduct({
+            productId: product._id,
+            categoryId,
+            basePrice: variant.price
+        });
         validItems.push({
             ...item,
             quantity: purchaseQty,
-            price: variant.price 
+            price: effectivePrice,
+            originalPrice: variant.price,
+            offerDiscount: discount,
+            offerName: offer?.name || null
         });
     }
 

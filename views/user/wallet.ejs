@@ -7,10 +7,16 @@
     </div>
 
     <!-- Balance Card -->
-    <div class="bg-gradient-to-br from-brand-accent/20 to-brand-bg2 border border-brand-accent/30 rounded-2xl p-6 mb-8 shadow-lg shadow-brand-accent/10">
-        <p class="text-xs font-bold text-brand-muted uppercase tracking-widest mb-2">Available Balance</p>
-        <p class="text-4xl font-extrabold text-brand-accent">₹<%= wallet.balance.toLocaleString('en-IN') %></p>
-        <p class="text-brand-muted text-xs mt-3">Use this balance during checkout</p>
+    <div class="bg-gradient-to-br from-brand-accent/20 to-brand-bg2 border border-brand-accent/30 rounded-2xl p-6 mb-8 shadow-lg shadow-brand-accent/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <p class="text-xs font-bold text-brand-muted uppercase tracking-widest mb-2">Available Balance</p>
+            <p class="text-4xl font-extrabold text-brand-accent">₹<%= wallet.balance.toLocaleString('en-IN') %></p>
+            <p class="text-brand-muted text-xs mt-3">Use this balance during checkout</p>
+        </div>
+        <button onclick="openTopupModal()"
+            class="self-start sm:self-auto px-5 py-3 bg-brand-accent text-brand-bg1 font-bold text-sm rounded-xl hover:bg-brand-accent/90 transition-all shadow-lg shadow-brand-accent/20 whitespace-nowrap">
+            + Add Money
+        </button>
     </div>
 
     <!-- Transaction History -->
@@ -67,3 +73,34 @@
         </div>
     <% } %>
 </div>
+
+<!-- Topup Modal -->
+<div id="topupModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-brand-bg2 rounded-2xl border border-white/10 p-6 w-full max-w-md">
+        <h3 class="text-lg font-bold text-brand-light mb-1">Add Money to Wallet</h3>
+        <p class="text-brand-muted text-sm mb-5">Enter amount and pay via Razorpay</p>
+        <div class="mb-5">
+            <label class="block text-sm font-semibold text-brand-light mb-2">Amount (₹) <span class="text-red-400">*</span></label>
+            <input type="number" id="topupAmount" min="1" step="1" placeholder="Enter amount"
+                class="w-full bg-brand-bg1 border border-white/10 rounded-xl px-4 py-3 text-brand-light placeholder:text-brand-muted/60 text-sm outline-none focus:border-brand-accent/40 transition-all">
+            <div class="flex gap-2 mt-3 flex-wrap">
+                <% [100, 500, 1000, 2000].forEach(function(v) { %>
+                    <button type="button" onclick="setTopupAmount(<%= v %>)"
+                        class="px-3 py-1.5 text-xs rounded-lg border border-white/10 text-brand-light hover:bg-white/5 transition-all">
+                        ₹<%= v %>
+                    </button>
+                <% }) %>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="closeTopupModal()"
+                class="flex-1 px-4 py-2.5 border border-white/10 text-brand-light font-semibold text-sm rounded-xl hover:bg-white/5 transition-all">Cancel</button>
+            <button id="topupPayBtn" onclick="submitTopup()"
+                class="flex-1 px-4 py-2.5 bg-brand-accent text-brand-bg1 font-bold text-sm rounded-xl hover:bg-brand-accent/90 transition-all">Add Money</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/user/wallet.js"></script>

@@ -16,6 +16,11 @@ const productSchema = new schema({
     ref: "Category",
     required: true,
   },
+  offer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Offer",
+    default: null,
+  },
   basePrice: {
     type: Number,
     required: true,
@@ -24,6 +29,12 @@ const productSchema = new schema({
   material: {
     type: String,
     default: "",
+  },
+  brand: {
+    type: String,
+    default: "",
+    trim: true,
+    index: true,
   },
   sku: {
     type: String,

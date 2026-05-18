@@ -36,12 +36,15 @@ const OrderSchema = new mongoose.Schema({
       required: true,
       min: 1
     },
-    price: { 
-      type: Number, 
+    price: {
+      type: Number,
       required: true,
       min: 0
     },
-    status: { 
+    originalPrice: { type: Number, min: 0 },
+    offerDiscount: { type: Number, default: 0, min: 0 },
+    offerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer' },
+    status: {
       type: String, 
       enum: ['processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'return_requested', 'returned'],
       default: 'processing'

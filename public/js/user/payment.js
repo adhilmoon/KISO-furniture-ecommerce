@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update button label when payment method changes
     document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
         radio.addEventListener('change', () => {
-            if (payBtnLabel) {
-                payBtnLabel.textContent = radio.value === 'cod' ? 'Place Order (COD)' : 'Pay with Razorpay';
-            }
+            if (!payBtnLabel) return;
+            if (radio.value === 'cod') payBtnLabel.textContent = 'Place Order (COD)';
+            else if (radio.value === 'wallet') payBtnLabel.textContent = 'Pay with Wallet';
+            else payBtnLabel.textContent = 'Pay with Razorpay';
         });
     });
 
@@ -28,6 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (walletCoversAll) {
                     payNowBtn.innerHTML = `${spinnerHTML} Placing Order...`;
                     const response = await axios.post('/user/payment/cod', { addressId, useWallet: true });
+                    if (response.data.success) {
+                        window.location.href = `/user/order/confirmation/${response.data.orderId}`;
+                    } else {
+                        throw new Error(response.data.message || 'Failed to place order');
+                    }
+                    return;
+                }
+                if (selectedMethod === 'wallet') {
+                    payNowBtn.innerHTML = `${spinnerHTML} Placing Order...`;
+                    const response = await axios.post('/user/payment/wallet', { addressId });
                     if (response.data.success) {
                         window.location.href = `/user/order/confirmation/${response.data.orderId}`;
                     } else {
