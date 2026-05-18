@@ -24,10 +24,9 @@ export const getChartData = async ({ period, startDate, endDate }) => {
 
 export const getTopAnalytics = async ({ period, startDate, endDate, limit = 10 }) => {
     const range = resolvePeriod(period, startDate, endDate);
-    const [products, categories, brands] = await Promise.all([
+    const [products, categories] = await Promise.all([
         dashboardRepository.aggregateTopProducts({ ...range, limit }),
-        dashboardRepository.aggregateTopCategories({ ...range, limit }),
-        dashboardRepository.aggregateTopBrands({ ...range, limit })
+        dashboardRepository.aggregateTopCategories({ ...range, limit })
     ]);
-    return { products, categories, brands };
+    return { products, categories };
 };

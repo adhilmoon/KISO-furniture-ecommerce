@@ -8,6 +8,8 @@ export const getSalesReportPage = catchAsync(async (req, res) => {
     const report = await salesReportService.getReport({ period, startDate, endDate });
     res.render('admin/sales-report', {
         title: 'Sales Report - KISO Admin',
+        layout: 'layouts/admin',
+        showSidebar: true,
         report,
         period,
         startDate: startDate || '',

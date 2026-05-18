@@ -71,16 +71,17 @@ export const getBalance = async (userId) => {
 
 export const createTopupOrder = async (userId, amount) => {
     const value = sanitizeAmount(amount);
+    const shortUid = String(userId).slice(-8);
     const options = {
         amount: value * 100,
         currency: 'INR',
-        receipt: `wallet_topup_${userId}_${Date.now()}`,
+        receipt: `wtu_${shortUid}_${Date.now()}`,
         notes: { userId: String(userId), purpose: 'wallet_topup' }
     };
     return razorpay.orders.create(options);
 };
 
-export const verifyTopup = async (userId, { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount }) => {
+export const verifyTopup = async (userId, { razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
     const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expected = crypto
         .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
@@ -89,8 +90,15 @@ export const verifyTopup = async (userId, { razorpay_order_id, razorpay_payment_
     if (expected !== razorpay_signature) {
         throw buildError(MESSAGES.WALLET_TOPUP_FAILED, 400);
     }
-    const value = sanitizeAmount(amount);
-    await creditWallet(userId, value, 'wallet_topup', {
+    const rzpOrder = await razorpay.orders.fetch(razorpay_order_id);
+    if (!rzpOrder) throw buildError(MESSAGES.WALLET_TOPUP_FAILED, 400);
+    if (String(rzpOrder.notes?.userId || '') !== String(userId)) {
+        throw buildError(MESSAGES.WALLET_TOPUP_FAILED, 403);
+    }
+    const paidPaise = rzpOrder.amount_paid || rzpOrder.amount;
+    const amountRupees = Math.round(paidPaise / 100);
+    if (!paidPaise || amountRupees <= 0) throw buildError(MESSAGES.WALLET_TOPUP_FAILED, 400);
+    await creditWallet(userId, amountRupees, 'wallet_topup', {
         description: `Top-up via Razorpay (${razorpay_payment_id})`
     });
 };

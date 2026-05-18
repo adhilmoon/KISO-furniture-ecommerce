@@ -12,6 +12,8 @@ export const getCoupons = catchAsync(async (req, res) => {
 
     res.render('admin/coupons', {
         title: 'Coupons - KISO Admin',
+        layout: 'layouts/admin',
+        showSidebar: true,
         coupons,
         pageNum: page,
         totalPages: Math.ceil(total / perPage),

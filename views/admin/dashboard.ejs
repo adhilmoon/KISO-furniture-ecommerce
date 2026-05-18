@@ -56,7 +56,7 @@
     </div>
 
     <!-- Top Analytics -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-12">
         <!-- Top Products -->
         <div class="bg-brand-bg1 border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
             <div class="px-5 py-4 border-b border-white/5">
@@ -101,27 +101,6 @@
             </div>
         </div>
 
-        <!-- Top Brands -->
-        <div class="bg-brand-bg1 border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
-            <div class="px-5 py-4 border-b border-white/5">
-                <h3 class="text-sm font-semibold text-brand-muted uppercase tracking-wider">Top 10 Brands</h3>
-            </div>
-            <div class="divide-y divide-white/5">
-                <% if (!topBrands || topBrands.length === 0) { %>
-                    <div class="px-5 py-8 text-center text-brand-muted text-sm">No brand data available</div>
-                <% } else { %>
-                    <% topBrands.forEach(function(b, i) { %>
-                        <div class="px-5 py-3 flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-3 flex-1 min-w-0">
-                                <span class="w-6 h-6 rounded-full bg-brand-accent/10 text-brand-accent text-xs font-bold flex items-center justify-center"><%= i + 1 %></span>
-                                <span class="text-sm text-brand-light font-medium truncate"><%= b._id %></span>
-                            </div>
-                            <span class="text-xs text-brand-muted font-semibold"><%= b.unitsSold %> sold</span>
-                        </div>
-                    <% }) %>
-                <% } %>
-            </div>
-        </div>
     </div>
 
 </div>

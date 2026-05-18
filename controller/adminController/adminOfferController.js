@@ -18,6 +18,8 @@ export const getOffers = catchAsync(async (req, res) => {
 
     res.render('admin/offers', {
         title: 'Offers - KISO Admin',
+        layout: 'layouts/admin',
+        showSidebar: true,
         offers,
         products,
         categories,

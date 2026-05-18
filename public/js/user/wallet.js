@@ -1,10 +1,17 @@
 function openTopupModal() {
     document.getElementById('topupModal').classList.replace('hidden', 'flex');
+    resetTopupBtn();
 }
 
 function closeTopupModal() {
     document.getElementById('topupModal').classList.replace('flex', 'hidden');
     document.getElementById('topupAmount').value = '';
+    resetTopupBtn();
+}
+
+function resetTopupBtn() {
+    const btn = document.getElementById('topupPayBtn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Add Money'; }
 }
 
 function setTopupAmount(value) {
@@ -29,6 +36,9 @@ async function submitTopup() {
         if (!res.data.success) throw new Error(res.data.message || 'Failed to initialize top-up');
 
         const { order, razorpayKeyId } = res.data;
+        if (!razorpayKeyId) throw new Error('Razorpay key missing');
+
+        closeTopupModal();
 
         const options = {
             key: razorpayKeyId,
@@ -39,12 +49,10 @@ async function submitTopup() {
             order_id: order.id,
             handler: async function (response) {
                 try {
-                    btn.textContent = 'Verifying...';
                     const verifyRes = await axios.post('/user/wallet/topup/verify', {
                         razorpay_order_id: response.razorpay_order_id,
                         razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature,
-                        amount
+                        razorpay_signature: response.razorpay_signature
                     });
                     if (verifyRes.data.success) {
                         if (window.showToast) showToast(verifyRes.data.message, 'success');
@@ -54,15 +62,12 @@ async function submitTopup() {
                     }
                 } catch (err) {
                     if (window.showToast) showToast(err.response?.data?.message || err.message || 'Verification failed', 'error');
-                    btn.disabled = false;
-                    btn.textContent = 'Add Money';
                 }
             },
             theme: { color: '#EAB308' },
             modal: {
                 ondismiss: function () {
-                    btn.disabled = false;
-                    btn.textContent = 'Add Money';
+                    if (window.showToast) showToast('Top-up cancelled', 'info');
                 }
             }
         };
@@ -70,14 +75,11 @@ async function submitTopup() {
         const rzp = new Razorpay(options);
         rzp.on('payment.failed', function () {
             if (window.showToast) showToast('Payment failed. Please try again.', 'error');
-            btn.disabled = false;
-            btn.textContent = 'Add Money';
         });
         rzp.open();
     } catch (err) {
         if (window.showToast) showToast(err.response?.data?.message || err.message || 'Top-up failed', 'error');
-        btn.disabled = false;
-        btn.textContent = 'Add Money';
+        resetTopupBtn();
     }
 }
 

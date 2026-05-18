@@ -34,7 +34,6 @@ export const admindash = catchAsync(async (req, res) => {
         chart,
         topProducts: top.products,
         topCategories: top.categories,
-        topBrands: top.brands,
         ...stats
     });
 });
