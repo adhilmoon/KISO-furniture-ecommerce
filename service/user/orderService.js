@@ -1,6 +1,7 @@
 import * as orderRepository from '../../repository/user/orderRepository.js';
 import * as productRepository from '../../repository/user/productRepository.js';
 import * as couponService from './couponService.js';
+import * as walletService from './walletService.js';
 
 const CANCELLABLE_STATUSES = ['pending', 'confirmed', 'processing'];
 const RETURN_WINDOW_DAYS = 30;
@@ -74,9 +75,17 @@ export const cancelOrder = async (orderId, userId, reason) => {
     }
     order.orderStatus = 'cancelled';
     order.cancellationReason = reason || '';
+    const refundAmount = order.paymentStatus === 'paid' ? order.grandTotal : 0;
+    if (refundAmount > 0) order.paymentStatus = 'refunded';
     await order.save();
     if (order.couponId) {
         await couponService.revokeUsage(order.couponId, order._id);
+    }
+    if (refundAmount > 0) {
+        await walletService.creditWallet(userId, refundAmount, 'refund_cancel', {
+            orderId: order._id,
+            description: `Refund for cancelled order ${order.orderId || order._id}`
+        });
     }
 };
 
@@ -92,10 +101,25 @@ export const cancelItem = async (orderId, itemId, userId, reason) => {
     item.cancellationReason = reason || '';
     await productRepository.updateVariantStock(item.productId, item.variantIndex, item.quantity);
     const allCancelled = order.orderItems.every(i => i.status === 'cancelled');
-    if (allCancelled) order.orderStatus = 'cancelled';
+    let refundAmount = 0;
+    if (allCancelled) {
+        order.orderStatus = 'cancelled';
+        if (order.paymentStatus === 'paid') {
+            refundAmount = order.grandTotal;
+            order.paymentStatus = 'refunded';
+        }
+    } else if (order.paymentStatus === 'paid') {
+        refundAmount = (item.price * item.quantity);
+    }
     await order.save();
     if (allCancelled && order.couponId) {
         await couponService.revokeUsage(order.couponId, order._id);
+    }
+    if (refundAmount > 0) {
+        await walletService.creditWallet(userId, refundAmount, 'refund_cancel', {
+            orderId: order._id,
+            description: `Refund for cancelled item in order ${order.orderId || order._id}`
+        });
     }
 };
 

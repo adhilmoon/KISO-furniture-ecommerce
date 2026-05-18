@@ -4,6 +4,7 @@ import * as orderRepository from '../../repository/user/orderRepository.js';
 import * as productRepository from '../../repository/user/productRepository.js';
 import { userRepository } from '../../repository/user/userRepository.js';
 import * as couponService from './couponService.js';
+import * as walletService from './walletService.js';
 
 export const verifyRazorpaySignature = (razorpayOrderId, paymentId, signature) => {
     const sign = `${razorpayOrderId}|${paymentId}`;
@@ -33,7 +34,7 @@ export const buildValidOrderItems = (cartItems) => {
     return items;
 };
 
-export const createOrder = async (userId, addressId, orderItems, paymentMethod, paymentStatus, appliedCoupon = null) => {
+export const createOrder = async (userId, addressId, orderItems, paymentMethod, paymentStatus, appliedCoupon = null, useWallet = false) => {
     const address = await userRepository.findAddressById(addressId);
     if (!address) throw Object.assign(new Error('Address not found'), { status: 400 });
 
@@ -46,6 +47,18 @@ export const createOrder = async (userId, addressId, orderItems, paymentMethod, 
         couponDiscount = Math.min(appliedCoupon.discount || 0, subtotal);
     }
     const grandTotal = Math.max(subtotal - couponDiscount, 0);
+
+    let walletPaid = 0;
+    let finalPaymentMethod = paymentMethod;
+    let finalPaymentStatus = paymentStatus;
+    if (useWallet && grandTotal > 0) {
+        const balance = await walletService.getBalance(userId);
+        walletPaid = Math.min(balance, grandTotal);
+        if (walletPaid >= grandTotal) {
+            finalPaymentMethod = 'wallet';
+            finalPaymentStatus = 'paid';
+        }
+    }
 
     const order = await orderRepository.createOrder({
         userId,
@@ -65,14 +78,22 @@ export const createOrder = async (userId, addressId, orderItems, paymentMethod, 
         couponId,
         couponCode,
         couponDiscount,
+        walletPaid,
         grandTotal,
         orderStatus: 'confirmed',
-        paymentMethod,
-        paymentStatus
+        paymentMethod: finalPaymentMethod,
+        paymentStatus: finalPaymentStatus
     });
 
     for (const item of orderItems) {
         await productRepository.updateVariantStock(item.productId, item.variantIndex, -item.quantity);
+    }
+
+    if (walletPaid > 0) {
+        await walletService.debitWallet(userId, walletPaid, 'checkout_pay', {
+            orderId: order._id,
+            description: `Payment for order ${order.orderId || order._id}`
+        });
     }
 
     if (couponId) {

@@ -2,11 +2,12 @@ import razorpay from '../../config/razorpay.js';
 import catchAsync from '../../utilities/catchAsync.js';
 import * as cartService from '../../service/user/cartService.js';
 import * as paymentService from '../../service/user/paymentService.js';
+import * as walletService from '../../service/user/walletService.js';
 import { STATUS_CODES } from '../../constants/index.js';
 
 export const getPaymentPage = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
-    const { addressId } = req.query;
+    const { addressId, useWallet } = req.query;
 
     if (!addressId) return res.redirect('/user/checkout');
 
@@ -20,11 +21,25 @@ export const getPaymentPage = catchAsync(async (req, res) => {
     if (validItems.length === 0) return res.redirect('/user/cart?error=availability');
 
     const totalAmount = validItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const appliedCoupon = req.session.appliedCoupon || null;
+    const couponDiscount = appliedCoupon ? Math.min(appliedCoupon.discount || 0, totalAmount) : 0;
+    const grandTotal = Math.max(totalAmount - couponDiscount, 0);
+
+    const wantsWallet = useWallet === '1';
+    const walletBalance = await walletService.getBalance(userId);
+    const walletApplied = wantsWallet ? Math.min(walletBalance, grandTotal) : 0;
+    const payableAmount = Math.max(grandTotal - walletApplied, 0);
 
     res.render('user/payment', {
         title: 'Payment - KISO',
         cart: { ...cart, items: validItems, totalAmount },
         address,
+        appliedCoupon,
+        couponDiscount,
+        grandTotal,
+        useWallet: wantsWallet,
+        walletApplied,
+        payableAmount,
         razorpayKeyId: process.env.RAZORPAY_KEY_ID
     });
 });
@@ -60,7 +75,8 @@ export const verifyPayment = catchAsync(async (req, res) => {
     }
 
     const appliedCoupon = req.session.appliedCoupon || null;
-    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'razorpay', 'paid', appliedCoupon);
+    const useWallet = !!req.body.useWallet;
+    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'razorpay', 'paid', appliedCoupon, useWallet);
     delete req.session.appliedCoupon;
 
     res.json({ success: true, message: 'Payment verified and order placed successfully', orderId: newOrder._id });
@@ -96,7 +112,8 @@ export const placeCODOrder = catchAsync(async (req, res) => {
     }
 
     const appliedCoupon = req.session.appliedCoupon || null;
-    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'cod', 'pending', appliedCoupon);
+    const useWallet = !!req.body.useWallet;
+    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'cod', 'pending', appliedCoupon, useWallet);
     delete req.session.appliedCoupon;
     res.json({ success: true, message: 'Order placed successfully', orderId: newOrder._id });
 });

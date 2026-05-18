@@ -1,4 +1,5 @@
 import Order from '../../model/Order.js';
+import * as walletService from '../user/walletService.js';
 
 export const getOrders = async ({ page, perPage, search, status, sort }) => {
   const filter = {};
@@ -84,6 +85,7 @@ export const approveReturn = async (id) => {
   const order = await Order.findById(id);
   if (!order) throw new Error('Order not found');
   if (order.orderStatus !== 'return_requested') throw new Error('No pending return request');
+  const refundAmount = order.grandTotal;
   order.orderStatus = 'returned';
   order.paymentStatus = 'refunded';
   order.returnApprovedAt = new Date();
@@ -94,6 +96,12 @@ export const approveReturn = async (id) => {
     }
   }
   await order.save();
+  if (refundAmount > 0) {
+    await walletService.creditWallet(order.userId, refundAmount, 'refund_return', {
+      orderId: order._id,
+      description: `Refund for returned order ${order.orderId || order._id}`
+    });
+  }
   return order;
 };
 

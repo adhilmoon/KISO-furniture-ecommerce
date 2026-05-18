@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const amount = payNowBtn.dataset.amount;
             const razorpayKey = payNowBtn.dataset.razorpayKey;
             const addressId = payNowBtn.dataset.addressId;
+            const useWallet = payNowBtn.dataset.useWallet === '1';
+            const walletCoversAll = payNowBtn.dataset.walletCoversAll === '1';
             const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'razorpay';
 
             payNowBtn.disabled = true;
@@ -23,10 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const spinnerHTML = `<svg class="animate-spin h-5 w-5 text-brand-bg1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
             try {
+                if (walletCoversAll) {
+                    payNowBtn.innerHTML = `${spinnerHTML} Placing Order...`;
+                    const response = await axios.post('/user/payment/cod', { addressId, useWallet: true });
+                    if (response.data.success) {
+                        window.location.href = `/user/order/confirmation/${response.data.orderId}`;
+                    } else {
+                        throw new Error(response.data.message || 'Failed to place order');
+                    }
+                    return;
+                }
                 if (selectedMethod === 'cod') {
                     payNowBtn.innerHTML = `${spinnerHTML} Placing Order...`;
 
-                    const response = await axios.post('/user/payment/cod', { addressId });
+                    const response = await axios.post('/user/payment/cod', { addressId, useWallet });
 
                     if (response.data.success) {
                         window.location.href = `/user/order/confirmation/${response.data.orderId}`;
@@ -59,7 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                     razorpay_order_id: response.razorpay_order_id,
                                     razorpay_payment_id: response.razorpay_payment_id,
                                     razorpay_signature: response.razorpay_signature,
-                                    addressId
+                                    addressId,
+                                    useWallet
                                 });
 
                                 if (verifyResponse.data.success) {

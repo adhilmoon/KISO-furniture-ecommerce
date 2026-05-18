@@ -63,7 +63,7 @@ const OrderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['razorpay', 'cod'],
+    enum: ['razorpay', 'cod', 'wallet'],
     required: true
   },
   paymentStatus: {
@@ -94,6 +94,7 @@ const OrderSchema = new mongoose.Schema({
   },
   couponCode: { type: String },
   couponDiscount: { type: Number, default: 0, min: 0 },
+  walletPaid: { type: Number, default: 0, min: 0 },
   grandTotal: { 
     type: Number,
     required: true,

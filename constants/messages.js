@@ -94,4 +94,14 @@ export const MESSAGES = Object.freeze({
     COUPON_REMOVED: "Coupon removed",
     COUPON_ALREADY_APPLIED: "A coupon is already applied to this cart",
     COUPON_CODE_REQUIRED: "Please enter a coupon code",
+
+    // Wallet Messages
+    WALLET_NOT_FOUND: "Wallet not found",
+    WALLET_INSUFFICIENT_BALANCE: "Insufficient wallet balance",
+    WALLET_INVALID_AMOUNT: "Invalid wallet amount",
+    WALLET_CREDITED: "Wallet credited successfully",
+    WALLET_DEBITED: "Wallet debited successfully",
+    WALLET_REFUND_CANCEL: "Refund credited to wallet for cancelled order",
+    WALLET_REFUND_RETURN: "Refund credited to wallet for returned order",
+    WALLET_PAYMENT: "Paid using wallet",
 });

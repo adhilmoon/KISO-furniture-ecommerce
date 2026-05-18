@@ -1,5 +1,6 @@
 import * as cartService from '../../service/user/cartService.js';
 import * as profileService from '../../service/user/profileService.js';
+import * as walletService from '../../service/user/walletService.js';
 import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
 import catchAsync from '../../utilities/catchAsync.js';
 
@@ -69,6 +70,7 @@ export const getCheckoutPage = catchAsync(async (req, res) => {
     const appliedCoupon = req.session.appliedCoupon || null;
     const couponDiscount = appliedCoupon ? Math.min(appliedCoupon.discount || 0, totalAmount) : 0;
     const finalAmount = Math.max(totalAmount - couponDiscount, 0);
+    const walletBalance = await walletService.getBalance(userId);
 
     res.render("user/checkout", {
         title: "Checkout - KISO",
@@ -77,6 +79,7 @@ export const getCheckoutPage = catchAsync(async (req, res) => {
         appliedCoupon,
         couponDiscount,
         finalAmount,
+        walletBalance,
         user: req.session.user
     });
 });

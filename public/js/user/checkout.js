@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </svg> Processing...`;
 
             const addressId = selectedAddress.value;
-            
-            // Redirect to payment (Note: Ensure this route exists in your backend)
+            const useWallet = document.getElementById('useWalletToggle')?.checked ? '1' : '0';
+
             setTimeout(() => {
-                window.location.href = `/user/checkout/payment?addressId=${addressId}`;
+                window.location.href = `/user/checkout/payment?addressId=${addressId}&useWallet=${useWallet}`;
             }, 800);
         });
     }

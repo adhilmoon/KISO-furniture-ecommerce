@@ -6,12 +6,9 @@ const buildError = (message, status) =>
 
 export const calculateCouponDiscount = (coupon, subtotal) => {
     if (!coupon) return 0;
-    let discount = 0;
-    if (coupon.discountType === 'percentage') {
-        discount = (subtotal * coupon.discountValue) / 100;
-    } else {
-        discount = coupon.discountValue;
-    }
+    let discount = coupon.discountType === 'percentage'
+        ? (subtotal * coupon.discountValue) / 100
+        : coupon.discountValue;
     if (coupon.maxDiscount && coupon.maxDiscount > 0 && discount > coupon.maxDiscount) {
         discount = coupon.maxDiscount;
     }

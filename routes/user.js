@@ -12,6 +12,7 @@ import * as wishlistController from "../controller/userController/wishlistContro
 import * as paymentController from "../controller/userController/paymentController.js";
 import * as orderController from "../controller/userController/orderController.js";
 import * as couponController from "../controller/userController/couponController.js";
+import * as walletController from "../controller/userController/walletController.js";
 import { upload } from "../config/multer.js";
 
 import passport from "passport";
@@ -75,6 +76,10 @@ router.delete("/cart", userauth.userauth, cartController.clearCart);
 // Coupon API
 router.post("/coupon/apply", userauth.userauth, couponController.applyCoupon);
 router.delete("/coupon", userauth.userauth, couponController.removeCoupon);
+
+// Wallet
+router.get("/wallet", userauth.userauth, walletController.getWalletPage);
+router.get("/wallet/balance", userauth.userauth, walletController.getBalance);
 
 // Payment API
 router.post("/payment/create-order", userauth.userauth, paymentController.createOrder);
