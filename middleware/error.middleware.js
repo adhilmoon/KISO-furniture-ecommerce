@@ -1,6 +1,8 @@
 import multer from "multer";
-import { STATUS_CODES, MESSAGES } from "../constants/index.js";
+import { STATUS_CODES, MESSAGES, UPLOAD } from "../constants/index.js";
 import logger from "../utilities/logger.js";
+
+const mb = (bytes) => `${(bytes / (1024 * 1024)).toFixed(0)} MB`;
 
 // Handle 404 - Page Not Found
 export const pageNotFound = (req, res, next) => {
@@ -20,7 +22,7 @@ export const globalErrorHandler = (err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         const message =
             err.code === "LIMIT_FILE_SIZE"
-                ? "File is too large. Maximum allowed size is 5 MB for profiles and 8 MB for products."
+                ? `File is too large. Maximum allowed size is ${mb(UPLOAD.PROFILE_MAX_BYTES)} for profiles/banners and ${mb(UPLOAD.PRODUCT_MAX_BYTES)} for products.`
                 : `Upload error: ${err.message}`;
 
         return isJson
@@ -40,10 +42,10 @@ export const globalErrorHandler = (err, req, res, next) => {
     const statusCode = err.status || STATUS_CODES.INTERNAL_SERVER_ERROR;
     const message = err.message || MESSAGES.INTERNAL_SERVER_ERROR;
 
-    console.error(err);
-
     if (isJson) {
-        return res.status(statusCode).json({ success: false, message });
+        const body = { success: false, message };
+        if (Array.isArray(err.issues)) body.issues = err.issues;
+        return res.status(statusCode).json(body);
     }
 
     res.status(statusCode).render('404', {

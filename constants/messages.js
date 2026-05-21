@@ -109,6 +109,22 @@ export const MESSAGES = Object.freeze({
     WALLET_TOPUP_FAILED: "Wallet top-up verification failed",
     WALLET_MIN_TOPUP: "Top-up amount must be at least ₹1",
 
+    // Banner Messages
+    BANNER_CREATED: "Banner created successfully",
+    BANNER_UPDATED: "Banner updated successfully",
+    BANNER_DELETED: "Banner deleted successfully",
+    BANNER_NOT_FOUND: "Banner not found",
+    BANNER_IMAGE_REQUIRED: "Banner image is required",
+    BANNER_REORDERED: "Banner order updated",
+
+    // Room Messages
+    ROOM_CREATED: "Room created successfully",
+    ROOM_UPDATED: "Room updated successfully",
+    ROOM_DELETED: "Room deleted successfully",
+    ROOM_NOT_FOUND: "Room not found",
+    ROOM_IMAGE_REQUIRED: "Room image is required",
+    ROOM_REORDERED: "Room order updated",
+
     // Offer Messages
     OFFER_CREATED: "Offer created successfully",
     OFFER_UPDATED: "Offer updated successfully",

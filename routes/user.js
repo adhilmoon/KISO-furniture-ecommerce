@@ -14,98 +14,102 @@ import * as orderController from "../controller/userController/orderController.j
 import * as couponController from "../controller/userController/couponController.js";
 import * as walletController from "../controller/userController/walletController.js";
 import { upload } from "../config/multer.js";
-
 import passport from "passport";
 
-
-
-
-// No-cache middleware
+// Apply no-cache to all routes
 router.use(userauth.noCache);
 
-// Google OAuth
+// ============================================
+// PUBLIC ROUTES (No auth required)
+// ============================================
 router.get("/login", userauth.islogin, Pages.login_page);
+router.get("/signup", userauth.islogin, Pages.user_signup);
+router.get('/reset-password', Pages.reset_password_page);
+router.get("/store", Pages.user_store);
+router.get('/store/filter-options', storeController.getFilterOptions);
+router.get("/product/:id", productController.getProductDetail);
+router.get("/page/:slug", Pages.static_page);
+router.post("/contact", Pages.submit_contact);
+
+// Google OAuth
 router.get("/auth/google", passport.authenticate("google", {scope: ["profile", "email"]}));
 router.get("/auth/google/callback", passport.authenticate("google", {failureRedirect: '/user/login?error=Google authentication failed', keepSessionInfo: true}), authController.googleAuthCallback);
-
-router.get("/homepage", userauth.userauth, Pages.user_home)
-router.get("/signup", userauth.islogin, Pages.user_signup);
-
 
 // Auth APIs
 router.post("/login", userauth.checkUserExists, userauth.checkUserActive, authController.loginauth);
 router.post("/signup", authController.signup_post);
 router.post("/verify-otp", authController.verify_otp);
 router.post("/forgot-password", authController.forgot_password);
-router.get('/reset-password', Pages.reset_password_page)
-router.patch("/reset-password",userauth.checkTempdata,authController.update_password);
-router.get("/settings", userauth.userauth, Pages.settings_page);
-router.patch("/update-email", userauth.userauth, profileController.updateEmail)
-router.patch("/change-password", userauth.userauth, profileController.changePassword);
+router.patch("/reset-password", userauth.checkTempdata, authController.update_password);
+
+// ============================================
+// PROTECTED ROUTES (Auth required for all below)
+// ============================================
+router.use(userauth.userauth); // This applies to everything after this line
+
+// Home & Settings
+router.get("/homepage", Pages.user_home);
+router.get("/settings", Pages.settings_page);
 router.get("/logout", authController.logout);
+
 // Profile
-router.get("/profile", userauth.userauth, Pages.user_profile);
-router.patch("/update-profile", userauth.userauth, profileController.profile_Update);
-// Profile Image Upload  
-router.patch("/profile/image", userauth.userauth, upload.single("profileImage"), userauth.handleUploadErrors, profileController.uploadProfilePic);
+router.get("/profile", Pages.user_profile);
+router.patch("/update-profile", profileController.profile_Update);
+router.patch("/update-email", profileController.updateEmail);
+router.patch("/change-password", profileController.changePassword);
+router.patch("/profile/image", upload.single("profileImage"), userauth.handleUploadErrors, profileController.uploadProfilePic);
 
-// Address APIs (REST style)
-router.get("/address", userauth.userauth, Pages.user_address);
-router.post("/address/add", userauth.userauth, profileController.addAddress);
-router.get("/address/get/:id", userauth.userauth, profileController.getAddress);
-router.patch("/address/update/:id", userauth.userauth, profileController.updateAddress);
-router.patch("/address/default/:id", userauth.userauth, profileController.setDefaultAddress);
-router.delete("/address/delete/:id", userauth.userauth, authController.deleteAddress);
+// Address Management
+router.get("/address", Pages.user_address);
+router.post("/address/add", profileController.addAddress);
+router.get("/address/get/:id", profileController.getAddress);
+router.patch("/address/update/:id", profileController.updateAddress);
+router.patch("/address/default/:id", profileController.setDefaultAddress);
+router.delete("/address/delete/:id", authController.deleteAddress);
 
+// Cart & Checkout
+router.get("/cart", cartController.getCartPage);
+router.get("/checkout", cartController.getCheckoutPage);
+router.get("/checkout/payment", paymentController.getPaymentPage);
+router.post("/cart/add", cartController.addToCart);
+router.patch("/cart/item/:itemId", cartController.updateQuantity);
+router.delete("/cart/item/:itemId", cartController.removeItem);
+router.delete("/cart", cartController.clearCart);
 
-
-//product listing page API
-router.get("/store",Pages.user_store)
-router.get('/store/filter-options', storeController.getFilterOptions)
-router.get("/product/:id", productController.getProductDetail)
-
-// Cart & Checkout API
-router.get("/cart", userauth.userauth, cartController.getCartPage);
-router.get("/checkout", userauth.userauth, cartController.getCheckoutPage);
-router.get("/checkout/payment", userauth.userauth, paymentController.getPaymentPage);
-router.post("/cart/add", userauth.userauth, cartController.addToCart);
-router.patch("/cart/item/:itemId", userauth.userauth, cartController.updateQuantity);
-router.delete("/cart/item/:itemId", userauth.userauth, cartController.removeItem);
-router.delete("/cart", userauth.userauth, cartController.clearCart);
-
-// Coupon API
-router.post("/coupon/apply", userauth.userauth, couponController.applyCoupon);
-router.delete("/coupon", userauth.userauth, couponController.removeCoupon);
+// Coupon
+router.post("/coupon/apply", couponController.applyCoupon);
+router.delete("/coupon", couponController.removeCoupon);
 
 // Wallet
-router.get("/wallet", userauth.userauth, walletController.getWalletPage);
-router.get("/wallet/balance", userauth.userauth, walletController.getBalance);
-router.post("/wallet/topup/create-order", userauth.userauth, walletController.createTopupOrder);
-router.post("/wallet/topup/verify", userauth.userauth, walletController.verifyTopup);
+router.get("/wallet", walletController.getWalletPage);
+router.get("/wallet/balance", walletController.getBalance);
+router.post("/wallet/topup/create-order", walletController.createTopupOrder);
+router.post("/wallet/topup/verify", walletController.verifyTopup);
 
-// Payment API
-router.post("/payment/create-order", userauth.userauth, paymentController.createOrder);
-router.post("/payment/verify", userauth.userauth, paymentController.verifyPayment);
-router.post("/payment/cod", userauth.userauth, paymentController.placeCODOrder);
-router.post("/payment/wallet", userauth.userauth, paymentController.placeWalletOrder);
-router.get("/order/confirmation/:orderId", userauth.userauth, paymentController.getOrderConfirmation);
-router.get("/payment/failed", userauth.userauth, paymentController.getPaymentFailed);
+// Payment
+router.post("/payment/create-order", paymentController.createOrder);
+router.post("/payment/verify", paymentController.verifyPayment);
+router.post("/payment/cod", paymentController.placeCODOrder);
+router.post("/payment/wallet", paymentController.placeWalletOrder);
+router.get("/order/confirmation/:orderId", paymentController.getOrderConfirmation);
+router.get("/payment/failed", paymentController.getPaymentFailed);
 
 // Order Management
-router.get("/orders", userauth.userauth, orderController.getOrders);
-router.get("/orders/:id", userauth.userauth, orderController.getOrderDetail);
-router.post("/orders/:id/cancel", userauth.userauth, orderController.cancelOrder);
-router.post("/orders/:id/items/:itemId/cancel", userauth.userauth, orderController.cancelItem);
-router.post("/orders/:id/return", userauth.userauth, upload.single("returnImage"), userauth.handleUploadErrors, orderController.returnOrder);
-router.post("/orders/:id/return/cancel", userauth.userauth, orderController.cancelReturnRequest);
-router.get("/orders/:id/invoice", userauth.userauth, orderController.downloadInvoice);
+router.get("/orders", orderController.getOrders);
+router.get("/orders/:id", orderController.getOrderDetail);
+router.post("/orders/:id/cancel", orderController.cancelOrder);
+router.post("/orders/:id/items/:itemId/cancel", orderController.cancelItem);
+router.post("/orders/:id/return", upload.single("returnImage"), userauth.handleUploadErrors, orderController.returnOrder);
+router.post("/orders/:id/return/cancel", orderController.cancelReturnRequest);
+router.get("/orders/:id/invoice", orderController.downloadInvoice);
 
-// Wishlist API
-router.get("/wishlist", userauth.userauth, wishlistController.getWishlistPage);
-router.post("/wishlist/toggle", userauth.userauth, wishlistController.toggleWishlist);
-router.post("/wishlist/add-all", userauth.userauth, wishlistController.addAllToCart);
-router.delete("/wishlist/item/:productId", userauth.userauth, wishlistController.removeItem);
+// Wishlist
+router.get("/wishlist", wishlistController.getWishlistPage);
+router.post("/wishlist/toggle", wishlistController.toggleWishlist);
+router.post("/wishlist/add-all", wishlistController.addAllToCart);
+router.delete("/wishlist/item/:productId", wishlistController.removeItem);
 
+// Session check
 router.get("/session-check", (req, res) => {
   res.json({loggedIn: !!req.session.user});
 });

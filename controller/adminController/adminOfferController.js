@@ -1,12 +1,12 @@
 import catchAsync from '../../utilities/catchAsync.js';
-import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
+import { STATUS_CODES, MESSAGES, PAGINATION } from '../../constants/index.js';
 import * as offerService from '../../service/admin/offerService.js';
 import Product from '../../model/Product.js';
 import Category from '../../model/Category.js';
 
 export const getOffers = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 10;
+    const perPage = PAGINATION.ADMIN_OFFERS;
     const search = req.query.search?.trim() || '';
     const type = req.query.type?.trim() || '';
 

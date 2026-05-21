@@ -67,9 +67,10 @@ export const updateEmail = catchAsync(async (req, res) => {
     const result = await profileService.initiateEmailUpdate(userId, email, password, isResend, req.session.tempUserData);
     if (isResend) {
         req.session.tempUserData.otp = result.otp;
+        req.session.tempUserData.otpExpiresAt = result.otpExpiresAt;
         return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.NEW_OTP_SENT });
     }
-    req.session.tempUserData = { email, otp: result.otp, purpose: 'update-email' };
+    req.session.tempUserData = { userId, email, otp: result.otp, otpExpiresAt: result.otpExpiresAt, purpose: 'update-email' };
     return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.OTP_SENT });
 });
 

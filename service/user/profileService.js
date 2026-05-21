@@ -1,13 +1,14 @@
-import bcrypt from 'bcrypt';
-import * as otpsender from '../../utilities/sendEmail.js';
+import { sendOTP } from '../../utilities/sendEmail.js';
+import { createOtpToken } from '../../utilities/otp.js';
+import { hashPassword, verifyPassword, isStrongPassword, PASSWORD_RULES } from '../../utilities/password.js';
 import { uploadToCloudinary, deleteFromCloudinary } from '../../utilities/uploadToCloudinary.js';
 import { userRepository } from '../../repository/user/userRepository.js';
-import { MESSAGES } from '../../constants/index.js';
+import { MESSAGES, CLOUDINARY_FOLDERS } from '../../constants/index.js';
 
 export const uploadProfilePic = async (userId, file) => {
     const user = await userRepository.findById(userId);
     if (user?.avatar) await deleteFromCloudinary(user.avatar);
-    const result = await uploadToCloudinary(file.buffer, 'kiso/users/profile');
+    const result = await uploadToCloudinary(file.buffer, CLOUDINARY_FOLDERS.PROFILE);
     return userRepository.updateUser(userId, { avatar: result.secure_url, avatarId: result.public_id });
 };
 
@@ -77,21 +78,16 @@ export const initiateEmailUpdate = async (userId, email, password, isResend, tem
     const user = await userRepository.findById(userId);
     if (!user) throw Object.assign(new Error(MESSAGES.USER_NOT_FOUND), { status: 404 });
     if (user.googleId) throw Object.assign(new Error('Account managed by Google. Email cannot be changed here.'), { status: 400 });
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await verifyPassword(password, user.password);
     if (!isMatch) throw Object.assign(new Error(MESSAGES.INCORRECT_PASSWORD), { status: 400 });
     const emailExists = await userRepository.findByEmailExcluding(email, userId);
     if (emailExists) throw Object.assign(new Error(MESSAGES.EMAIL_ALREADY_IN_USE), { status: 400 });
-    if (isResend) {
-        if (!tempUserData || tempUserData.email !== email) {
-            throw Object.assign(new Error(MESSAGES.SESSION_EXPIRED), { status: 400 });
-        }
-        const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        await otpsender.sendOTP(email, otp);
-        return { isResend: true, otp };
+    if (isResend && (!tempUserData || tempUserData.email !== email)) {
+        throw Object.assign(new Error(MESSAGES.SESSION_EXPIRED), { status: 400 });
     }
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
-    await otpsender.sendOTP(email, otp);
-    return { otp };
+    const { otp, otpExpiresAt } = createOtpToken();
+    await sendOTP(email, otp);
+    return { otp, otpExpiresAt, ...(isResend && { isResend: true }) };
 };
 
 export const changePassword = async (userId, currentPassword, newPassword) => {
@@ -99,9 +95,16 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
     if (!user) throw Object.assign(new Error(MESSAGES.USER_NOT_FOUND), { status: 404 });
     if (user.googleId) throw Object.assign(new Error('Account managed by Google. Password cannot be changed here.'), { status: 400 });
     if (!user.password) return { redirectUrl: '/user/reset-password' };
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    const isMatch = await verifyPassword(currentPassword, user.password);
     if (!isMatch) throw Object.assign(new Error(MESSAGES.INCORRECT_PASSWORD), { status: 400 });
-    const hashed = await bcrypt.hash(newPassword, 10);
+    if (!isStrongPassword(newPassword)) {
+        throw Object.assign(new Error(`New password must be ${PASSWORD_RULES.DESCRIPTION}.`), { status: 400 });
+    }
+    const sameAsCurrent = await verifyPassword(newPassword, user.password);
+    if (sameAsCurrent) {
+        throw Object.assign(new Error('New password must differ from the current password.'), { status: 400 });
+    }
+    const hashed = await hashPassword(newPassword);
     await userRepository.updatePassword(user.email, hashed);
     return null;
 };

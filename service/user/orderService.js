@@ -2,11 +2,9 @@ import * as orderRepository from '../../repository/user/orderRepository.js';
 import * as productRepository from '../../repository/user/productRepository.js';
 import * as couponService from './couponService.js';
 import * as walletService from './walletService.js';
+import { ORDER } from '../../constants/index.js';
 
-const CANCELLABLE_STATUSES = ['pending', 'confirmed', 'processing'];
-const RETURN_WINDOW_DAYS = 30;
-const MAX_RETURN_ATTEMPTS = 3;
-const RETURN_FINAL_STATUSES = ['returned'];
+const { MAX_RETURN_ATTEMPTS, RETURN_WINDOW_DAYS, CANCELLABLE_STATUSES, RETURN_FINAL_STATUSES } = ORDER;
 
 const getDeliveredAt = (order) =>
     order.orderItems.find(i => i.deliveredAt)?.deliveredAt || order.updatedAt;

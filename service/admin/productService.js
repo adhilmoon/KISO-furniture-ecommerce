@@ -2,6 +2,19 @@ import { uploadToCloudinary, deleteFromCloudinary } from "../../utilities/upload
 import Product from "../../model/Product.js";
 import logger from "../../utilities/logger.js";
 import * as productValidators from "../../validators/adminProducts.js";
+import { PRODUCT, CLOUDINARY_FOLDERS } from "../../constants/index.js";
+
+const { MIN_PRICE, MIN_VARIANT_IMAGES, MAX_VARIANT_IMAGES } = PRODUCT;
+
+const parseJsonField = (raw, label) => {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    logger.error(`${label} parse failure: ${e.message}`);
+    throw Object.assign(new Error(`Invalid ${label} format`), { status: 400 });
+  }
+};
 
 
 export const createProduct = async (body, files) => {
@@ -31,28 +44,15 @@ export const createProduct = async (body, files) => {
 
 
   let customAttributes = [];
-  if(body.customAttributesJSON) {
-    try {
-      const parsed = JSON.parse(body.customAttributesJSON);
-
-      customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
-    } catch(e) {
-      console.error(e)
-      customAttributes = [];
-    }
+  const parsedAttrs = parseJsonField(body.customAttributesJSON, 'customAttributesJSON');
+  if (Array.isArray(parsedAttrs)) {
+    customAttributes = parsedAttrs.filter(attr => attr.key && attr.key.trim() !== "");
   }
 
-
-
-
   let variantsData = [];
-  if(body.variantsJSON) {
-    try {
-      variantsData = JSON.parse(body.variantsJSON);
-    } catch(e) {
-      console.error(e)
-      variantsData = [];
-    }
+  const parsedVariants = parseJsonField(body.variantsJSON, 'variantsJSON');
+  if (Array.isArray(parsedVariants)) {
+    variantsData = parsedVariants;
   }
 
 
@@ -68,7 +68,7 @@ export const createProduct = async (body, files) => {
 
       const result = await uploadToCloudinary(
         f.buffer,
-        "kiso/products/variants"
+        CLOUDINARY_FOLDERS.PRODUCT_VARIANTS
       );
 
       return {idx, url: result.secure_url};
@@ -84,20 +84,26 @@ export const createProduct = async (body, files) => {
     variantImageMap[item.idx].push(item.url);
   })
 
-  const variants = variantsData.map((v, index) => ({
-    optionType: v.optionType || "",
-    optionValue: v.optionValue || "",
-    price: parseFloat(v.price) || 0,
-    stock: parseInt(v.stock, 10) || 0,
-    images: variantImageMap[index] || [],
-  }));
+  const variants = variantsData.map((v, index) => {
+    const price = parseFloat(v.price);
+    if (isNaN(price) || price < MIN_PRICE) {
+      throw new Error(`Variant #${index + 1} price must be greater than 0`);
+    }
+    return {
+      optionType: v.optionType || "",
+      optionValue: v.optionValue || "",
+      price,
+      stock: parseInt(v.stock, 10) || 0,
+      images: variantImageMap[index] || [],
+    };
+  });
   variants.forEach((v, i) => {
     const count = v.images?.length || 0;
     if(count < 3) {
-      throw new Error(`Variant #${i + 1} must have at least 3 images`);
+      throw new Error(`Variant #${i + 1} must have at least ${MIN_VARIANT_IMAGES} images`);
     }
     if(count > 5) {
-      throw new Error(`Variant #${i + 1} can have maximum 5 images`);
+      throw new Error(`Variant #${i + 1} can have maximum ${MAX_VARIANT_IMAGES} images`);
     }
   });
   const sku =
@@ -141,7 +147,11 @@ export const updateProduct = async (productId, body, files) => {
   product.productName = productName.trim() || product.productName;
   product.description = description ? description.trim() : product.description;
   product.category = category || product.category;
-  product.basePrice = parseFloat(basePrice) || product.basePrice;
+  const parsedBase = parseFloat(basePrice);
+  if (isNaN(parsedBase) || parsedBase < MIN_PRICE) {
+    throw new Error("Base price must be greater than 0");
+  }
+  product.basePrice = parsedBase;
 
 
   const getUpdateDim = (key, fallback) => {
@@ -154,65 +164,35 @@ export const updateProduct = async (productId, body, files) => {
   product.dimensions.depth = getUpdateDim('depth', product.dimensions.depth);
   product.dimensions.height = getUpdateDim('height', product.dimensions.height);
 
-  if(body.customAttributesJSON) {
-    try {
-      const parsed = JSON.parse(body.customAttributesJSON);
-      product.customAttributes = parsed.filter(attr => attr.key && attr.key.trim() !== "");
-    } catch(e) {
-      logger.debug(`customAttributes parse error: ${e.message}`);
-    }
+  const parsedAttrsUpd = parseJsonField(body.customAttributesJSON, 'customAttributesJSON');
+  if (Array.isArray(parsedAttrsUpd)) {
+    product.customAttributes = parsedAttrsUpd.filter(attr => attr.key && attr.key.trim() !== "");
   }
 
 
 
 
 
-  if(body.deletedVariantImages) {
-    logger.debug(`deletedVariantImages raw: ${body.deletedVariantImages}`);
-    try {
-      const parsedDeletedVariantImages = JSON.parse(body.deletedVariantImages);
-      logger.debug(`parsedDeletedVariantImages: ${JSON.stringify(parsedDeletedVariantImages)}`);
-
-      // Collect all URLs that will be removed from DB so we can delete from Cloudinary
-      const urlsToDelete = [];
-
-      product.variants.forEach(variant => {
-        const vId = variant._id.toString();
-        if(parsedDeletedVariantImages[vId] && Array.isArray(parsedDeletedVariantImages[vId])) {
-          const beforeCount = variant.images.length;
-          logger.debug(`Variant ${vId} BEFORE deletion: ${variant.images}`);
-
-          urlsToDelete.push(...parsedDeletedVariantImages[vId]);
-
-          variant.images = variant.images.filter(
-            img => !parsedDeletedVariantImages[vId].includes(img)
-          );
-
-          const afterCount = variant.images.length;
-          logger.debug(`Variant ${vId} AFTER deletion: ${variant.images}`);
-          logger.debug(`Variant ${vId}: removed ${beforeCount - afterCount} images`);
-        }
-      });
-
-      // Delete from Cloudinary (non-blocking — errors are logged internally)
-      if(urlsToDelete.length > 0) {
-        await deleteFromCloudinary(urlsToDelete);
+  const parsedDeletedVariantImages = parseJsonField(body.deletedVariantImages, 'deletedVariantImages');
+  if (parsedDeletedVariantImages && typeof parsedDeletedVariantImages === 'object') {
+    const urlsToDelete = [];
+    product.variants.forEach(variant => {
+      const vId = variant._id.toString();
+      const toRemove = parsedDeletedVariantImages[vId];
+      if (Array.isArray(toRemove)) {
+        urlsToDelete.push(...toRemove);
+        variant.images = variant.images.filter(img => !toRemove.includes(img));
       }
-    } catch(e) {
-      logger.debug(`variant delete error: ${e.message}`);
+    });
+    if (urlsToDelete.length > 0) {
+      await deleteFromCloudinary(urlsToDelete);
     }
   }
-
-
 
   let incomingVariants = [];
-  if(body.variantsJSON) {
-    try {
-      incomingVariants = JSON.parse(body.variantsJSON);
-      logger.debug(`incomingVariants: ${JSON.stringify(incomingVariants)}`);
-    } catch(e) {
-      logger.debug(`variantsJSON parse error: ${e.message}`);
-    }
+  const parsedIncoming = parseJsonField(body.variantsJSON, 'variantsJSON');
+  if (Array.isArray(parsedIncoming)) {
+    incomingVariants = parsedIncoming;
   }
 
   const incomingVariantIds = incomingVariants.map(v => v._id).filter(id => id);
@@ -226,7 +206,7 @@ export const updateProduct = async (productId, body, files) => {
     variantFiles.map(async (f) => {
       const match = f.fieldname.match(/variants\[(\d+)\]\[images\]/);
       if(!match) return;
-      const result = await uploadToCloudinary(f.buffer, "kiso/products/variants");
+      const result = await uploadToCloudinary(f.buffer, CLOUDINARY_FOLDERS.PRODUCT_VARIANTS);
       return {idx: parseInt(match[1]), url: result.secure_url};
     })
   );
@@ -243,13 +223,17 @@ export const updateProduct = async (productId, body, files) => {
 
   incomingVariants.forEach((incVar, index) => {
     const uploadedImages = variantImageMap[index] || [];
+    const price = parseFloat(incVar.price);
+    if (isNaN(price) || price < MIN_PRICE) {
+      throw new Error(`Variant #${index + 1} price must be greater than 0`);
+    }
 
     if(incVar._id) {
       const existingVariant = product.variants.find(v => v._id.toString() === incVar._id);
       if(existingVariant) {
         existingVariant.optionType = incVar.optionType;
         existingVariant.optionValue = incVar.optionValue;
-        existingVariant.price = parseFloat(incVar.price) || 0;
+        existingVariant.price = price;
         existingVariant.stock = parseInt(incVar.stock, 10) || 0;
 
         if(uploadedImages.length > 0) {
@@ -262,7 +246,7 @@ export const updateProduct = async (productId, body, files) => {
       product.variants.push({
         optionType: incVar.optionType || "",
         optionValue: incVar.optionValue || "",
-        price: parseFloat(incVar.price) || 0,
+        price,
         stock: parseInt(incVar.stock, 10) || 0,
         images: uploadedImages,
       });
@@ -277,14 +261,13 @@ export const updateProduct = async (productId, body, files) => {
     imageCount: v.images.length
   })))}`);
 
-  // Final validation: Ensure every variant has 3-5 images
   product.variants.forEach((v, index) => {
     const count = v.images.length;
-    if(count < 3) {
-      throw new Error(`Variant #${index + 1} must have at least 3 images`);
+    if(count < MIN_VARIANT_IMAGES) {
+      throw new Error(`Variant #${index + 1} must have at least ${MIN_VARIANT_IMAGES} images`);
     }
-    if(count > 5) {
-      throw new Error(`Variant #${index + 1} can have maximum 5 images`);
+    if(count > MAX_VARIANT_IMAGES) {
+      throw new Error(`Variant #${index + 1} can have maximum ${MAX_VARIANT_IMAGES} images`);
     }
   });
 

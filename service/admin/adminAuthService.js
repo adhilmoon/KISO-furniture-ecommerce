@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import { verifyPassword } from '../../utilities/password.js';
 import * as adminRepository from '../../repository/admin/adminRepository.js';
 import { MESSAGES } from '../../constants/index.js';
 
@@ -6,7 +6,7 @@ export const adminLogin = async (email, password) => {
     if (!email || !password) throw Object.assign(new Error(MESSAGES.EMPTY_FIELDS), { status: 400 });
     const admin = await adminRepository.findAdminByEmail(email);
     if (!admin) throw Object.assign(new Error(MESSAGES.WRONG_ADMIN_CREDENTIALS), { status: 401 });
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await verifyPassword(password, admin.password);
     if (!isMatch) throw Object.assign(new Error(MESSAGES.INVALID_PASSWORD), { status: 401 });
     return admin;
 };

@@ -23,8 +23,8 @@ export const addCategory = catchAsync(async (req, res) => {
 export const updateCategories = catchAsync(async (req, res) => {
     const {id} = req.params;
     const {categoryName, description} = req.body;
-    const isDublicate = await categoryService.isDublicate(categoryName,id)
-    if(isDublicate) {
+    const isDuplicate = await categoryService.isDuplicate(categoryName, id)
+    if(isDuplicate) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({
             success: false,
             message: MESSAGES.CATEGORY_ALREADY_EXISTS

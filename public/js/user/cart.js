@@ -4,10 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modal = document.getElementById('removeModal');
     const confirmRemoveBtn = document.getElementById('confirmRemove');
+    const modalTitle = document.getElementById('removeModalTitle');
+    const modalBody = document.getElementById('removeModalBody');
 
-    const openRemoveModal = (id, row) => {
+    const DEFAULT_TITLE = 'Remove Item?';
+    const DEFAULT_BODY = 'Are you sure you want to remove this item from your cart?';
+    const UNAVAILABLE_TITLE = 'Item Unavailable';
+    const UNAVAILABLE_BODY = 'This product is currently unavailable. Would you like to remove it from your cart?';
+
+    const openRemoveModal = (id, row, { unavailable = false } = {}) => {
         selectedItemId = id;
         selectedRowEl = row;
+        if (modalTitle) modalTitle.textContent = unavailable ? UNAVAILABLE_TITLE : DEFAULT_TITLE;
+        if (modalBody) modalBody.textContent = unavailable ? UNAVAILABLE_BODY : DEFAULT_BODY;
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modal.querySelector('div').classList.remove('scale-95');
         modal.querySelector('div').classList.add('scale-100');
@@ -53,11 +62,43 @@ document.addEventListener('DOMContentLoaded', () => {
         if (summaryTotal) summaryTotal.innerText = subtotal;
     };
 
+    const MAX_PER_USER = 3;
+
+    const refreshQtyButtons = (row) => {
+        const isListed = row.dataset.isListed === 'true';
+        const isOutOfStock = row.dataset.isOutOfStock === 'true';
+        const input = row.querySelector('.qty-input');
+        const minusBtn = row.querySelector('.minus-btn');
+        const plusBtn = row.querySelector('.plus-btn');
+        if (!input || !minusBtn || !plusBtn) return;
+
+        const setDisabled = (btn, disabled) => {
+            btn.disabled = disabled;
+            btn.classList.toggle('opacity-30', disabled);
+            btn.classList.toggle('cursor-not-allowed', disabled);
+        };
+
+        if (!isListed || isOutOfStock) {
+            setDisabled(minusBtn, true);
+            setDisabled(plusBtn, true);
+            return;
+        }
+
+        const qty = parseInt(input.value, 10) || 0;
+        const stock = parseInt(input.dataset.stock, 10) || 0;
+        const maxAllowed = Math.min(stock, MAX_PER_USER);
+
+        setDisabled(minusBtn, qty <= 1);
+        setDisabled(plusBtn, qty >= maxAllowed);
+    };
+
     const updateQuantity = async (itemId, newQty, inputEl) => {
+        const originalValue = inputEl.value;
+        const row = inputEl.closest('.cart-item');
         try {
-            const originalValue = inputEl.value;
             inputEl.value = newQty;
             updateCartTotals();
+            if (row) refreshQtyButtons(row);
 
             const response = await axios.patch(`/user/cart/item/${itemId}`, { quantity: newQty });
             if (!response.data.success) {
@@ -67,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to update qty:', error);
             inputEl.value = originalValue;
             updateCartTotals();
+            if (row) refreshQtyButtons(row);
             showToast(error.message || 'Failed to update quantity. Please try again.', 'error');
         }
     };
@@ -111,17 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const minusBtn = row.querySelector('.minus-btn');
         const plusBtn = row.querySelector('.plus-btn');
         const removeBtn = row.querySelector('.remove-btn');
-        const stock = parseInt(input.dataset.stock);
-        const MAX_PER_USER = 3;
+        const stock = parseInt(input.dataset.stock, 10) || 0;
 
         if (!isListed || isOutOfStock) {
             input.disabled = true;
-            plusBtn.classList.add('opacity-20', 'cursor-not-allowed');
-            minusBtn.classList.add('opacity-20', 'cursor-not-allowed');
             row.classList.add('grayscale-[0.5]');
         }
 
         minusBtn.addEventListener('click', () => {
+            if (minusBtn.disabled) return;
             if (!isListed) {
                 showToast('This product is unavailable.', 'warning');
                 return;
@@ -130,24 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('This product is out of stock.', 'warning');
                 return;
             }
-            const currentQty = parseInt(input.value);
+            const currentQty = parseInt(input.value, 10);
             if (currentQty > 1) {
                 updateQuantity(itemId, currentQty - 1, input);
             }
         });
 
         plusBtn.addEventListener('click', () => {
-            if (!isListed) {
-                showToast('This product is unavailable. Please remove it.', 'warning');
-                openRemoveModal(itemId, row);
+            if (plusBtn.disabled) {
+                if (!isListed || isOutOfStock) {
+                    openRemoveModal(itemId, row, { unavailable: true });
+                }
                 return;
             }
-            if (isOutOfStock) {
-                showToast('This product is out of stock. Please remove it.', 'warning');
-                openRemoveModal(itemId, row);
-                return;
-            }
-            const currentQty = parseInt(input.value);
+            const currentQty = parseInt(input.value, 10);
             if (currentQty >= stock) {
                 showToast('Maximum available stock reached', 'warning');
                 return;
@@ -160,12 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         removeBtn.addEventListener('click', () => {
-            if (!isListed || isOutOfStock) {
-                openRemoveModal(itemId, row);
-            } else {
-                removeItem(itemId, row);
-            }
+            openRemoveModal(itemId, row, { unavailable: !isListed || isOutOfStock });
         });
+
+        refreshQtyButtons(row);
     });
 
     const clearBtn = document.getElementById('clear-cart-btn');
@@ -223,6 +257,3 @@ if (checkoutBtn) {
         }
     });
 }
-let adhil
-
-

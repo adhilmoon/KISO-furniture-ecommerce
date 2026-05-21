@@ -20,10 +20,10 @@ export const addProduct = catchAsync(async (req, res) => {
         message: "Category is required.",
       });
     }
-    if(!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
+    if(!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) <= 0) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
-        message: "A valid base price is required.",
+        message: "Base price must be greater than 0.",
       });
     }
 
@@ -52,10 +52,10 @@ export const updateProduct = catchAsync(async (req, res) => {
         message: "Category is required.",
       });
     }
-    if(!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
+    if(!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) <= 0) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({
         success: false,
-        message: "A valid base price is required.",
+        message: "Base price must be greater than 0.",
       });
     }
 

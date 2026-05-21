@@ -34,7 +34,7 @@ export const getCategoryPage = async ({ search, page, perPage }) => {
     const skip = (page - 1) * perPage;
     const filter = search ? { categoryName: { $regex: search, $options: 'i' } } : {};
     const [total, categories] = await Promise.all([
-        Category.countDocuments(),
+        Category.countDocuments(filter),
         Category.find(filter).skip(skip).limit(perPage).sort({ createdAt: -1 }).lean()
     ]);
     for (const cat of categories) {

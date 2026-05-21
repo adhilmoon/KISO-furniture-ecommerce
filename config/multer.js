@@ -1,6 +1,7 @@
 import multer from "multer";
+import { UPLOAD } from "../constants/index.js";
 
-// ── Allowed MIME Types ────────────────────────────────────────────────────────
+
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const fileFilter = (req, file, cb) => {
@@ -10,21 +11,20 @@ const fileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
-// ── Shared In-Memory Storage ──────────────────────────────────────────────────
 const storage = multer.memoryStorage();
 
 // ── Multer Instances ──────────────────────────────────────────────────────────
 
-/** General-purpose upload (e.g. profile pictures) — 5 MB limit */
+/** General-purpose upload (e.g. profile pictures, banners) */
 export const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: UPLOAD.PROFILE_MAX_BYTES },
   fileFilter,
 });
 
-/** Product image upload — 8 MB limit */
+/** Product image upload (larger limit) */
 export const uploadProduct = multer({
   storage,
-  limits: { fileSize: 8 * 1024 * 1024 },
+  limits: { fileSize: UPLOAD.PRODUCT_MAX_BYTES },
   fileFilter,
 });

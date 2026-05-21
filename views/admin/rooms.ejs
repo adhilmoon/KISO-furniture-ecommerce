@@ -1,0 +1,149 @@
+<div class="w-full">
+
+  <!-- Header -->
+  <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-kiso-text">Room Management</h1>
+      <p class="text-brand-muted text-sm mt-1">Upload, reorder and toggle homepage room cards</p>
+    </div>
+    <button onclick="openRoomModal()"
+      class="px-5 py-2.5 bg-brand-accent text-kiso-bg font-semibold text-sm rounded-xl hover:bg-brand-accent/90 transition-colors shadow-lg shadow-brand-accent/20 whitespace-nowrap">
+      + New Room
+    </button>
+  </div>
+
+  <!-- Grid -->
+  <div class="bg-brand-bg1 border border-white/10 rounded-2xl p-6 shadow-lg shadow-black/20">
+    <% if (!rooms || rooms.length === 0) { %>
+      <p class="text-center text-brand-muted py-10">No rooms yet. Add one to populate the homepage Curated Rooms section.</p>
+    <% } else { %>
+      <div id="roomGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <% rooms.forEach(function(r) { %>
+          <article class="room-card bg-brand-bg2 border border-white/5 rounded-2xl overflow-hidden" data-id="<%= r._id %>">
+            <div class="relative aspect-[16/10] bg-black/30">
+              <img src="<%= r.image.url %>" alt="<%= r.title %>" class="w-full h-full object-cover" />
+              <span class="absolute top-3 left-3 px-2.5 py-1 text-[10px] font-bold rounded-full border
+                <%= r.isActive
+                  ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                  : 'bg-gray-500/10 text-gray-400 border-gray-500/20' %>">
+                <%= r.isActive ? 'Active' : 'Inactive' %>
+              </span>
+              <span class="absolute top-3 right-3 px-2.5 py-1 text-[10px] font-bold rounded-full bg-black/60 text-white">
+                #<%= r.order %>
+              </span>
+            </div>
+            <div class="p-4 space-y-3">
+              <div>
+                <h3 class="text-sm font-bold text-brand-light truncate"><%= r.title %></h3>
+                <p class="text-xs text-brand-muted truncate"><%= r.linkUrl || '/user/store' %></p>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-2">
+                <input type="number" min="0" value="<%= r.order %>" data-order="<%= r._id %>"
+                  class="w-20 bg-brand-bg1 border border-white/10 rounded-lg px-2 py-1 text-xs text-brand-light outline-none focus:border-brand-accent/40" />
+                <button onclick="saveRoomOrder('<%= r._id %>')"
+                  class="text-xs font-semibold text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg hover:bg-brand-accent/10">
+                  Save order
+                </button>
+                <button onclick="toggleRoom('<%= r._id %>')"
+                  class="text-xs font-semibold text-blue-400 border border-blue-400/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/10">
+                  <%= r.isActive ? 'Disable' : 'Enable' %>
+                </button>
+                <button onclick='openRoomModal(<%- JSON.stringify({ _id: r._id, title: r.title, linkUrl: r.linkUrl, order: r.order, isActive: r.isActive, image: r.image }) %>)'
+                  class="text-xs font-semibold text-brand-light border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5">
+                  Edit
+                </button>
+                <button onclick="deleteRoom('<%= r._id %>')"
+                  class="text-xs font-semibold text-red-400 border border-red-400/30 px-3 py-1.5 rounded-lg hover:bg-red-500/10 ml-auto">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Pagination -->
+  <% if (totalPages > 1) { %>
+    <div class="flex justify-center gap-2 mt-6">
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/admin/rooms?page=<%= i %>"
+          class="px-3 py-1.5 text-xs rounded-lg border <%= i === pageNum ? 'bg-brand-accent text-kiso-bg border-brand-accent' : 'border-white/10 text-brand-muted hover:bg-white/5' %>">
+          <%= i %>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Room Modal -->
+<div id="roomModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-brand-bg1 rounded-2xl border border-white/10 p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto">
+    <h3 id="roomModalTitle" class="text-lg font-bold text-brand-light mb-4">Create Room</h3>
+
+    <form id="roomForm" class="space-y-4" enctype="multipart/form-data" novalidate>
+      <input type="hidden" name="_id" id="roomId" />
+
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Title <span class="text-red-400">*</span></label>
+        <input type="text" name="title" id="roomTitle" maxlength="80" required
+          class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Link URL</label>
+        <input type="text" name="linkUrl" id="roomLink" placeholder="/user/store or https://..."
+          class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Order</label>
+          <input type="number" name="order" id="roomOrder" min="0" value="0"
+            class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+        </div>
+        <div class="flex items-end">
+          <label class="flex items-center gap-2 text-sm text-brand-light cursor-pointer">
+            <input type="checkbox" name="isActive" id="roomActive" checked
+              class="w-4 h-4 accent-brand-accent" />
+            Active
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Room Image <span class="text-red-400" id="roomImageRequired">*</span></label>
+        <input type="file" name="image" id="roomImage" accept="image/jpeg,image/jpg,image/png,image/webp"
+          class="block w-full text-sm text-brand-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-accent file:text-kiso-bg hover:file:bg-brand-accent/90" />
+        <p class="text-[11px] text-brand-muted mt-1">JPG, PNG or WebP — max 5 MB. Recommended ratio 1:1.</p>
+      </div>
+
+      <!-- Preview -->
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Preview</label>
+        <div class="relative aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-black/40">
+          <img id="roomPreviewImg" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+          <div class="absolute bottom-4 left-4 z-10">
+            <h4 id="roomPreviewTitle" class="text-2xl font-bold text-white tracking-tight drop-shadow-md"></h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeRoomModal()"
+          class="flex-1 px-4 py-2.5 border border-white/10 text-brand-light font-semibold text-sm rounded-xl hover:bg-white/5">
+          Cancel
+        </button>
+        <button type="submit" id="roomSubmitBtn"
+          class="flex-1 px-4 py-2.5 bg-brand-accent text-kiso-bg font-bold text-sm rounded-xl hover:bg-brand-accent/90">
+          Save Room
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="/js/admin/rooms.js"></script>

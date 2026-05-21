@@ -70,10 +70,7 @@ export const verifyPayment = catchAsync(async (req, res) => {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Cart or address not found.' });
     }
 
-    const orderItems = await paymentService.buildValidOrderItems(cart.items);
-    if (orderItems.length === 0) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'All items are out of stock.' });
-    }
+    const orderItems = await paymentService.validateCheckoutItems(cart.items);
 
     const appliedCoupon = req.session.appliedCoupon || null;
     const useWallet = !!req.body.useWallet;
@@ -107,10 +104,7 @@ export const placeCODOrder = catchAsync(async (req, res) => {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Cart or address not found.' });
     }
 
-    const orderItems = await paymentService.buildValidOrderItems(cart.items);
-    if (orderItems.length === 0) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'All items are out of stock.' });
-    }
+    const orderItems = await paymentService.validateCheckoutItems(cart.items);
 
     const appliedCoupon = req.session.appliedCoupon || null;
     const useWallet = !!req.body.useWallet;
@@ -128,10 +122,7 @@ export const placeWalletOrder = catchAsync(async (req, res) => {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Cart or address not found.' });
     }
 
-    const orderItems = await paymentService.buildValidOrderItems(cart.items);
-    if (orderItems.length === 0) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'All items are out of stock.' });
-    }
+    const orderItems = await paymentService.validateCheckoutItems(cart.items);
 
     const appliedCoupon = req.session.appliedCoupon || null;
     const subtotal = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);

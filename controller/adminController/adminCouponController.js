@@ -1,11 +1,10 @@
 import catchAsync from '../../utilities/catchAsync.js';
-import { STATUS_CODES } from '../../constants/statusCodes.js';
-import { MESSAGES } from '../../constants/messages.js';
+import { STATUS_CODES, MESSAGES, PAGINATION } from '../../constants/index.js';
 import * as couponService from '../../service/admin/couponService.js';
 
 export const getCoupons = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 10;
+    const perPage = PAGINATION.ADMIN_COUPONS;
     const search = req.query.search?.trim() || '';
 
     const { total, coupons } = await couponService.getCoupons({ page, perPage, search });

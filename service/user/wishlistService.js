@@ -1,6 +1,7 @@
 import * as wishlistRepository from "../../repository/user/wishlistRepository.js";
 import Product from "../../model/Product.js";
 import * as  cartRepository from "../../repository/user/cartRepository.js"
+import logger from "../../utilities/logger.js";
 
 export const getWishlist = async (userId) => {
     let [wishlist, cart] = await Promise.all([
@@ -102,6 +103,7 @@ export const addAllToCart = async (userId) => {
             } else if (error.message.includes("Not enough stock")) {
                 results.skipped.outOfStock++;
             } else {
+                logger.error(`wishlist→cart move failed for user ${userId}: ${error.message}`);
                 results.skipped.unavailable++;
             }
         }

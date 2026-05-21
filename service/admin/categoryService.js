@@ -6,8 +6,7 @@ import normalize from "../../utilities/normalizeCategory.js"
 
 export const createCategory = async (data) => {
     const {categoryName, description} = data;
-    const slug=normalize(categoryName);
-    console.log(slug)
+    const slug = normalize(categoryName);
     const exist = await Category.findOne({ slug })
 
     if(exist){
@@ -53,13 +52,10 @@ export const updateCategory = async (data) => {
     }
     )
 }
-export const isDublicate=(name,id)=>{
-    const slugName=normalize(name)
-    Category.findOne({
-            slug: {$regex:slugName},
-            _id: {$ne: id}
-        })
-}
+export const isDuplicate = async (name, id) => {
+    const slug = normalize(name);
+    return Category.findOne({ slug, _id: { $ne: id } });
+};
 export const disableCategory = async (categoryId) => {
     const {id} = categoryId;
 

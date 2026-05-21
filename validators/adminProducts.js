@@ -31,9 +31,9 @@ export const productSchema = z.object({
     .min(1, "Base price is required")
     .refine((val) => {
       const parsed = parseFloat(val);
-      return !isNaN(parsed) && parsed >= 0;
+      return !isNaN(parsed) && parsed > 0;
     }, {
-      message: "Base price must be a valid positive number",
+      message: "Base price must be greater than 0",
     }),
     
   material: z

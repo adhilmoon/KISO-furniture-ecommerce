@@ -1,11 +1,11 @@
 import catchAsync from '../../utilities/catchAsync.js';
-import { STATUS_CODES } from '../../constants/index.js';
+import { STATUS_CODES, PAGINATION } from '../../constants/index.js';
 import * as inventoryService from '../../service/admin/adminInventoryService.js';
 import * as adminPageService from '../../service/admin/adminPageService.js';
 
 export const getInventory = catchAsync(async (req, res) => {
   const page        = parseInt(req.query.page) || 1;
-  const perPage     = 5;
+  const perPage     = PAGINATION.ADMIN_INVENTORY;
   const search      = req.query.search?.trim() || '';
   const stockFilter = req.query.stock || '';
   const categoryId  = req.query.category || '';

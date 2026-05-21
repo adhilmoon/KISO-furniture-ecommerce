@@ -1,15 +1,15 @@
 import catchAsync from '../../utilities/catchAsync.js';
-import { STATUS_CODES } from '../../constants/index.js';
+import { STATUS_CODES, PAGINATION, RETURN, CLOUDINARY_FOLDERS } from '../../constants/index.js';
 import PDFDocument from 'pdfkit';
 import { uploadToCloudinary } from '../../utilities/uploadToCloudinary.js';
 import * as orderService from '../../service/user/orderService.js';
 
-const IMAGE_REQUIRED_REASONS = ['damaged', 'wrong_item', 'defective'];
+const { IMAGE_REQUIRED_REASONS, REASON_DETAIL_MIN, REASON_DETAIL_MAX } = RETURN;
 
 export const getOrders = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
     const pageNum = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = PAGINATION.USER_ORDERS;
     const search = req.query.search?.trim() || '';
 
     const { total, orders } = await orderService.getOrders(userId, { page: pageNum, perPage, search });
@@ -57,7 +57,7 @@ export const cancelItem = catchAsync(async (req, res) => {
 
 export const returnOrder = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
-    const { reason } = req.body;
+    const { reason, reasonDetail } = req.body;
 
     if (!reason || !reason.trim()) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Return reason is required' });
@@ -66,13 +66,22 @@ export const returnOrder = catchAsync(async (req, res) => {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Image proof is required for this return reason' });
     }
 
+    let finalReason = reason;
+    if (reason === 'other') {
+        const detail = (reasonDetail || '').trim();
+        if (detail.length < REASON_DETAIL_MIN) {
+            return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: `Please describe your reason (at least ${REASON_DETAIL_MIN} characters)` });
+        }
+        finalReason = `Other: ${detail.slice(0, REASON_DETAIL_MAX)}`;
+    }
+
     let imageUrl = null;
     if (req.file) {
-        const result = await uploadToCloudinary(req.file.buffer, 'kiso_returns');
+        const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.RETURNS);
         imageUrl = result.secure_url;
     }
 
-    await orderService.requestReturn(req.params.id, userId, reason, imageUrl);
+    await orderService.requestReturn(req.params.id, userId, finalReason, imageUrl);
     res.json({ success: true, message: 'Return request submitted successfully' });
 });
 

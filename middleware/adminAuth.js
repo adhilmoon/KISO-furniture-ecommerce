@@ -11,12 +11,12 @@ import logger from "../utilities/logger.js";
 const isLogin = (req, res, next) => {
     try {
         if (req.session.Admin) {
-           
-            return res.redirect('/admin/dashboard'); 
+            return res.redirect('/admin/dashboard');
         }
-        next(); 
+        next();
     } catch (error) {
         logger.error(`isLogin Middleware Error: ${error.message}`);
+        next(error);
     }
 };
 

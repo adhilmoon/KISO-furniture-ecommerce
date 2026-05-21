@@ -24,7 +24,7 @@ const productSchema = new schema({
   basePrice: {
     type: Number,
     required: true,
-    min: 0,
+    min: [0.01, "Base price must be greater than 0"],
   },
   material: {
     type: String,
@@ -62,7 +62,7 @@ const productSchema = new schema({
     {
       optionType:  { type: String, default: "" },  // e.g. "Color", "Size"
       optionValue: { type: String, default: "" },  // e.g. "Navy", "King"
-      price:       { type: Number, required: true, min: 0 },
+      price:       { type: Number, required: true, min: [0.01, "Variant price must be greater than 0"] },
       stock:       { type: Number, required: true, default: 0, min: 0 },
       images:      [{ type: String }],
     },

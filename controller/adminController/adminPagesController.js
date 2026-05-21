@@ -1,4 +1,4 @@
-import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
+import { STATUS_CODES, MESSAGES, PAGINATION, DASHBOARD } from '../../constants/index.js';
 import catchAsync from '../../utilities/catchAsync.js';
 import * as adminPageService from '../../service/admin/adminPageService.js';
 import * as dashboardService from '../../service/admin/dashboardService.js';
@@ -22,7 +22,7 @@ export const admindash = catchAsync(async (req, res) => {
     const [stats, chart, top] = await Promise.all([
         adminPageService.getDashboardStats(),
         dashboardService.getChartData({ period, startDate, endDate }),
-        dashboardService.getTopAnalytics({ period, startDate, endDate, limit: 10 })
+        dashboardService.getTopAnalytics({ period, startDate, endDate, limit: DASHBOARD.TOP_ANALYTICS_LIMIT })
     ]);
     res.render('admin/dashboard', {
         title: 'Admin dashboard',
@@ -47,7 +47,7 @@ export const dashboardChartData = catchAsync(async (req, res) => {
 
 export const users_mange = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 10;
+    const perPage = PAGINATION.ADMIN_USERS;
     const { total: totalUsers, users } = await adminPageService.getUsers(page, perPage);
     res.render('admin/users', {
         title: 'CustomerManagement',
@@ -63,7 +63,7 @@ export const users_mange = catchAsync(async (req, res) => {
 
 export const adminCategory_load = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 5;
+    const perPage = PAGINATION.ADMIN_CATEGORIES;
     const search = req.query.search || '';
     const { total: totalCategories, categories } = await adminPageService.getCategoryPage({ search, page, perPage });
     if (req.xhr || req.headers.accept?.includes('application/json')) {
@@ -99,7 +99,7 @@ export const adminCategoryEdit_load = catchAsync(async (req, res) => {
 
 export const adminProduct_Management = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 5;
+    const perPage = PAGINATION.ADMIN_PRODUCTS;
     const search = req.query.search || '';
     const { total: totalProducts, products } = await adminPageService.getProductPage({ search, page, perPage });
     if (req.xhr || req.headers.accept?.includes('application/json')) {

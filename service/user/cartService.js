@@ -1,15 +1,25 @@
 import * as cartRepository from "../../repository/user/cartRepository.js";
 import * as productRepository from "../../repository/user/productRepository.js";
 import * as wishlistService from "./wishlistService.js";
+import { CART } from "../../constants/index.js";
 
-const MAX_PER_USER = 3;
+const { MAX_PER_USER } = CART;
+
+const computeTotalAmount = (items = []) =>
+    items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 0), 0);
+
+const withTotal = (cart) => {
+    if (!cart) return cart;
+    const items = Array.isArray(cart.items) ? cart.items : [];
+    return { ...cart, totalAmount: computeTotalAmount(items) };
+};
 
 export const getCart = async (userId) => {
     let cart = await cartRepository.findByUserId(userId);
     if (!cart) {
-         cart = await cartRepository.createCart(userId, []);
+        cart = await cartRepository.createCart(userId, []);
     }
-    return cart;
+    return withTotal(cart);
 };
 
 export const addToCart = async (userId, productId, variantIndex, quantity) => {
@@ -56,7 +66,7 @@ export const addToCart = async (userId, productId, variantIndex, quantity) => {
 
     const updatedCart = await cartRepository.updateCartItems(userId, cart.items);
     await wishlistService.removeFromWishlist(userId, productId);
-    return updatedCart;
+    return withTotal(updatedCart);
 };
 
 export const updateQty = async (userId, itemId, newQty) => {
@@ -82,7 +92,8 @@ export const updateQty = async (userId, itemId, newQty) => {
         }
 
         cart.items[itemIndex].quantity = newQty;
-        return await cartRepository.updateCartItems(userId, cart.items);
+        const updated = await cartRepository.updateCartItems(userId, cart.items);
+        return withTotal(updated);
     }
     throw new Error("Item not found in cart");
 };
@@ -92,7 +103,8 @@ export const removeItem = async (userId, itemId) => {
     if (!cart) throw new Error("Cart not found");
 
     const newItems = cart.items.filter(item => String(item._id) !== String(itemId));
-    return await cartRepository.updateCartItems(userId, newItems);
+    const updated = await cartRepository.updateCartItems(userId, newItems);
+    return withTotal(updated);
 };
 
 export const clearCart = async (userId) => {

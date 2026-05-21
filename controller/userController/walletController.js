@@ -1,11 +1,11 @@
 import catchAsync from '../../utilities/catchAsync.js';
-import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
+import { STATUS_CODES, MESSAGES, PAGINATION } from '../../constants/index.js';
 import * as walletService from '../../service/user/walletService.js';
 
 export const getWalletPage = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
     const page = parseInt(req.query.page) || 1;
-    const perPage = 10;
+    const perPage = PAGINATION.USER_WALLET;
 
     const { wallet, transactions, total } = await walletService.getWalletWithTransactions(userId, { page, perPage });
 

@@ -1,5 +1,5 @@
 import catchAsync from '../../utilities/catchAsync.js';
-import { STATUS_CODES } from '../../constants/index.js';
+import { STATUS_CODES, PAGINATION } from '../../constants/index.js';
 import * as orderService from '../../service/admin/adminOrderService.js';
 
 const displayOrderId = (order) =>
@@ -9,7 +9,7 @@ const STATUS_OPTIONS = ['pending', 'shipped', 'out_for_delivery', 'delivered', '
 
 export const getOrders = catchAsync(async (req, res) => {
   const page    = parseInt(req.query.page)  || 1;
-  const perPage = 5;
+  const perPage = PAGINATION.ADMIN_ORDERS;
   const search  = req.query.search?.trim()  || '';
   const status  = req.query.status          || '';
   const sort    = req.query.sort            || 'newest';

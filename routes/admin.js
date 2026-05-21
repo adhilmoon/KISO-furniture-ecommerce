@@ -10,62 +10,96 @@ import * as adminInventoryController from "../controller/adminController/adminIn
 import * as adminCouponController from "../controller/adminController/adminCouponController.js";
 import * as adminOfferController from "../controller/adminController/adminOfferController.js";
 import * as adminSalesReportController from "../controller/adminController/adminSalesReportController.js";
-import { uploadProduct } from "../config/multer.js";
+import * as adminBannerController from "../controller/adminController/adminBannerController.js";
+import * as adminRoomController from "../controller/adminController/adminRoomController.js";
+import { uploadProduct, upload } from "../config/multer.js";
 
+// Apply no-cache to all routes
 router.use(adminauth.noCache);
 
+// ============================================
+// PUBLIC ROUTES
+// ============================================
 router.get("/login", adminauth.isLogin, adminPages.adminlogin);
 router.post('/login', adminController.auth);
-router.get('/dashboard', adminauth.isAdmin, adminPages.admindash);
-router.get('/dashboard/chart-data', adminauth.isAdmin, adminPages.dashboardChartData);
-router.get('/customers', adminauth.isAdmin, adminPages.users_mange);
-router.get('/categories', adminauth.isAdmin, adminPages.adminCategory_load);
-router.get('/products', adminauth.isAdmin, adminPages.adminProduct_Management);
-router.get('/category/get/:id', adminauth.isAdmin, adminCategory.getCategory);
-router.get('/product/add',  adminauth.isAdmin, adminPages.addProductPage);
-router.post('/product/add', adminauth.isAdmin, uploadProduct.any(), adminProduct.addProduct);
-router.get('/product/edit/:id', adminauth.isAdmin, adminPages.editProductPage);
-router.post('/product/update/:id', adminauth.isAdmin, uploadProduct.any(), adminProduct.updateProduct);
-router.patch('/product/disable/:id',adminauth.isAdmin,adminProduct.disableProduct)
-router.patch('/product/enable/:id',adminauth.isAdmin,adminProduct.enableProduct)
 
-router.get('/category/add', adminauth.isAdmin, adminPages.adminCategoryAdd_load);
-router.get('/category/edit/:id', adminauth.isAdmin, adminPages.adminCategoryEdit_load);
-router.post("/category/add", adminauth.isAdmin, adminCategory.addCategory);
-router.patch("/category/update/:id", adminauth.isAdmin, adminCategory.updateCategories);
-router.patch('/category/disable/:id', adminauth.isAdmin, adminCategory.disableCategories);
-router.patch('/category/enable/:id', adminauth.isAdmin, adminCategory.enableCategories);
-router.patch('/user/:id/block', adminauth.isAdmin, adminPages.toggleBlock);
-router.get("/users/search", adminauth.isAdmin, adminController.load_data);
+// ============================================
+// PROTECTED ROUTES (Admin auth required)
+// ============================================
+router.use(adminauth.isAdmin);
+
+// Dashboard
+router.get('/dashboard', adminPages.admindash);
+router.get('/dashboard/chart-data', adminPages.dashboardChartData);
 router.get('/logout', adminController.logout);
 
-// Orders
-router.get('/orders', adminauth.isAdmin, adminOrderController.getOrders);
-router.get('/orders/:id', adminauth.isAdmin, adminOrderController.getOrderDetail);
-router.patch('/orders/:id/status', adminauth.isAdmin, adminOrderController.updateOrderStatus);
-router.patch('/orders/:id/mark-paid', adminauth.isAdmin, adminOrderController.markCODPaid);
-router.patch('/orders/:id/approve-return', adminauth.isAdmin, adminOrderController.approveReturn);
-router.patch('/orders/:id/reject-return', adminauth.isAdmin, adminOrderController.rejectReturn);
+// Customer Management
+router.get('/customers', adminPages.users_mange);
+router.get("/users/search", adminController.load_data);
+router.patch('/user/:id/block', adminPages.toggleBlock);
 
-// Inventory
-router.get('/inventory', adminauth.isAdmin, adminInventoryController.getInventory);
-router.patch('/inventory/stock', adminauth.isAdmin, adminInventoryController.updateStock);
+// Category Management
+router.get('/categories', adminPages.adminCategory_load);
+router.get('/category/add', adminPages.adminCategoryAdd_load);
+router.get('/category/edit/:id', adminPages.adminCategoryEdit_load);
+router.get('/category/get/:id', adminCategory.getCategory);
+router.post("/category/add", adminCategory.addCategory);
+router.patch("/category/update/:id", adminCategory.updateCategories);
+router.patch('/category/disable/:id', adminCategory.disableCategories);
+router.patch('/category/enable/:id', adminCategory.enableCategories);
 
-// Coupons
-router.get('/coupons', adminauth.isAdmin, adminCouponController.getCoupons);
-router.post('/coupons', adminauth.isAdmin, adminCouponController.createCoupon);
-router.delete('/coupons/:id', adminauth.isAdmin, adminCouponController.deleteCoupon);
-router.patch('/coupons/:id/toggle', adminauth.isAdmin, adminCouponController.toggleCouponActive);
+// Product Management
+router.get('/products', adminPages.adminProduct_Management);
+router.get('/product/add', adminPages.addProductPage);
+router.post('/product/add', uploadProduct.any(), adminProduct.addProduct);
+router.get('/product/edit/:id', adminPages.editProductPage);
+router.post('/product/update/:id', uploadProduct.any(), adminProduct.updateProduct);
+router.patch('/product/disable/:id', adminProduct.disableProduct);
+router.patch('/product/enable/:id', adminProduct.enableProduct);
 
-// Offers
-router.get('/offers', adminauth.isAdmin, adminOfferController.getOffers);
-router.post('/offers', adminauth.isAdmin, adminOfferController.createOffer);
-router.delete('/offers/:id', adminauth.isAdmin, adminOfferController.deleteOffer);
-router.patch('/offers/:id/toggle', adminauth.isAdmin, adminOfferController.toggleOfferActive);
+// Order Management
+router.get('/orders', adminOrderController.getOrders);
+router.get('/orders/:id', adminOrderController.getOrderDetail);
+router.patch('/orders/:id/status', adminOrderController.updateOrderStatus);
+router.patch('/orders/:id/mark-paid', adminOrderController.markCODPaid);
+router.patch('/orders/:id/approve-return', adminOrderController.approveReturn);
+router.patch('/orders/:id/reject-return', adminOrderController.rejectReturn);
+
+// Inventory Management
+router.get('/inventory', adminInventoryController.getInventory);
+router.patch('/inventory/stock', adminInventoryController.updateStock);
+
+// Coupon Management
+router.get('/coupons', adminCouponController.getCoupons);
+router.post('/coupons', adminCouponController.createCoupon);
+router.delete('/coupons/:id', adminCouponController.deleteCoupon);
+router.patch('/coupons/:id/toggle', adminCouponController.toggleCouponActive);
+
+// Offer Management
+router.get('/offers', adminOfferController.getOffers);
+router.post('/offers', adminOfferController.createOffer);
+router.delete('/offers/:id', adminOfferController.deleteOffer);
+router.patch('/offers/:id/toggle', adminOfferController.toggleOfferActive);
+
+// Banner Management
+router.get('/banners', adminBannerController.getBanners);
+router.post('/banners', upload.single('image'), adminBannerController.createBanner);
+router.patch('/banners/reorder', adminBannerController.reorderBanners);
+router.post('/banners/:id', upload.single('image'), adminBannerController.updateBanner);
+router.delete('/banners/:id', adminBannerController.deleteBanner);
+router.patch('/banners/:id/toggle', adminBannerController.toggleBannerActive);
+
+// Room Management
+router.get('/rooms', adminRoomController.getRooms);
+router.post('/rooms', upload.single('image'), adminRoomController.createRoom);
+router.patch('/rooms/reorder', adminRoomController.reorderRooms);
+router.post('/rooms/:id', upload.single('image'), adminRoomController.updateRoom);
+router.delete('/rooms/:id', adminRoomController.deleteRoom);
+router.patch('/rooms/:id/toggle', adminRoomController.toggleRoomActive);
 
 // Sales Reports
-router.get('/sales-report', adminauth.isAdmin, adminSalesReportController.getSalesReportPage);
-router.get('/sales-report/download/pdf', adminauth.isAdmin, adminSalesReportController.downloadSalesReportPdf);
-router.get('/sales-report/download/excel', adminauth.isAdmin, adminSalesReportController.downloadSalesReportExcel);
+router.get('/sales-report', adminSalesReportController.getSalesReportPage);
+router.get('/sales-report/download/pdf', adminSalesReportController.downloadSalesReportPdf);
+router.get('/sales-report/download/excel', adminSalesReportController.downloadSalesReportExcel);
 
 export default router;

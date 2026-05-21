@@ -30,3 +30,20 @@ export const updateVariantStock = async (productId, variantIndex, delta) =>
         { _id: productId },
         { $inc: { [`variants.${variantIndex}.stock`]: delta } }
     );
+
+/**
+ * Atomically decrement variant stock only if enough is available.
+ * Returns true when the decrement happened, false when stock was insufficient
+ * (or product/variant no longer exists). Prevents over-selling under concurrency.
+ */
+export const tryDecrementVariantStock = async (productId, variantIndex, qty) => {
+    const result = await Product.updateOne(
+        {
+            _id: productId,
+            isListed: true,
+            [`variants.${variantIndex}.stock`]: { $gte: qty }
+        },
+        { $inc: { [`variants.${variantIndex}.stock`]: -qty } }
+    );
+    return result.modifiedCount === 1;
+};
