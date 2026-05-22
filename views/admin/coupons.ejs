@@ -1,0 +1,164 @@
+<div class="w-full">
+
+  <!-- Header -->
+  <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-kiso-text">Coupon Management</h1>
+      <p class="text-brand-muted text-sm mt-1">Create and manage discount coupons</p>
+    </div>
+    <button onclick="openCreateCouponModal()"
+      class="px-5 py-2.5 bg-brand-accent text-kiso-bg font-semibold text-sm rounded-xl hover:bg-brand-accent/90 transition-colors shadow-lg shadow-brand-accent/20 whitespace-nowrap">
+      + New Coupon
+    </button>
+  </div>
+
+  <!-- Search -->
+  <form method="GET" action="/admin/coupons" class="mb-6">
+    <div class="flex items-center bg-brand-bg2 border border-white/10 rounded-lg px-4 py-3 gap-3">
+      <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+      </svg>
+      <input type="text" name="search" value="<%= search || '' %>" placeholder="Search by code"
+        class="bg-transparent flex-1 text-sm text-brand-light placeholder:text-brand-muted/60 outline-none" />
+      <button type="submit" class="text-xs font-semibold text-brand-accent">Search</button>
+    </div>
+  </form>
+
+  <!-- Table -->
+  <div class="bg-brand-bg1 border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-brand-bg2/80 border-b border-white/5 text-brand-muted uppercase tracking-wider text-[11px]">
+          <tr>
+            <th class="px-6 py-4 text-left font-semibold">Code</th>
+            <th class="px-6 py-4 text-left font-semibold">Type</th>
+            <th class="px-6 py-4 text-right font-semibold">Value</th>
+            <th class="px-6 py-4 text-right font-semibold">Min Purchase</th>
+            <th class="px-6 py-4 text-right font-semibold">Used / Limit</th>
+            <th class="px-6 py-4 text-center font-semibold">Expiry</th>
+            <th class="px-6 py-4 text-center font-semibold">Status</th>
+            <th class="px-6 py-4 text-right font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          <% if (!coupons || coupons.length === 0) { %>
+            <tr><td colspan="8" class="px-6 py-10 text-center text-brand-muted">No coupons found</td></tr>
+          <% } else { %>
+            <% coupons.forEach(function(c) {
+              const isExpired = new Date(c.expiresAt).getTime() < Date.now();
+              const statusCls = !c.isActive
+                ? 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+                : isExpired
+                  ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                  : 'bg-green-500/10 text-green-400 border-green-500/20';
+              const statusLbl = !c.isActive ? 'Inactive' : isExpired ? 'Expired' : 'Active';
+            %>
+              <tr class="hover:bg-white/5 transition-colors">
+                <td class="px-6 py-4 font-mono font-bold text-brand-accent"><%= c.code %></td>
+                <td class="px-6 py-4 text-brand-muted capitalize"><%= c.discountType %></td>
+                <td class="px-6 py-4 text-right text-brand-light font-semibold">
+                  <%= c.discountType === 'percentage' ? c.discountValue + '%' : '₹' + c.discountValue.toLocaleString() %>
+                </td>
+                <td class="px-6 py-4 text-right text-brand-muted">
+                  <%= c.minPurchase ? '₹' + c.minPurchase.toLocaleString() : '-' %>
+                </td>
+                <td class="px-6 py-4 text-right text-brand-muted">
+                  <%= c.usedCount %> / <%= c.usageLimit || '∞' %>
+                </td>
+                <td class="px-6 py-4 text-center text-brand-muted">
+                  <%= new Date(c.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 border rounded-full text-xs font-bold <%= statusCls %>"><%= statusLbl %></span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex justify-end gap-2">
+                    <button onclick="toggleCoupon('<%= c._id %>')" class="text-xs font-semibold text-blue-400 border border-blue-400/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/10">
+                      <%= c.isActive ? 'Disable' : 'Enable' %>
+                    </button>
+                    <button onclick="deleteCoupon('<%= c._id %>')" class="text-xs font-semibold text-red-400 border border-red-400/30 px-3 py-1.5 rounded-lg hover:bg-red-500/10">
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <% if (totalPages > 1) { %>
+    <div class="flex justify-center gap-2 mt-6">
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/admin/coupons?page=<%= i %><%= search ? '&search=' + search : '' %>"
+          class="px-3 py-1.5 text-xs rounded-lg border <%= i === pageNum ? 'bg-brand-accent text-kiso-bg border-brand-accent' : 'border-white/10 text-brand-muted hover:bg-white/5' %>">
+          <%= i %>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Create Coupon Modal -->
+<div id="createCouponModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-brand-bg1 rounded-2xl border border-white/10 p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <h3 class="text-lg font-bold text-brand-light mb-4">Create Coupon</h3>
+    <form id="createCouponForm" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Code <span class="text-red-400">*</span></label>
+        <input type="text" name="code" required class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm uppercase outline-none focus:border-brand-accent/40"/>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Description</label>
+        <input type="text" name="description" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Discount Type <span class="text-red-400">*</span></label>
+          <select name="discountType" required class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40">
+            <option value="percentage">Percentage (%)</option>
+            <option value="flat">Flat (₹)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Discount Value <span class="text-red-400">*</span></label>
+          <input type="number" name="discountValue" required min="0" step="0.01" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Min Purchase (₹)</label>
+          <input type="number" name="minPurchase" min="0" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Max Discount (₹)</label>
+          <input type="number" name="maxDiscount" min="0" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Total Usage Limit</label>
+          <input type="number" name="usageLimit" min="0" placeholder="0 = unlimited" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Per User Limit</label>
+          <input type="number" name="perUserLimit" min="0" value="1" class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Expires At <span class="text-red-400">*</span></label>
+        <input type="datetime-local" name="expiresAt" required class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40"/>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeCreateCouponModal()" class="flex-1 px-4 py-2.5 border border-white/10 text-brand-light font-semibold text-sm rounded-xl hover:bg-white/5">Cancel</button>
+        <button type="submit" class="flex-1 px-4 py-2.5 bg-brand-accent text-kiso-bg font-bold text-sm rounded-xl hover:bg-brand-accent/90">Create Coupon</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="/js/admin/coupons.js"></script>

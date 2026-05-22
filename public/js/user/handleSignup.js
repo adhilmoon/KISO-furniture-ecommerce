@@ -21,7 +21,7 @@ async function signup_handle(event) {
         return showFieldError('email', 'Please enter a valid email address')
     }
     if(!signupData.password) {
-        return showFieldError('password', "pleas enter valid password");
+        return showFieldError('password', "Please enter a valid password");
     }
 
     const passRegex = /^.{6,}$/
@@ -30,7 +30,7 @@ async function signup_handle(event) {
     }
 
     if(signupData.confirmPassword !== signupData.password) {
-        return showFieldError("confirmPassword", 'Password not match pleas enter exact password ');
+        return showFieldError("confirmPassword", 'Passwords do not match');
     }
 
     submitBtn.disabled = true;

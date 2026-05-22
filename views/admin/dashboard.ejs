@@ -31,19 +31,141 @@
         </div>
     </div>
 
-    <!-- Analytics Section -->
-    <div class="mb-12">
-  
+    <!-- Chart Section -->
+    <div class="bg-brand-bg1 border border-white/10 rounded-2xl p-6 mb-8 shadow-lg shadow-black/20">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-lg font-bold text-kiso-text">Sales Analytics</h2>
+                <p class="text-xs text-brand-muted mt-1"><%= chart.label %></p>
+            </div>
+            <form id="dashboardFilterForm" method="GET" action="/admin/dashboard" class="flex flex-wrap gap-2">
+                <select name="period" id="periodSelect" onchange="toggleCustomRange()" class="bg-brand-bg2 border border-white/10 rounded-xl px-3 py-2 text-brand-light text-sm outline-none focus:border-brand-accent/40">
+                    <option value="weekly" <%= period === 'weekly' ? 'selected' : '' %>>Weekly</option>
+                    <option value="monthly" <%= period === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                    <option value="yearly" <%= period === 'yearly' ? 'selected' : '' %>>Yearly</option>
+                    <option value="custom" <%= period === 'custom' ? 'selected' : '' %>>Custom</option>
+                </select>
+                <input type="date" name="startDate" value="<%= startDate %>" id="startDateInput" class="bg-brand-bg2 border border-white/10 rounded-xl px-3 py-2 text-brand-light text-sm outline-none focus:border-brand-accent/40 <%= period === 'custom' ? '' : 'hidden' %>" />
+                <input type="date" name="endDate" value="<%= endDate %>" id="endDateInput" class="bg-brand-bg2 border border-white/10 rounded-xl px-3 py-2 text-brand-light text-sm outline-none focus:border-brand-accent/40 <%= period === 'custom' ? '' : 'hidden' %>" />
+                <button type="submit" class="px-4 py-2 bg-brand-accent text-kiso-bg font-bold text-sm rounded-xl hover:bg-brand-accent/90 transition-colors">Apply</button>
+            </form>
+        </div>
+        <div class="h-72">
+            <canvas id="salesChart"></canvas>
+        </div>
     </div>
 
-    <!-- Recent Orders Section -->
-    <div class="mb-12">
+    <!-- Top Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-12">
+        <!-- Top Products -->
+        <div class="bg-brand-bg1 border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
+            <div class="px-5 py-4 border-b border-white/5">
+                <h3 class="text-sm font-semibold text-brand-muted uppercase tracking-wider">Top 10 Products</h3>
+            </div>
+            <div class="divide-y divide-white/5">
+                <% if (!topProducts || topProducts.length === 0) { %>
+                    <div class="px-5 py-8 text-center text-brand-muted text-sm">No data</div>
+                <% } else { %>
+                    <% topProducts.forEach(function(p, i) { %>
+                        <div class="px-5 py-3 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <span class="w-6 h-6 rounded-full bg-brand-accent/10 text-brand-accent text-xs font-bold flex items-center justify-center"><%= i + 1 %></span>
+                                <span class="text-sm text-brand-light font-medium truncate"><%= p.productName || 'Unknown' %></span>
+                            </div>
+                            <span class="text-xs text-brand-muted font-semibold"><%= p.unitsSold %> sold</span>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Top Categories -->
+        <div class="bg-brand-bg1 border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
+            <div class="px-5 py-4 border-b border-white/5">
+                <h3 class="text-sm font-semibold text-brand-muted uppercase tracking-wider">Top 10 Categories</h3>
+            </div>
+            <div class="divide-y divide-white/5">
+                <% if (!topCategories || topCategories.length === 0) { %>
+                    <div class="px-5 py-8 text-center text-brand-muted text-sm">No data</div>
+                <% } else { %>
+                    <% topCategories.forEach(function(c, i) { %>
+                        <div class="px-5 py-3 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <span class="w-6 h-6 rounded-full bg-brand-accent/10 text-brand-accent text-xs font-bold flex items-center justify-center"><%= i + 1 %></span>
+                                <span class="text-sm text-brand-light font-medium truncate"><%= c.categoryName || 'Unknown' %></span>
+                            </div>
+                            <span class="text-xs text-brand-muted font-semibold"><%= c.unitsSold %> sold</span>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
 
     </div>
 
-    <!-- Customer Activity -->
-    <div class="mb-4">
-   
-    </div>
-    
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+function toggleCustomRange() {
+    const period = document.getElementById('periodSelect').value;
+    const show = period === 'custom';
+    document.getElementById('startDateInput').classList.toggle('hidden', !show);
+    document.getElementById('endDateInput').classList.toggle('hidden', !show);
+}
+
+(function () {
+    const chartData = <%- JSON.stringify(chart) %>;
+    const ctx = document.getElementById('salesChart');
+    if (!ctx || !window.Chart) return;
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [
+                {
+                    label: 'Revenue (₹)',
+                    data: chartData.revenue,
+                    borderColor: '#EAB308',
+                    backgroundColor: 'rgba(234, 179, 8, 0.15)',
+                    fill: true,
+                    tension: 0.3,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Orders',
+                    data: chartData.orders,
+                    borderColor: '#60A5FA',
+                    backgroundColor: 'rgba(96, 165, 250, 0.15)',
+                    fill: false,
+                    tension: 0.3,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: '#9CA3AF' } }
+            },
+            scales: {
+                x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                y: {
+                    type: 'linear',
+                    position: 'left',
+                    ticks: { color: '#9CA3AF' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                y1: {
+                    type: 'linear',
+                    position: 'right',
+                    ticks: { color: '#9CA3AF' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        }
+    });
+})();
+</script>

@@ -61,19 +61,26 @@ function closeReturnModal() {
     document.getElementById('returnModal').classList.replace('flex', 'hidden');
     document.getElementById('returnReason').value = '';
     document.getElementById('returnImage').value = '';
+    document.getElementById('returnReasonDetail').value = '';
     document.getElementById('returnReasonError').classList.add('hidden');
     document.getElementById('returnImageError').classList.add('hidden');
     document.getElementById('returnImageTypeError').classList.add('hidden');
     document.getElementById('returnImagePreviewName').classList.add('hidden');
     document.getElementById('returnImageSection').classList.add('hidden');
+    document.getElementById('returnReasonDetailSection').classList.add('hidden');
+    document.getElementById('returnReasonDetailError').classList.add('hidden');
 }
 
 function handleReturnReasonChange(value) {
-    const section = document.getElementById('returnImageSection');
+    const imgSection = document.getElementById('returnImageSection');
     const required = document.getElementById('returnImageRequired');
     const optional = document.getElementById('returnImageOptional');
-    if (!value) { section.classList.add('hidden'); return; }
-    section.classList.remove('hidden');
+    const detailSection = document.getElementById('returnReasonDetailSection');
+
+    detailSection.classList.toggle('hidden', value !== 'other');
+
+    if (!value) { imgSection.classList.add('hidden'); return; }
+    imgSection.classList.remove('hidden');
     if (IMAGE_REQUIRED_REASONS.includes(value)) {
         required.classList.remove('hidden');
         optional.classList.add('hidden');
@@ -131,13 +138,20 @@ async function submitCancelItem() {
 async function submitReturn() {
     const reasonEl = document.getElementById('returnReason');
     const imageEl  = document.getElementById('returnImage');
+    const detailEl = document.getElementById('returnReasonDetail');
     const reason   = reasonEl.value;
 
     document.getElementById('returnReasonError').classList.add('hidden');
     document.getElementById('returnImageError').classList.add('hidden');
+    document.getElementById('returnReasonDetailError').classList.add('hidden');
 
     if (!reason) {
         document.getElementById('returnReasonError').classList.remove('hidden');
+        return;
+    }
+    const detail = detailEl.value.trim();
+    if (reason === 'other' && detail.length < 5) {
+        document.getElementById('returnReasonDetailError').classList.remove('hidden');
         return;
     }
     if (IMAGE_REQUIRED_REASONS.includes(reason) && !imageEl.files[0]) {
@@ -147,6 +161,7 @@ async function submitReturn() {
 
     const formData = new FormData();
     formData.append('reason', reason);
+    if (reason === 'other') formData.append('reasonDetail', detail);
     if (imageEl.files[0]) formData.append('returnImage', imageEl.files[0]);
 
     try {

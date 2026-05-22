@@ -1,0 +1,182 @@
+<div class="w-full">
+
+  <!-- Header -->
+  <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-kiso-text">Banner Management</h1>
+      <p class="text-brand-muted text-sm mt-1">Upload, reorder and toggle homepage banners</p>
+    </div>
+    <button onclick="openBannerModal()"
+      class="px-5 py-2.5 bg-brand-accent text-kiso-bg font-semibold text-sm rounded-xl hover:bg-brand-accent/90 transition-colors shadow-lg shadow-brand-accent/20 whitespace-nowrap">
+      + New Banner
+    </button>
+  </div>
+
+  <!-- Grid -->
+  <div class="bg-brand-bg1 border border-white/10 rounded-2xl p-6 shadow-lg shadow-black/20">
+    <% if (!banners || banners.length === 0) { %>
+      <p class="text-center text-brand-muted py-10">No banners yet. Add one to enable the homepage slider.</p>
+    <% } else { %>
+      <div id="bannerGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <% banners.forEach(function(b) { %>
+          <article class="banner-card bg-brand-bg2 border border-white/5 rounded-2xl overflow-hidden" data-id="<%= b._id %>">
+            <div class="relative aspect-[16/9] bg-black/30">
+              <img src="<%= b.image.url %>" alt="<%= b.title || 'banner' %>" class="w-full h-full object-cover" />
+              <span class="absolute top-3 left-3 px-2.5 py-1 text-[10px] font-bold rounded-full border
+                <%= b.isActive
+                  ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                  : 'bg-gray-500/10 text-gray-400 border-gray-500/20' %>">
+                <%= b.isActive ? 'Active' : 'Inactive' %>
+              </span>
+              <span class="absolute top-3 right-3 px-2.5 py-1 text-[10px] font-bold rounded-full bg-black/60 text-white">
+                #<%= b.order %>
+              </span>
+            </div>
+            <div class="p-4 space-y-3">
+              <div>
+                <h3 class="text-sm font-bold text-brand-light truncate"><%= b.title || 'Untitled banner' %></h3>
+                <p class="text-xs text-brand-muted truncate"><%= b.subtitle || '—' %></p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full border border-white/10" style="background: <%= b.bgColor %>;" title="Background"></span>
+                <span class="w-5 h-5 rounded-full border border-white/10" style="background: <%= b.textColor %>;" title="Text"></span>
+                <span class="text-[10px] text-brand-muted ml-auto">
+                  <%= b.bgColor %> / <%= b.textColor %>
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-2">
+                <input type="number" min="0" value="<%= b.order %>" data-order="<%= b._id %>"
+                  class="w-20 bg-brand-bg1 border border-white/10 rounded-lg px-2 py-1 text-xs text-brand-light outline-none focus:border-brand-accent/40" />
+                <button onclick="saveOrder('<%= b._id %>')"
+                  class="text-xs font-semibold text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg hover:bg-brand-accent/10">
+                  Save order
+                </button>
+                <button onclick="toggleBanner('<%= b._id %>')"
+                  class="text-xs font-semibold text-blue-400 border border-blue-400/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/10">
+                  <%= b.isActive ? 'Disable' : 'Enable' %>
+                </button>
+                <button onclick='openBannerModal(<%- JSON.stringify({ _id: b._id, title: b.title, subtitle: b.subtitle, ctaText: b.ctaText, linkUrl: b.linkUrl, bgColor: b.bgColor, textColor: b.textColor, order: b.order, isActive: b.isActive, image: b.image }) %>)'
+                  class="text-xs font-semibold text-brand-light border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5">
+                  Edit
+                </button>
+                <button onclick="deleteBanner('<%= b._id %>')"
+                  class="text-xs font-semibold text-red-400 border border-red-400/30 px-3 py-1.5 rounded-lg hover:bg-red-500/10 ml-auto">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Pagination -->
+  <% if (totalPages > 1) { %>
+    <div class="flex justify-center gap-2 mt-6">
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/admin/banners?page=<%= i %>"
+          class="px-3 py-1.5 text-xs rounded-lg border <%= i === pageNum ? 'bg-brand-accent text-kiso-bg border-brand-accent' : 'border-white/10 text-brand-muted hover:bg-white/5' %>">
+          <%= i %>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Banner Modal (create / edit) -->
+<div id="bannerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-brand-bg1 rounded-2xl border border-white/10 p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <h3 id="bannerModalTitle" class="text-lg font-bold text-brand-light mb-4">Create Banner</h3>
+
+    <form id="bannerForm" class="space-y-4" enctype="multipart/form-data" novalidate>
+      <input type="hidden" name="_id" id="bannerId" />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Title</label>
+          <input type="text" name="title" id="bannerTitle" maxlength="100"
+            class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">CTA Text</label>
+          <input type="text" name="ctaText" id="bannerCta" maxlength="30"
+            class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Subtitle</label>
+        <input type="text" name="subtitle" id="bannerSubtitle" maxlength="200"
+          class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Link URL</label>
+        <input type="text" name="linkUrl" id="bannerLink" placeholder="/user/store or https://..."
+          class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Background</label>
+          <input type="color" name="bgColor" id="bannerBg" value="#1a1a1a"
+            class="w-full h-10 bg-brand-bg2 border border-white/10 rounded-xl cursor-pointer" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Text</label>
+          <input type="color" name="textColor" id="bannerText" value="#ffffff"
+            class="w-full h-10 bg-brand-bg2 border border-white/10 rounded-xl cursor-pointer" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Order</label>
+          <input type="number" name="order" id="bannerOrder" min="0" value="0"
+            class="w-full bg-brand-bg2 border border-white/10 rounded-xl px-4 py-2.5 text-brand-light text-sm outline-none focus:border-brand-accent/40" />
+        </div>
+        <div class="flex items-end">
+          <label class="flex items-center gap-2 text-sm text-brand-light cursor-pointer">
+            <input type="checkbox" name="isActive" id="bannerActive" checked
+              class="w-4 h-4 accent-brand-accent" />
+            Active
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Banner Image <span class="text-red-400" id="bannerImageRequired">*</span></label>
+        <input type="file" name="image" id="bannerImage" accept="image/jpeg,image/jpg,image/png,image/webp"
+          class="block w-full text-sm text-brand-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-accent file:text-kiso-bg hover:file:bg-brand-accent/90" />
+        <p class="text-[11px] text-brand-muted mt-1">JPG, PNG or WebP — max 5 MB. Min 1200×400 px. Recommended ratio 21:9.</p>
+      </div>
+
+      <!-- Preview -->
+      <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Preview</label>
+        <div id="bannerPreview"
+          class="relative aspect-[16/6] rounded-2xl overflow-hidden border border-white/10 flex items-center"
+          style="background:#1a1a1a; color:#ffffff;">
+          <img id="bannerPreviewImg" class="absolute inset-0 w-full h-full object-cover opacity-60" />
+          <div class="relative z-10 px-6 md:px-10 max-w-xl">
+            <h4 id="bannerPreviewTitle" class="text-2xl md:text-4xl font-bold tracking-tight"></h4>
+            <p id="bannerPreviewSubtitle" class="text-sm md:text-base mt-2 opacity-90"></p>
+            <span id="bannerPreviewCta" class="inline-block mt-3 px-4 py-2 bg-white/15 backdrop-blur-sm rounded-lg text-xs font-bold uppercase tracking-widest"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeBannerModal()"
+          class="flex-1 px-4 py-2.5 border border-white/10 text-brand-light font-semibold text-sm rounded-xl hover:bg-white/5">
+          Cancel
+        </button>
+        <button type="submit" id="bannerSubmitBtn"
+          class="flex-1 px-4 py-2.5 bg-brand-accent text-kiso-bg font-bold text-sm rounded-xl hover:bg-brand-accent/90">
+          Save Banner
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="/js/admin/banners.js"></script>

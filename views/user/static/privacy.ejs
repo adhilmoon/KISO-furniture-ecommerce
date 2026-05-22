@@ -1,0 +1,39 @@
+<section class="max-w-3xl mx-auto px-6 py-20 text-brand-light">
+    <p class="text-xs uppercase tracking-[0.3em] text-brand-accent font-bold mb-3">Legal</p>
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-3">Privacy Policy</h1>
+    <p class="text-xs text-brand-muted mb-10">Last updated: <%= new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+
+    <div class="space-y-6 text-sm text-brand-muted leading-relaxed">
+        <div>
+            <h2 class="text-lg font-bold text-brand-light mb-2">Information we collect</h2>
+            <p>Name, email, phone, shipping address and order history when you create an account or place an order. Payment data is processed by Razorpay and never stored on our servers.</p>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold text-brand-light mb-2">How we use it</h2>
+            <ul class="list-disc list-inside space-y-1">
+                <li>Process and ship your orders</li>
+                <li>Send order updates and OTP verification</li>
+                <li>Improve product recommendations</li>
+                <li>Respond to support requests</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold text-brand-light mb-2">Sharing</h2>
+            <p>We share your data only with logistics, payment and email providers required to fulfil your order. We never sell personal data.</p>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold text-brand-light mb-2">Cookies</h2>
+            <p>We use session cookies for authentication and a few analytics cookies to understand site usage. You can disable cookies in your browser, though parts of the site may stop working.</p>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold text-brand-light mb-2">Your rights</h2>
+            <p>You may request a copy of your data or its deletion at any time by contacting us at
+                <% if (locals.site?.contact?.email) { %>
+                    <a href="mailto:<%= locals.site.contact.email %>" class="text-brand-accent hover:underline"><%= locals.site.contact.email %></a>.
+                <% } else { %>
+                    our support address.
+                <% } %>
+            </p>
+        </div>
+    </div>
+</section>
