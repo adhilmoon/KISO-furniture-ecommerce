@@ -24,7 +24,8 @@ function toggleOfferTargetFields() {
 }
 
 async function deleteOffer(id) {
-  if (!confirm('Delete this offer? Linked product/category will be unlinked.')) return;
+  const result = await confirmAction('Delete this offer? Linked product/category will be unlinked.', 'warning');
+  if (!result.isConfirmed) return;
   try {
     const res = await axios.delete('/admin/offers/' + id);
     if (res.data.success) {

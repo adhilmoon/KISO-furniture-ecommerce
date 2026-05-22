@@ -69,7 +69,8 @@ function closeRoomModal() {
 }
 
 async function deleteRoom(id) {
-    if (!confirm('Delete this room? Action cannot be undone.')) return;
+    const result = await confirmAction('Delete this room? Action cannot be undone.', 'warning');
+    if (!result.isConfirmed) return;
     try {
         const res = await axios.delete('/admin/rooms/' + id);
         if (res.data.success) {

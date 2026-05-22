@@ -5,7 +5,10 @@
     <div id="scrolly-container">
         <!-- The sticky visual container -->
         <div class="sticky-wrapper">
-            <canvas id="sofa-canvas"></canvas>
+            <video id="sofa-video" muted playsinline preload="auto" disableRemotePlayback
+                class="absolute inset-0 w-full h-full object-cover">
+                <source src="https://ik.imagekit.io/w0ssw9zbf/Smoothly_transition_from_the_assembled_202605221453%20(online-video-cutter.com).mp4" type="video/mp4">
+            </video>
 
             <!-- Storytelling Overlays -->
             <div id="steps-container" class="absolute inset-0 pointer-events-none  bg-black/50">
@@ -74,32 +77,33 @@
 
     <!-- Banner Slider -->
     <% if (banners && banners.length > 0) { %>
-        <section id="bannerSlider" class="relative w-full overflow-hidden transition-colors duration-700"
+        <section id="bannerSlider"
+            class="relative w-full overflow-hidden transition-colors duration-700 mb-16 md:mb-24 shadow-xl shadow-black/30"
             style="background: <%= banners[0].bgColor %>;"
             data-autoplay="6000">
-            <div class="relative w-full aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5]">
+            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[16/6] lg:aspect-[21/8]">
                 <% banners.forEach(function(b, i) { %>
                     <div class="banner-slide absolute inset-0 transition-opacity duration-700 ease-in-out <%= i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' %>"
                         data-index="<%= i %>" data-bg="<%= b.bgColor %>" data-text="<%= b.textColor %>"
                         style="color: <%= b.textColor %>;">
                         <img src="<%= b.image.url %>" alt="<%= b.title || 'banner' %>"
-                            class="absolute inset-0 w-full h-full object-cover opacity-70" />
-                        <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"></div>
-                        <div class="relative z-10 h-full flex items-center px-6 md:px-16 lg:px-24">
-                            <div class="max-w-2xl">
+                            class="absolute inset-0 w-full h-full object-cover" />
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
+                        <div class="relative z-10 h-full flex items-center px-8 md:px-16 lg:px-24 xl:px-32">
+                            <div class="max-w-xl">
                                 <% if (b.title) { %>
-                                    <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg">
+                                    <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
                                         <%= b.title %>
                                     </h2>
                                 <% } %>
                                 <% if (b.subtitle) { %>
-                                    <p class="mt-3 md:mt-5 text-sm md:text-lg max-w-xl opacity-95 drop-shadow">
+                                    <p class="mt-3 md:mt-4 text-sm md:text-base lg:text-lg opacity-95 drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
                                         <%= b.subtitle %>
                                     </p>
                                 <% } %>
                                 <% if (b.ctaText && b.linkUrl) { %>
                                     <a href="<%= b.linkUrl %>"
-                                        class="inline-block mt-5 md:mt-7 px-6 md:px-8 py-3 bg-white/15 backdrop-blur-md border border-white/20 rounded-lg text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-white/25 transition-colors">
+                                        class="inline-block mt-5 md:mt-7 px-6 md:px-8 py-3 bg-white/15 backdrop-blur-md border border-white/25 rounded-lg text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-white/25 transition-colors">
                                         <%= b.ctaText %>
                                     </a>
                                 <% } %>

@@ -66,3 +66,33 @@ async function toggleBlock(userId) {
 }
 
 
+
+
+// ── Server-side search + status filter ─────────────────────────────────────
+(() => {
+    const searchInput = document.getElementById("searchInput");
+    const statusSel = document.getElementById("statusFilter");
+    const clearBtn = document.getElementById("clearSearchBtn");
+
+    const rebuildUrl = () => {
+        const qs = new URLSearchParams();
+        const q = (searchInput?.value || "").trim();
+        const st = statusSel?.value || "all";
+        if (q) qs.set("search", q);
+        if (st && st !== "all") qs.set("status", st);
+        const url = qs.toString() ? "/admin/customers?" + qs.toString() : "/admin/customers";
+        window.location.href = url;
+    };
+
+    let t;
+    searchInput?.addEventListener("input", () => {
+        clearTimeout(t);
+        t = setTimeout(rebuildUrl, 400);
+    });
+    statusSel?.addEventListener("change", rebuildUrl);
+    clearBtn?.addEventListener("click", () => {
+        if (searchInput) searchInput.value = "";
+        rebuildUrl();
+    });
+})();
+

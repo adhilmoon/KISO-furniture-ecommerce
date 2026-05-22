@@ -7,7 +7,8 @@ function closeCreateCouponModal() {
 }
 
 async function deleteCoupon(id) {
-  if (!confirm('Delete this coupon? Action cannot be undone.')) return;
+  const result = await confirmAction('Delete this coupon? Action cannot be undone.', 'warning');
+  if (!result.isConfirmed) return;
   try {
     const res = await axios.delete('/admin/coupons/' + id);
     if (res.data.success) {

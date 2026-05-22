@@ -45,7 +45,7 @@
                                         const isOutOfStock = stock <= 0;
                                         %>
                                         <div class="cart-item group md:grid grid-cols-12 gap-4 items-center p-4 transition hover:bg-white/[0.02] <%= !isProductListed || isOutOfStock ? 'opacity-60 bg-red-500/5' : '' %>"
-                                            data-item-id="<%= item._id %>" data-is-listed="<%= isProductListed %>" data-is-out-of-stock="<%= isOutOfStock %>">
+                                            data-item-id="<%= item._id %>" data-product-id="<%= product._id %>" data-variant-index="<%= item.variantIndex %>" data-is-listed="<%= isProductListed %>" data-is-out-of-stock="<%= isOutOfStock %>">
 
                                             <!-- Product Info -->
                                             <div class="col-span-6 flex gap-3 items-center mb-3 md:mb-0 relative">
@@ -190,7 +190,17 @@
     <div id="removeModal"
         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none">
         <div
-            class="bg-brand-bg2 border border-white/10 rounded-3xl p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-all duration-300">
+            class="relative bg-brand-bg2 border border-white/10 rounded-3xl p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-all duration-300">
+
+            <!-- Close icon -->
+            <button type="button" onclick="closeRemoveModal()"
+                class="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center text-brand-muted hover:text-brand-light hover:bg-white/5 transition"
+                aria-label="Close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
             <div
                 class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-6 mx-auto border border-red-500/20">
                 <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,14 +209,14 @@
                 </svg>
             </div>
             <h3 id="removeModalTitle" class="text-xl font-bold text-white text-center mb-2">Remove Item?</h3>
-            <p id="removeModalBody" class="text-brand-muted text-center mb-8 text-sm leading-relaxed">Are you sure you want to remove this item from your cart?</p>
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="closeRemoveModal()"
-                    class="px-6 py-3 rounded-xl border border-white/10 text-brand-light font-bold text-sm hover:bg-white/5 transition-all">
-                    Cancel
+            <p id="removeModalBody" class="text-brand-muted text-center mb-8 text-sm leading-relaxed">Save it for later or remove permanently?</p>
+            <div class="grid grid-cols-1 gap-3">
+                <button id="moveToWishlistBtn"
+                    class="px-6 py-3 rounded-xl bg-brand-accent text-brand-bg1 font-bold text-sm hover:bg-yellow-600 transition-all shadow-lg shadow-brand-accent/20">
+                    Move to Wishlist
                 </button>
                 <button id="confirmRemove"
-                    class="px-6 py-3 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 transition-all shadow-lg shadow-red-500/20">
+                    class="px-6 py-3 rounded-xl border border-red-400/30 text-red-400 font-bold text-sm hover:bg-red-500/10 transition-all">
                     Remove
                 </button>
             </div>

@@ -87,7 +87,8 @@ function closeBannerModal() {
 }
 
 async function deleteBanner(id) {
-    if (!confirm('Delete this banner? Action cannot be undone.')) return;
+    const result = await confirmAction('Delete this banner? Action cannot be undone.', 'warning');
+    if (!result.isConfirmed) return;
     try {
         const res = await axios.delete('/admin/banners/' + id);
         if (res.data.success) {

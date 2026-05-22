@@ -4,13 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modal = document.getElementById('removeModal');
     const confirmRemoveBtn = document.getElementById('confirmRemove');
+    const moveToWishlistBtn = document.getElementById('moveToWishlistBtn');
     const modalTitle = document.getElementById('removeModalTitle');
     const modalBody = document.getElementById('removeModalBody');
 
     const DEFAULT_TITLE = 'Remove Item?';
-    const DEFAULT_BODY = 'Are you sure you want to remove this item from your cart?';
+    const DEFAULT_BODY = 'Save it for later or remove permanently?';
     const UNAVAILABLE_TITLE = 'Item Unavailable';
-    const UNAVAILABLE_BODY = 'This product is currently unavailable. Would you like to remove it from your cart?';
+    const UNAVAILABLE_BODY = 'This product is currently unavailable. Move it to wishlist or remove it from your cart?';
 
     const openRemoveModal = (id, row, { unavailable = false } = {}) => {
         selectedItemId = id;
@@ -34,6 +35,40 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmRemoveBtn.addEventListener('click', () => {
             if (selectedItemId && selectedRowEl) {
                 removeItem(selectedItemId, selectedRowEl);
+                closeRemoveModal();
+            }
+        });
+    }
+
+    const moveToWishlist = async (itemId, rowEl) => {
+        const productId = rowEl.dataset.productId;
+        const variantIndex = parseInt(rowEl.dataset.variantIndex, 10) || 0;
+        rowEl.style.opacity = '0.5';
+        try {
+            const wishlistRes = await axios.post('/user/wishlist/toggle', { productId, variantIndex });
+            // If toggle removed it (already in wishlist), we re-add by toggling again
+            if (wishlistRes.data?.action === 'removed') {
+                await axios.post('/user/wishlist/toggle', { productId, variantIndex });
+            }
+            const removeRes = await axios.delete(`/user/cart/item/${itemId}`);
+            if (removeRes.data.success) {
+                rowEl.remove();
+                updateCartTotals();
+                showToast('Moved to wishlist', 'success');
+                if (document.querySelectorAll('.cart-item').length === 0) {
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            rowEl.style.opacity = '1';
+            showToast(error.response?.data?.message || 'Failed to move item to wishlist', 'error');
+        }
+    };
+
+    if (moveToWishlistBtn) {
+        moveToWishlistBtn.addEventListener('click', () => {
+            if (selectedItemId && selectedRowEl) {
+                moveToWishlist(selectedItemId, selectedRowEl);
                 closeRemoveModal();
             }
         });

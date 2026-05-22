@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.*
+logs
+*.log
+.DS_Store
+.claude
+README.md
+.eslintcache
+coverage
+*.md
+public/assets/sofa-sequence
+public/assets/sofa-sequence.mp4
