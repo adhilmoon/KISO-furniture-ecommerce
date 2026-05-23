@@ -76,5 +76,5 @@ app.use(globalErrorHandler);
 
 const port = process.env.PORT || 4004;
 app.listen(port, () => {
-    logger.info(`Server started at http://localhost:${port}`);
+    logger.info(`Server started at ${process.env.BASE_URL} `);
 });
