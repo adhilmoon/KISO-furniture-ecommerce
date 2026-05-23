@@ -16,7 +16,7 @@ export const PAGINATION = Object.freeze({
     ADMIN_ROOMS: 12
 });
 
-// Cart / order business rules
+
 export const CART = Object.freeze({
     MAX_PER_USER: 3
 });
@@ -28,32 +28,31 @@ export const ORDER = Object.freeze({
     RETURN_FINAL_STATUSES: Object.freeze(['returned'])
 });
 
-// Return-request rules
+
 export const RETURN = Object.freeze({
     IMAGE_REQUIRED_REASONS: Object.freeze(['damaged', 'wrong_item', 'defective']),
     REASON_DETAIL_MIN: 5,
     REASON_DETAIL_MAX: 300
 });
 
-// Product/variant business rules
+
 export const PRODUCT = Object.freeze({
     MIN_PRICE: 0.01,
     MIN_VARIANT_IMAGES: 3,
     MAX_VARIANT_IMAGES: 5
 });
 
-// Inventory thresholds
+
 export const INVENTORY = Object.freeze({
     LOW_STOCK_THRESHOLD: 5
 });
 
-// Dashboard
 export const DASHBOARD = Object.freeze({
     TOP_ANALYTICS_LIMIT: 10,
     SALES_REPORT_ORDER_LIMIT: 1000
 });
 
-// Contact form field limits
+
 export const CONTACT_FORM = Object.freeze({
     NAME_MAX: 100,
     EMAIL_MAX: 150,
@@ -61,8 +60,20 @@ export const CONTACT_FORM = Object.freeze({
     MESSAGE_MAX: 2000
 });
 
-// Upload size limits (bytes)
+
 export const UPLOAD = Object.freeze({
     PROFILE_MAX_BYTES: 5 * 1024 * 1024,
     PRODUCT_MAX_BYTES: 8 * 1024 * 1024
+});
+
+
+export const OTP = Object.freeze({
+    LENGTH: 4,
+    MAX_ATTEMPTS: 5,
+    MIN_RESEND_SECONDS: 30,
+    TTL_MS: Object.freeze({
+        signup: 2 * 60 * 1000,           // 2 min
+        forgot_password: 60 * 1000,      // 1 min
+        'update-email': 60 * 1000        // 1 min
+    })
 });

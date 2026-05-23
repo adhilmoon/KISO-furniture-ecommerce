@@ -244,11 +244,25 @@ function initAmazonZoom() {
 
   const ZOOM_LEVEL = 2.5;
   const LENS_PX = 140;
+  let zoomEnabled = false;
 
   // Clear any leftover transform from previous version
   img.style.transform = '';
   img.style.transformOrigin = '';
-  wrapper.classList.add('cursor-crosshair');
+
+  // Toggle button overlay (top-right under wishlist, with margin)
+  const toggleBtn = document.createElement('button');
+  toggleBtn.type = 'button';
+  toggleBtn.id = 'zoomToggleBtn';
+  toggleBtn.setAttribute('aria-label', 'Toggle zoom');
+  toggleBtn.className = 'absolute top-4 left-4 z-20 p-2.5 rounded-full backdrop-blur-sm transition-all duration-300 bg-brand-bg1/80 text-brand-muted hover:bg-brand-accent hover:text-brand-bg1';
+  toggleBtn.innerHTML = `
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="7"/>
+      <path stroke-linecap="round" d="m21 21-4.35-4.35"/>
+      <path stroke-linecap="round" d="M11 8v6M8 11h6"/>
+    </svg>`;
+  wrapper.appendChild(toggleBtn);
 
   // Lens overlay (inside wrapper, clipped by its overflow)
   const lens = document.createElement('div');
@@ -263,7 +277,7 @@ function initAmazonZoom() {
   host.classList.add('relative');
   const result = document.createElement('div');
   result.id = 'zoomResult';
-  result.className = 'hidden absolute top-0 left-full ml-6 w-[480px] h-[480px] bg-brand-bg2 border border-white/10 rounded-2xl shadow-2xl bg-no-repeat z-50 pointer-events-none hidden lg:block';
+  result.className = 'hidden absolute top-0 left-full ml-6 w-[480px] h-[480px] bg-brand-bg2 border border-white/10 rounded-2xl shadow-2xl bg-no-repeat z-50 pointer-events-none lg:block';
   result.style.backgroundColor = '#111';
   host.appendChild(result);
 
@@ -273,7 +287,13 @@ function initAmazonZoom() {
     result.style.backgroundSize = `${rect.width * ZOOM_LEVEL}px ${rect.height * ZOOM_LEVEL}px`;
   };
 
+  const hidePanels = () => {
+    lens.classList.add('hidden');
+    result.classList.add('hidden');
+  };
+
   const move = (e) => {
+    if (!zoomEnabled) return;
     const rect = img.getBoundingClientRect();
     let x = e.clientX - rect.left - LENS_PX / 2;
     let y = e.clientY - rect.top - LENS_PX / 2;
@@ -285,20 +305,33 @@ function initAmazonZoom() {
     const cx = rect.width === LENS_PX ? 0 : (x / (rect.width - LENS_PX)) * 100;
     const cy = rect.height === LENS_PX ? 0 : (y / (rect.height - LENS_PX)) * 100;
     result.style.backgroundPosition = `${cx}% ${cy}%`;
+
+    lens.classList.remove('hidden');
+    result.classList.remove('hidden');
   };
 
   wrapper.addEventListener('mouseenter', () => {
-    setBg();
-    lens.classList.remove('hidden');
-    result.classList.remove('hidden');
+    if (zoomEnabled) setBg();
   });
-  wrapper.addEventListener('mouseleave', () => {
-    lens.classList.add('hidden');
-    result.classList.add('hidden');
-  });
+  wrapper.addEventListener('mouseleave', hidePanels);
   wrapper.addEventListener('mousemove', move);
-  // refresh background when variant swap changes src
-  img.addEventListener('load', setBg);
+  img.addEventListener('load', () => { if (zoomEnabled) setBg(); });
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomEnabled = !zoomEnabled;
+    if (zoomEnabled) {
+      toggleBtn.classList.remove('bg-brand-bg1/80', 'text-brand-muted');
+      toggleBtn.classList.add('bg-brand-accent', 'text-brand-bg1');
+      wrapper.classList.add('cursor-crosshair');
+      setBg();
+    } else {
+      toggleBtn.classList.add('bg-brand-bg1/80', 'text-brand-muted');
+      toggleBtn.classList.remove('bg-brand-accent', 'text-brand-bg1');
+      wrapper.classList.remove('cursor-crosshair');
+      hidePanels();
+    }
+  });
 }
 
 function showTab(tabId, btn) {

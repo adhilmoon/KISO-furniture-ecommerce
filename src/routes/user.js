@@ -11,6 +11,7 @@ import * as cartController from "../controller/userController/cartController.js"
 import * as wishlistController from "../controller/userController/wishlistController.js";
 import * as paymentController from "../controller/userController/paymentController.js";
 import * as buyNowController from "../controller/userController/buyNowController.js";
+import * as otpController from "../controller/userController/otpController.js";
 import * as orderController from "../controller/userController/orderController.js";
 import * as couponController from "../controller/userController/couponController.js";
 import * as walletController from "../controller/userController/walletController.js";
@@ -40,8 +41,9 @@ router.get("/auth/google/callback", passport.authenticate("google", {failureRedi
 router.post("/login", userauth.checkUserExists, userauth.checkUserActive, authController.loginauth);
 router.post("/signup", authController.signup_post);
 router.post("/verify-otp", authController.verify_otp);
+router.get("/otp/status", otpController.getOtpStatus);
 router.post("/forgot-password", authController.forgot_password);
-router.patch("/reset-password", userauth.checkTempdata, authController.update_password);
+router.patch("/reset-password", authController.update_password);
 
 // ============================================
 // PROTECTED ROUTES (Auth required for all below)

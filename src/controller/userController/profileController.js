@@ -63,16 +63,15 @@ export const setDefaultAddress = catchAsync(async (req, res) => {
 });
 
 export const updateEmail = catchAsync(async (req, res) => {
-    const { email, password, isResend } = req.body;
+    const { email, password } = req.body;
     const userId = req.session.user._id;
-    const result = await profileService.initiateEmailUpdate(userId, email, password, isResend, req.session.tempUserData);
-    if (isResend) {
-        req.session.tempUserData.otp = result.otp;
-        req.session.tempUserData.otpExpiresAt = result.otpExpiresAt;
-        return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.NEW_OTP_SENT });
-    }
-    req.session.tempUserData = { userId, email, otp: result.otp, otpExpiresAt: result.otpExpiresAt, purpose: 'update-email' };
-    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.OTP_SENT });
+    const status = await profileService.initiateEmailUpdate(userId, email, password);
+    return res.status(STATUS_CODES.OK).json({
+        success: true,
+        message: MESSAGES.OTP_SENT,
+        remainingSeconds: status.remainingSeconds,
+        ttlSeconds: status.ttlSeconds
+    });
 });
 
 export const changePassword = catchAsync(async (req, res) => {

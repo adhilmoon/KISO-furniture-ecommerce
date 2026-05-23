@@ -1,8 +1,7 @@
-import { sendOTP } from '../../utilities/sendEmail.js';
-import { createOtpToken } from '../../utilities/otp.js';
 import { hashPassword, verifyPassword, isStrongPassword, PASSWORD_RULES } from '../../utilities/password.js';
 import { uploadToCloudinary, deleteFromCloudinary } from '../../utilities/uploadToCloudinary.js';
 import { userRepository } from '../../repository/user/userRepository.js';
+import * as otpService from './otpService.js';
 import { MESSAGES, CLOUDINARY_FOLDERS } from '../../constants/index.js';
 
 export const uploadProfilePic = async (userId, file) => {
@@ -74,7 +73,7 @@ export const getPaginatedAddresses = async (userId, page, perPage) => {
 
 export const getUserById = async (id) => userRepository.findById(id);
 
-export const initiateEmailUpdate = async (userId, email, password, isResend, tempUserData) => {
+export const initiateEmailUpdate = async (userId, email, password) => {
     const user = await userRepository.findById(userId);
     if (!user) throw Object.assign(new Error(MESSAGES.USER_NOT_FOUND), { status: 404 });
     if (user.googleId) throw Object.assign(new Error('Account managed by Google. Email cannot be changed here.'), { status: 400 });
@@ -82,12 +81,9 @@ export const initiateEmailUpdate = async (userId, email, password, isResend, tem
     if (!isMatch) throw Object.assign(new Error(MESSAGES.INCORRECT_PASSWORD), { status: 400 });
     const emailExists = await userRepository.findByEmailExcluding(email, userId);
     if (emailExists) throw Object.assign(new Error(MESSAGES.EMAIL_ALREADY_IN_USE), { status: 400 });
-    if (isResend && (!tempUserData || tempUserData.email !== email)) {
-        throw Object.assign(new Error(MESSAGES.SESSION_EXPIRED), { status: 400 });
-    }
-    const { otp, otpExpiresAt } = createOtpToken();
-    await sendOTP(email, otp);
-    return { otp, otpExpiresAt, ...(isResend && { isResend: true }) };
+
+    const status = await otpService.issueOtp(email, 'update-email', { userId: String(userId), email });
+    return status;
 };
 
 export const changePassword = async (userId, currentPassword, newPassword) => {
