@@ -10,6 +10,67 @@
     <link href="/css/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 
+    <link rel="preconnect" href="https://play.gumlet.io" crossorigin>
+    <link rel="dns-prefetch" href="https://play.gumlet.io">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+      :root {
+        --font-display: 'Anton', 'Impact', sans-serif;
+        --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        --font-jp: 'Noto Sans JP', sans-serif;
+        --c-neon: #D8FF3E;
+        --c-ink: #050505;
+        --c-paper: #E8E2D5;
+      }
+      body { font-family: var(--font-body); }
+      .font-display { font-family: var(--font-display); letter-spacing: -0.01em; }
+      .font-mono { font-family: var(--font-mono); }
+      .font-jp { font-family: var(--font-jp); }
+      .text-neon { color: var(--c-neon); }
+      .bg-neon { background-color: var(--c-neon); }
+      .border-neon { border-color: var(--c-neon); }
+      .bg-ink { background-color: var(--c-ink); }
+      .bg-paper { background-color: var(--c-paper); }
+      .text-paper { color: var(--c-paper); }
+
+      @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .marquee-track {
+        animation: marquee 30s linear infinite;
+        will-change: transform;
+      }
+      .grain::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+        opacity: 0.08;
+        mix-blend-mode: overlay;
+        z-index: 1;
+      }
+      .grid-dots {
+        background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+      .text-stroke {
+        -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+        color: transparent;
+      }
+      @keyframes reveal-up {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .reveal { animation: reveal-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    </style>
+
 </head>
 
 <body class="bg-brand-bg1 flex flex-col min-h-screen">

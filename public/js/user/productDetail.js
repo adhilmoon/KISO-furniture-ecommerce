@@ -244,25 +244,11 @@ function initAmazonZoom() {
 
   const ZOOM_LEVEL = 2.5;
   const LENS_PX = 140;
-  let zoomEnabled = false;
 
   // Clear any leftover transform from previous version
   img.style.transform = '';
   img.style.transformOrigin = '';
-
-  // Toggle button overlay (top-right under wishlist, with margin)
-  const toggleBtn = document.createElement('button');
-  toggleBtn.type = 'button';
-  toggleBtn.id = 'zoomToggleBtn';
-  toggleBtn.setAttribute('aria-label', 'Toggle zoom');
-  toggleBtn.className = 'absolute top-4 left-4 z-20 p-2.5 rounded-full backdrop-blur-sm transition-all duration-300 bg-brand-bg1/80 text-brand-muted hover:bg-brand-accent hover:text-brand-bg1';
-  toggleBtn.innerHTML = `
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <circle cx="11" cy="11" r="7"/>
-      <path stroke-linecap="round" d="m21 21-4.35-4.35"/>
-      <path stroke-linecap="round" d="M11 8v6M8 11h6"/>
-    </svg>`;
-  wrapper.appendChild(toggleBtn);
+  wrapper.classList.add('cursor-crosshair');
 
   // Lens overlay (inside wrapper, clipped by its overflow)
   const lens = document.createElement('div');
@@ -293,7 +279,6 @@ function initAmazonZoom() {
   };
 
   const move = (e) => {
-    if (!zoomEnabled) return;
     const rect = img.getBoundingClientRect();
     let x = e.clientX - rect.left - LENS_PX / 2;
     let y = e.clientY - rect.top - LENS_PX / 2;
@@ -310,28 +295,10 @@ function initAmazonZoom() {
     result.classList.remove('hidden');
   };
 
-  wrapper.addEventListener('mouseenter', () => {
-    if (zoomEnabled) setBg();
-  });
+  wrapper.addEventListener('mouseenter', setBg);
   wrapper.addEventListener('mouseleave', hidePanels);
   wrapper.addEventListener('mousemove', move);
-  img.addEventListener('load', () => { if (zoomEnabled) setBg(); });
-
-  toggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    zoomEnabled = !zoomEnabled;
-    if (zoomEnabled) {
-      toggleBtn.classList.remove('bg-brand-bg1/80', 'text-brand-muted');
-      toggleBtn.classList.add('bg-brand-accent', 'text-brand-bg1');
-      wrapper.classList.add('cursor-crosshair');
-      setBg();
-    } else {
-      toggleBtn.classList.add('bg-brand-bg1/80', 'text-brand-muted');
-      toggleBtn.classList.remove('bg-brand-accent', 'text-brand-bg1');
-      wrapper.classList.remove('cursor-crosshair');
-      hidePanels();
-    }
-  });
+  img.addEventListener('load', setBg);
 }
 
 function showTab(tabId, btn) {

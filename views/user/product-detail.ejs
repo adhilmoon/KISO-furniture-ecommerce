@@ -309,7 +309,8 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
               <% if (relatedProducts && relatedProducts.length> 0) { %>
                 <% relatedProducts.forEach(p=> { %>
-                  <div class="bg-brand-bg2 rounded-xl p-4 border border-white/5">
+                  <a href="/user/product/<%= p._id %>"
+                    class="block bg-brand-bg2 rounded-xl p-4 border border-white/5 hover:border-brand-accent/40 transition-colors duration-300">
 
                     <img src="<%= p.variants && p.variants[0]?.images[0] %>"
                       class="w-full h-40 object-cover rounded-lg mb-3">
@@ -322,11 +323,11 @@
                       ₹<%= p.variants && p.variants[0]?.price %>
                     </p>
 
-                    <a href="/user/product/<%= p._id %>" class="block mt-3 text-xs text-brand-accent hover:underline">
+                    <span class="block mt-3 text-xs text-brand-accent">
                       View Product →
-                    </a>
+                    </span>
 
-                  </div>
+                  </a>
                   <% }) %>
                     <% } else { %>
                       <p class="text-brand-muted">No related products found</p>

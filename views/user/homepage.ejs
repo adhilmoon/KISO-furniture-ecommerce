@@ -5,10 +5,14 @@
     <div id="scrolly-container">
         <!-- The sticky visual container -->
         <div class="sticky-wrapper">
-            <video id="sofa-video" muted playsinline preload="auto" disableRemotePlayback
-                class="absolute inset-0 w-full h-full object-cover">
-                <source src="https://ik.imagekit.io/w0ssw9zbf/Smoothly_transition_from_the_assembled_202605221453%20(online-video-cutter.com).mp4" type="video/mp4">
-            </video>
+            <iframe id="sofa-video-frame"
+                src="https://play.gumlet.io/embed/6a140fc4035bf1e7e7a36f61?preload=true&autoplay=true&loop=true&background=true&disable_player_controls=true"
+                class="absolute inset-0 w-full h-full pointer-events-none"
+                style="border:0;"
+                loading="eager"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+            </iframe>
 
             <!-- Storytelling Overlays -->
             <div id="steps-container" class="absolute inset-0 pointer-events-none  bg-black/50">
@@ -75,12 +79,42 @@
         </div>
     </div> <!-- Close scrolly-container -->
 
+    <!-- ─── Drop Ticker (above banner) ─────────────────────────── -->
+    <div class="relative border-y border-white/10 bg-neon text-brand-bg1 overflow-hidden">
+      <div class="flex marquee-track py-2.5 font-display uppercase text-xl md:text-2xl tracking-tight whitespace-nowrap">
+        <div class="flex shrink-0 items-center gap-8 px-6">
+          <span>◆ Drop 001 — Live Now</span>
+          <span>◆ Free Ship ₹4999+</span>
+          <span>◆ 30-Day Trial</span>
+          <span class="font-jp">キソ・新作</span>
+          <span>◆ Limited Pieces</span>
+          <span>◆ Made In India</span>
+        </div>
+        <div class="flex shrink-0 items-center gap-8 px-6" aria-hidden="true">
+          <span>◆ Drop 001 — Live Now</span>
+          <span>◆ Free Ship ₹4999+</span>
+          <span>◆ 30-Day Trial</span>
+          <span class="font-jp">キソ・新作</span>
+          <span>◆ Limited Pieces</span>
+          <span>◆ Made In India</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Banner Slider -->
     <% if (banners && banners.length > 0) { %>
         <section id="bannerSlider"
-            class="relative w-full overflow-hidden transition-colors duration-700 mb-16 md:mb-24 shadow-xl shadow-black/30"
+            class="relative w-full overflow-hidden transition-colors duration-700 mb-16 md:mb-24 border-b border-white/5"
             style="background: <%= banners[0].bgColor %>;"
             data-autoplay="6000">
+
+            <!-- Edition meta bar (top) -->
+            <div class="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-6 md:px-10 py-3 font-mono text-[10px] uppercase tracking-[0.25em] text-white/75 bg-gradient-to-b from-black/40 to-transparent pointer-events-none">
+              <span>// Editorial / Drop_001</span>
+              <span class="hidden md:inline">N 19°04' · E 72°52'</span>
+              <span><span data-banner-counter>01</span>/<%= String(banners.length).padStart(2,'0') %></span>
+            </div>
+
             <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[16/6] lg:aspect-[21/8]">
                 <% banners.forEach(function(b, i) { %>
                     <div class="banner-slide absolute inset-0 transition-opacity duration-700 ease-in-out <%= i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' %>"
@@ -88,26 +122,39 @@
                         style="color: <%= b.textColor %>;">
                         <img src="<%= b.image.url %>" alt="<%= b.title || 'banner' %>"
                             class="absolute inset-0 w-full h-full object-cover" />
-                        <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
-                        <div class="relative z-10 h-full flex items-center px-8 md:px-16 lg:px-24 xl:px-32">
-                            <div class="max-w-xl">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+
+                        <div class="relative z-10 h-full flex items-end md:items-center px-6 md:px-12 lg:px-20 xl:px-28 pb-16 md:pb-0">
+                            <div class="max-w-2xl">
+                                <div class="flex items-center gap-3 mb-4 md:mb-6">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-neon animate-pulse"></span>
+                                    <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-neon">New · 0<%= i + 1 %></span>
+                                    <span class="h-px w-12 bg-white/30"></span>
+                                </div>
+
                                 <% if (b.title) { %>
-                                    <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+                                    <h2 class="font-display uppercase leading-[0.88] text-5xl md:text-7xl lg:text-8xl tracking-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]">
                                         <%= b.title %>
                                     </h2>
                                 <% } %>
                                 <% if (b.subtitle) { %>
-                                    <p class="mt-3 md:mt-4 text-sm md:text-base lg:text-lg opacity-95 drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
+                                    <p class="mt-4 md:mt-6 text-sm md:text-base lg:text-lg max-w-md font-medium opacity-95 drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
                                         <%= b.subtitle %>
                                     </p>
                                 <% } %>
                                 <% if (b.ctaText && b.linkUrl) { %>
                                     <a href="<%= b.linkUrl %>"
-                                        class="inline-block mt-5 md:mt-7 px-6 md:px-8 py-3 bg-white/15 backdrop-blur-md border border-white/25 rounded-lg text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-white/25 transition-colors">
-                                        <%= b.ctaText %>
+                                        class="group inline-flex items-center gap-3 mt-6 md:mt-8 pl-6 pr-3 py-3 bg-neon text-brand-bg1 font-display uppercase text-base md:text-lg tracking-tight hover:bg-white transition-colors">
+                                        <span><%= b.ctaText %></span>
+                                        <span class="bg-brand-bg1 text-neon w-8 h-8 flex items-center justify-center text-sm group-hover:translate-x-1 transition-transform">→</span>
                                     </a>
                                 <% } %>
                             </div>
+                        </div>
+
+                        <!-- vertical katakana side label -->
+                        <div class="hidden md:block absolute right-6 top-1/2 -translate-y-1/2 z-10 font-jp text-[10px] tracking-[0.4em] text-white/40 [writing-mode:vertical-rl]">
+                          キソ・コレクション
                         </div>
                     </div>
                 <% }); %>
@@ -115,18 +162,19 @@
 
             <% if (banners.length > 1) { %>
                 <button type="button" data-banner-prev
-                    class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition">
-                    <span aria-hidden="true">‹</span><span class="sr-only">Previous</span>
+                    class="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 md:w-12 md:h-12 flex items-center justify-center bg-brand-bg1/60 hover:bg-neon hover:text-brand-bg1 text-white backdrop-blur-sm border border-white/15 transition-colors">
+                    <span aria-hidden="true" class="text-xl">‹</span><span class="sr-only">Previous</span>
                 </button>
                 <button type="button" data-banner-next
-                    class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition">
-                    <span aria-hidden="true">›</span><span class="sr-only">Next</span>
+                    class="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 md:w-12 md:h-12 flex items-center justify-center bg-brand-bg1/60 hover:bg-neon hover:text-brand-bg1 text-white backdrop-blur-sm border border-white/15 transition-colors">
+                    <span aria-hidden="true" class="text-xl">›</span><span class="sr-only">Next</span>
                 </button>
 
-                <div class="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                <div class="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 bg-brand-bg1/40 backdrop-blur-sm px-3 py-2 border border-white/10">
                     <% banners.forEach(function(_, i) { %>
                         <button type="button" data-banner-dot="<%= i %>"
-                            class="w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white transition-colors <%= i === 0 ? 'bg-white' : '' %>"
+                            class="w-6 h-1 hover:bg-white transition-colors <%= i === 0 ? '' : 'bg-white/30' %>"
+                            style="<%= i === 0 ? 'background-color:#D8FF3E;' : '' %>"
                             aria-label="Go to slide <%= i + 1 %>"></button>
                     <% }); %>
                 </div>
