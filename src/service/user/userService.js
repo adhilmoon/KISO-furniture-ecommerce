@@ -98,8 +98,9 @@ export const userService = {
         return { success: true, message: MESSAGES.PASSWORD_UPDATED_SUCCESS };
     },
 
-    async deleteAddress(addressId) {
-        await userRepository.deleteAddress(addressId);
+    async deleteAddress(addressId, userId) {
+        const deleted = await userRepository.deleteAddress(addressId, userId);
+        if (!deleted) return null;
         return { success: true, message: MESSAGES.ADDRESS_DELETED };
     }
 };

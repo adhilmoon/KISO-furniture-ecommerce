@@ -1,11 +1,12 @@
 import Order from '../../model/Order.js';
 import * as walletService from '../user/walletService.js';
+import { escapeRegex } from '../../utilities/escapeRegex.js';
 
 export const getOrders = async ({ page, perPage, search, status, sort }) => {
   const filter = {};
   if (search) {
     filter.$or = [
-      { orderId: { $regex: search, $options: 'i' } }
+      { orderId: { $regex: escapeRegex(search), $options: 'i' } }
     ];
   }
   if (status) filter.orderStatus = status;

@@ -17,6 +17,7 @@ import * as couponController from "../controller/userController/couponController
 import * as walletController from "../controller/userController/walletController.js";
 import { upload } from "../config/multer.js";
 import passport from "passport";
+import { authLimiter, otpLimiter } from "../middleware/rateLimit.js";
 
 // Apply no-cache to all routes
 router.use(userauth.noCache);
@@ -37,13 +38,13 @@ router.post("/contact", Pages.submit_contact);
 router.get("/auth/google", passport.authenticate("google", {scope: ["profile", "email"]}));
 router.get("/auth/google/callback", passport.authenticate("google", {failureRedirect: '/user/login?error=Google authentication failed', keepSessionInfo: true}), authController.googleAuthCallback);
 
-// Auth APIs
-router.post("/login", userauth.checkUserExists, userauth.checkUserActive, authController.loginauth);
-router.post("/signup", authController.signup_post);
-router.post("/verify-otp", authController.verify_otp);
+// Auth APIs (rate-limited)
+router.post("/login", authLimiter, userauth.checkUserExists, userauth.checkUserActive, authController.loginauth);
+router.post("/signup", authLimiter, authController.signup_post);
+router.post("/verify-otp", otpLimiter, authController.verify_otp);
 router.get("/otp/status", otpController.getOtpStatus);
-router.post("/forgot-password", authController.forgot_password);
-router.patch("/reset-password", authController.update_password);
+router.post("/forgot-password", authLimiter, authController.forgot_password);
+router.patch("/reset-password", authLimiter, authController.update_password);
 
 // ============================================
 // PROTECTED ROUTES (Auth required for all below)

@@ -3,6 +3,7 @@ import * as productRepository from '../../repository/user/productRepository.js';
 import * as couponService from './couponService.js';
 import * as walletService from './walletService.js';
 import { ORDER } from '../../constants/index.js';
+import { escapeRegex } from '../../utilities/escapeRegex.js';
 
 const { MAX_RETURN_ATTEMPTS, RETURN_WINDOW_DAYS, CANCELLABLE_STATUSES, RETURN_FINAL_STATUSES } = ORDER;
 
@@ -46,7 +47,7 @@ export const displayOrderId = (order) =>
 
 export const getOrders = async (userId, { page, perPage, search }) => {
     const filter = { userId };
-    if (search) filter.$or = [{ orderId: { $regex: search, $options: 'i' } }];
+    if (search) filter.$or = [{ orderId: { $regex: escapeRegex(search), $options: 'i' } }];
     const skip = (page - 1) * perPage;
     const [total, orders] = await Promise.all([
         orderRepository.countOrders(filter),

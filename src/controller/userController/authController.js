@@ -88,7 +88,11 @@ export const googleAuthCallback = catchAsync(async (req, res) => {
 
 export const deleteAddress = catchAsync(async (req, res) => {
     const addressId = req.params.id;
-    await userService.deleteAddress(addressId);
+    const userId = req.session.user._id;
+    const deleted = await userService.deleteAddress(addressId, userId);
+    if (!deleted) {
+        return res.status(STATUS_CODES.NOT_FOUND).json({ success: false, message: MESSAGES.ADDRESS_NOT_FOUND });
+    }
     res.json({ success: true, message: MESSAGES.ADDRESS_DELETED });
 });
 

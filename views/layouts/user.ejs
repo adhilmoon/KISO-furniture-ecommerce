@@ -7,6 +7,12 @@
     <title>
         <%= title %> - KISO
     </title>
+
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.svg">
+    <link rel="manifest" href="/icons/site.webmanifest">
+    <meta name="theme-color" content="#0A0A0A">
+
     <link href="/css/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 
@@ -23,17 +29,27 @@
         --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
         --font-mono: 'JetBrains Mono', ui-monospace, monospace;
         --font-jp: 'Noto Sans JP', sans-serif;
-        --c-neon: #D8FF3E;
+        --c-accent: #D4AF37;       /* KISO brand gold */
+        --c-accent-soft: #B8941F;  /* darker gold for hover */
+        --c-neon: #D4AF37;         /* legacy alias — render as gold */
         --c-ink: #050505;
         --c-paper: #E8E2D5;
       }
-      body { font-family: var(--font-body); }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
       .font-display { font-family: var(--font-display); letter-spacing: -0.01em; }
       .font-mono { font-family: var(--font-mono); }
       .font-jp { font-family: var(--font-jp); }
-      .text-neon { color: var(--c-neon); }
-      .bg-neon { background-color: var(--c-neon); }
-      .border-neon { border-color: var(--c-neon); }
+      .text-neon { color: var(--c-accent); }
+      .bg-neon { background-color: var(--c-accent); }
+      .border-neon { border-color: var(--c-accent); }
       .bg-ink { background-color: var(--c-ink); }
       .bg-paper { background-color: var(--c-paper); }
       .text-paper { color: var(--c-paper); }
@@ -43,7 +59,7 @@
         100% { transform: translateX(-50%); }
       }
       .marquee-track {
-        animation: marquee 30s linear infinite;
+        animation: marquee 38s linear infinite;
         will-change: transform;
       }
       .grain::before {
@@ -52,16 +68,16 @@
         inset: 0;
         pointer-events: none;
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
-        opacity: 0.08;
+        opacity: 0.06;
         mix-blend-mode: overlay;
         z-index: 1;
       }
       .grid-dots {
-        background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+        background-image: radial-gradient(rgba(212,175,55,0.07) 1px, transparent 1px);
         background-size: 24px 24px;
       }
       .text-stroke {
-        -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+        -webkit-text-stroke: 1px rgba(212,175,55,0.35);
         color: transparent;
       }
       @keyframes reveal-up {
@@ -69,6 +85,12 @@
         to { opacity: 1; transform: translateY(0); }
       }
       .reveal { animation: reveal-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+      /* Hero scrollytelling — smoother step transitions, no judder. */
+      .step {
+        transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 700ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
     </style>
 
 </head>

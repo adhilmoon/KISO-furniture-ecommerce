@@ -13,6 +13,7 @@ import * as adminSalesReportController from "../controller/adminController/admin
 import * as adminBannerController from "../controller/adminController/adminBannerController.js";
 import * as adminRoomController from "../controller/adminController/adminRoomController.js";
 import { uploadProduct, upload } from "../config/multer.js";
+import { authLimiter } from "../middleware/rateLimit.js";
 
 // Apply no-cache to all routes
 router.use(adminauth.noCache);
@@ -21,7 +22,7 @@ router.use(adminauth.noCache);
 // PUBLIC ROUTES
 // ============================================
 router.get("/login", adminauth.isLogin, adminPages.adminlogin);
-router.post('/login', adminController.auth);
+router.post('/login', authLimiter, adminController.auth);
 
 // ============================================
 // PROTECTED ROUTES (Admin auth required)

@@ -148,3 +148,14 @@ fields.image?.addEventListener('change', (e) => {
 modal?.addEventListener('click', (e) => {
     if (e.target === modal) closeRoomModal();
 });
+
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.room-edit-btn');
+    if (!btn) return;
+    try {
+        const data = JSON.parse(btn.dataset.room);
+        openRoomModal(data);
+    } catch (err) {
+        console.error('Bad room payload', err);
+    }
+});

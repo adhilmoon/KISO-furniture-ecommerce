@@ -44,7 +44,7 @@ export const userRepository = {
     async findAndUpdateAddress(query, update) {
         return Address.findOneAndUpdate(query, update, { new: true });
     },
-    async deleteAddress(addressId) {
-        return Address.findByIdAndDelete(addressId);
+    async deleteAddress(addressId, userId) {
+        return Address.findOneAndDelete({ _id: addressId, userId });
     }
 };

@@ -1,4 +1,5 @@
 node_modules/
+.claude
 .env
 public/css/output.css
 public/assets/sofa-sequence

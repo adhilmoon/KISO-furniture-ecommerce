@@ -8,12 +8,21 @@ import * as walletService from './walletService.js';
 import * as offerService from './offerService.js';
 
 export const verifyRazorpaySignature = (razorpayOrderId, paymentId, signature) => {
+    if (typeof signature !== 'string') return false;
     const sign = `${razorpayOrderId}|${paymentId}`;
     const expected = crypto
         .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
         .update(sign)
         .digest('hex');
-    return signature === expected;
+    const expectedBuf = Buffer.from(expected, 'hex');
+    let sigBuf;
+    try {
+        sigBuf = Buffer.from(signature, 'hex');
+    } catch {
+        return false;
+    }
+    if (expectedBuf.length !== sigBuf.length) return false;
+    return crypto.timingSafeEqual(expectedBuf, sigBuf);
 };
 
 /** Thrown when cart contents fail inventory checks. Carries a per-item `issues` array. */

@@ -1,13 +1,14 @@
 import * as couponRepository from '../../repository/admin/couponRepository.js';
 import * as couponValidator from '../../validators/adminCoupon.js';
 import { MESSAGES } from '../../constants/messages.js';
+import { escapeRegex } from '../../utilities/escapeRegex.js';
 
 const buildError = (message, status) =>
     Object.assign(new Error(message), { status });
 
 export const getCoupons = async ({ page, perPage, search }) => {
     const filter = {};
-    if (search) filter.code = { $regex: search, $options: 'i' };
+    if (search) filter.code = { $regex: escapeRegex(search), $options: 'i' };
     const skip = (page - 1) * perPage;
     const [total, coupons] = await Promise.all([
         couponRepository.countCoupons(filter),

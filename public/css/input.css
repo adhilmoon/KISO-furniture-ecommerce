@@ -22,10 +22,10 @@
 @layer components {
   /* ── User-side: Scrollytelling ────────────────────────────────────────── */
 
-  /* Creates the long scrollable area */
+  /* Creates the long scrollable area (5 viewports = snappy, no scroll fatigue) */
   #scrolly-container {
     position: relative;
-    height: 1200vh;
+    height: 500vh;
     background-color: transparent;
   }
 

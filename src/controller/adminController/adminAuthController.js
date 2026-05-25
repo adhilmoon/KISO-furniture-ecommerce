@@ -5,12 +5,23 @@ import * as adminAuthService from '../../service/admin/adminAuthService.js';
 
 export const auth = catchAsync(async (req, res) => {
     const { email, password } = req.body;
-    await adminAuthService.adminLogin(email, password);
-    req.session.Admin = { role: 'admin' };
-    return res.status(STATUS_CODES.OK).json({
-        success: true,
-        message: MESSAGES.ADMIN_LOGIN_SUCCESS,
-        redirectUrl: '/admin/dashboard'
+    const admin = await adminAuthService.adminLogin(email, password);
+    // Regenerate session ID after login (defends against session fixation).
+    req.session.regenerate((regenErr) => {
+        if (regenErr) {
+            return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.SERVER_ERROR });
+        }
+        req.session.Admin = { _id: admin._id, email: admin.email, role: 'admin' };
+        req.session.save((saveErr) => {
+            if (saveErr) {
+                return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.SERVER_ERROR });
+            }
+            return res.status(STATUS_CODES.OK).json({
+                success: true,
+                message: MESSAGES.ADMIN_LOGIN_SUCCESS,
+                redirectUrl: '/admin/dashboard'
+            });
+        });
     });
 });
 

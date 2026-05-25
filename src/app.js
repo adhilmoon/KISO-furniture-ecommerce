@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import expressLayouts from 'express-ejs-layouts';
+import helmet from 'helmet';
+import { mongoSanitizeMiddleware } from './middleware/mongoSanitize.js';
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
 import indexRoutes from "./routes/indexRoutes.js"
@@ -17,15 +19,27 @@ import logger from './utilities/logger.js';
 
 
 const app = express();
+const IS_PROD = process.env.NODE_ENV === 'production';
+
+if (IS_PROD) app.set('trust proxy', 1);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename)
 
 await connectDB()
 
+// Security headers (relaxed CSP/COEP — many inline scripts + CDN assets in EJS views).
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+}));
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+// Strip MongoDB operator characters ($, .) from req.body / req.params.
+// (req.query is getter-only in Express 5, so it's deep-frozen at the framework level.)
+app.use(mongoSanitizeMiddleware());
 
 const sessionBase = {
     secret: process.env.SESSION_SECRET,
@@ -33,8 +47,9 @@ const sessionBase = {
     saveUninitialized: false,
     cookie: {
         maxAge: parseInt(process.env.COOKIE_MAX_AGE),
-        secure: false,
+        secure: IS_PROD,
         httpOnly: true,
+        sameSite: 'lax',
     }
 };
 

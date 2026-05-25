@@ -5,10 +5,27 @@ const HEX_COLOR = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const optionalTrimmed = (max, label) =>
     z.string().max(max, `${label} must be at most ${max} characters`).trim().optional().or(z.literal(''));
 
+// Allow absolute HTTP(S) URLs or root-relative paths only.
+// Reject protocol-relative (`//evil.com`), javascript:, data:, and other schemes.
+const isSafeUrl = (v) => {
+    if (v === '') return true;
+    if (v.startsWith('//')) return false;
+    if (v.startsWith('/')) return !v.startsWith('//');
+    if (/^https?:\/\//i.test(v)) {
+        try {
+            const u = new URL(v);
+            return u.protocol === 'http:' || u.protocol === 'https:';
+        } catch {
+            return false;
+        }
+    }
+    return false;
+};
+
 const optionalUrl = z
     .string()
     .trim()
-    .refine(v => v === '' || /^(https?:)?\/\/|^\//.test(v), { message: "Link must be a valid URL or path" })
+    .refine(isSafeUrl, { message: "Link must be a relative path (/foo) or absolute http(s) URL — protocol-relative and other schemes are not allowed" })
     .optional()
     .or(z.literal(''));
 

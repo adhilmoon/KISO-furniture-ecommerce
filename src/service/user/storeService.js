@@ -1,5 +1,6 @@
 import Product from '../../model/Product.js';
 import Category from '../../model/Category.js';
+import { escapeRegex } from '../../utilities/escapeRegex.js';
 
 const getActiveCategoryIds = async () => {
     const cats = await Category.find({ isActive: true }).select('_id').lean();
@@ -25,7 +26,7 @@ export const getStoreProducts = async ({ search, categoryId, minPrice, maxPrice,
         variants: { $exists: true, $not: { $size: 0 } }
     };
 
-    if (search) filter.productName = { $regex: search, $options: 'i' };
+    if (search) filter.productName = { $regex: escapeRegex(search), $options: 'i' };
     if (categoryId) {
         filter.category = activeCategoryIds.some(id => id.toString() === categoryId) ? categoryId : null;
     }

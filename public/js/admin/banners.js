@@ -173,3 +173,15 @@ fields.image?.addEventListener('change', (e) => {
 modal?.addEventListener('click', (e) => {
     if (e.target === modal) closeBannerModal();
 });
+
+// Wire up edit buttons (data-banner JSON, set in EJS — auto-escaped).
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.banner-edit-btn');
+    if (!btn) return;
+    try {
+        const data = JSON.parse(btn.dataset.banner);
+        openBannerModal(data);
+    } catch (err) {
+        console.error('Bad banner payload', err);
+    }
+});

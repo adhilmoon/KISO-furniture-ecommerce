@@ -7,15 +7,15 @@
         <div class="sticky-wrapper">
             <iframe id="sofa-video-frame"
                 src="https://play.gumlet.io/embed/6a140fc4035bf1e7e7a36f61?preload=true&autoplay=true&loop=true&background=true&disable_player_controls=true"
-                class="absolute inset-0 w-full h-full pointer-events-none"
-                style="border:0;"
+                class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style="border:0; width:100vw; height:56.25vw; min-height:100vh; min-width:177.78vh;"
                 loading="eager"
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowfullscreen>
             </iframe>
 
             <!-- Storytelling Overlays -->
-            <div id="steps-container" class="absolute inset-0 pointer-events-none  bg-black/50">
+            <div id="steps-container" class="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/40 via-black/20 to-black/50">
                 <!-- Hero Intro (0-15%) -->
                 <div data-start="0" data-end="15"
                     class="step absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-100 transition-all duration-700 ease-out">
