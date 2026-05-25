@@ -277,7 +277,7 @@ function initAmazonZoom() {
   host.classList.add('relative');
   const result = document.createElement('div');
   result.id = 'zoomResult';
-  result.className = 'hidden absolute top-0 left-full ml-6 w-[480px] h-[480px] bg-brand-bg2 border border-white/10 rounded-2xl shadow-2xl bg-no-repeat z-50 pointer-events-none lg:block';
+  result.className = 'hidden absolute top-0 left-full ml-6 w-[480px] h-[480px] bg-brand-bg2 border border-white/10 rounded-2xl shadow-2xl bg-no-repeat z-50 pointer-events-none';
   result.style.backgroundColor = '#111';
   host.appendChild(result);
 

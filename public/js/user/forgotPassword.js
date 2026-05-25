@@ -35,8 +35,12 @@ async function handleForgotPassword(event) {
         const response = await axios.post('/user/forgot-password', {email});
 
         if(response.data.success) {
-            showOTPModal()
-
+            showOTPModal({
+                email,
+                purpose: 'forgot_password',
+                remainingSeconds: response.data.remainingSeconds,
+                ttlSeconds: response.data.ttlSeconds
+            });
         }
     } catch(error) {
         const message = error.response?.data?.message || "Something went wrong";

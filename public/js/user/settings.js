@@ -69,7 +69,12 @@ updateEmailForm?.addEventListener('submit', async (e) => {
     try {
         const response = await axios.patch('/user/update-email', { email, password });
         if (response.data.success) {
-            showOTPModal();
+            showOTPModal({
+                email,
+                purpose: 'update-email',
+                remainingSeconds: response.data.remainingSeconds,
+                ttlSeconds: response.data.ttlSeconds
+            });
             hideEmailModal();
         }
     } catch (error) {
