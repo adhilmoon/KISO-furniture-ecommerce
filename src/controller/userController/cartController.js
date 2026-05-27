@@ -74,19 +74,29 @@ export const getCheckoutPage = catchAsync(async (req, res) => {
         });
     }
 
-    if (req.xhr) {
-        if (validItems.length === 0) {
-            return res.json({ success: false, message: "No valid items in your cart to checkout." });
+    // Block checkout entirely if ANY item is unavailable (out of stock,
+    // unlisted, or disabled category). The user must update their cart —
+    // remove/adjust the flagged items — before they can continue.
+    if (invalidItems.length > 0) {
+        if (req.xhr) {
+            return res.json({
+                success: false,
+                blocked: true,
+                message: "Some items in your cart are unavailable. Please update your cart to continue.",
+                invalidItems
+            });
         }
-        // Proceed even if some items are invalid, but return the list so frontend can warn the user
-        return res.json({ 
-            success: true, 
-            redirectUrl: "/user/checkout",
-            invalidItems: invalidItems 
-        });
+        return res.redirect("/user/cart?error=" + encodeURIComponent("Some items in your cart are unavailable. Please update your cart to continue."));
     }
 
-    if (validItems.length === 0) return res.redirect("/user/cart");
+    if (validItems.length === 0) {
+        if (req.xhr) return res.json({ success: false, message: "No valid items in your cart to checkout." });
+        return res.redirect("/user/cart");
+    }
+
+    if (req.xhr) {
+        return res.json({ success: true, redirectUrl: "/user/checkout" });
+    }
 
     const totalAmount = validItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const addresses = await profileService.getAddresses(userId);

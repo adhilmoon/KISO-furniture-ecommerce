@@ -4,8 +4,11 @@
   "description": "KISO – Foundation, essentials",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon src/app.js",
+    "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "build": "npm run build:css",
+    "build:css": "tailwindcss -i public/css/input.css -o public/css/output.css --minify",
+    "postinstall": "npm run build:css",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npm run lint:js && npm run lint:ejs",
     "lint:js": "eslint .",
@@ -25,16 +28,14 @@
   "homepage": "https://github.com/adhilmoon/KISO-furniture-ecommerce#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "autoprefixer": "^10.4.23",
     "ejs-lint": "^2.0.1",
     "eslint": "^10.2.1",
     "eslint-plugin-ejs": "^0.0.2",
     "globals": "^17.5.0",
-    "nodemon": "^3.1.11",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.19"
+    "nodemon": "^3.1.11"
   },
   "dependencies": {
+    "autoprefixer": "^10.4.23",
     "axios": "^1.14.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
@@ -54,9 +55,11 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pdfkit": "^0.18.0",
+    "postcss": "^8.5.6",
     "razorpay": "^2.9.6",
     "sanitize-html": "^2.17.4",
     "session": "^0.1.0",
+    "tailwindcss": "^3.4.19",
     "winston": "^3.19.0",
     "zod": "^4.3.6"
   }

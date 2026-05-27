@@ -1,95 +1,98 @@
-<div id="addressModal" class="fixed inset-0 z-50 hidden bg-black/50 items-center justify-center p-4">.
+<div id="addressModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm items-center justify-center p-4">
 
-
-    <div class="bg-brand-bg1 rounded-2xl w-[560px] max-w-[90vw] shadow-xl">
-        <div class="p-5 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="text-lg font-bold text-brand-light">Add New Address</h3>
-            <button onclick="toggleAddressModal()" class="text-brand-muted hover:text-gray-600">
+    <div data-modal-card
+        class="animate-fadeInScale bg-brand-bg1 border border-white/10 rounded-2xl w-[560px] max-w-[92vw] max-h-[90vh] overflow-y-auto shadow-2xl">
+        <!-- Header -->
+        <div class="px-6 py-5 border-b border-white/10 flex justify-between items-center sticky top-0 bg-brand-bg1 z-10">
+            <div class="flex items-center gap-3">
+                <span class="w-1.5 h-5 rounded-full bg-brand-accent"></span>
+                <h3 class="text-lg font-bold text-brand-light tracking-tight">Add New Address</h3>
+            </div>
+            <button type="button" onclick="toggleAddressModal()"
+                class="text-brand-muted hover:text-brand-light transition-colors p-1 rounded-lg hover:bg-white/5">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-        <form id="addressForm" onsubmit="handleAddressSubmit(event)" class="p-5 space-y-3">
-            <div class="grid grid-cols-2 gap-3">
+        <form id="addressForm" onsubmit="handleAddressSubmit(event)" class="p-6 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="text-xs font-semibold text-brand-light">Full Name <span
-                            class="text-red-500">*</span></label>
+                    <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Full Name <span
+                            class="text-brand-accent">*</span></label>
                     <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
-                        class="mt-1 w-full p-2.5 border border-white/5 rounded-lg focus:ring-2 focus:ring-[#9A7556] outline-none text-sm text-black bg-white">
-                    <p id="err-fullName" class="text-red-500 text-xs mt-0.5"></p>
+                        class="mt-1.5 w-full px-3.5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-sm text-brand-light placeholder-brand-muted/60 outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/25">
+                    <p id="err-fullName" class="text-red-400 text-xs mt-1"></p>
                 </div>
                 <div>
-                    <label class="text-xs font-semibold text-brand-light">Mobile Number <span
-                            class="text-red-500">*</span></label>
+                    <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Mobile Number <span
+                            class="text-brand-accent">*</span></label>
                     <input type="tel" id="mobile" name="mobile" placeholder="10-digit number"
-                        class="mt-1 w-full p-2.5 border border-white/5 rounded-lg focus:ring-2 focus:ring-[#9A7556] outline-none text-sm text-black bg-white">
-                    <p id="err-mobile" class="text-red-500 text-xs mt-0.5"></p>
+                        class="mt-1.5 w-full px-3.5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-sm text-brand-light placeholder-brand-muted/60 outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/25">
+                    <p id="err-mobile" class="text-red-400 text-xs mt-1"></p>
                 </div>
             </div>
-
 
             <div>
-                <label class="text-xs font-semibold text-brand-light">House Name / Area <span
-                        class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider">House Name / Area <span
+                        class="text-brand-accent">*</span></label>
                 <input type="text" id="houseName" name="houseName" placeholder="Flat No, Building, Street"
-                    class="mt-1 w-full p-2.5 border border-white/5 rounded-lg focus:ring-2 focus:ring-[#9A7556] outline-none text-sm text-black bg-white">
-                <p id="err-houseName" class="text-red-500 text-xs mt-0.5"></p>
+                    class="mt-1.5 w-full px-3.5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-sm text-brand-light placeholder-brand-muted/60 outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/25">
+                <p id="err-houseName" class="text-red-400 text-xs mt-1"></p>
             </div>
 
-
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="text-xs font-semibold text-brand-light">City <span
-                            class="text-red-500">*</span></label>
+                    <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider">City <span
+                            class="text-brand-accent">*</span></label>
                     <input type="text" id="city" name="city" placeholder="City"
-                        class="mt-1 w-full p-2.5 border border-white/5 rounded-lg focus:ring-2 focus:ring-[#9A7556] outline-none text-sm text-black bg-white">
-                    <p id="err-city" class="text-red-500 text-xs mt-0.5"></p>
+                        class="mt-1.5 w-full px-3.5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-sm text-brand-light placeholder-brand-muted/60 outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/25">
+                    <p id="err-city" class="text-red-400 text-xs mt-1"></p>
                 </div>
                 <div>
-                    <label class="text-xs font-semibold text-brand-light">State <span
-                            class="text-red-500">*</span></label>
+                    <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider">State <span
+                            class="text-brand-accent">*</span></label>
                     <input type="text" id="state" name="state" placeholder="State"
-                        class="mt-1 w-full p-2.5 border border-white/5 rounded-lg focus:ring-2 focus:ring-[#9A7556] outline-none text-sm text-black bg-white">
-                    <p id="err-state" class="text-red-500 text-xs mt-0.5"></p>
+                        class="mt-1.5 w-full px-3.5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-sm text-brand-light placeholder-brand-muted/60 outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/25">
+                    <p id="err-state" class="text-red-400 text-xs mt-1"></p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="text-xs font-semibold text-brand-light">Pincode <span
-                            class="text-red-500">*</span></label>
+                    <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Pincode <span
+                            class="text-brand-accent">*</span></label>
                     <input type="text" id="pincode" name="pincode" placeholder="6-digit PIN" maxlength="6"
-                        class="mt-1 w-full p-2.5 border border-white/5 rounded-lg focus:ring-2 focus:ring-[#9A7556] outline-none text-sm text-black bg-white">
-                    <p id="err-pincode" class="text-red-500 text-xs mt-0.5"></p>
+                        class="mt-1.5 w-full px-3.5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-sm text-brand-light placeholder-brand-muted/60 outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/25">
+                    <p id="err-pincode" class="text-red-400 text-xs mt-1"></p>
                 </div>
                 <div>
-                    <label class="text-xs font-semibold text-brand-light">Address Type</label>
+                    <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Address Type</label>
                     <select id="type" name="type"
-                        class="mt-1 w-full p-2.5 border border-white/5 rounded-lg focus:ring-2 focus:ring-[#9A7556] outline-none text-sm text-black bg-white">
+                        class="mt-1.5 w-full px-3.5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-sm text-brand-light outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/25">
                         <option value="Home">Home</option>
                         <option value="Work">Work</option>
                     </select>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 mt-2">
-                <input type="checkbox" id="isDefault" name="isDefault" class="w-4 h-4 rounded text-[#9A7556] focus:ring-[#9A7556] bg-white border-white/5 cursor-pointer">
-                <label for="isDefault" class="text-xs font-semibold text-brand-light cursor-pointer">Make this my default address</label>
-            </div>
+            <label class="flex items-center gap-2.5 mt-1 cursor-pointer select-none">
+                <input type="checkbox" id="isDefault" name="isDefault"
+                    class="w-4 h-4 rounded bg-brand-bg2 border border-white/15 accent-brand-accent cursor-pointer">
+                <span class="text-xs font-semibold text-brand-muted">Make this my default address</span>
+            </label>
 
-            <div class="flex justify-end gap-3 pt-3 border-t border-gray-100">
+            <div class="flex justify-end gap-3 pt-4 border-t border-white/10">
                 <button type="button" onclick="toggleAddressModal()"
-                    class="px-5 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm font-medium">
+                    class="px-5 py-2.5 rounded-lg bg-brand-bg2 border border-white/10 text-brand-muted hover:text-brand-light hover:border-white/20 text-sm font-medium transition-colors">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="px-5 py-2 bg-[#9A7556] text-white rounded-lg hover:bg-[#876649] shadow-md active:scale-95 text-sm font-medium">
+                    class="px-6 py-2.5 rounded-lg bg-brand-accent text-brand-bg1 hover:bg-[#c9a52a] shadow-[0_4px_12px_rgba(212,175,55,0.25)] active:scale-95 text-sm font-bold uppercase tracking-wider transition-all">
                     Save Address
                 </button>
             </div>
-
         </form>
     </div>
 </div>

@@ -43,6 +43,7 @@ async function addToCartFromStore(productId, variantIndex, btn) {
         const area = btn.closest('.cart-action-area');
         area.innerHTML = buildQtyControlHTML(item._id, item.quantity);
       }
+      if (window.refreshNavBadges) window.refreshNavBadges();
       showToast('Product added to cart!', 'success');
     } else {
       showToast(response.data.message || 'Error adding to cart', 'error');
@@ -100,6 +101,7 @@ async function toggleWishlist(productId) {
   try {
     const response = await axios.post('/user/wishlist/toggle', { productId });
     if (response.data.success) {
+      if (window.refreshNavBadges) window.refreshNavBadges();
       showToast(response.data.message, 'success');
     }
   } catch (error) {

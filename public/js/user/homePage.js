@@ -192,3 +192,24 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+// ── Scroll-reveal: featured cards line up one by one on enter ───────────────
+// Each [data-reveal] element carries --reveal-i for a CSS transition-delay
+// stagger; we just flip .is-visible once it scrolls into view (once only).
+(function initReveal() {
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    if (!revealEls.length) return;
+    if (!('IntersectionObserver' in window)) {
+        revealEls.forEach((el) => el.classList.add('is-visible'));
+        return;
+    }
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+    revealEls.forEach((el) => io.observe(el));
+})();

@@ -170,6 +170,29 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* Scroll-reveal: cards line up one by one as they enter the viewport.
+     Uses the standalone `translate` property (not `transform`) so it never
+     fights Tailwind's transform-based hover lift on the same element.
+     Stagger comes from --reveal-i set per card. */
+  .reveal-card {
+    opacity: 0;
+    translate: 0 40px;
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                translate 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--reveal-i, 0) * 130ms);
+  }
+  .reveal-card.is-visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-card {
+      opacity: 1;
+      translate: 0 0;
+      transition: none;
+    }
+  }
 }
 /* ── Store Sidebar Filters ───────────────────────────────────── */
 
