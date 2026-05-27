@@ -51,18 +51,6 @@ async function handleForgotPassword(event) {
 
 
 
-function toggleResetPasswordVisibility() {
-    const toggle = document.getElementById('showResetPasswordToggle');
-    const newPasswordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-
-    if(!toggle || !newPasswordInput || !confirmPasswordInput) return;
-
-    const inputType = toggle.checked ? 'text' : 'password';
-    newPasswordInput.type = inputType;
-    confirmPasswordInput.type = inputType;
-}
-
 async function handleResetPassword(event) {
     event.preventDefault();
 

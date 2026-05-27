@@ -79,12 +79,14 @@ router.post("/cart/add", cartController.addToCart);
 router.patch("/cart/item/:itemId", cartController.updateQuantity);
 router.delete("/cart/item/:itemId", cartController.removeItem);
 router.delete("/cart", cartController.clearCart);
+router.get("/badge-counts", cartController.getBadgeCounts);
 
 // Buy Now (single-item express checkout)
 router.post("/buy-now", buyNowController.startBuyNow);
 router.delete("/buy-now", buyNowController.cancelBuyNow);
 
 // Coupon
+router.get("/coupons/available", couponController.getAvailableCoupons);
 router.post("/coupon/apply", couponController.applyCoupon);
 router.delete("/coupon", couponController.removeCoupon);
 

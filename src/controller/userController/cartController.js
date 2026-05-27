@@ -143,3 +143,13 @@ export const clearCart = catchAsync(async (req, res) => {
 
     res.status(STATUS_CODES.OK).json({success: true, message: MESSAGES.CART_CLEARED});
 });
+
+// Returns fresh nav badge counts (computed by the injectUserBadges middleware
+// into res.locals). Used by the client to update header badges in-place.
+export const getBadgeCounts = (req, res) => {
+    res.status(STATUS_CODES.OK).json({
+        success: true,
+        cartCount: res.locals.cartCount || 0,
+        wishlistCount: res.locals.wishlistCount || 0
+    });
+};

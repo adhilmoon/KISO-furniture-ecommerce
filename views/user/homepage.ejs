@@ -5,24 +5,15 @@
     <div id="scrolly-container">
         <!-- The sticky visual container -->
         <div class="sticky-wrapper">
-            <!-- Native video: scrubbed by scroll position (primary) -->
-            <video id="sofa-video"
-                class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover"
-                style="width:100vw; height:56.25vw; min-height:100vh; min-width:177.78vh;"
-                muted playsinline preload="auto" disablepictureinpicture
-                poster="">
-                <source src="/videos/hero-sofa.mp4" type="video/mp4">
-            </video>
-
-            <!-- Fallback: looping Gumlet embed, shown only if native video can't load -->
-            <iframe id="sofa-video-frame"
-                src="https://play.gumlet.io/embed/6a140fc4035bf1e7e7a36f61?preload=true&autoplay=true&loop=true&background=true&disable_player_controls=true"
-                class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden"
-                style="border:0; width:100vw; height:56.25vw; min-height:100vh; min-width:177.78vh;"
-                loading="lazy"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowfullscreen>
-            </iframe>
+            <!-- Scroll-scrubbed image sequence (Apple-style). Frames preloaded
+                 and drawn to canvas; scroll position maps to frame index.
+                 data-* drive the loader: frames at /images/hero/frame-XXXX.jpg -->
+            <canvas id="sofa-canvas"
+                data-frame-count="151"
+                data-frame-path="/images/hero/frame-"
+                data-frame-pad="4"
+                data-frame-ext=".jpg"
+                class="pointer-events-none"></canvas>
 
             <!-- Storytelling Overlays -->
             <div id="steps-container" class="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/40 via-black/20 to-black/50">

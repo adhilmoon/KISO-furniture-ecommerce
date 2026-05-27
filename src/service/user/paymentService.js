@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import razorpay from '../../config/razorpay.js';
 import * as cartService from './cartService.js';
 import * as orderRepository from '../../repository/user/orderRepository.js';
 import * as productRepository from '../../repository/user/productRepository.js';
@@ -7,6 +8,15 @@ import * as couponService from './couponService.js';
 import * as walletService from './walletService.js';
 import * as offerService from './offerService.js';
 
+const RZP_CHECKOUT_PURPOSE = 'checkout';
+
+const buildError = (message, status = 400) =>
+    Object.assign(new Error(message), { status });
+
+/**
+ * Constant-time HMAC-SHA256 check of a Razorpay payment signature.
+ * Returns false on any malformed input instead of throwing.
+ */
 export const verifyRazorpaySignature = (razorpayOrderId, paymentId, signature) => {
     if (typeof signature !== 'string') return false;
     const sign = `${razorpayOrderId}|${paymentId}`;
@@ -124,13 +134,72 @@ export const validateCheckoutItems = async (cartItems) => {
         valid.push({ product: insp.product, variant: insp.variant, item });
     }
     if (issues.length > 0) throw new CheckoutInventoryError(issues);
-    if (valid.length === 0) throw Object.assign(new Error('No valid items to place order'), { status: 400 });
+    if (valid.length === 0) throw buildError('No valid items to place order', 400);
 
     const items = [];
     for (const { product, variant, item } of valid) {
         items.push(await enrichItem(product, variant, item, item.quantity));
     }
     return items;
+};
+
+/**
+ * Authoritative money math for a checkout. Pure: callers supply the
+ * server-derived inputs. Returns paise-safe rupee amounts. This is the
+ * single source of truth shared by the payment page, the Razorpay
+ * order-creation step, and the post-payment verification cross-check.
+ */
+export const summarizeTotals = ({ validItems, appliedCoupon = null, walletBalance = 0, useWallet = false }) => {
+    const subtotal = validItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const couponDiscount = appliedCoupon ? Math.min(appliedCoupon.discount || 0, subtotal) : 0;
+    const grandTotal = Math.max(subtotal - couponDiscount, 0);
+    const walletApplied = useWallet ? Math.min(walletBalance, grandTotal) : 0;
+    const payableAmount = Math.max(grandTotal - walletApplied, 0);
+    return { subtotal, couponDiscount, grandTotal, walletApplied, payableAmount };
+};
+
+/**
+ * Creates a Razorpay order for the amount the SERVER computed. The amount
+ * is never accepted from the client. Identity and checkout intent are
+ * stamped into `notes` so verification can re-authorize the payment.
+ */
+export const createCheckoutOrder = async ({ amountRupees, userId, addressId, useWallet }) => {
+    const value = Math.round(Number(amountRupees));
+    if (!Number.isFinite(value) || value <= 0) {
+        throw buildError('Invalid payable amount', 400);
+    }
+    return razorpay.orders.create({
+        amount: value * 100,
+        currency: 'INR',
+        receipt: `chk_${String(userId).slice(-8)}_${Date.now()}`,
+        notes: {
+            purpose: RZP_CHECKOUT_PURPOSE,
+            userId: String(userId),
+            addressId: String(addressId),
+            useWallet: useWallet ? '1' : '0'
+        }
+    });
+};
+
+/**
+ * Fetches a Razorpay order and asserts it is a checkout order that belongs
+ * to this user. Throws on any mismatch. Returns the trusted server-side
+ * intent ({ addressId, useWallet, amountRupees }) read from the order — NOT
+ * from the client request — so a verified payment cannot be redirected to a
+ * different address or have wallet usage toggled after the fact.
+ */
+export const fetchAuthorizedCheckoutOrder = async ({ orderId, userId }) => {
+    const order = await razorpay.orders.fetch(orderId);
+    if (!order) throw buildError('Payment order not found', 400);
+    if (order.notes?.purpose !== RZP_CHECKOUT_PURPOSE) throw buildError('Invalid payment order', 400);
+    if (String(order.notes?.userId || '') !== String(userId)) throw buildError('Payment order does not belong to this user', 403);
+    if (order.status !== 'paid') throw buildError('Payment not captured', 400);
+    return {
+        order,
+        addressId: order.notes.addressId,
+        useWallet: order.notes.useWallet === '1',
+        amountRupees: Math.round((order.amount_paid || order.amount) / 100)
+    };
 };
 
 /**
@@ -157,7 +226,7 @@ const reserveStock = async (orderItems) => {
 
 export const createOrder = async (userId, addressId, orderItems, paymentMethod, paymentStatus, appliedCoupon = null, useWallet = false, { skipCartClear = false } = {}) => {
     const address = await userRepository.findAddressById(addressId);
-    if (!address) throw Object.assign(new Error('Address not found'), { status: 400 });
+    if (!address) throw buildError('Address not found', 400);
 
     await reserveStock(orderItems);
 

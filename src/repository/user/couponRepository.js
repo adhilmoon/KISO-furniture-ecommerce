@@ -3,6 +3,11 @@ import Coupon from '../../model/Coupon.js';
 export const findActiveCouponByCode = async (code) =>
     Coupon.findOne({ code: code.toUpperCase(), isActive: true });
 
+export const findAvailableCoupons = async () =>
+    Coupon.find({ isActive: true, expiresAt: { $gt: new Date() } })
+        .sort({ createdAt: -1 })
+        .lean();
+
 export const recordCouponUsage = async (couponId, userId, orderId) =>
     Coupon.findByIdAndUpdate(
         couponId,

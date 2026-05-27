@@ -129,6 +129,10 @@ async function handleProfileUpdate(event) {
         showMessage('Name is required', 'error');
         return;
     }
+    if(!/^[A-Za-z][A-Za-z\s'-]{0,48}[A-Za-z]$/.test(formData.name)) {
+        showMessage('Name must be 2-50 characters, letters/spaces only', 'error');
+        return;
+    }
 
 
     try {

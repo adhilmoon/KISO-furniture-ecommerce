@@ -14,6 +14,7 @@ import connectDB from './config/connectDB.js';
 import './config/passport.js'
 import passport from 'passport';
 import { fetchGlobalCategories } from './middleware/globalCategories.js';
+import { injectUserBadges } from './middleware/userBadges.js';
 import { setUser } from './middleware/userAuth.js';
 import logger from './utilities/logger.js';
 
@@ -68,6 +69,7 @@ app.use('/', userSession);
 
 
 app.use(setUser);
+app.use(injectUserBadges);
 
 app.use('/user', passport.initialize());
 app.use('/user', passport.session());

@@ -11,10 +11,19 @@ export const uploadProfilePic = async (userId, file) => {
     return userRepository.updateUser(userId, { avatar: result.secure_url, avatarId: result.public_id });
 };
 
+const NAME_REGEX = /^[A-Za-z][A-Za-z\s'-]{0,48}[A-Za-z]$/;
+
+export const isValidName = (name) =>
+    typeof name === 'string' && NAME_REGEX.test(name.trim());
+
 export const updateProfile = async (userId, name, phone) => {
     const user = await userRepository.findById(userId);
     if (!user) throw Object.assign(new Error(MESSAGES.USER_NOT_FOUND), { status: 404 });
     if (!name && !phone) throw Object.assign(new Error(MESSAGES.NAME_PHONE_REQUIRED), { status: 400 });
+    if (!isValidName(name)) {
+        throw Object.assign(new Error(MESSAGES.INVALID_NAME), { status: 400 });
+    }
+    name = name.trim();
     if (user.name === name && user.phone === phone) {
         throw Object.assign(new Error(MESSAGES.NO_CHANGES_DETECTED), { status: 400 });
     }

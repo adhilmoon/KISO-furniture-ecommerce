@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import Product from "../../model/Product.js";
 
 export const findProductById = async (id) => {
+    if (!mongoose.isValidObjectId(id)) return null;
     const product = await Product.findOne({_id: id})
         .populate({
             path: "category",
