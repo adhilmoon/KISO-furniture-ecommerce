@@ -90,7 +90,8 @@ public/       # static assets — js/, css/ (Tailwind in/out), images/
 ```bash
 git clone https://github.com/adhilmoon/KISO-furniture-ecommerce.git
 cd KISO-furniture-ecommerce
-npm install          # postinstall builds Tailwind CSS automatically
+npm install
+npm run build:css    # generate public/css/output.css
 ```
 
 ### Configure
@@ -110,8 +111,8 @@ Tailwind output (`public/css/output.css`) is **git‑ignored** and generated fro
 ```bash
 npm run build:css    # one-off minified build
 ```
-This runs automatically via `postinstall` / `npm run build`, so deploys that run
-`npm install` get a compiled stylesheet without any extra step.
+The Docker image builds this automatically in the runtime stage; PaaS hosts should
+run `npm run build` as the build command.
 
 ---
 
@@ -157,7 +158,7 @@ This runs automatically via `postinstall` / `npm run build`, so deploys that run
 ---
 
 ## Deployment Notes
-- `npm install` triggers `postinstall` → Tailwind build, so `output.css` exists on the server.
+- CSS is built during the Docker build (`npm run build:css` in the runtime stage); on PaaS hosts set the build command to `npm run build`.
 - Set `NODE_ENV=production` to enable secure cookies and proxy trust.
 - Helmet's Cross‑Origin‑Opener‑Policy is set to `same-origin-allow-popups` so the
   Razorpay Checkout / netbanking popup flow is not blocked.

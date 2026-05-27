@@ -8,7 +8,6 @@
     "dev": "nodemon src/app.js",
     "build": "npm run build:css",
     "build:css": "tailwindcss -i public/css/input.css -o public/css/output.css --minify",
-    "postinstall": "npm run build:css",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npm run lint:js && npm run lint:ejs",
     "lint:js": "eslint .",

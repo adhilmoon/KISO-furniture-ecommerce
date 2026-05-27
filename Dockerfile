@@ -19,6 +19,10 @@ COPY src    ./src
 COPY views  ./views
 COPY public ./public
 
+# Build Tailwind CSS — output.css is gitignored and generated from input.css.
+# tailwindcss is a production dependency, so it's present in the deps modules.
+RUN npm run build:css
+
 # Drop privileges
 RUN addgroup -S kiso && adduser -S kiso -G kiso \
     && chown -R kiso:kiso /app
