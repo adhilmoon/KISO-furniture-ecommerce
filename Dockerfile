@@ -15,12 +15,14 @@ ENV NODE_ENV=production \
 # Copy installed modules + application source
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
+COPY tailwind.config.js postcss.config.js ./
 COPY src    ./src
 COPY views  ./views
 COPY public ./public
 
 # Build Tailwind CSS — output.css is gitignored and generated from input.css.
-# tailwindcss is a production dependency, so it's present in the deps modules.
+# tailwind.config.js MUST be present or Tailwind purges every utility class
+# (empty default content glob) and ships a near-empty stylesheet.
 RUN npm run build:css
 
 # Drop privileges
