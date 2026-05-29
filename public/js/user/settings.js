@@ -100,6 +100,12 @@ updatePasswordForm?.addEventListener('submit', async (e) => {
 
     try {
         const response = await axios.patch('/user/change-password', { currentPassword, newPassword });
+        if (response.data.redirectUrl) {
+            if (response.data.message) showToast(response.data.message, 'success');
+            updatePasswordForm.reset();
+            setTimeout(() => window.location.replace(response.data.redirectUrl), 1200);
+            return;
+        }
         if (response.data.success) {
             showToast(response.data.message || 'Password changed successfully', 'success');
             updatePasswordForm.reset();

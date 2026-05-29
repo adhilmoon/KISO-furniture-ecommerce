@@ -2,6 +2,7 @@
 import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
 import * as profileService from '../../service/user/profileService.js';
 import catchAsync from '../../utilities/catchAsync.js';
+import logger from '../../utilities/logger.js';
 
 export const uploadProfilePic = catchAsync(async (req, res) => {
     if (!req.file) {
@@ -79,5 +80,17 @@ export const changePassword = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
     const result = await profileService.changePassword(userId, currentPassword, newPassword);
     if (result?.redirectUrl) return res.status(STATUS_CODES.OK).json(result);
-    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.PASSWORD_UPDATED_SUCCESS });
+    // Password changed: invalidate session, force re-login.
+    delete req.session.user;
+    return req.session.save((error) => {
+        if (error) {
+            logger.error(`Session save error on password change: ${error.message}`);
+            return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.SERVER_ERROR });
+        }
+        return res.status(STATUS_CODES.OK).json({
+            success: true,
+            message: MESSAGES.PASSWORD_UPDATED_SUCCESS,
+            redirectUrl: "/user/login"
+        });
+    });
 });

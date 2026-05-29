@@ -1,4 +1,5 @@
 import * as productRepository from "../../repository/user/productRepository.js";
+import * as offerService from "./offerService.js";
 
 export const getProductDetail = async (productId) => {
     const product = await productRepository.findProductById(productId);
@@ -7,9 +8,15 @@ export const getProductDetail = async (productId) => {
     if (!product) return { product: null, relatedProducts: [] };
 
     const categoryId = product.category?._id || null;
-    const relatedProducts = categoryId 
+    const relatedProducts = categoryId
         ? await productRepository.findRelatedProducts(categoryId, product._id)
         : [];
-    
+
+    // Attach real, currently-active offers — never fake static "was" prices.
+    await Promise.all([
+        offerService.attachBestOffersToVariants(product),
+        offerService.attachBestOffersToProducts(relatedProducts),
+    ]);
+
     return { product, relatedProducts };
 };

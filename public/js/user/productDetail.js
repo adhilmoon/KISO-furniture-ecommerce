@@ -76,7 +76,7 @@ function updateStockUI(stock) {
 }
 
 function selectVariant(btn, price, imageUrl, variantIndex, stock) {
- 
+
   document.querySelectorAll('.variant-btn').forEach(b => {
     b.classList.remove('border-brand-accent');
     b.classList.add('border-white/10');
@@ -84,10 +84,35 @@ function selectVariant(btn, price, imageUrl, variantIndex, stock) {
   btn.classList.add('border-brand-accent');
   btn.classList.remove('border-white/10');
 
- 
-  const priceEl = document.getElementById('product-price');
-  if (priceEl) priceEl.innerText = '₹' + price;
+  // Pull real offer data from the variant button's data-* attributes — the
+  // server only emits these when an active offer applies, so the strikethrough
+  // and % OFF badge only appear when there's a genuine discount.
+  const effectivePrice = btn.dataset.effectivePrice || price;
+  const originalPrice = btn.dataset.originalPrice || price;
+  const percentOff = parseInt(btn.dataset.percentOff, 10) || 0;
+  const offerName = btn.dataset.offerName || '';
 
+  const priceEl = document.getElementById('product-price');
+  if (priceEl) priceEl.innerText = '₹' + effectivePrice;
+
+  const origEl = document.getElementById('product-original-price');
+  const badgeEl = document.getElementById('product-discount-badge');
+  const offerNameEl = document.getElementById('product-offer-name');
+  const hasOffer = percentOff > 0 && originalPrice !== effectivePrice;
+
+  if (origEl) {
+    origEl.innerText = hasOffer ? '₹' + originalPrice : '';
+    origEl.classList.toggle('hidden', !hasOffer);
+  }
+  if (badgeEl) {
+    badgeEl.innerText = hasOffer ? percentOff + '% Off' : '';
+    badgeEl.classList.toggle('hidden', !hasOffer);
+  }
+  if (offerNameEl) {
+    const span = offerNameEl.querySelector('span');
+    if (span) span.innerText = offerName;
+    offerNameEl.classList.toggle('hidden', !hasOffer);
+  }
 
   const mainImg = document.getElementById('mainImage');
   if (mainImg && imageUrl && imageUrl !== '') {

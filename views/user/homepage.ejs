@@ -216,8 +216,16 @@
                                 <h4 class="text-xl font-bold text-white mb-2">
                                     <%= product.productName %>
                                 </h4>
-                                <p class="text-brand-accent font-semibold tracking-wide">$<%= product.basePrice %>
-                                </p>
+                                <% if (product.bestOffer) { %>
+                                    <div class="flex items-baseline flex-wrap gap-2">
+                                        <span class="text-brand-accent font-semibold tracking-wide">₹<%= product.bestOffer.effectivePrice %></span>
+                                        <span class="text-xs text-brand-muted line-through">₹<%= product.bestOffer.originalPrice %></span>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-green-400 bg-green-400/10 border border-green-400/20 px-1.5 py-0.5 rounded"><%= product.bestOffer.percentOff %>% Off</span>
+                                    </div>
+                                <% } else { %>
+                                    <% const v0 = product.variants && product.variants[0]; %>
+                                    <p class="text-brand-accent font-semibold tracking-wide">₹<%= v0 ? v0.price : product.basePrice %></p>
+                                <% } %>
                             </div>
                         </a>
                         <% }) %>

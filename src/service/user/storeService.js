@@ -1,6 +1,7 @@
 import Product from '../../model/Product.js';
 import Category from '../../model/Category.js';
 import { escapeRegex } from '../../utilities/escapeRegex.js';
+import * as offerService from './offerService.js';
 
 const getActiveCategoryIds = async () => {
     const cats = await Category.find({ isActive: true }).select('_id').lean();
@@ -9,11 +10,13 @@ const getActiveCategoryIds = async () => {
 
 export const getHomeProducts = async () => {
     const activeCategoryIds = await getActiveCategoryIds();
-    return Product.find({
+    const products = await Product.find({
         isListed: true,
         category: { $in: activeCategoryIds },
         variants: { $exists: true, $not: { $size: 0 } }
     }).limit(4).populate('category').lean();
+    await offerService.attachBestOffersToProducts(products);
+    return products;
 };
 
 export const getStoreProducts = async ({ search, categoryId, minPrice, maxPrice, sortKey, page, perPage }) => {
@@ -65,6 +68,7 @@ export const getStoreProducts = async ({ search, categoryId, minPrice, maxPrice,
             : 0;
     });
 
+    await offerService.attachBestOffersToProducts(products);
     return { total, products };
 };
 
