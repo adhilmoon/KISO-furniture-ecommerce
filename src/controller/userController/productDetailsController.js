@@ -25,7 +25,7 @@ export const getProductDetail = catchAsync(async (req, res) => {
     let isInWishlist = false;
     if (req.session.user) {
         const wishlist = await wishlistService.getWishlist(req.session.user._id);
-        isInWishlist = wishlist.products.some(p => p._id.toString() === id);
+        isInWishlist = wishlist.items.some(it => it.productId.toString() === id);
     }
 
     if (!product || !product.isListed) {
