@@ -58,6 +58,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const payNowBtn = document.getElementById('payNowBtn');
     const payBtnLabel = document.getElementById('payBtnLabel');
 
+    // Applying/removing wallet balance changes the server-computed payable
+    // amount, so reload the page with the new useWallet preference. The server
+    // re-derives walletApplied + payableAmount; never trust a client amount.
+    const walletToggle = document.getElementById('useWalletToggle');
+    if (walletToggle) {
+        walletToggle.addEventListener('change', () => {
+            const addressId = walletToggle.dataset.addressId;
+            const useWallet = walletToggle.checked ? '1' : '0';
+            window.location.href = `/user/checkout/payment?addressId=${addressId}&useWallet=${useWallet}`;
+        });
+    }
+
     document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
         radio.addEventListener('change', () => {
             if (!payBtnLabel) return;

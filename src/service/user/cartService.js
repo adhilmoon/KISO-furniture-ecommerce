@@ -1,12 +1,18 @@
 import * as cartRepository from "../../repository/user/cartRepository.js";
 import * as productRepository from "../../repository/user/productRepository.js";
 import * as wishlistService from "./wishlistService.js";
+import * as offerService from "./offerService.js";
 import { CART } from "../../constants/index.js";
 
 const { MAX_PER_USER } = CART;
 
+// Effective unit price is the best active offer price when one applies,
+// otherwise the stored variant price.
+const getItemUnitPrice = (item) =>
+    (item.offerPrice != null ? item.offerPrice : item.price) || 0;
+
 const computeTotalAmount = (items = []) =>
-    items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 0), 0);
+    items.reduce((sum, item) => sum + getItemUnitPrice(item) * (item.quantity || 0), 0);
 
 const withTotal = (cart) => {
     if (!cart) return cart;
@@ -14,12 +20,33 @@ const withTotal = (cart) => {
     return { ...cart, totalAmount: computeTotalAmount(items) };
 };
 
+// Attaches the best active offer to each item so the cart view can show the
+// real payable price (the same price checkout will charge). No fake discounts:
+// items without an active offer keep their original price and bestOffer = null.
+const enrichItemsWithOffers = async (items = []) =>
+    Promise.all(items.map(async (item) => {
+        const product = item.productId;
+        if (!product) return item;
+        const bestOffer = await offerService.computeProductBestOffer(product, item.price);
+        if (!bestOffer) {
+            return { ...item, offerPrice: item.price, offerDiscount: 0, bestOffer: null };
+        }
+        return {
+            ...item,
+            offerPrice: bestOffer.effectivePrice,
+            offerDiscount: bestOffer.discount,
+            originalPrice: item.price,
+            bestOffer
+        };
+    }));
+
 export const getCart = async (userId) => {
     let cart = await cartRepository.findByUserId(userId);
     if (!cart) {
         cart = await cartRepository.createCart(userId, []);
     }
-    return withTotal(cart);
+    const items = await enrichItemsWithOffers(Array.isArray(cart.items) ? cart.items : []);
+    return { ...cart, items, totalAmount: computeTotalAmount(items) };
 };
 
 export const addToCart = async (userId, productId, variantIndex, quantity) => {

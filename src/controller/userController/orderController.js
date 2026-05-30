@@ -131,18 +131,34 @@ export const downloadInvoice = catchAsync(async (req, res) => {
     doc.text('Unit Price', 415, 217, { width: 70, align: 'right' });
     doc.text('Total', 490, 217, { width: 55, align: 'right' });
 
+    // Cancelled/returned items are struck from the billable totals so the
+    // invoice mirrors the current state of the order after cancellations.
+    const isItemVoid = (item) => ['cancelled', 'returned'].includes(item.status);
+
     let y = 240;
-    doc.font('Helvetica').fontSize(9).fillColor('#222');
+    doc.font('Helvetica').fontSize(9);
     for (const item of order.orderItems) {
         const name = item.productId?.productName || 'Product';
         const lineTotal = item.price * item.quantity;
-        doc.text(name, 58, y, { width: 290 });
+        const voided = isItemVoid(item);
+        doc.fillColor(voided ? '#aaa' : '#222');
+        const label = voided ? `${name}  (${item.status.toUpperCase()})` : name;
+        doc.text(label, 58, y, { width: 290, strike: voided });
         doc.text(String(item.quantity), 360, y, { width: 50, align: 'center' });
         doc.text(`Rs. ${item.price.toLocaleString()}`, 415, y, { width: 70, align: 'right' });
-        doc.text(`Rs. ${lineTotal.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
+        doc.text(`Rs. ${lineTotal.toLocaleString()}`, 490, y, { width: 55, align: 'right', strike: voided });
         y += 20;
         doc.moveTo(50, y - 2).lineTo(545, y - 2).stroke('#eee');
     }
+
+    // Refund mirrors orderService cancel logic: full grand total when every
+    // item is voided, otherwise the sum of voided line totals.
+    const allVoid = order.orderItems.every(isItemVoid);
+    const voidedTotal = order.orderItems
+        .filter(isItemVoid)
+        .reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const refunded = allVoid ? order.grandTotal : Math.min(voidedTotal, order.grandTotal);
+    const netTotal = Math.max(order.grandTotal - refunded, 0);
 
     doc.moveTo(50, y + 5).lineTo(545, y + 5).stroke('#ddd');
     y += 15;
@@ -157,12 +173,17 @@ export const downloadInvoice = catchAsync(async (req, res) => {
         doc.fillColor('#444').text('Discount:', 380, y);
         doc.fillColor('#16a34a').text(`-Rs. ${order.discount.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
     }
+    if (refunded > 0) {
+        y += 18;
+        doc.fillColor('#444').text('Refunded:', 380, y);
+        doc.fillColor('#dc2626').text(`-Rs. ${refunded.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
+    }
     y += 20;
     doc.moveTo(370, y).lineTo(545, y).stroke('#ddd');
     y += 8;
     doc.font('Helvetica-Bold').fontSize(12).fillColor('#000');
-    doc.text('Grand Total:', 370, y);
-    doc.text(`Rs. ${order.grandTotal.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
+    doc.text(refunded > 0 ? 'Net Payable:' : 'Grand Total:', 370, y);
+    doc.text(`Rs. ${netTotal.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
 
     doc.fontSize(8).font('Helvetica').fillColor('#aaa')
         .text('Thank you for shopping with KISO!', 50, 760, { align: 'center', width: 495 });

@@ -43,6 +43,8 @@
                                         product.category.isActive);
                                         const stock = variant ? variant.stock : (product.baseStock || 0);
                                         const isOutOfStock = stock <= 0;
+                                        const hasOffer = item.bestOffer && (item.offerDiscount || 0) > 0;
+                                        const unitPrice = item.offerPrice != null ? item.offerPrice : item.price;
                                         %>
                                         <div class="cart-item group md:grid grid-cols-12 gap-4 items-center p-4 transition hover:bg-white/[0.02] <%= !isProductListed || isOutOfStock ? 'opacity-60 bg-red-500/5' : '' %>"
                                             data-item-id="<%= item._id %>" data-product-id="<%= product._id %>" data-variant-index="<%= item.variantIndex %>" data-is-listed="<%= isProductListed %>" data-is-out-of-stock="<%= isOutOfStock %>">
@@ -89,18 +91,23 @@
                                                                     <% } %>
 
                                                                     <!-- Mobile Price & Remove -->
-                                                                    <div class="md:hidden flex items-center gap-4 mt-2">
-                                                                        <span class="text-brand-accent font-medium">₹<%=
-                                                                                item.price %></span>
+                                                                    <div class="md:hidden flex items-center gap-2 mt-2">
+                                                                        <span class="text-brand-accent font-medium">₹<%= unitPrice %></span>
+                                                                        <% if (hasOffer) { %>
+                                                                            <span class="text-xs text-brand-muted line-through">₹<%= item.price %></span>
+                                                                            <span class="text-[10px] font-bold text-green-400"><%= item.bestOffer.percentOff %>% OFF</span>
+                                                                        <% } %>
                                                                     </div>
                                                 </div>
                                             </div>
 
                                             <!-- Price (Desktop) -->
-                                            <div class="hidden md:block col-span-2 text-center text-brand-light">
-                                                ₹<span class="item-price">
-                                                    <%= item.price %>
-                                                </span>
+                                            <div class="hidden md:flex flex-col items-center col-span-2 text-center text-brand-light">
+                                                <span>₹<span class="item-price"><%= unitPrice %></span></span>
+                                                <% if (hasOffer) { %>
+                                                    <span class="text-xs text-brand-muted line-through">₹<%= item.price %></span>
+                                                    <span class="text-[10px] font-bold text-green-400"><%= item.bestOffer.percentOff %>% OFF</span>
+                                                <% } %>
                                             </div>
 
                                             <!-- Quantity Selector -->
@@ -121,7 +128,7 @@
                                             <!-- Total & Remove -->
                                             <div class="col-span-2 flex justify-end items-center gap-4 mt-4 md:mt-0">
                                                 <span class="text-brand-accent font-bold">₹<span class="item-total">
-                                                        <%= item.price * item.quantity %>
+                                                        <%= unitPrice * item.quantity %>
                                                     </span></span>
                                                 <button
                                                     class="remove-btn p-2 text-red-400/50 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition"
