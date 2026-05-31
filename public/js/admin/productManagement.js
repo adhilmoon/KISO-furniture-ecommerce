@@ -2,33 +2,56 @@
 
 const $ = id => document.getElementById(id)
 
-// Capture server-rendered list + pagination so we can restore on clear
-const _initialTableHtml = $('productTableBody')?.innerHTML || '';
-
-async function productSearch() {
+async function loadProducts(page = 1) {
     const query = ($('searchInput')?.value || '').trim();
-    const pagination = $('productPagination');
-    const tbody = $('productTableBody');
+    try {
+        const qs = new URLSearchParams();
+        if (query) qs.set('search', query);
+        if (page > 1) qs.set('page', page);
+        window.history.replaceState({}, '', qs.toString() ? `/admin/products?${qs.toString()}` : '/admin/products');
 
-    // Empty query → restore full server-rendered list + pagination
-    if (!query) {
-        if (tbody) tbody.innerHTML = _initialTableHtml;
-        if (pagination) pagination.style.display = '';
-        window.history.replaceState({}, '', '/admin/products');
+        const { data } = await axios.get('/admin/products', { params: { search: query, page } });
+        if (data.success) {
+            renderProducts(data.products);
+            renderPagination(data);
+        }
+    } catch (e) {
+        console.error("product load error", e);
+    }
+}
+
+// Build pagination from filtered result counts
+function renderPagination({ currentPage, totalPages, totalProducts, perPage }) {
+    const container = $('productPagination');
+    if (!container) return;
+
+    if (!totalPages || totalPages <= 1) {
+        container.innerHTML = '';
         return;
     }
 
-    try {
-        window.history.replaceState({}, '', `/admin/products?search=${encodeURIComponent(query)}`);
-        const { data } = await axios.get('/admin/products', { params: { search: query } });
-        if (data.success) {
-            renderProducts(data.products);
-            // Hide pagination while showing search results
-            if (pagination) pagination.style.display = 'none';
-        }
-    } catch (e) {
-        console.error("product search error", e);
+    const from = ((currentPage - 1) * perPage) + 1;
+    const to = Math.min(currentPage * perPage, totalProducts);
+    const icon = d => `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d}" /></svg>`;
+
+    let nav = '';
+    if (currentPage > 1) {
+        nav += `<button type="button" onclick="loadProducts(${currentPage - 1})" class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition">${icon('M15 19l-7-7 7-7')}</button>`;
     }
+    for (let i = 1; i <= totalPages; i++) {
+        const cls = i === currentPage ? 'bg-white/10 text-kiso-text' : 'border border-white/10 text-brand-muted hover:bg-white/5';
+        nav += `<button type="button" onclick="loadProducts(${i})" class="px-4 py-2 rounded-lg text-sm transition ${cls}">${i}</button>`;
+    }
+    if (currentPage < totalPages) {
+        nav += `<button type="button" onclick="loadProducts(${currentPage + 1})" class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition">${icon('M9 5l7 7-7 7')}</button>`;
+    }
+
+    container.innerHTML = `
+        <div class="flex items-center justify-between mt-6">
+            <p class="text-brand-muted text-sm">Showing ${from} to ${to} of ${totalProducts} products</p>
+            <div class="flex items-center gap-2">${nav}</div>
+        </div>
+    `;
 }
 function renderProducts(products) {
     const tbody = $('productTableBody');
@@ -148,7 +171,7 @@ function handleSearchDebounced() {
     }
     clearTimeout(timeout)
     timeout = setTimeout(() => {
-        productSearch();
+        loadProducts(1);
 
     }, 1000)
 }
@@ -162,7 +185,7 @@ function clearSearch() {
     if(input && clearBtn) {
         input.value = '';
         clearBtn.classList.add('hidden');
-        productSearch();
+        loadProducts(1);
     }
 }
 

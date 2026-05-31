@@ -274,7 +274,6 @@
  
 
   <!-- Pagination -->
-  <% const searchParam = (typeof searchQuery !== 'undefined' && searchQuery) ? '&search=' + encodeURIComponent(searchQuery) : ''; %>
   <div id="productPagination">
     <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
     <div class="flex items-center justify-between mt-6">
@@ -286,32 +285,35 @@
 
       <div class="flex items-center gap-2">
         <% if (currentPage > 1) { %>
-        <a
-          href="?page=<%= currentPage - 1 %><%= searchParam %>"
+        <button
+          type="button"
+          onclick="loadProducts(<%= currentPage - 1 %>)"
           class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
-        </a>
+        </button>
         <% } %>
         <% for (let i = 1; i <= totalPages; i++) { %>
-        <a
-          href="?page=<%= i %><%= searchParam %>"
+        <button
+          type="button"
+          onclick="loadProducts(<%= i %>)"
           class="px-4 py-2 rounded-lg text-sm transition <%= i === currentPage ? 'bg-white/10 text-kiso-text' : 'border border-white/10 text-brand-muted hover:bg-white/5' %>"
         >
           <%= i %>
-        </a>
+        </button>
         <% } %>
         <% if (currentPage < totalPages) { %>
-        <a
-          href="?page=<%= currentPage + 1 %><%= searchParam %>"
+        <button
+          type="button"
+          onclick="loadProducts(<%= currentPage + 1 %>)"
           class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
-        </a>
+        </button>
         <% } %>
       </div>
     </div>
