@@ -48,11 +48,6 @@
       <option value="tables">Tables</option>
       <option value="sofas">Sofas</option>
     </select> -->
-    <button
-      class="bg-brand-bg2 border border-white/10 text-kiso-text px-5 py-3 rounded-lg text-sm hover:bg-white/5 transition"
-    >
-      Search
-    </button>
     <a
       href="/admin/product/add"
       id="addProductBtn"
@@ -279,67 +274,49 @@
  
 
   <!-- Pagination -->
-  <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %> <% const
-  searchParam = searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '';
-  %>
+  <% const searchParam = (typeof searchQuery !== 'undefined' && searchQuery) ? '&search=' + encodeURIComponent(searchQuery) : ''; %>
+  <div id="productPagination">
+    <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+    <div class="flex items-center justify-between mt-6">
+      <p class="text-brand-muted text-sm">
+        Showing <%= ((currentPage - 1) * perPage) + 1 %> to <%=
+        Math.min(currentPage * perPage, totalProducts) %> of <%= totalProducts %>
+        products
+      </p>
 
-  <div class="flex items-center justify-between mt-6">
-    <p class="text-brand-muted text-sm">
-      Showing <%= ((currentPage - 1) * perPage) + 1 %> to <%=
-      Math.min(currentPage * perPage, totalProducts) %> of <%= totalProducts %>
-      products
-    </p>
-
-    <div class="flex items-center gap-2">
-      <% if (currentPage > 1) { %>
-      <a
-        href="?page=<%= currentPage - 1 %><%= searchParam %>"
-        class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition"
-      >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      <div class="flex items-center gap-2">
+        <% if (currentPage > 1) { %>
+        <a
+          href="?page=<%= currentPage - 1 %><%= searchParam %>"
+          class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </a>
-      <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
-      <a
-        href="?page=<%= i %><%= searchParam %>"
-        class="px-4 py-2 rounded-lg text-sm transition <%= i === currentPage ? 'bg-white/10 text-kiso-text' : 'border border-white/10 text-brand-muted hover:bg-white/5' %>"
-      >
-        <%= i %>
-      </a>
-      <% } %> <% if (currentPage < totalPages) { %>
-      <a
-        href="?page=<%= currentPage + 1 %><%= searchParam %>"
-        class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition"
-      >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <% } %>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+        <a
+          href="?page=<%= i %><%= searchParam %>"
+          class="px-4 py-2 rounded-lg text-sm transition <%= i === currentPage ? 'bg-white/10 text-kiso-text' : 'border border-white/10 text-brand-muted hover:bg-white/5' %>"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-      </a>
-      <% } %>
+          <%= i %>
+        </a>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+        <a
+          href="?page=<%= currentPage + 1 %><%= searchParam %>"
+          class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+        <% } %>
+      </div>
     </div>
+    <% } %>
   </div>
-  <% } %>
 </div>
 
 <script src="/js/admin/productManagement.js"></script>

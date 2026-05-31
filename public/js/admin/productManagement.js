@@ -1,20 +1,33 @@
 
 
 const $ = id => document.getElementById(id)
-async function productSearch() {
-    const query = $('searchInput').value.trim();
-    try {
-        const url = query
-            ? `/admin/products?search=${encodeURIComponent(query)}`
-            : '/admin/products';
-        window.history.replaceState({}, '', url);
 
-        const response = await axios.get('/admin/products', { params: { search: query } });
-        if (response.data.success) {
-            renderProducts(response.data.products);
+// Capture server-rendered list + pagination so we can restore on clear
+const _initialTableHtml = $('productTableBody')?.innerHTML || '';
+
+async function productSearch() {
+    const query = ($('searchInput')?.value || '').trim();
+    const pagination = $('productPagination');
+    const tbody = $('productTableBody');
+
+    // Empty query → restore full server-rendered list + pagination
+    if (!query) {
+        if (tbody) tbody.innerHTML = _initialTableHtml;
+        if (pagination) pagination.style.display = '';
+        window.history.replaceState({}, '', '/admin/products');
+        return;
+    }
+
+    try {
+        window.history.replaceState({}, '', `/admin/products?search=${encodeURIComponent(query)}`);
+        const { data } = await axios.get('/admin/products', { params: { search: query } });
+        if (data.success) {
+            renderProducts(data.products);
+            // Hide pagination while showing search results
+            if (pagination) pagination.style.display = 'none';
         }
     } catch (e) {
-        console.error("search field error", e);
+        console.error("product search error", e);
     }
 }
 function renderProducts(products) {

@@ -124,6 +124,17 @@ export const adminProduct_Management = catchAsync(async (req, res) => {
 
     const totalPages = Math.ceil(totalProducts / perPage);
 
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.json({
+            success: true,
+            products,
+            totalProducts,
+            currentPage: page,
+            perPage,
+            totalPages
+        });
+    }
+
     res.render('admin/product', {
         title: 'Product Management',
         layout: 'layouts/admin',
