@@ -113,24 +113,27 @@ export const adminCategoryEdit_load = catchAsync(async (req, res) => {
     res.render('admin/category-add', { title: 'Edit Category', layout: 'layouts/admin', showSidebar: true, category });
 });
 
+
 export const adminProduct_Management = catchAsync(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const perPage = PAGINATION.ADMIN_PRODUCTS;
-    const search = req.query.search || '';
+    const search = (req.query.search || '').trim(); 
+
+    
     const { total: totalProducts, products } = await adminPageService.getProductPage({ search, page, perPage });
-    if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, products, totalProducts, currentPage: page, totalPages: Math.ceil(totalProducts / perPage) });
-    }
+
+    const totalPages = Math.ceil(totalProducts / perPage);
+
     res.render('admin/product', {
-        title: 'productManagment',
+        title: 'Product Management',
         layout: 'layouts/admin',
         showSidebar: true,
         currentPage: page,
         perPage,
         totalProducts,
         products,
-        searchQuery: search,
-        totalPages: Math.ceil(totalProducts / perPage)
+        searchQuery: search, 
+        totalPages
     });
 });
 
