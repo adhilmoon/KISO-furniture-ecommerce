@@ -81,27 +81,34 @@
     </div> <!-- Close scrolly-container -->
 
     <!-- ─── Drop Ticker (above banner) ─────────────────────────── -->
-    <div class="relative flex items-stretch border-y border-brand-bg1/20 bg-gradient-to-r from-brand-accent via-neon to-brand-accent text-brand-bg1 overflow-hidden select-none">
+    <div class="relative flex items-stretch overflow-hidden select-none bg-brand-bg2 border-y border-brand-accent/20">
+      <!-- thin gold hairline accents top + bottom -->
+      <div class="pointer-events-none absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-brand-accent/60 to-transparent"></div>
+      <div class="pointer-events-none absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-brand-accent/60 to-transparent"></div>
+
+      <!-- edge fades so text dissolves into the band -->
+      <div class="pointer-events-none absolute inset-y-0 left-0 w-16 md:w-28 z-20 bg-gradient-to-r from-brand-bg2 to-transparent"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-16 md:w-28 z-20 bg-gradient-to-l from-brand-bg2 to-transparent"></div>
+
       <!-- Pinned station tag (does not scroll) -->
-      <div class="hidden sm:flex shrink-0 items-center gap-2 px-5 bg-brand-bg1 text-brand-accent font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] z-10 border-r border-brand-accent/30">
-        <span class="w-1.5 h-1.5 rounded-full bg-brand-accent tracker-pulse"></span>
+      <div class="hidden sm:flex shrink-0 items-center gap-2 px-5 bg-brand-accent text-brand-bg1 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] z-30 font-bold">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-bg1 tracker-pulse"></span>
         <span>Drop_001</span>
       </div>
 
       <!-- Scrolling ticker -->
-      <div class="flex marquee-track py-2 md:py-2.5 font-display uppercase text-lg md:text-2xl tracking-tight whitespace-nowrap">
+      <div class="flex marquee-track py-2.5 md:py-3 font-display uppercase text-lg md:text-2xl tracking-tight whitespace-nowrap text-brand-light/90">
         <% for (let r = 0; r < 2; r++) { %>
         <div class="flex shrink-0 items-center gap-6 md:gap-8 px-4 md:px-6"<%= r === 1 ? ' aria-hidden="true"' : '' %>>
-          <span>Drop 001 — Live Now</span>
-          <span class="text-brand-bg1/60 text-base">◆</span>
-          <span>30-Day Trial</span>
-          <span class="text-brand-bg1/60 text-base">◆</span>
-          <span>Free Ship ₹4999+</span>
-          <span class="text-brand-bg1/60 text-base">◆</span>
-          <span>Made In India</span>
-          <span class="text-brand-bg1/60 text-base">◆</span>
-          <span>Limited Pieces</span>
-          <span class="text-brand-bg1/60 text-base">◆</span>
+          <span class="text-brand-accent text-base">✦</span>
+          <span class="hover:text-brand-accent transition-colors">30-Day Trial</span>
+          <span class="text-brand-accent text-base">✦</span>
+          <span class="hover:text-brand-accent transition-colors">Free Ship ₹4999+</span>
+          <span class="text-brand-accent text-base">✦</span>
+          <span class="hover:text-brand-accent transition-colors">Made In India</span>
+          <span class="text-brand-accent text-base">✦</span>
+          <span class="hover:text-brand-accent transition-colors">Limited Pieces</span>
+          <span class="text-brand-accent text-base">✦</span>
         </div>
         <% } %>
       </div>

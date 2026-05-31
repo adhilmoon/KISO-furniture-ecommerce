@@ -134,23 +134,79 @@ async function enableCategory(categoryId) {
 }
 
 
-async function handleSearch() {
+// Pagination state — keeps search query consistent across page navigation.
+const catState = { search: '', page: 1, perPage: 5, totalPages: 1, totalCategories: 0 };
 
+async function handleSearch(page = 1) {
     const query = document.getElementById('searchInput').value.trim();
+    catState.search = query;
+    catState.page = page;
     try {
         const response = await axios.get('/admin/categories', {
-            params: {
-                search: query
-            }
+            params: { search: query, page }
         })
         if(response.data.success) {
-            console.log("Search result:", response.data.categories);
-            renderCategories(response.data.categories)
+            const d = response.data;
+            catState.perPage = d.perPage || catState.perPage;
+            catState.totalPages = d.totalPages || 1;
+            catState.totalCategories = d.totalCategories || 0;
+            catState.page = d.currentPage || page;
+            renderCategories(d.categories);
+            renderPagination();
+            // Keep URL in sync so refresh / share preserves the search + page.
+            const qs = new URLSearchParams();
+            if (query) qs.set('search', query);
+            if (catState.page > 1) qs.set('page', catState.page);
+            const url = qs.toString() ? `/admin/categories?${qs}` : '/admin/categories';
+            window.history.replaceState({}, '', url);
         }
     } catch(error) {
         console.error("Search failed:", error.response?.data?.message || error.message);
     }
 }
+
+function renderPagination() {
+    const showing = document.getElementById('showingText');
+    const nav = document.getElementById('paginationNav');
+    if (!showing || !nav) return;
+
+    const { page, perPage, totalPages, totalCategories } = catState;
+
+    if (totalCategories === 0) {
+        showing.textContent = 'Showing 0 of 0 categories';
+    } else {
+        const from = ((page - 1) * perPage) + 1;
+        const to = Math.min(page * perPage, totalCategories);
+        showing.textContent = `Showing ${from} to ${to} of ${totalCategories} categories`;
+    }
+
+    const prevSvg = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>';
+    const nextSvg = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>';
+    let html = '';
+
+    if (page > 1) {
+        html += `<button type="button" data-page="${page - 1}" class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition">${prevSvg}</button>`;
+    }
+    for (let i = 1; i <= totalPages; i++) {
+        const active = i === page
+            ? 'bg-white/10 text-kiso-text'
+            : 'border border-white/10 text-brand-muted hover:bg-white/5';
+        html += `<button type="button" data-page="${i}" class="px-4 py-2 rounded-lg text-sm transition ${active}">${i}</button>`;
+    }
+    if (page < totalPages) {
+        html += `<button type="button" data-page="${page + 1}" class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition">${nextSvg}</button>`;
+    }
+    nav.innerHTML = html;
+}
+
+// Delegate pagination clicks (works for both server-rendered <a> and JS <button>).
+document.getElementById('paginationNav')?.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-page]');
+    if (!el) return;
+    e.preventDefault();
+    const page = parseInt(el.dataset.page, 10);
+    if (Number.isInteger(page)) handleSearch(page);
+});
 
 function renderCategories(categories) {
     const tableBody = document.getElementById("categoryTableBody")
@@ -158,15 +214,16 @@ function renderCategories(categories) {
     tableBody.innerHTML = "";
 
     if(categories.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-brand-muted">No categories found.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-brand-muted">No categories found.</td></tr>';
         return;
     }
+    const offset = (catState.page - 1) * catState.perPage;
     categories.forEach((category, index) => {
         const dateStr = new Date(category.createdAt).toISOString().split('T')[0];
         const row = `
   <tr class="hover:bg-white/5 transition category-row" data-name="${category.categoryName.toLowerCase()}">
     <td class="px-6 py-4 whitespace-nowrap">
-      <span class="text-kiso-text font-medium">C#${String(index + 1).padStart(3, '0')}</span>
+      <span class="text-kiso-text font-medium">C#${String(offset + index + 1).padStart(3, '0')}</span>
     </td>
 
     <td class="px-6 py-4 whitespace-nowrap">
@@ -236,9 +293,8 @@ function handleSearchDebounced() {
     clearTimeout(timeout)
 
     timeout = setTimeout(() => {
-        handleSearch();
-        console.log("clear timout")
-    }, 1000)
+        handleSearch(1); // new query → always restart on page 1
+    }, 400)
 }
 
 function clearSearch() {
@@ -247,7 +303,7 @@ function clearSearch() {
     if(input && clearBtn) {
         input.value = '';
         clearBtn.classList.add('hidden');
-        handleSearch();
+        handleSearch(1);
     }
 }
 

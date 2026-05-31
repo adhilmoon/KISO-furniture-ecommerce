@@ -83,7 +83,7 @@ export const adminCategory_load = catchAsync(async (req, res) => {
     const search = req.query.search || '';
     const { total: totalCategories, categories } = await adminPageService.getCategoryPage({ search, page, perPage });
     if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, categories, totalCategories, currentPage: page, totalPages: Math.ceil(totalCategories / perPage) });
+        return res.json({ success: true, categories, totalCategories, currentPage: page, perPage, totalPages: Math.ceil(totalCategories / perPage) });
     }
     res.render('admin/category', {
         title: 'categoryManagement',
