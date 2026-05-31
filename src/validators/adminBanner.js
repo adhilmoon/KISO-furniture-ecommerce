@@ -38,7 +38,7 @@ const optionalInt = z
 const colorSchema = z.string().regex(HEX_COLOR, "Invalid hex color (use #RGB or #RRGGBB)");
 
 export const bannerSchema = z.object({
-    title: z.string().trim().min(2, 'Title is required (min 2 characters)').max(100, 'Title must be at most 100 characters'),
+    title: optionalTrimmed(100, 'Title'),
     subtitle: optionalTrimmed(200, 'Subtitle'),
     ctaText: optionalTrimmed(30, 'CTA text'),
     linkUrl: optionalUrl,
