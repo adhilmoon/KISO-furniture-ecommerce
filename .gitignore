@@ -6,3 +6,4 @@ public/assets/sofa-sequence
 logs/
 *.log
 
+deploy.sh
