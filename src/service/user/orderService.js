@@ -69,7 +69,7 @@ export const cancelOrder = async (orderId, userId, reason) => {
         if (item.status !== 'cancelled') {
             item.status = 'cancelled';
             item.cancellationReason = reason || '';
-            await productRepository.updateVariantStock(item.productId, item.variantIndex, item.quantity);
+            await productRepository.updateVariantStock(item.productId,item.variantIndex,item.quantity);
         }
     }
     order.orderStatus = 'cancelled';
