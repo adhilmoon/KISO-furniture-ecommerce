@@ -160,18 +160,31 @@ export const downloadInvoice = catchAsync(async (req, res) => {
     const refunded = allVoid ? order.grandTotal : Math.min(voidedTotal, order.grandTotal);
     const netTotal = Math.max(order.grandTotal - refunded, 0);
 
+    // MRP subtotal vs. offer-applied subtotal. order.subtotal already reflects
+    // per-item offer prices, so the offer saving is the gap up to MRP.
+    const mrpSubtotal = order.orderItems.reduce(
+        (acc, item) => acc + (item.originalPrice ?? item.price) * item.quantity, 0);
+    const offerTotal = Math.max(mrpSubtotal - order.subtotal, 0);
+    const couponDiscount = order.couponDiscount || 0;
+
     doc.moveTo(50, y + 5).lineTo(545, y + 5).stroke('#ddd');
     y += 15;
     doc.font('Helvetica').fontSize(10).fillColor('#444');
     doc.text('Subtotal:', 380, y);
-    doc.text(`Rs. ${order.subtotal.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
-    y += 18;
-    doc.text('Shipping:', 380, y);
-    doc.fillColor('#16a34a').text('FREE', 490, y, { width: 55, align: 'right' });
-    if (order.discount > 0) {
+    doc.text(`Rs. ${mrpSubtotal.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
+    if (offerTotal > 0) {
         y += 18;
-        doc.fillColor('#444').text('Discount:', 380, y);
-        doc.fillColor('#16a34a').text(`-Rs. ${order.discount.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
+        doc.fillColor('#444').text('Offer Discount:', 380, y);
+        doc.fillColor('#16a34a').text(`-Rs. ${offerTotal.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
+    }
+    y += 18;
+    doc.fillColor('#444').text('Shipping:', 380, y);
+    doc.fillColor('#16a34a').text('FREE', 490, y, { width: 55, align: 'right' });
+    if (couponDiscount > 0) {
+        y += 18;
+        const couponLabel = order.couponCode ? `Coupon (${order.couponCode}):` : 'Coupon:';
+        doc.fillColor('#444').text(couponLabel, 380, y);
+        doc.fillColor('#16a34a').text(`-Rs. ${couponDiscount.toLocaleString()}`, 490, y, { width: 55, align: 'right' });
     }
     if (refunded > 0) {
         y += 18;

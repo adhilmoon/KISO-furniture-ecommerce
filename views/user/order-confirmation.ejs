@@ -65,19 +65,30 @@
             </div>
 
             <!-- Totals -->
+            <%
+                const mrpSubtotal = order.orderItems.reduce((a, it) => a + ((it.originalPrice ?? it.price) * it.quantity), 0);
+                const offerTotal = Math.max(mrpSubtotal - order.subtotal, 0);
+                const couponDiscount = order.couponDiscount || 0;
+            %>
             <div class="pt-5 border-t border-white/5 space-y-2">
                 <div class="flex justify-between text-sm text-brand-muted">
                     <span>Subtotal</span>
-                    <span class="text-brand-light">₹<%= order.subtotal.toLocaleString() %></span>
+                    <span class="text-brand-light">₹<%= mrpSubtotal.toLocaleString() %></span>
                 </div>
+                <% if (offerTotal > 0) { %>
+                <div class="flex justify-between text-sm text-brand-muted">
+                    <span>Offer Discount</span>
+                    <span class="text-green-500">-₹<%= offerTotal.toLocaleString() %></span>
+                </div>
+                <% } %>
                 <div class="flex justify-between text-sm text-brand-muted">
                     <span>Shipping</span>
                     <span class="text-green-500 font-semibold">FREE</span>
                 </div>
-                <% if (order.discount > 0) { %>
+                <% if (couponDiscount > 0) { %>
                 <div class="flex justify-between text-sm text-brand-muted">
-                    <span>Discount</span>
-                    <span class="text-green-500">-₹<%= order.discount.toLocaleString() %></span>
+                    <span>Coupon<% if (order.couponCode) { %> (<%= order.couponCode %>)<% } %></span>
+                    <span class="text-green-500">-₹<%= couponDiscount.toLocaleString() %></span>
                 </div>
                 <% } %>
                 <div class="flex justify-between pt-3 border-t border-white/5">
