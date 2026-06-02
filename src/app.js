@@ -29,10 +29,7 @@ const __dirname = path.dirname(__filename)
 
 await connectDB()
 
-// Security headers (relaxed CSP/COEP — many inline scripts + CDN assets in EJS views).
-// COOP is set to 'same-origin-allow-popups' (not the default 'same-origin') and
-// CORP is disabled so the Razorpay Checkout popup/netbanking redirect window is
-// not severed from its opener — the default same-origin COOP blanks that flow.
+
 app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
@@ -43,8 +40,7 @@ app.use(helmet({
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-// Strip MongoDB operator characters ($, .) from req.body / req.params.
-// (req.query is getter-only in Express 5, so it's deep-frozen at the framework level.)
+
 app.use(mongoSanitizeMiddleware());
 
 const sessionBase = {
