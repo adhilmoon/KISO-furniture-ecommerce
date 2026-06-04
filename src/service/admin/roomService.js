@@ -5,10 +5,10 @@ import { MESSAGES, PAGINATION, CLOUDINARY_FOLDERS } from '../../constants/index.
 
 const CLOUDINARY_FOLDER = CLOUDINARY_FOLDERS.ROOMS;
 const IMAGE_RULES = {
-    minWidth: 800,
-    minHeight: 800,
-    maxBytes: 5 * 1024 * 1024,
-    aspectRatio: { ratio: 1, tolerance: 0.25 }
+    minWidth: 400,         // Lower minimum — prevents tiny/thumbnail images
+    minHeight: 400,
+    maxBytes: 10 * 1024 * 1024,  // 10MB max
+    // aspectRatio removed — allows any shape (portrait, landscape, square)
 };
 
 const buildError = (message, status) =>
