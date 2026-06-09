@@ -1,0 +1,31 @@
+<section class="max-w-3xl mx-auto px-6 py-20 text-brand-light">
+    <p class="text-xs uppercase tracking-[0.3em] text-brand-accent font-bold mb-3">FAQ</p>
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-10">Frequently asked questions.</h1>
+
+    <% const faqs = [
+        { q: 'How long does delivery take?', a: 'Most in-stock items ship within 3–5 business days. Made-to-order pieces take 4–6 weeks.' },
+        { q: 'Do you offer assembly?', a: 'Yes, doorstep assembly is included for most large furniture across major cities.' },
+        { q: 'What is your return policy?', a: 'You may return any unused item within 7 days of delivery for a full refund or store credit.' },
+        { q: 'Are your materials sustainable?', a: 'Wherever possible, we use FSC-certified solid wood, water-based finishes, and recycled packaging.' },
+        { q: 'Do you ship internationally?', a: 'Currently we ship across India only. International shipping is on our roadmap.' }
+    ]; %>
+
+    <div class="space-y-3">
+        <% faqs.forEach(function(item, i) { %>
+            <details class="group bg-brand-bg2 border border-white/5 rounded-xl px-5 py-4 transition-colors hover:border-brand-accent/30" <%= i === 0 ? 'open' : '' %>>
+                <summary class="flex items-center justify-between cursor-pointer list-none">
+                    <span class="text-sm font-semibold text-brand-light"><%= item.q %></span>
+                    <span class="ml-4 text-brand-accent transition-transform group-open:rotate-45 text-lg">+</span>
+                </summary>
+                <p class="mt-3 text-sm text-brand-muted leading-relaxed"><%= item.a %></p>
+            </details>
+        <% }); %>
+    </div>
+
+    <div class="mt-12 p-6 bg-brand-bg2 border border-white/5 rounded-xl">
+        <p class="text-sm text-brand-muted">
+            Can't find what you're looking for?
+            <a href="/user/page/contact" class="text-brand-accent font-semibold hover:underline">Contact us</a> directly.
+        </p>
+    </div>
+</section>

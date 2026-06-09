@@ -4,17 +4,17 @@ const $ = id => document.getElementById(id)
 async function productSearch() {
     const query = $('searchInput').value.trim();
     try {
-        const response = await axios.get('/admin/products', {
-            params: {
-                search: query
-            }
-        })
-        if(response.data.success) {
-            console.log("products in searh field:", response.data?.products)
-            renderProducts(response.data.products)
+        const url = query
+            ? `/admin/products?search=${encodeURIComponent(query)}`
+            : '/admin/products';
+        window.history.replaceState({}, '', url);
+
+        const response = await axios.get('/admin/products', { params: { search: query } });
+        if (response.data.success) {
+            renderProducts(response.data.products);
         }
-    } catch(e) {
-        console.error("search field error", e)
+    } catch (e) {
+        console.error("search field error", e);
     }
 }
 function renderProducts(products) {

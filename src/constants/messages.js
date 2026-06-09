@@ -1,0 +1,138 @@
+export const MESSAGES = Object.freeze({
+    // Admin Auth Messages
+    EMPTY_FIELDS: "Please enter both email and password.",
+    ADMIN_LOGIN_SUCCESS: "Login successful",
+    INVALID_PASSWORD: "Password is incorrect. Please try again.",
+    WRONG_ADMIN_CREDENTIALS: "Email or password is incorrect. Please check and try again.",
+    ADMIN_AUTH_SERVER_ERROR: "Admin auth Server error",
+
+    // User Auth Messages
+    SESSION_EXPIRED: "Session expired. Please signup again.",
+    NEW_OTP_SENT: "New OTP sent successfully",
+    USER_ALREADY_EXISTS: "User already exists with this email",
+    OTP_SENT: "OTP sent to email",
+    SIGNUP_FAILED: "Signup failed. Please try again.",
+    INCORRECT_PASSWORD: "Password is incorrect. Please try again.",
+    INVALID_EMAIL_OR_PASSWORD: "Email or password is incorrect. Please check and try again.",
+    USER_ACCOUNT_BLOCKED: "Your account has been blocked by the administrator. Please contact support.",
+    LOGIN_SUCCESS: "Login successful",
+    USER_REGISTERED_SUCCESS: "User registered successfully!",
+    INVALID_OTP: "Invalid OTP. Please try again.",
+    VERIFICATION_FAILED: "Verification failed. Please try again later.",
+    SESSION_SAVE_ERROR: "Session save error",
+    INTERNAL_SERVER_ERROR: "Internal Server Error",
+
+    // Profile & Avatar Messages
+    PLEASE_UPLOAD_IMAGE: "Please upload an image",
+    USER_NOT_FOUND: "User not found",
+    PROFILE_PIC_UPDATED: "Profile picture updated successfully!",
+    ERROR_UPLOADING_CLOUDINARY: "Error uploading to Cloudinary",
+    USER_NOT_AUTHENTICATED: "User not authenticated",
+    PROFILE_UPDATED_SUCCESS: "Updated successfully",
+    INTERNAL_SERVER_ERROR_PROFILE: "Internal server error",
+    NO_CHANGES_DETECTED: "No changes detected. Please update at least one field.",
+    NAME_PHONE_REQUIRED: "Name and phone are required",
+
+    // Category Messages
+    REQUIRED_FIELDS_MISSING: "Required fields are missing",
+    CATEGORY_CREATED_SUCCESS: "Category created successfully",
+    CATEGORY_UPDATED_SUCCESS: "Category updated successfully",
+    CATEGORY_DISABLED_SUCCESS: "Category disabled successfully",
+    CATEGORY_ENABLED_SUCCESS: "Category enabled successfully",
+    CATEGORY_ALREADY_EXISTS: "Category name already exists",
+    CATEGORY_NOT_FOUND: "Category not found",
+    FETCH_CATEGORY_FAILED: "Failed to fetch category",
+    LOAD_USERS_FAILED: "Failed to load users",
+
+    // General Auth & Session Messages
+    UNAUTHORIZED_ACCESS: "Unauthorized access",
+    SERVER_ERROR: "Server error",
+    SOMETHING_WENT_WRONG: "Something went wrong",
+    LOGOUT_SUCCESS: "Logged out successfully",
+    LOGOUT_FAILED: "Logout failed",
+    EMAIL_UPDATED_SUCCESS: "Email updated successfully",
+    OTP_VERIFIED: "OTP Verified",
+    PASSWORD_UPDATED_SUCCESS: "Password updated successfully",
+    EMAIL_ALREADY_IN_USE: "Email already in use",
+
+    // Address Messages
+    ADDRESS_ADDED_SUCCESS: "Address added successfully!",
+    ADDRESS_DELETED: "Address deleted",
+    ADDRESS_NOT_FOUND: "Address not found",
+    FETCH_ADDRESS_FAILED: "Failed to fetch address",
+    ADDRESS_UPDATED_SUCCESS: "Address updated successfully",
+    PRODUCT_NOT_FOUND: "Product not found",
+    INTERNAL_SERVER_ERROR_ADDRESS: "Internal server error",
+
+    // Cart Messages
+    ADDED_TO_CART: "Added to cart",
+    CART_UPDATED: "Cart updated",
+    ITEM_REMOVED: "Item removed",
+    CART_CLEARED: "Cart cleared",
+
+    // Middleware Messages
+    UNAUTHORIZED_LOGIN: "Unauthorized: Please login.",
+    ACCOUNT_BLOCKED: "Your account is blocked.",
+
+    // General Error Messages
+    PAGE_NOT_FOUND: "Page not found. The requested resource does not exist.",
+    ROUTE_NOT_FOUND: "The page you are looking for might have been removed or is temporarily unavailable.",
+    GO_BACK_HOME: "Click here to return to the homepage.",
+
+    // Coupon Messages
+    COUPON_CREATED: "Coupon created successfully",
+    COUPON_DELETED: "Coupon deleted successfully",
+    COUPON_UPDATED: "Coupon updated successfully",
+    COUPON_CODE_EXISTS: "Coupon code already exists",
+    COUPON_NOT_FOUND: "Coupon not found",
+    COUPON_INACTIVE: "This coupon is not active",
+    COUPON_EXPIRED: "This coupon has expired",
+    COUPON_MIN_PURCHASE: "Order amount does not meet minimum purchase requirement",
+    COUPON_USAGE_LIMIT_REACHED: "Coupon usage limit reached",
+    COUPON_USER_LIMIT_REACHED: "You have already used this coupon",
+    COUPON_APPLIED: "Coupon applied successfully",
+    COUPON_REMOVED: "Coupon removed",
+    COUPON_ALREADY_APPLIED: "A coupon is already applied to this cart",
+    COUPON_CODE_REQUIRED: "Please enter a coupon code",
+
+    // Wallet Messages
+    WALLET_NOT_FOUND: "Wallet not found",
+    WALLET_INSUFFICIENT_BALANCE: "Insufficient wallet balance",
+    WALLET_INVALID_AMOUNT: "Invalid wallet amount",
+    WALLET_CREDITED: "Wallet credited successfully",
+    WALLET_DEBITED: "Wallet debited successfully",
+    WALLET_REFUND_CANCEL: "Refund credited to wallet for cancelled order",
+    WALLET_REFUND_RETURN: "Refund credited to wallet for returned order",
+    WALLET_PAYMENT: "Paid using wallet",
+    WALLET_TOPUP_INITIATED: "Top-up initiated",
+    WALLET_TOPUP_SUCCESS: "Wallet topped up successfully",
+    WALLET_TOPUP_FAILED: "Wallet top-up verification failed",
+    WALLET_MIN_TOPUP: "Top-up amount must be at least ₹1",
+
+    // Banner Messages
+    BANNER_CREATED: "Banner created successfully",
+    BANNER_UPDATED: "Banner updated successfully",
+    BANNER_DELETED: "Banner deleted successfully",
+    BANNER_NOT_FOUND: "Banner not found",
+    BANNER_IMAGE_REQUIRED: "Banner image is required",
+    BANNER_REORDERED: "Banner order updated",
+
+    // Room Messages
+    ROOM_CREATED: "Room created successfully",
+    ROOM_UPDATED: "Room updated successfully",
+    ROOM_DELETED: "Room deleted successfully",
+    ROOM_NOT_FOUND: "Room not found",
+    ROOM_IMAGE_REQUIRED: "Room image is required",
+    ROOM_REORDERED: "Room order updated",
+
+    // Offer Messages
+    OFFER_CREATED: "Offer created successfully",
+    OFFER_UPDATED: "Offer updated successfully",
+    OFFER_DELETED: "Offer deleted successfully",
+    OFFER_NOT_FOUND: "Offer not found",
+    OFFER_INACTIVE: "This offer is not active",
+    OFFER_EXPIRED: "This offer has expired",
+    OFFER_TARGET_REQUIRED: "Offer target (product or category) is required",
+    REFERRAL_BONUS_CREDITED: "Referral bonus credited",
+    REFERRAL_INVALID: "Invalid referral code",
+});

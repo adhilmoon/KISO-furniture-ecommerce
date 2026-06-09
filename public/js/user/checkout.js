@@ -26,33 +26,55 @@ document.addEventListener('DOMContentLoaded', () => {
             </svg> Processing...`;
 
             const addressId = selectedAddress.value;
-            
-            // Redirect to payment (Note: Ensure this route exists in your backend)
+            const useWallet = document.getElementById('useWalletToggle')?.checked ? '1' : '0';
+
             setTimeout(() => {
-                window.location.href = `/user/checkout/payment?addressId=${addressId}`;
+                window.location.href = `/user/checkout/payment?addressId=${addressId}&useWallet=${useWallet}`;
             }, 800);
         });
     }
 
     // Handle Coupon Application
     if (applyCouponBtn) {
-        applyCouponBtn.addEventListener('click', () => {
+        applyCouponBtn.addEventListener('click', async () => {
             const couponCode = couponInput.value.trim();
             if (!couponCode) {
                 if (window.showToast) showToast('Please enter a coupon code', 'warning');
                 return;
             }
-
-            // Placeholder for coupon validation
             applyCouponBtn.disabled = true;
             applyCouponBtn.innerText = 'Checking...';
-
-            setTimeout(() => {
-                if (window.showToast) showToast('Invalid or expired coupon code', 'error');
+            try {
+                const res = await axios.post('/user/coupon/apply', { code: couponCode });
+                if (res.data.success) {
+                    if (window.showToast) showToast(res.data.message, 'success');
+                    setTimeout(() => window.location.reload(), 800);
+                }
+            } catch (err) {
+                if (window.showToast) showToast(err.response?.data?.message || 'Failed to apply coupon', 'error');
                 applyCouponBtn.disabled = false;
                 applyCouponBtn.innerText = 'Apply';
-                couponInput.value = '';
-            }, 1000);
+            }
+        });
+    }
+
+    // Handle Coupon Removal
+    const removeCouponBtn = document.getElementById('removeCouponBtn');
+    if (removeCouponBtn) {
+        removeCouponBtn.addEventListener('click', async () => {
+            removeCouponBtn.disabled = true;
+            removeCouponBtn.innerText = 'Removing...';
+            try {
+                const res = await axios.delete('/user/coupon');
+                if (res.data.success) {
+                    if (window.showToast) showToast(res.data.message, 'success');
+                    setTimeout(() => window.location.reload(), 600);
+                }
+            } catch (err) {
+                if (window.showToast) showToast(err.response?.data?.message || 'Failed to remove coupon', 'error');
+                removeCouponBtn.disabled = false;
+                removeCouponBtn.innerText = 'Remove';
+            }
         });
     }
 });

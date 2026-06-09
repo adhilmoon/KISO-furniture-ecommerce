@@ -162,23 +162,20 @@ async function addToCart(productId) {
 async function buyNow(productId) {
   let currentVariantIndex = 0;
   document.querySelectorAll('.variant-btn').forEach((vBtn, index) => {
-    if (vBtn.classList.contains('border-brand-accent')) {
-      currentVariantIndex = index;
-    }
+    if (vBtn.classList.contains('border-brand-accent')) currentVariantIndex = index;
   });
 
   const qtyDisplay = document.getElementById('qtyDisplay');
   const quantity = parseInt(qtyDisplay ? qtyDisplay.innerText : 1);
 
   try {
-    const response = await axios.post('/user/cart/add', {
+    const response = await axios.post('/user/buy-now', {
       productId,
       variantIndex: currentVariantIndex,
       quantity
     });
-    
     if (response.data.success) {
-      window.location.href = '/user/cart';
+      window.location.href = response.data.redirectUrl || '/user/checkout';
     } else {
       showToast(response.data.message || 'Error processing request', 'error');
     }
@@ -192,8 +189,12 @@ async function buyNow(productId) {
 }
 
 async function toggleWishlist(productId) {
+  let currentVariantIndex = 0;
+  document.querySelectorAll('.variant-btn').forEach((vBtn, index) => {
+    if (vBtn.classList.contains('border-brand-accent')) currentVariantIndex = index;
+  });
   try {
-    const response = await axios.post('/user/wishlist/toggle', { productId });
+    const response = await axios.post('/user/wishlist/toggle', { productId, variantIndex: currentVariantIndex });
     if (response.data.success) {
       showToast(response.data.message, 'success');
       
@@ -229,21 +230,76 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStockUI(initialStock);
   }
 
+  initAmazonZoom();
+});
+
+function initAmazonZoom() {
   const img = document.getElementById("mainImage");
   if (!img) return;
+  const wrapper = img.parentElement;
+  if (!wrapper) return;
 
-  img.addEventListener("mousemove", (e) => {
+  // Skip on touch-only devices
+  if (window.matchMedia && window.matchMedia('(hover: none)').matches) return;
+
+  const ZOOM_LEVEL = 2.5;
+  const LENS_PX = 140;
+
+  // Clear any leftover transform from previous version
+  img.style.transform = '';
+  img.style.transformOrigin = '';
+  wrapper.classList.add('cursor-crosshair');
+
+  // Lens overlay (inside wrapper, clipped by its overflow)
+  const lens = document.createElement('div');
+  lens.id = 'zoomLens';
+  lens.className = 'absolute hidden pointer-events-none border border-brand-accent/70 bg-white/10 rounded-md';
+  lens.style.width = LENS_PX + 'px';
+  lens.style.height = LENS_PX + 'px';
+  wrapper.appendChild(lens);
+
+  // Result panel — sibling of wrapper so it can overflow to the right column
+  const host = wrapper.parentElement || wrapper;
+  host.classList.add('relative');
+  const result = document.createElement('div');
+  result.id = 'zoomResult';
+  result.className = 'hidden absolute top-0 left-full ml-6 w-[480px] h-[480px] bg-brand-bg2 border border-white/10 rounded-2xl shadow-2xl bg-no-repeat z-50 pointer-events-none hidden lg:block';
+  result.style.backgroundColor = '#111';
+  host.appendChild(result);
+
+  const setBg = () => {
     const rect = img.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    img.style.transformOrigin = `${x}% ${y}%`;
-    img.style.transform = "scale(2)";
-  });
+    result.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
+    result.style.backgroundSize = `${rect.width * ZOOM_LEVEL}px ${rect.height * ZOOM_LEVEL}px`;
+  };
 
-  img.addEventListener("mouseleave", () => {
-    img.style.transform = "scale(1)";
+  const move = (e) => {
+    const rect = img.getBoundingClientRect();
+    let x = e.clientX - rect.left - LENS_PX / 2;
+    let y = e.clientY - rect.top - LENS_PX / 2;
+    x = Math.max(0, Math.min(rect.width - LENS_PX, x));
+    y = Math.max(0, Math.min(rect.height - LENS_PX, y));
+    lens.style.left = x + 'px';
+    lens.style.top = y + 'px';
+
+    const cx = rect.width === LENS_PX ? 0 : (x / (rect.width - LENS_PX)) * 100;
+    const cy = rect.height === LENS_PX ? 0 : (y / (rect.height - LENS_PX)) * 100;
+    result.style.backgroundPosition = `${cx}% ${cy}%`;
+  };
+
+  wrapper.addEventListener('mouseenter', () => {
+    setBg();
+    lens.classList.remove('hidden');
+    result.classList.remove('hidden');
   });
-});
+  wrapper.addEventListener('mouseleave', () => {
+    lens.classList.add('hidden');
+    result.classList.add('hidden');
+  });
+  wrapper.addEventListener('mousemove', move);
+  // refresh background when variant swap changes src
+  img.addEventListener('load', setBg);
+}
 
 function showTab(tabId, btn) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));

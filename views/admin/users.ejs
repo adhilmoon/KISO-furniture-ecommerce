@@ -68,7 +68,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-            <input type="text" id="searchInput" placeholder="Search by name or email"
+            <input type="text" id="searchInput" placeholder="Search by name, email or phone"
+                value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
                 class="w-full pl-12 pr-12 py-3 bg-brand-bg1 border border-white/10 rounded-xl text-kiso-text placeholder-brand-muted focus:outline-none focus:border-brand-accent transition-colors shadow-lg shadow-black/10">
             <button type="button" id="clearSearchBtn" aria-label="Clear search"
                 class=" absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full text-brand-muted hover:bg-brand-bg2 hover:text-kiso-text transition-colors flex items-center justify-center">
@@ -78,11 +79,12 @@
         
         <!-- Status Filter -->
         <div class="w-full sm:w-auto relative">
+            <% const sf = typeof statusFilter !== 'undefined' ? statusFilter : 'all'; %>
             <select id="statusFilter"
                 class="w-full sm:w-48 pl-4 pr-10 py-3 bg-brand-bg1 border border-white/10 rounded-xl text-kiso-text focus:outline-none focus:border-brand-accent transition-colors appearance-none shadow-lg shadow-black/10">
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="blocked">Blocked</option>
+                <option value="all" <%= sf === 'all' ? 'selected' : '' %>>All Status</option>
+                <option value="active" <%= sf === 'active' ? 'selected' : '' %>>Active</option>
+                <option value="blocked" <%= sf === 'blocked' ? 'selected' : '' %>>Blocked</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                 <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,17 +179,31 @@
         </div>
 
         <!-- Pagination -->
+        <%
+            const sq = typeof searchQuery !== 'undefined' ? searchQuery : '';
+            const stf = typeof statusFilter !== 'undefined' ? statusFilter : 'all';
+            const qsParts = [];
+            if (sq) qsParts.push('search=' + encodeURIComponent(sq));
+            if (stf && stf !== 'all') qsParts.push('status=' + encodeURIComponent(stf));
+            const extraQs = qsParts.length ? '&' + qsParts.join('&') : '';
+        %>
+        <% if (totalPages > 0) { %>
         <div id="usersPagination" class="bg-brand-bg1 px-6 py-4 border-t border-white/5">
             <div class="flex items-center justify-between">
                 <p class="text-[13px] font-medium text-brand-muted">
-                    Showing <span class="text-brand-light"><%= ((currentPage - 1) * perPage) + 1 %></span> 
-                    to <span class="text-brand-light"><%= Math.min(currentPage * perPage, totalUsers) %></span> 
-                    of <span class="text-brand-light"><%= totalUsers %></span> customers
+                    <% if (totalUsers === 0) { %>
+                        No customers found
+                    <% } else { %>
+                        Showing <span class="text-brand-light"><%= ((currentPage - 1) * perPage) + 1 %></span>
+                        to <span class="text-brand-light"><%= Math.min(currentPage * perPage, totalUsers) %></span>
+                        of <span class="text-brand-light"><%= totalUsers %></span> customers
+                    <% } %>
                 </p>
 
+                <% if (totalPages > 1) { %>
                 <div class="flex items-center gap-2">
                     <% if (currentPage > 1) { %>
-                        <a href="?page=<%= currentPage - 1 %>"
+                        <a href="?page=<%= currentPage - 1 %><%= extraQs %>"
                             class="px-3 py-2 bg-brand-bg2 border border-white/10 rounded-lg text-kiso-text hover:bg-white/5 transition-colors shadow-lg shadow-black/10 flex items-center justify-center">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -196,14 +212,14 @@
                     <% } %>
 
                     <% for(let i=1; i <=totalPages; i++) { %>
-                        <a href="?page=<%= i %>"
+                        <a href="?page=<%= i %><%= extraQs %>"
                             class="w-10 h-10 flex items-center justify-center rounded-lg text-[13px] font-bold transition-all shadow-lg shadow-black/10 <%= i === currentPage ? 'bg-brand-accent text-kiso-bg shadow-brand-accent/20' : 'bg-brand-bg2 text-brand-muted border border-white/10 hover:bg-white/5 hover:text-brand-light' %>">
                             <%= i %>
                         </a>
                     <% } %>
 
                     <% if (currentPage < totalPages) { %>
-                        <a href="?page=<%= currentPage + 1 %>"
+                        <a href="?page=<%= currentPage + 1 %><%= extraQs %>"
                             class="px-3 py-2 bg-brand-bg2 border border-white/10 rounded-lg text-kiso-text hover:bg-white/5 transition-colors shadow-lg shadow-black/10 flex items-center justify-center">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -211,8 +227,10 @@
                         </a>
                     <% } %>
                 </div>
+                <% } %>
             </div>
         </div>
+        <% } %>
     </div>
 </div>
 

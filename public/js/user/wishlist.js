@@ -1,12 +1,14 @@
-async function removeFromWishlist(productId) {
+async function removeFromWishlist(productId, variantIndex) {
     try {
         const result = await confirmAction('Remove this item from your wishlist?', 'question');
         if (!result.isConfirmed) return;
 
-        const response = await axios.delete(`/user/wishlist/item/${productId}`);
+        const url = variantIndex != null
+            ? `/user/wishlist/item/${productId}?variantIndex=${variantIndex}`
+            : `/user/wishlist/item/${productId}`;
+        const response = await axios.delete(url);
         if (response.data.success) {
             showToast('Item removed from wishlist', 'success');
-            // Reload the page to show empty state if last item was removed
             window.location.reload();
         }
     } catch (error) {

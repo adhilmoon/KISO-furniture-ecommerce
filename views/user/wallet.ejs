@@ -1,0 +1,106 @@
+<div class="w-full max-w-4xl mx-auto px-4">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-brand-light">My Wallet</h1>
+        <p class="text-brand-muted text-sm mt-1">Refunds from cancellations and returns are credited here</p>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="bg-gradient-to-br from-brand-accent/20 to-brand-bg2 border border-brand-accent/30 rounded-2xl p-6 mb-8 shadow-lg shadow-brand-accent/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <p class="text-xs font-bold text-brand-muted uppercase tracking-widest mb-2">Available Balance</p>
+            <p class="text-4xl font-extrabold text-brand-accent">₹<%= wallet.balance.toLocaleString('en-IN') %></p>
+            <p class="text-brand-muted text-xs mt-3">Use this balance during checkout</p>
+        </div>
+        <button onclick="openTopupModal()"
+            class="self-start sm:self-auto px-5 py-3 bg-brand-accent text-brand-bg1 font-bold text-sm rounded-xl hover:bg-brand-accent/90 transition-all shadow-lg shadow-brand-accent/20 whitespace-nowrap">
+            + Add Money
+        </button>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="bg-brand-bg2 rounded-xl border border-white/5 overflow-hidden">
+        <div class="px-5 py-4 border-b border-white/5">
+            <h2 class="text-base font-bold text-brand-light">Transaction History</h2>
+        </div>
+        <% if (!transactions || transactions.length === 0) { %>
+            <div class="px-5 py-10 text-center text-brand-muted text-sm">No transactions yet</div>
+        <% } else { %>
+            <div class="divide-y divide-white/5">
+                <% transactions.forEach(function(t) {
+                    const isCredit = t.type === 'credit';
+                    const sign = isCredit ? '+' : '-';
+                    const color = isCredit ? 'text-green-400' : 'text-red-400';
+                    const sourceLabel = {
+                        refund_cancel:   'Order Cancellation Refund',
+                        refund_return:   'Return Refund',
+                        checkout_pay:    'Payment',
+                        admin_credit:    'Admin Credit',
+                        admin_debit:     'Admin Debit',
+                        referral_bonus:  'Referral Bonus'
+                    }[t.source] || t.source;
+                %>
+                    <div class="px-5 py-4 flex items-center justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-brand-light font-semibold text-sm"><%= sourceLabel %></p>
+                            <% if (t.description) { %>
+                                <p class="text-brand-muted text-xs mt-0.5 truncate"><%= t.description %></p>
+                            <% } %>
+                            <p class="text-brand-muted text-[11px] mt-1">
+                                <%= new Date(t.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                            </p>
+                        </div>
+                        <div class="flex-shrink-0 text-right">
+                            <p class="font-bold text-sm <%= color %>"><%= sign %>₹<%= t.amount.toLocaleString('en-IN') %></p>
+                            <p class="text-brand-muted text-[11px] mt-0.5">Balance: ₹<%= t.balanceAfter.toLocaleString('en-IN') %></p>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <div class="flex justify-center gap-2 mt-6">
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="/user/wallet?page=<%= i %>"
+                    class="px-3 py-1.5 text-xs rounded-lg border <%= i === pageNum ? 'bg-brand-accent text-brand-bg1 border-brand-accent' : 'border-white/10 text-brand-muted hover:bg-white/5' %>">
+                    <%= i %>
+                </a>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+<!-- Topup Modal -->
+<div id="topupModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-brand-bg2 rounded-2xl border border-white/10 p-6 w-full max-w-md">
+        <h3 class="text-lg font-bold text-brand-light mb-1">Add Money to Wallet</h3>
+        <p class="text-brand-muted text-sm mb-5">Enter amount and pay via Razorpay</p>
+        <div class="mb-5">
+            <label class="block text-sm font-semibold text-brand-light mb-2">Amount (₹) <span class="text-red-400">*</span></label>
+            <input type="number" id="topupAmount" min="1" step="1" placeholder="Enter amount"
+                class="w-full bg-brand-bg1 border border-white/10 rounded-xl px-4 py-3 text-brand-light placeholder:text-brand-muted/60 text-sm outline-none focus:border-brand-accent/40 transition-all">
+            <div class="flex gap-2 mt-3 flex-wrap">
+                <% [100, 500, 1000, 2000].forEach(function(v) { %>
+                    <button type="button" onclick="setTopupAmount(<%= v %>)"
+                        class="px-3 py-1.5 text-xs rounded-lg border border-white/10 text-brand-light hover:bg-white/5 transition-all">
+                        ₹<%= v %>
+                    </button>
+                <% }) %>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="closeTopupModal()"
+                class="flex-1 px-4 py-2.5 border border-white/10 text-brand-light font-semibold text-sm rounded-xl hover:bg-white/5 transition-all">Cancel</button>
+            <button id="topupPayBtn" onclick="submitTopup()"
+                class="flex-1 px-4 py-2.5 bg-brand-accent text-brand-bg1 font-bold text-sm rounded-xl hover:bg-brand-accent/90 transition-all">Add Money</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/user/wallet.js"></script>

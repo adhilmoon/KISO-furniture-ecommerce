@@ -5,7 +5,10 @@
     <div id="scrolly-container">
         <!-- The sticky visual container -->
         <div class="sticky-wrapper">
-            <canvas id="sofa-canvas"></canvas>
+            <video id="sofa-video" muted playsinline preload="auto" disableRemotePlayback
+                class="absolute inset-0 w-full h-full object-cover">
+                <source src="https://ik.imagekit.io/w0ssw9zbf/Smoothly_transition_from_the_assembled_202605221453%20(online-video-cutter.com).mp4" type="video/mp4">
+            </video>
 
             <!-- Storytelling Overlays -->
             <div id="steps-container" class="absolute inset-0 pointer-events-none  bg-black/50">
@@ -72,6 +75,65 @@
         </div>
     </div> <!-- Close scrolly-container -->
 
+    <!-- Banner Slider -->
+    <% if (banners && banners.length > 0) { %>
+        <section id="bannerSlider"
+            class="relative w-full overflow-hidden transition-colors duration-700 mb-16 md:mb-24 shadow-xl shadow-black/30"
+            style="background: <%= banners[0].bgColor %>;"
+            data-autoplay="6000">
+            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[16/6] lg:aspect-[21/8]">
+                <% banners.forEach(function(b, i) { %>
+                    <div class="banner-slide absolute inset-0 transition-opacity duration-700 ease-in-out <%= i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' %>"
+                        data-index="<%= i %>" data-bg="<%= b.bgColor %>" data-text="<%= b.textColor %>"
+                        style="color: <%= b.textColor %>;">
+                        <img src="<%= b.image.url %>" alt="<%= b.title || 'banner' %>"
+                            class="absolute inset-0 w-full h-full object-cover" />
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
+                        <div class="relative z-10 h-full flex items-center px-8 md:px-16 lg:px-24 xl:px-32">
+                            <div class="max-w-xl">
+                                <% if (b.title) { %>
+                                    <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+                                        <%= b.title %>
+                                    </h2>
+                                <% } %>
+                                <% if (b.subtitle) { %>
+                                    <p class="mt-3 md:mt-4 text-sm md:text-base lg:text-lg opacity-95 drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
+                                        <%= b.subtitle %>
+                                    </p>
+                                <% } %>
+                                <% if (b.ctaText && b.linkUrl) { %>
+                                    <a href="<%= b.linkUrl %>"
+                                        class="inline-block mt-5 md:mt-7 px-6 md:px-8 py-3 bg-white/15 backdrop-blur-md border border-white/25 rounded-lg text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-white/25 transition-colors">
+                                        <%= b.ctaText %>
+                                    </a>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+
+            <% if (banners.length > 1) { %>
+                <button type="button" data-banner-prev
+                    class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition">
+                    <span aria-hidden="true">‹</span><span class="sr-only">Previous</span>
+                </button>
+                <button type="button" data-banner-next
+                    class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition">
+                    <span aria-hidden="true">›</span><span class="sr-only">Next</span>
+                </button>
+
+                <div class="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                    <% banners.forEach(function(_, i) { %>
+                        <button type="button" data-banner-dot="<%= i %>"
+                            class="w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white transition-colors <%= i === 0 ? 'bg-white' : '' %>"
+                            aria-label="Go to slide <%= i + 1 %>"></button>
+                    <% }); %>
+                </div>
+            <% } %>
+        </section>
+    <% } %>
+
     <!-- Featured Products Section -->
     <section class="py-24 bg-brand-bg1 px-6 md:px-12 lg:px-16 xl:px-24 relative z-10">
         <div class="w-full mx-auto">
@@ -123,9 +185,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 <% if(rooms && rooms.length> 0) { %>
                     <% rooms.slice(0, 2).forEach((room, index)=> { %>
-                        <a href="/user/store"
+                        <a href="<%= room.linkUrl || '/user/store' %>"
                             class="group relative aspect-[16/10] md:aspect-[1/1] rounded-[2rem] overflow-hidden inline-block w-full shadow-2xl hover:shadow-[0_0_50px_rgba(212,175,55,0.15)] transition-shadow duration-500">
-                            <img src="<%= room.img %>" alt="<%= room.title %>"
+                            <img src="<%= room.image.url %>" alt="<%= room.title %>"
                                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent">
                             </div>
@@ -151,3 +213,4 @@
 
 </main>
 <script src="/js/user/homePage.js"></script>
+<script src="/js/user/bannerSlider.js"></script>

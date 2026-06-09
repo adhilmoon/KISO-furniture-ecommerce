@@ -38,11 +38,11 @@ async function handleCategorysubmit(event) {
     const description = document.getElementById('description').value
 
     if(categoryName === "") {
-        showFieldError('name', "pleas Enter valied name")
+        showFieldError('name', "Please enter a valid name")
         return false;
     }
     if(categoryName.length < 3) {
-        showFieldError('name', "category name atleast three letters")
+        showFieldError('name', "Category name must be at least three letters")
         return false;
     }
     if(description === "") {

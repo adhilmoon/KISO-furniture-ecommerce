@@ -390,7 +390,7 @@ function addVariant() {
           <div class="relative">
             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted text-sm pointer-events-none">₹</span>
             <input type="number" id="vPrice-${vc}"
-              placeholder="0.00" min="0" step="0.01"
+              placeholder="0.00" min="0.01" step="0.01"
               class="field-input w-full pl-7 text-sm"
               oninput="clearVariantError(${vc},'price')" />
           </div>
@@ -535,8 +535,8 @@ function validateForm() {
 
 
   const bp = parseFloat($('basePrice')?.value);
-  if(isNaN(bp) || bp < 0) {
-    showError('err-basePrice', 'Enter a valid price (₹ 0 or more).');
+  if(isNaN(bp) || bp <= 0) {
+    showError('err-basePrice', 'Base price must be greater than 0.');
     valid = false;
   }
 
@@ -594,7 +594,7 @@ function validateForm() {
     if(!optValue) {showVariantError(id, 'optValue', 'Option value is required (e.g. King, Navy).'); valid = false;}
     else {clearVariantError(id, 'optValue');}
 
-    if(isNaN(price) || price < 0) {showVariantError(id, 'price', 'Enter a valid price (₹ 0 or more).'); valid = false;}
+    if(isNaN(price) || price <= 0) {showVariantError(id, 'price', 'Variant price must be greater than 0.'); valid = false;}
     else {clearVariantError(id, 'price');}
 
     if(isNaN(stock)|| stock < 0) {showVariantError(id, 'stock', 'Enter a valid stock quantity (0 or more).'); valid = false;}
