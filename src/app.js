@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import expressLayouts from 'express-ejs-layouts';
+import helmet from 'helmet';
+import { mongoSanitizeMiddleware } from './middleware/mongoSanitize.js';
 import adminRoute from "./routes/admin.js"
 import userRoute from "./routes/user.js"
 import indexRoutes from "./routes/indexRoutes.js"
@@ -12,20 +14,34 @@ import connectDB from './config/connectDB.js';
 import './config/passport.js'
 import passport from 'passport';
 import { fetchGlobalCategories } from './middleware/globalCategories.js';
+import { injectUserBadges } from './middleware/userBadges.js';
 import { setUser } from './middleware/userAuth.js';
 import logger from './utilities/logger.js';
 
 
 const app = express();
+const IS_PROD = process.env.NODE_ENV === 'production';
+
+if (IS_PROD) app.set('trust proxy', 1);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename)
 
 await connectDB()
 
+
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+    crossOriginResourcePolicy: false,
+}));
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+
+app.use(mongoSanitizeMiddleware());
 
 const sessionBase = {
     secret: process.env.SESSION_SECRET,
@@ -33,8 +49,9 @@ const sessionBase = {
     saveUninitialized: false,
     cookie: {
         maxAge: parseInt(process.env.COOKIE_MAX_AGE),
-        secure: false,
+        secure: IS_PROD,
         httpOnly: true,
+        sameSite: 'lax',
     }
 };
 
@@ -53,6 +70,7 @@ app.use('/', userSession);
 
 
 app.use(setUser);
+app.use(injectUserBadges);
 
 app.use('/user', passport.initialize());
 app.use('/user', passport.session());
@@ -76,5 +94,5 @@ app.use(globalErrorHandler);
 
 const port = process.env.PORT || 4004;
 app.listen(port, () => {
-    logger.info(`Server started at http://localhost:${port}`);
+    logger.info(`Server started at ${process.env.BASE_URL} `);
 });

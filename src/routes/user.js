@@ -11,11 +11,13 @@ import * as cartController from "../controller/userController/cartController.js"
 import * as wishlistController from "../controller/userController/wishlistController.js";
 import * as paymentController from "../controller/userController/paymentController.js";
 import * as buyNowController from "../controller/userController/buyNowController.js";
+import * as otpController from "../controller/userController/otpController.js";
 import * as orderController from "../controller/userController/orderController.js";
 import * as couponController from "../controller/userController/couponController.js";
 import * as walletController from "../controller/userController/walletController.js";
 import { upload } from "../config/multer.js";
 import passport from "passport";
+import { authLimiter, otpLimiter } from "../middleware/rateLimit.js";
 
 // Apply no-cache to all routes
 router.use(userauth.noCache);
@@ -36,12 +38,13 @@ router.post("/contact", Pages.submit_contact);
 router.get("/auth/google", passport.authenticate("google", {scope: ["profile", "email"]}));
 router.get("/auth/google/callback", passport.authenticate("google", {failureRedirect: '/user/login?error=Google authentication failed', keepSessionInfo: true}), authController.googleAuthCallback);
 
-// Auth APIs
-router.post("/login", userauth.checkUserExists, userauth.checkUserActive, authController.loginauth);
-router.post("/signup", authController.signup_post);
-router.post("/verify-otp", authController.verify_otp);
-router.post("/forgot-password", authController.forgot_password);
-router.patch("/reset-password", userauth.checkTempdata, authController.update_password);
+// Auth APIs (rate-limited)
+router.post("/login", authLimiter, userauth.checkUserExists, userauth.checkUserActive, authController.loginauth);
+router.post("/signup", authLimiter, authController.signup_post);
+router.post("/verify-otp", otpLimiter, authController.verify_otp);
+router.get("/otp/status", otpController.getOtpStatus);
+router.post("/forgot-password", authLimiter, authController.forgot_password);
+router.patch("/reset-password", authLimiter, authController.update_password);
 
 // ============================================
 // PROTECTED ROUTES (Auth required for all below)
@@ -76,12 +79,14 @@ router.post("/cart/add", cartController.addToCart);
 router.patch("/cart/item/:itemId", cartController.updateQuantity);
 router.delete("/cart/item/:itemId", cartController.removeItem);
 router.delete("/cart", cartController.clearCart);
+router.get("/badge-counts", cartController.getBadgeCounts);
 
 // Buy Now (single-item express checkout)
 router.post("/buy-now", buyNowController.startBuyNow);
 router.delete("/buy-now", buyNowController.cancelBuyNow);
 
 // Coupon
+router.get("/coupons/available", couponController.getAvailableCoupons);
 router.post("/coupon/apply", couponController.applyCoupon);
 router.delete("/coupon", couponController.removeCoupon);
 

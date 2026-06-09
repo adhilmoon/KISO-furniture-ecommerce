@@ -41,14 +41,21 @@ async function signup_handle(event) {
     try {
         const response = await axios.post('/user/signup', {email, password, name, referralCode});
         if(response.data.success) {
+            // Cache payload so the OTP modal can call /user/signup again on Resend.
+            // Cleared on successful verify or modal close.
+            sessionStorage.setItem('kiso_pending_signup', JSON.stringify({email, password, name, referralCode}));
 
-            showOTPModal();
+            showOTPModal({
+                email,
+                purpose: 'signup',
+                remainingSeconds: response.data.remainingSeconds,
+                ttlSeconds: response.data.ttlSeconds
+            });
 
             showToast(
                 response.data.message || "OTP sent to your email",
                 "success"
             );
-
         }
 
     } catch(error) {

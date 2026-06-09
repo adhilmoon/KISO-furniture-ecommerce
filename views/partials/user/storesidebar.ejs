@@ -1,35 +1,31 @@
 <aside class="w-full bg-brand-bg1 border-r border-white/5 p-6 sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto">
 
-    <!-- TITLE -->
-    <h2 class="text-lg font-semibold text-brand-light mb-6 tracking-wide flex items-center gap-2">
-        <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
-        </svg>
-        Filters & Sort
-    </h2>
+    <!-- HEADER -->
+    <div class="mb-8 pb-6 border-b border-white/10">
+        <p class="text-[10px] uppercase tracking-[0.3em] text-brand-accent font-bold mb-2">Refine</p>
+        <h2 class="font-display uppercase text-3xl text-brand-light leading-none">Filter & Sort</h2>
+    </div>
 
-    <div class="space-y-5">
+    <div class="space-y-7">
 
-        <!-- ── SORT (Removed by request) ────────────────────────────────── -->
         <!-- ── CATEGORY ──────────────────────────────────── -->
-        <div class="border-b border-white/5 pb-5">
+        <div class="border-b border-white/5 pb-6">
             <button onclick="toggleFilter('catFilter')"
-                class="w-full flex justify-between items-center text-sm font-semibold text-brand-light mb-3">
-                Category
-                <svg id="catFilterIcon" class="w-4 h-4 text-brand-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="w-full flex justify-between items-center text-xs uppercase tracking-[0.25em] text-brand-light mb-4 group font-semibold">
+                <span>Category</span>
+                <svg id="catFilterIcon" class="w-3.5 h-3.5 text-brand-muted group-hover:text-brand-accent transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
-            <div id="catFilter" class="space-y-2.5">
+            <div id="catFilter" class="space-y-1.5">
                 <% if (typeof categories !== 'undefined' && categories.length) { %>
                     <label class="block cursor-pointer group">
                         <input type="radio" name="categoryFilter" value=""
                             class="peer hidden"
                             onchange="applyFilters()"
                             <%= !activeFilters.categoryId ? 'checked' : '' %>>
-                        <div class="px-4 py-2.5 rounded-xl border border-white/5 bg-brand-bg2/30 text-brand-muted text-sm font-medium transition-all duration-300
-                            peer-checked:bg-brand-accent/10 peer-checked:text-brand-accent peer-checked:border-brand-accent/30
+                        <div class="px-4 py-2.5 border border-white/5 bg-brand-bg2/30 text-brand-muted text-xs uppercase tracking-wider font-medium transition-all duration-300
+                            peer-checked:bg-brand-accent/10 peer-checked:text-brand-accent peer-checked:border-l-2 peer-checked:border-l-brand-accent
                             group-hover:bg-brand-bg2 group-hover:text-brand-light">
                             All Categories
                         </div>
@@ -40,56 +36,59 @@
                                 class="peer hidden"
                                 onchange="applyFilters()"
                                 <%= (activeFilters.categoryId === String(cat._id)) ? 'checked' : '' %>>
-                            <div class="px-4 py-2.5 rounded-xl border border-white/5 bg-brand-bg2/30 text-brand-muted text-sm font-medium transition-all duration-300
-                                peer-checked:bg-brand-accent/10 peer-checked:text-brand-accent peer-checked:border-brand-accent/30
+                            <div class="px-4 py-2.5 border border-white/5 bg-brand-bg2/30 text-brand-muted text-xs uppercase tracking-wider font-medium transition-all duration-300
+                                peer-checked:bg-brand-accent/10 peer-checked:text-brand-accent peer-checked:border-l-2 peer-checked:border-l-brand-accent
                                 group-hover:bg-brand-bg2 group-hover:text-brand-light">
                                 <%= cat.categoryName %>
                             </div>
                         </label>
                     <% }) %>
                 <% } else { %>
-                    <p class="text-xs text-brand-muted">No categories found</p>
+                    <p class="text-xs text-brand-muted">No categories available</p>
                 <% } %>
             </div>
         </div>
 
         <!-- ── PRICE RANGE ────────────────────────────────── -->
-        <div class="border-b border-white/5 pb-5">
+        <div class="border-b border-white/5 pb-6">
             <button onclick="toggleFilter('priceFilter')"
-                class="w-full flex justify-between items-center text-sm font-semibold text-brand-light mb-3">
-                Price Range
-                <svg id="priceFilterIcon" class="w-4 h-4 text-brand-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="w-full flex justify-between items-center text-xs uppercase tracking-[0.25em] text-brand-light mb-5 group font-semibold">
+                <span>Price Range</span>
+                <svg id="priceFilterIcon" class="w-3.5 h-3.5 text-brand-muted group-hover:text-brand-accent transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
-            <div id="priceFilter" class="pt-2 pb-4">
-                <div class="px-2">
+            <div id="priceFilter" class="pt-1 pb-2">
+                <div class="px-1">
                     <!-- Display Values -->
-                    <div class="flex justify-between text-brand-light text-sm font-bold mb-6">
+                    <div class="flex items-baseline justify-between text-brand-light text-lg font-bold mb-6">
                         <span id="minPriceDisplay">₹<%= storeMinPrice.toLocaleString() %></span>
+                        <span class="text-brand-muted text-xs mx-2">to</span>
                         <span id="maxPriceDisplay">₹<%= storeMaxPrice.toLocaleString() %>+</span>
                     </div>
 
                     <!-- Dual Slider Track -->
-                    <div class="relative h-1.5 bg-white/10 rounded-full mb-4">
+                    <div class="relative h-1 bg-white/10 rounded-full mb-3">
                         <div id="sliderTrack" class="absolute h-full bg-brand-accent rounded-full z-10" style="left: 0%; right: 0%;"></div>
-                        
-                        <!-- Min Thumb -->
-                        <input type="range" id="minPriceSlider" min="<%= storeMinPrice %>" max="<%= storeMaxPrice %>" step="100" 
+
+                        <input type="range" id="minPriceSlider" min="<%= storeMinPrice %>" max="<%= storeMaxPrice %>" step="100"
                             value="<%= activeFilters.minPrice > 0 ? activeFilters.minPrice : storeMinPrice %>"
                             oninput="updatePriceSlider()"
                             class="absolute w-full -top-1.5 appearance-none bg-transparent pointer-events-none z-20
-                            [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-brand-accent [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,175,55,0.5)]">
-                            
-                        <!-- Max Thumb -->
-                        <input type="range" id="maxPriceSlider" min="<%= storeMinPrice %>" max="<%= storeMaxPrice %>" step="100" 
+                            [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-accent [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,175,55,0.5)] [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-brand-bg1">
+
+                        <input type="range" id="maxPriceSlider" min="<%= storeMinPrice %>" max="<%= storeMaxPrice %>" step="100"
                             value="<%= activeFilters.maxPrice > 0 ? activeFilters.maxPrice : storeMaxPrice %>"
                             oninput="updatePriceSlider()"
                             class="absolute w-full -top-1.5 appearance-none bg-transparent pointer-events-none z-20
-                            [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-brand-accent [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,175,55,0.5)]">
+                            [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-accent [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,175,55,0.5)] [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-brand-bg1">
                     </div>
 
-                    <!-- Hidden inputs for legacy getActiveParams compatibility -->
+                    <div class="flex justify-between text-[10px] uppercase tracking-[0.2em] text-brand-muted">
+                        <span>Min</span>
+                        <span>Max</span>
+                    </div>
+
                     <input type="hidden" id="minPrice" value="<%= activeFilters.minPrice > 0 ? activeFilters.minPrice : '' %>">
                     <input type="hidden" id="maxPrice" value="<%= activeFilters.maxPrice > 0 ? activeFilters.maxPrice : '' %>">
                 </div>
@@ -99,16 +98,13 @@
     </div>
 
     <!-- ── ACTION BUTTONS ─────────────────────────────────── -->
-    <div class="mt-8 space-y-3">
+    <div class="mt-8 space-y-2.5">
         <button id="applyFiltersBtn" onclick="applyFilters()"
-            class="w-full bg-brand-accent hover:bg-yellow-500 text-brand-bg1 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
+            class="w-full bg-brand-accent hover:bg-yellow-500 text-brand-bg1 font-bold uppercase text-xs tracking-[0.25em] py-3.5 transition-all">
             Apply Filters
         </button>
         <button onclick="clearFilters()"
-            class="w-full border border-white/10 hover:border-white/20 text-brand-muted hover:text-brand-light py-2.5 rounded-xl text-sm transition-all">
+            class="w-full border border-white/10 hover:border-brand-accent text-brand-muted hover:text-brand-accent py-3 text-xs uppercase tracking-[0.25em] font-semibold transition-all">
             Clear All
         </button>
     </div>

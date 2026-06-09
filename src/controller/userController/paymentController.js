@@ -1,4 +1,3 @@
-import razorpay from '../../config/razorpay.js';
 import catchAsync from '../../utilities/catchAsync.js';
 import * as cartService from '../../service/user/cartService.js';
 import * as paymentService from '../../service/user/paymentService.js';
@@ -22,6 +21,25 @@ const finalizeSessionAfterOrder = (req) => {
     buyNowService.clearInstantBuy(req);
 };
 
+/**
+ * Recomputes the authoritative payable amount for the current session's
+ * checkout entirely on the server. Never trusts a client-supplied amount.
+ * Returns the cart source plus the full money breakdown.
+ */
+const resolveCheckoutTotals = async (req, useWallet) => {
+    const userId = req.session.user._id;
+    const cart = await getCheckoutSource(req);
+    if (!cart || !cart.items || cart.items.length === 0) return null;
+
+    const validItems = await paymentService.buildValidOrderItems(cart.items);
+    if (validItems.length === 0) return null;
+
+    const appliedCoupon = req.session.appliedCoupon || null;
+    const walletBalance = await walletService.getBalance(userId);
+    const totals = paymentService.summarizeTotals({ validItems, appliedCoupon, walletBalance, useWallet });
+    return { cart, validItems, appliedCoupon, walletBalance, ...totals };
+};
+
 export const getPaymentPage = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
     const { addressId, useWallet } = req.query;
@@ -32,7 +50,7 @@ export const getPaymentPage = catchAsync(async (req, res) => {
     let cart;
     try {
         cart = await getCheckoutSource(req);
-    } catch (err) {
+    } catch {
         buyNowService.clearInstantBuy(req);
         return res.redirect('/user/cart?error=availability');
     }
@@ -45,19 +63,15 @@ export const getPaymentPage = catchAsync(async (req, res) => {
     const validItems = await paymentService.buildValidOrderItems(cart.items);
     if (validItems.length === 0) return res.redirect('/user/cart?error=availability');
 
-    const totalAmount = validItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const appliedCoupon = req.session.appliedCoupon || null;
-    const couponDiscount = appliedCoupon ? Math.min(appliedCoupon.discount || 0, totalAmount) : 0;
-    const grandTotal = Math.max(totalAmount - couponDiscount, 0);
-
     const wantsWallet = useWallet === '1';
     const walletBalance = await walletService.getBalance(userId);
-    const walletApplied = wantsWallet ? Math.min(walletBalance, grandTotal) : 0;
-    const payableAmount = Math.max(grandTotal - walletApplied, 0);
+    const appliedCoupon = req.session.appliedCoupon || null;
+    const { subtotal, couponDiscount, grandTotal, walletApplied, payableAmount } =
+        paymentService.summarizeTotals({ validItems, appliedCoupon, walletBalance, useWallet: wantsWallet });
 
     res.render('user/payment', {
         title: 'Payment - KISO',
-        cart: { ...cart, items: validItems, totalAmount },
+        cart: { ...cart, items: validItems, totalAmount: subtotal },
         address,
         appliedCoupon,
         couponDiscount,
@@ -71,36 +85,70 @@ export const getPaymentPage = catchAsync(async (req, res) => {
     });
 });
 
+/**
+ * Creates a Razorpay order for the SERVER-computed payable amount. The
+ * client sends only the address and wallet preference — never the amount.
+ */
 export const createOrder = catchAsync(async (req, res) => {
-    const { amount } = req.body;
-    const options = {
-        amount: Math.round(amount * 100),
-        currency: 'INR',
-        receipt: 'order_rcptid_' + Date.now()
-    };
-    const order = await razorpay.orders.create(options);
+    const userId = req.session.user._id;
+    const { addressId, useWallet } = req.body;
+
+    if (!addressId) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Address is required.' });
+    }
+
+    const totals = await resolveCheckoutTotals(req, !!useWallet);
+    if (!totals) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Cart is empty or items are unavailable.' });
+    }
+    if (totals.payableAmount <= 0) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Nothing to pay online. Use the wallet checkout instead.' });
+    }
+
+    const order = await paymentService.createCheckoutOrder({
+        amountRupees: totals.payableAmount,
+        userId,
+        addressId,
+        useWallet: !!useWallet
+    });
     res.json({ success: true, order });
 });
 
+/**
+ * Verifies a completed Razorpay payment and places the order. Address and
+ * wallet usage are read from the trusted Razorpay order notes, and the
+ * captured amount is cross-checked against a fresh server computation, so a
+ * tampered or replayed request cannot alter what was actually charged.
+ */
 export const verifyPayment = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, addressId } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-    const isValid = paymentService.verifyRazorpaySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature);
-    if (!isValid) {
+    if (!paymentService.verifyRazorpaySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Payment verification failed. Invalid signature.' });
     }
 
-    const cart = await getCheckoutSource(req);
-    if (!cart || !cart.items || cart.items.length === 0) {
+    const { addressId, useWallet, amountRupees } = await paymentService.fetchAuthorizedCheckoutOrder({
+        orderId: razorpay_order_id,
+        userId
+    });
+
+    const totals = await resolveCheckoutTotals(req, useWallet);
+    if (!totals) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: 'Cart or address not found.' });
     }
+    if (totals.payableAmount !== amountRupees) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({
+            success: false,
+            message: 'Order amount changed since payment was initiated. The payment will be refunded.'
+        });
+    }
 
-    const orderItems = await paymentService.validateCheckoutItems(cart.items);
-
-    const appliedCoupon = req.session.appliedCoupon || null;
-    const useWallet = !!req.body.useWallet;
-    const newOrder = await paymentService.createOrder(userId, addressId, orderItems, 'razorpay', 'paid', appliedCoupon, useWallet, { skipCartClear: cart.isInstantBuy });
+    const orderItems = await paymentService.validateCheckoutItems(totals.cart.items);
+    const newOrder = await paymentService.createOrder(
+        userId, addressId, orderItems, 'razorpay', 'paid', totals.appliedCoupon, useWallet,
+        { skipCartClear: totals.cart.isInstantBuy }
+    );
     finalizeSessionAfterOrder(req);
 
     res.json({ success: true, message: 'Payment verified and order placed successfully', orderId: newOrder._id });

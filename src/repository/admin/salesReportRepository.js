@@ -1,6 +1,7 @@
 import Order from '../../model/Order.js';
 
-const EXCLUDED_STATUSES = ['cancelled', 'returned'];
+// All statuses that represent a failed/reversed order — excluded from revenue figures
+const EXCLUDED_STATUSES = ['cancelled', 'returned', 'return_requested', 'return_rejected'];
 
 export const aggregateSummary = async ({ startDate, endDate }) => {
     const match = {
@@ -24,7 +25,7 @@ export const aggregateSummary = async ({ startDate, endDate }) => {
 
     const refundMatch = {
         createdAt: { $gte: startDate, $lte: endDate },
-        orderStatus: { $in: ['cancelled', 'returned'] },
+        orderStatus: { $in: ['cancelled', 'returned', 'return_requested', 'return_rejected'] },
         paymentStatus: 'refunded'
     };
     const [refunds] = await Order.aggregate([
@@ -51,11 +52,14 @@ export const aggregateSummary = async ({ startDate, endDate }) => {
 };
 
 export const findOrdersInRange = async ({ startDate, endDate }, { skip = 0, limit = 1000 } = {}) =>
-    Order.find({ createdAt: { $gte: startDate, $lte: endDate } })
+    Order.find({
+        createdAt: { $gte: startDate, $lte: endDate },
+        orderStatus: { $nin: EXCLUDED_STATUSES }
+    })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .populate('userId', 'name email')
+        .populate('userId', 'name email',)
         .lean();
 
 export const aggregateDailyBreakdown = async ({ startDate, endDate }) =>

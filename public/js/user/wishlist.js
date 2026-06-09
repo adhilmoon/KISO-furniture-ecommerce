@@ -1,3 +1,38 @@
+// Remove one wishlist card from the DOM (no full-page reload) and refresh the
+// nav badge. If it was the last card, swap the grid for the empty state.
+function removeWishlistCard(productId, variantIndex) {
+    const grid = document.getElementById('wishlistGrid');
+    if (grid) {
+        const card = grid.querySelector(
+            `[data-wishlist-card][data-product-id="${productId}"][data-variant-index="${variantIndex}"]`
+        );
+        if (card) card.remove();
+        if (!grid.querySelector('[data-wishlist-card]')) renderEmptyWishlist();
+    }
+    if (window.refreshNavBadges) window.refreshNavBadges();
+}
+
+function renderEmptyWishlist() {
+    const addAllBtn = document.getElementById('addAllBtn');
+    if (addAllBtn) addAllBtn.remove();
+    const grid = document.getElementById('wishlistGrid');
+    if (!grid) return;
+    const empty = document.createElement('div');
+    empty.className = 'flex flex-col items-center justify-center py-24 text-center';
+    empty.innerHTML = `
+        <div class="w-24 h-24 bg-brand-bg2 rounded-full flex items-center justify-center mb-8 border border-white/5">
+            <svg class="w-12 h-12 text-brand-muted opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-brand-light mb-4">Your wishlist is empty</h2>
+        <p class="text-brand-muted mb-10 max-w-sm">Explore our collection and save your favorite pieces here.</p>
+        <a href="/user/store" class="px-8 py-4 bg-brand-accent text-brand-bg1 font-bold rounded-xl hover:bg-yellow-600 transition-all shadow-xl shadow-brand-accent/20">
+            Browse Collection
+        </a>`;
+    grid.replaceWith(empty);
+}
+
 async function removeFromWishlist(productId, variantIndex) {
     try {
         const result = await confirmAction('Remove this item from your wishlist?', 'question');
@@ -9,7 +44,7 @@ async function removeFromWishlist(productId, variantIndex) {
         const response = await axios.delete(url);
         if (response.data.success) {
             showToast('Item removed from wishlist', 'success');
-            window.location.reload();
+            removeWishlistCard(productId, variantIndex);
         }
     } catch (error) {
         showToast(error.response?.data?.message || 'Error removing item', 'error');
@@ -26,11 +61,9 @@ async function addFromWishlistToCart(productId, variantIndex) {
 
         if (response.data.success) {
             showToast('Added to cart!', 'success');
-            // After successful add to cart, the service will have removed it from wishlist
-            // So we reload to reflect that it's no longer in the wishlist view
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // Service moves the item out of the wishlist on add-to-cart, so drop
+            // its card from the view in place — no reload.
+            removeWishlistCard(productId, variantIndex);
         }
     } catch (error) {
         showToast(error.response?.data?.message || 'Error adding to cart', 'error');

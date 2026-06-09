@@ -129,10 +129,56 @@ async function saveOrder(id) {
     }
 }
 
+// Image validation rules (mirror server IMAGE_RULES in bannerService.js)
+const IMAGE_RULES = {
+    accept: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+    maxBytes: 5 * 1024 * 1024,
+    minWidth: 1200,
+    minHeight: 400
+};
+
+function readImageDimensions(file) {
+    return new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); resolve({ width: img.naturalWidth, height: img.naturalHeight }); };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+        img.src = url;
+    });
+}
+
+// Returns an error string, or null when valid. `required` = create mode.
+async function validateBannerImage(file, required) {
+    if (!file) {
+        return required ? 'Banner image is required' : null;
+    }
+    if (!IMAGE_RULES.accept.includes(file.type)) {
+        return 'Image must be JPG, PNG or WebP';
+    }
+    if (file.size > IMAGE_RULES.maxBytes) {
+        return 'Image must be 5 MB or smaller';
+    }
+    const dims = await readImageDimensions(file);
+    if (!dims) {
+        return 'Could not read image — file may be corrupt';
+    }
+    if (dims.width < IMAGE_RULES.minWidth || dims.height < IMAGE_RULES.minHeight) {
+        return `Image too small — minimum ${IMAGE_RULES.minWidth}×${IMAGE_RULES.minHeight} px`;
+    }
+    return null;
+}
+
 // Form submit (create or update)
 form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = fields.id.value;
+
+    // Only the image is validated — title/subtitle/etc are optional.
+    const imageError = await validateBannerImage(fields.image.files[0], !id);
+    if (imageError) {
+        return showToast(imageError, false);
+    }
+
     const fd = new FormData();
     fd.append('title', fields.title.value.trim());
     fd.append('subtitle', fields.subtitle.value.trim());
@@ -172,4 +218,16 @@ fields.image?.addEventListener('change', (e) => {
 
 modal?.addEventListener('click', (e) => {
     if (e.target === modal) closeBannerModal();
+});
+
+// Wire up edit buttons (data-banner JSON, set in EJS — auto-escaped).
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.banner-edit-btn');
+    if (!btn) return;
+    try {
+        const data = JSON.parse(btn.dataset.banner);
+        openBannerModal(data);
+    } catch (err) {
+        console.error('Bad banner payload', err);
+    }
 });

@@ -256,31 +256,22 @@ if (checkoutBtn) {
             });
 
             if (response.data.success) {
-                const invalidItems = response.data.invalidItems || [];
-                if (invalidItems.length > 0) {
-                    const listHtml = `<ul class="text-left list-disc pl-5 space-y-2 text-sm text-brand-muted mt-4">
-                        ${invalidItems.map(item => `<li>${item}</li>`).join('')}
-                    </ul>`;
-
-                    // Use global themed modal
-                    await showResultModal(
-                        'Items Unavailable',
-                        `<p class="text-sm text-brand-light text-left">Some items are no longer available and will be filtered out from your checkout:</p>${listHtml}`,
-                        'warning',
-                        'Proceed to Checkout'
-                    ).then(() => {
-                        window.location.href = response.data.redirectUrl;
-                    });
-                } else {
-                    window.location.href = response.data.redirectUrl;
-                }
+                window.location.href = response.data.redirectUrl;
             } else {
-                // Use global themed modal for error
+                // Checkout blocked — list the unavailable items and send the
+                // user back to the cart to update it before retrying.
+                const invalidItems = response.data.invalidItems || [];
+                const listHtml = invalidItems.length > 0
+                    ? `<ul class="text-left list-disc pl-5 space-y-2 text-sm text-brand-muted mt-4">
+                        ${invalidItems.map(item => `<li>${item}</li>`).join('')}
+                    </ul>`
+                    : '';
+
                 await showResultModal(
-                    'Checkout Blocked',
-                    response.data.message || 'No valid items available for checkout.',
-                    'error',
-                    'Back to Cart'
+                    'Update Your Cart',
+                    `<p class="text-sm text-brand-light text-left">${response.data.message || 'Some items are unavailable.'} Please remove or adjust them, then try again.</p>${listHtml}`,
+                    'warning',
+                    'Update Cart'
                 ).then(() => window.location.reload());
             }
         } catch (error) {

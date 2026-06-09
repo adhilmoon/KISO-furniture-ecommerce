@@ -48,8 +48,9 @@
                   class="text-xs font-semibold text-blue-400 border border-blue-400/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/10">
                   <%= r.isActive ? 'Disable' : 'Enable' %>
                 </button>
-                <button onclick='openRoomModal(<%- JSON.stringify({ _id: r._id, title: r.title, linkUrl: r.linkUrl, order: r.order, isActive: r.isActive, image: r.image }) %>)'
-                  class="text-xs font-semibold text-brand-light border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5">
+                <button type="button"
+                  class="room-edit-btn text-xs font-semibold text-brand-light border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5"
+                  data-room="<%= JSON.stringify({ _id: r._id, title: r.title, linkUrl: r.linkUrl, order: r.order, isActive: r.isActive, image: r.image }) %>">
                   Edit
                 </button>
                 <button onclick="deleteRoom('<%= r._id %>')"

@@ -2,6 +2,7 @@ import * as adminRepository from '../../repository/admin/adminRepository.js';
 import Category from '../../model/Category.js';
 import Product from '../../model/Product.js';
 import { MESSAGES } from '../../constants/index.js';
+import { escapeRegex } from '../../utilities/escapeRegex.js';
 
 export const getDashboardStats = async () => adminRepository.getDashboardStats();
 
@@ -33,7 +34,7 @@ export const toggleUserBlock = async (userId) => {
 
 export const getCategoryPage = async ({ search, page, perPage }) => {
     const skip = (page - 1) * perPage;
-    const filter = search ? { categoryName: { $regex: search, $options: 'i' } } : {};
+    const filter = search ? { categoryName: { $regex: escapeRegex(search), $options: 'i' } } : {};
     const [total, categories] = await Promise.all([
         Category.countDocuments(filter),
         Category.find(filter).skip(skip).limit(perPage).sort({ createdAt: -1 }).lean()
@@ -46,7 +47,7 @@ export const getCategoryPage = async ({ search, page, perPage }) => {
 
 export const getProductPage = async ({ search, page, perPage }) => {
     const skip = (page - 1) * perPage;
-    const filter = search ? { productName: { $regex: search, $options: 'i' } } : {};
+    const filter = search ? { productName: { $regex: escapeRegex(search), $options: 'i' } } : {};
     const [total, products] = await Promise.all([
         Product.countDocuments(filter),
         Product.find(filter)

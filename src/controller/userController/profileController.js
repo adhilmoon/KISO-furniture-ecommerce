@@ -1,6 +1,8 @@
+
 import { STATUS_CODES, MESSAGES } from '../../constants/index.js';
 import * as profileService from '../../service/user/profileService.js';
 import catchAsync from '../../utilities/catchAsync.js';
+import logger from '../../utilities/logger.js';
 
 export const uploadProfilePic = catchAsync(async (req, res) => {
     if (!req.file) {
@@ -62,16 +64,15 @@ export const setDefaultAddress = catchAsync(async (req, res) => {
 });
 
 export const updateEmail = catchAsync(async (req, res) => {
-    const { email, password, isResend } = req.body;
+    const { email, password } = req.body;
     const userId = req.session.user._id;
-    const result = await profileService.initiateEmailUpdate(userId, email, password, isResend, req.session.tempUserData);
-    if (isResend) {
-        req.session.tempUserData.otp = result.otp;
-        req.session.tempUserData.otpExpiresAt = result.otpExpiresAt;
-        return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.NEW_OTP_SENT });
-    }
-    req.session.tempUserData = { userId, email, otp: result.otp, otpExpiresAt: result.otpExpiresAt, purpose: 'update-email' };
-    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.OTP_SENT });
+    const status = await profileService.initiateEmailUpdate(userId, email, password);
+    return res.status(STATUS_CODES.OK).json({
+        success: true,
+        message: MESSAGES.OTP_SENT,
+        remainingSeconds: status.remainingSeconds,
+        ttlSeconds: status.ttlSeconds
+    });
 });
 
 export const changePassword = catchAsync(async (req, res) => {
@@ -79,5 +80,17 @@ export const changePassword = catchAsync(async (req, res) => {
     const userId = req.session.user._id;
     const result = await profileService.changePassword(userId, currentPassword, newPassword);
     if (result?.redirectUrl) return res.status(STATUS_CODES.OK).json(result);
-    return res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.PASSWORD_UPDATED_SUCCESS });
+    // Password changed: invalidate session, force re-login.
+    delete req.session.user;
+    return req.session.save((error) => {
+        if (error) {
+            logger.error(`Session save error on password change: ${error.message}`);
+            return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.SERVER_ERROR });
+        }
+        return res.status(STATUS_CODES.OK).json({
+            success: true,
+            message: MESSAGES.PASSWORD_UPDATED_SUCCESS,
+            redirectUrl: "/user/login"
+        });
+    });
 });

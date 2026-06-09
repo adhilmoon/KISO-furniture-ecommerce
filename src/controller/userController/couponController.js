@@ -58,3 +58,19 @@ export const removeCoupon = catchAsync(async (req, res) => {
     delete req.session.appliedCoupon;
     res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.COUPON_REMOVED });
 });
+
+export const getAvailableCoupons = catchAsync(async (req, res) => {
+    const userId = req.session.user._id;
+    const cart = await cartService.getCart(userId);
+    if (!cart || !cart.items || cart.items.length === 0) {
+        return res.status(STATUS_CODES.OK).json({ success: true, coupons: [], subtotal: 0 });
+    }
+    const subtotal = await computeCartSubtotal(cart);
+    const coupons = await couponService.listAvailableCoupons(userId, subtotal);
+    res.status(STATUS_CODES.OK).json({
+        success: true,
+        coupons,
+        subtotal,
+        appliedCode: req.session.appliedCoupon?.code || null
+    });
+});

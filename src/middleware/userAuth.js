@@ -78,8 +78,13 @@ export const handleUploadErrors = (err, req, res, next) => {
 
 export const checkUserExists = async (req, res, next) => {
   try {
-    const {email} = req.body;
-
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    if (!email) {
+      return res.status(STATUS_CODES.UNAUTHORIZED).json({
+        success: false,
+        message: MESSAGES.INVALID_EMAIL_OR_PASSWORD
+      });
+    }
     const user = await User.findOne({email});
 
     if(!user) {

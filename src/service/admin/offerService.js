@@ -1,6 +1,7 @@
 import * as offerRepository from '../../repository/admin/offerRepository.js';
 import * as offerValidator from '../../validators/adminOffer.js';
 import { MESSAGES } from '../../constants/messages.js';
+import { escapeRegex } from '../../utilities/escapeRegex.js';
 
 const buildError = (message, status) =>
     Object.assign(new Error(message), { status });
@@ -8,7 +9,7 @@ const buildError = (message, status) =>
 export const getOffers = async ({ page, perPage, search, type }) => {
     const filter = {};
     if (type) filter.type = type;
-    if (search) filter.name = { $regex: search, $options: 'i' };
+    if (search) filter.name = { $regex: escapeRegex(search), $options: 'i' };
     const skip = (page - 1) * perPage;
     const [total, offers] = await Promise.all([
         offerRepository.countOffers(filter),

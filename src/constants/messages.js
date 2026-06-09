@@ -32,6 +32,7 @@ export const MESSAGES = Object.freeze({
     INTERNAL_SERVER_ERROR_PROFILE: "Internal server error",
     NO_CHANGES_DETECTED: "No changes detected. Please update at least one field.",
     NAME_PHONE_REQUIRED: "Name and phone are required",
+    INVALID_NAME: "Name must be 2-50 characters and contain only letters, spaces, hyphens or apostrophes",
 
     // Category Messages
     REQUIRED_FIELDS_MISSING: "Required fields are missing",

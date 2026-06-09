@@ -12,5 +12,6 @@ README.md
 .eslintcache
 coverage
 *.md
+deploy.sh
 public/assets/sofa-sequence
 public/assets/sofa-sequence.mp4

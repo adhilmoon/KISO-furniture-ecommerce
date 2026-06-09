@@ -19,7 +19,8 @@ export const getSalesReportPage = catchAsync(async (req, res) => {
 
 export const downloadSalesReportPdf = catchAsync(async (req, res) => {
     const { period = 'monthly', startDate, endDate } = req.query;
-    const report = await salesReportService.getReport({ period, startDate, endDate });
+    // includeOrders: true so the PDF orders table matches the Excel orders sheet
+    const report = await salesReportService.getReport({ period, startDate, endDate, includeOrders: true });
     streamSalesReportPdf(res, report);
 });
 

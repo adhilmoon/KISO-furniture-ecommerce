@@ -13,14 +13,14 @@
         <circle cx="11" cy="11" r="8" />
         <path d="m21 21-4.35-4.35" />
       </svg>
-      <input type="text" id="searchInput" placeholder="Search by name" oninput="handleSearchDebounced()"
+      <input type="text" id="searchInput" placeholder="Search by name" value="<%= searchQuery %>" oninput="handleSearchDebounced()"
         class="bg-transparent outline-none text-kiso-text placeholder-brand-muted text-sm w-full flex-1" />
       <button type="button" id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear search"
-        class="hidden text-brand-muted hover:text-white transition-colors text-lg leading-none">
+        class="<%= searchQuery ? '' : 'hidden' %> text-brand-muted hover:text-white transition-colors text-lg leading-none">
         &times;
       </button>
     </div>
-    <button
+    <button type="button" onclick="handleSearch()"
       class="bg-brand-bg2 border border-white/10 text-kiso-text px-5 py-3 rounded-lg text-sm hover:bg-white/5 transition">
       Search
     </button>
@@ -152,17 +152,22 @@
     <% } %>
 
       <!-- Pagination -->
-      <div class="flex items-center justify-between mt-6">
-        <p class="text-brand-muted text-sm">
-          Showing <%= ((currentPage - 1) * perPage) + 1 %> to
+      <% const qs = searchQuery ? ('&search=' + encodeURIComponent(searchQuery)) : ''; %>
+      <div class="flex items-center justify-between mt-6" id="paginationWrap">
+        <p class="text-brand-muted text-sm" id="showingText">
+          <% if (totalCategories === 0) { %>
+            Showing 0 of 0 categories
+          <% } else { %>
+            Showing <%= ((currentPage - 1) * perPage) + 1 %> to
             <%= Math.min(currentPage * perPage, totalCategories) %> of
-              <%= totalCategories %> categories
+            <%= totalCategories %> categories
+          <% } %>
         </p>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" id="paginationNav">
 
           <% if (currentPage> 1) { %>
-            <a href="?page=<%= currentPage - 1 %>"
+            <a href="?page=<%= currentPage - 1 %><%= qs %>" data-page="<%= currentPage - 1 %>"
               class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -171,7 +176,7 @@
             <% } %>
 
               <% for (let i=1; i <=totalPages; i++) { %>
-                <a href="?page=<%= i %>"
+                <a href="?page=<%= i %><%= qs %>" data-page="<%= i %>"
                   class="px-4 py-2 rounded-lg text-sm transition
           <%= i === currentPage ? 'bg-white/10 text-kiso-text' : 'border border-white/10 text-brand-muted hover:bg-white/5' %>">
                   <%= i %>
@@ -179,7 +184,7 @@
                 <% } %>
 
                   <% if (currentPage < totalPages) { %>
-                    <a href="?page=<%= currentPage + 1 %>"
+                    <a href="?page=<%= currentPage + 1 %><%= qs %>" data-page="<%= currentPage + 1 %>"
                       class="px-3 py-2 border border-white/10 rounded-lg text-brand-muted hover:bg-white/5 transition">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

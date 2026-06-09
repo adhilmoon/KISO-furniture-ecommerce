@@ -82,12 +82,17 @@ export const createTopupOrder = async (userId, amount) => {
 };
 
 export const verifyTopup = async (userId, { razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
+    if (typeof razorpay_signature !== 'string') throw buildError(MESSAGES.WALLET_TOPUP_FAILED, 400);
     const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expected = crypto
         .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
         .update(sign)
         .digest('hex');
-    if (expected !== razorpay_signature) {
+    const expectedBuf = Buffer.from(expected, 'hex');
+    let sigBuf;
+    try { sigBuf = Buffer.from(razorpay_signature, 'hex'); }
+    catch { throw buildError(MESSAGES.WALLET_TOPUP_FAILED, 400); }
+    if (expectedBuf.length !== sigBuf.length || !crypto.timingSafeEqual(expectedBuf, sigBuf)) {
         throw buildError(MESSAGES.WALLET_TOPUP_FAILED, 400);
     }
     const rzpOrder = await razorpay.orders.fetch(razorpay_order_id);

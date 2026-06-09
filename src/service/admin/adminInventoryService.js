@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Product from '../../model/Product.js';
 import { INVENTORY } from '../../constants/index.js';
+import { escapeRegex } from '../../utilities/escapeRegex.js';
 
 const { LOW_STOCK_THRESHOLD } = INVENTORY;
 
@@ -12,7 +13,7 @@ const stockMatchStage = (stockFilter) => {
 
 export const getInventory = async ({ page, perPage, search, stockFilter, categoryId }) => {
   const match = {};
-  if (search) match.productName = { $regex: search, $options: 'i' };
+  if (search) match.productName = { $regex: escapeRegex(search), $options: 'i' };
   if (categoryId && mongoose.Types.ObjectId.isValid(categoryId)) {
     match.category = new mongoose.Types.ObjectId(categoryId);
   }

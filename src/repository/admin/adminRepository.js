@@ -3,7 +3,9 @@ import User from '../../model/User.js';
 import Order from '../../model/Order.js';
 import Product from '../../model/Product.js';
 
-export const findAdminByEmail = async (email) => Admin.findOne({email});
+export const findAdminByEmail = async (email) => Admin.findOne({ email: String(email || '').trim().toLowerCase() });
+
+export const findAdminById = async (id) => Admin.findById(id).lean();
 
 export const findUsers = async (filter, {skip, limit}) =>
     User.find(filter).skip(skip).limit(limit).sort({createdAt: -1}).lean();
@@ -23,10 +25,11 @@ export const buildUserFilter = ({ search = '', status = 'all' } = {}) => {
 };
 
 export const searchUsers = async (query) => {
-    const filter = query
-        ? {$or: [{name: {$regex: query, $options: 'i'}}, {email: {$regex: query, $options: 'i'}}]}
-        : {};
-    return User.find(filter).sort({createdAt: -1}).lean();
+    if (!query) return User.find({}).sort({createdAt: -1}).lean();
+    const safe = String(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return User.find({
+        $or: [{name: {$regex: safe, $options: 'i'}}, {email: {$regex: safe, $options: 'i'}}]
+    }).sort({createdAt: -1}).lean();
 };
 
 export const findUserById = async (id) => User.findById(id);

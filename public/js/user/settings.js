@@ -35,6 +35,7 @@ function togglePasswordVisibility() {
     const type = isChecked ? 'text' : 'password';
     document.getElementById('currentPassword').type = type;
     document.getElementById('newPassword').type = type;
+    document.getElementById('confirmNewPassword').type = type;
 }
 
 if (togglePasswordBtn && updatePasswordForm) {
@@ -69,7 +70,12 @@ updateEmailForm?.addEventListener('submit', async (e) => {
     try {
         const response = await axios.patch('/user/update-email', { email, password });
         if (response.data.success) {
-            showOTPModal();
+            showOTPModal({
+                email,
+                purpose: 'update-email',
+                remainingSeconds: response.data.remainingSeconds,
+                ttlSeconds: response.data.ttlSeconds
+            });
             hideEmailModal();
         }
     } catch (error) {
@@ -82,19 +88,34 @@ updatePasswordForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPassword').value;
+    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
 
-    if (!currentPassword || !newPassword) {
-        setPassError('Please enter both passwords');
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+        setPassError('Please fill in all password fields');
         return;
     }
     if (!PASS_REGEX.test(newPassword)) {
         setPassError('Password must be 8+ chars with upper, lower, number, and symbol');
         return;
     }
+    if (newPassword === currentPassword) {
+        setPassError('New password must be different from current password');
+        return;
+    }
+    if (newPassword !== confirmNewPassword) {
+        setPassError('Passwords do not match');
+        return;
+    }
     setPassError('');
 
     try {
         const response = await axios.patch('/user/change-password', { currentPassword, newPassword });
+        if (response.data.redirectUrl) {
+            if (response.data.message) showToast(response.data.message, 'success');
+            updatePasswordForm.reset();
+            setTimeout(() => window.location.replace(response.data.redirectUrl), 1200);
+            return;
+        }
         if (response.data.success) {
             showToast(response.data.message || 'Password changed successfully', 'success');
             updatePasswordForm.reset();

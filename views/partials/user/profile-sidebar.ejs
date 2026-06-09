@@ -1,43 +1,85 @@
-<div class="hidden md:flex flex-col p-6 sticky top-24 h-[calc(100vh-6rem)] w-64 border-r border-white/5">
-    <nav class="space-y-2">
-        <a href="/user/profile"
-            class="<%= locals.currentPage === 'profile' ? 'bg-brand-accent text-brand-bg1' : 'text-brand-light hover:bg-brand-bg2' %> block px-4 py-3 font-medium rounded-lg transition-colors">Personal
-            Info</a>
-        <a href="/user/orders"
-            class="<%= locals.currentPage === 'orders' ? 'bg-brand-accent text-brand-bg1' : 'text-brand-light hover:bg-brand-bg2' %> block px-4 py-3 font-medium rounded-lg transition-colors">My
-            Orders</a>
-        <a href="/user/address"
-            class="<%= locals.currentPage === 'address' ? 'bg-brand-accent text-brand-bg1' : 'text-brand-light hover:bg-brand-bg2' %> block px-4 py-3 font-medium rounded-lg transition-colors">Address</a>
-        <a href="/user/wallet"
-            class="<%= locals.currentPage === 'wallet' ? 'bg-brand-accent text-brand-bg1' : 'text-brand-light hover:bg-brand-bg2' %> block px-4 py-3 font-medium rounded-lg transition-colors">Wallet</a>
-        <a href="/user/settings"
-            class="<%= locals.currentPage === 'settings' ? 'bg-brand-accent text-brand-bg1' : 'text-brand-light hover:bg-brand-bg2' %> block px-4 py-3 font-medium rounded-lg transition-colors">Settings</a>
+<div class="hidden md:flex flex-col p-6 sticky top-24 h-[calc(100vh-6rem)] w-72 border-r border-white/5">
+
+    <div class="mb-8 pb-6 border-b border-white/5">
+        <p class="font-display uppercase text-3xl leading-none text-brand-light">Account</p>
+        <p class="font-mono text-[9px] uppercase tracking-[0.3em] text-brand-muted mt-2 flex items-center gap-2">
+          <span class="w-1 h-1 rounded-full bg-neon animate-pulse"></span>
+          Member · Vol.01
+        </p>
+    </div>
+
+    <nav class="space-y-1">
+        <a href="/user/profile" data-page="profile"
+            class="profile-nav-link group flex items-center justify-between px-4 py-3 text-sm font-medium transition-all border border-transparent <%= locals.currentPage === 'profile' ? 'text-brand-light bg-white/[0.03]' : 'text-brand-muted hover:text-brand-light hover:bg-white/5' %>"
+            style="<%= locals.currentPage === 'profile' ? 'border-left:2px solid #D8FF3E;' : '' %>">
+            <span>Personal Info</span>
+            <span class="font-mono text-[9px] <%= locals.currentPage === 'profile' ? 'text-neon' : 'text-brand-muted/50 group-hover:text-neon' %> transition-colors">01</span>
+        </a>
+        <a href="/user/orders" data-page="orders"
+            class="profile-nav-link group flex items-center justify-between px-4 py-3 text-sm font-medium transition-all border border-transparent <%= locals.currentPage === 'orders' ? 'text-brand-light bg-white/[0.03]' : 'text-brand-muted hover:text-brand-light hover:bg-white/5' %>"
+            style="<%= locals.currentPage === 'orders' ? 'border-left:2px solid #D8FF3E;' : '' %>">
+            <span>My Orders</span>
+            <span class="font-mono text-[9px] <%= locals.currentPage === 'orders' ? 'text-neon' : 'text-brand-muted/50 group-hover:text-neon' %> transition-colors">02</span>
+        </a>
+        <a href="/user/address" data-page="address"
+            class="profile-nav-link group flex items-center justify-between px-4 py-3 text-sm font-medium transition-all border border-transparent <%= locals.currentPage === 'address' ? 'text-brand-light bg-white/[0.03]' : 'text-brand-muted hover:text-brand-light hover:bg-white/5' %>"
+            style="<%= locals.currentPage === 'address' ? 'border-left:2px solid #D8FF3E;' : '' %>">
+            <span>Address</span>
+            <span class="font-mono text-[9px] <%= locals.currentPage === 'address' ? 'text-neon' : 'text-brand-muted/50 group-hover:text-neon' %> transition-colors">03</span>
+        </a>
+        <a href="/user/wallet" data-page="wallet"
+            class="profile-nav-link group flex items-center justify-between px-4 py-3 text-sm font-medium transition-all border border-transparent <%= locals.currentPage === 'wallet' ? 'text-brand-light bg-white/[0.03]' : 'text-brand-muted hover:text-brand-light hover:bg-white/5' %>"
+            style="<%= locals.currentPage === 'wallet' ? 'border-left:2px solid #D8FF3E;' : '' %>">
+            <span>Wallet</span>
+            <span class="font-mono text-[9px] <%= locals.currentPage === 'wallet' ? 'text-neon' : 'text-brand-muted/50 group-hover:text-neon' %> transition-colors">04</span>
+        </a>
+        <a href="/user/settings" data-page="settings"
+            class="profile-nav-link group flex items-center justify-between px-4 py-3 text-sm font-medium transition-all border border-transparent <%= locals.currentPage === 'settings' ? 'text-brand-light bg-white/[0.03]' : 'text-brand-muted hover:text-brand-light hover:bg-white/5' %>"
+            style="<%= locals.currentPage === 'settings' ? 'border-left:2px solid #D8FF3E;' : '' %>">
+            <span>Settings</span>
+            <span class="font-mono text-[9px] <%= locals.currentPage === 'settings' ? 'text-neon' : 'text-brand-muted/50 group-hover:text-neon' %> transition-colors">05</span>
+        </a>
     </nav>
 
-    <div class="mt-auto pt-10">
+    <div class="mt-auto pt-6 border-t border-white/5">
+        <div class="flex items-center justify-between mb-3 px-4 font-mono text-[9px] uppercase tracking-[0.25em] text-brand-muted">
+            <span>Status · Active</span>
+            <span class="text-neon">●</span>
+        </div>
         <button onclick="handleLogout()"
-            class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 font-medium rounded-lg transition-all w-full">
-            <span class="mr-3">🚪</span> Logout
+            class="flex items-center justify-between px-4 py-3 text-red-400/90 hover:text-red-400 hover:bg-red-500/10 font-medium w-full text-sm transition-all border border-transparent hover:border-red-500/20">
+            <span class="flex items-center gap-2"><span>🚪</span> Logout</span>
+            <span class="font-mono text-[9px] text-red-500/50">EXIT</span>
         </button>
     </div>
 </div>
 
-<div class="md:hidden fixed bottom-0 left-0 right-0 bg-brand-bg1 border-t border-white/5 px-2 py-3 z-50">
+<!-- Mobile bottom nav -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-brand-bg1/95 backdrop-blur-md border-t border-white/10 px-2 py-3 z-50">
     <div class="flex justify-around items-center">
         <a href="/user/profile"
-            class="flex flex-col items-center <%= locals.currentPage === 'profile' ? 'text-brand-light' : 'text-brand-muted' %>">
-            <span class="text-xs mt-1">Profile</span>
+            class="flex flex-col items-center gap-1 <%= locals.currentPage === 'profile' ? 'text-neon' : 'text-brand-muted' %>">
+            <span class="font-mono text-[8px] uppercase tracking-[0.2em]">01</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold">Profile</span>
         </a>
         <a href="/user/orders"
-            class="flex flex-col items-center <%= locals.currentPage === 'orders' ? 'text-brand-light' : 'text-brand-muted' %>">
-            <span class="text-xs mt-1">Orders</span>
+            class="flex flex-col items-center gap-1 <%= locals.currentPage === 'orders' ? 'text-neon' : 'text-brand-muted' %>">
+            <span class="font-mono text-[8px] uppercase tracking-[0.2em]">02</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold">Orders</span>
+        </a>
+        <a href="/user/wallet"
+            class="flex flex-col items-center gap-1 <%= locals.currentPage === 'wallet' ? 'text-neon' : 'text-brand-muted' %>">
+            <span class="font-mono text-[8px] uppercase tracking-[0.2em]">04</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold">Wallet</span>
         </a>
         <a href="/user/settings"
-            class="flex flex-col items-center <%= locals.currentPage === 'settings' ? 'text-brand-light' : 'text-brand-muted' %>">
-            <span class="text-xs mt-1">Settings</span>
+            class="flex flex-col items-center gap-1 <%= locals.currentPage === 'settings' ? 'text-neon' : 'text-brand-muted' %>">
+            <span class="font-mono text-[8px] uppercase tracking-[0.2em]">05</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold">Settings</span>
         </a>
-        <button onclick="handleLogout()" class="flex flex-col items-center text-red-500">
-            <span class="text-xs mt-1">Logout</span>
+        <button onclick="handleLogout()" class="flex flex-col items-center gap-1 text-red-400">
+            <span class="font-mono text-[8px] uppercase tracking-[0.2em]">EXIT</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold">Logout</span>
         </button>
     </div>
 </div>

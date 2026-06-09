@@ -35,8 +35,12 @@ async function handleForgotPassword(event) {
         const response = await axios.post('/user/forgot-password', {email});
 
         if(response.data.success) {
-            showOTPModal()
-
+            showOTPModal({
+                email,
+                purpose: 'forgot_password',
+                remainingSeconds: response.data.remainingSeconds,
+                ttlSeconds: response.data.ttlSeconds
+            });
         }
     } catch(error) {
         const message = error.response?.data?.message || "Something went wrong";
@@ -46,18 +50,6 @@ async function handleForgotPassword(event) {
 }
 
 
-
-function toggleResetPasswordVisibility() {
-    const toggle = document.getElementById('showResetPasswordToggle');
-    const newPasswordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-
-    if(!toggle || !newPasswordInput || !confirmPasswordInput) return;
-
-    const inputType = toggle.checked ? 'text' : 'password';
-    newPasswordInput.type = inputType;
-    confirmPasswordInput.type = inputType;
-}
 
 async function handleResetPassword(event) {
     event.preventDefault();

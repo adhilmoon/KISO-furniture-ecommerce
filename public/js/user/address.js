@@ -19,6 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Close on backdrop click (only when the dark overlay itself is clicked,
+    // not the modal card) and on Escape.
+    const modal = document.getElementById('addressModal');
+    if(modal) {
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) toggleAddressModal();
+        });
+    }
+    document.addEventListener('keydown', (e) => {
+        const m = document.getElementById('addressModal');
+        if(e.key === 'Escape' && m && !m.classList.contains('hidden')) {
+            toggleAddressModal();
+        }
+    });
+
 });
 
 function toggleAddressModal() {
@@ -30,6 +45,7 @@ function toggleAddressModal() {
     if(isOpen) {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
         form.reset();
         delete form.dataset.editId;
         document.querySelector('#addressModal h3').innerText = "Add New Address";
@@ -37,6 +53,7 @@ function toggleAddressModal() {
     } else {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
     }
 }
 

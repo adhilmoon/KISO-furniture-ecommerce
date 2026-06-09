@@ -1,9 +1,14 @@
-import Razorpay from "razorpay";
+import Razorpay from 'razorpay';
+
+const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
+
+if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    throw new Error('Razorpay credentials missing: set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in the environment.');
+}
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
+    key_id: RAZORPAY_KEY_ID,
+    key_secret: RAZORPAY_KEY_SECRET,
 });
 
-
-export default razorpay
+export default razorpay;

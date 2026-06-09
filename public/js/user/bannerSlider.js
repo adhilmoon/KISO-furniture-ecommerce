@@ -6,6 +6,7 @@
     const dots = Array.from(slider.querySelectorAll('[data-banner-dot]'));
     const prevBtn = slider.querySelector('[data-banner-prev]');
     const nextBtn = slider.querySelector('[data-banner-next]');
+    const counter = slider.querySelector('[data-banner-counter]');
     const autoplayMs = parseInt(slider.dataset.autoplay, 10) || 6000;
 
     if (slides.length === 0) return;
@@ -22,9 +23,11 @@
             s.classList.toggle('pointer-events-none', !on);
         });
         dots.forEach((d, i) => {
-            d.classList.toggle('bg-white', i === active);
-            d.classList.toggle('bg-white/40', i !== active);
+            const on = i === active;
+            d.style.backgroundColor = on ? '#D8FF3E' : '';
+            d.classList.toggle('bg-white/30', !on);
         });
+        if (counter) counter.textContent = String(active + 1).padStart(2, '0');
         const bg = slides[active].dataset.bg;
         if (bg) slider.style.background = bg;
     };

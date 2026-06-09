@@ -44,6 +44,39 @@ export const applyCoupon = async (code, userId, subtotal) => {
     return { coupon, discount };
 };
 
+/**
+ * Lists active, non-expired coupons with a per-user eligibility verdict for
+ * the given cart subtotal. Eligible coupons carry the discount they'd yield;
+ * ineligible ones carry a short reason so the UI can explain why.
+ */
+export const listAvailableCoupons = async (userId, subtotal) => {
+    const coupons = await couponRepository.findAvailableCoupons();
+    return coupons.map((c) => {
+        const userUsage = (c.usedBy || []).filter(u => String(u.userId) === String(userId)).length;
+        let eligible = true;
+        let reason = '';
+        if (c.usageLimit && c.usageLimit > 0 && c.usedCount >= c.usageLimit) {
+            eligible = false; reason = 'Usage limit reached';
+        } else if (c.perUserLimit && c.perUserLimit > 0 && userUsage >= c.perUserLimit) {
+            eligible = false; reason = 'Already used';
+        } else if (c.minPurchase && subtotal < c.minPurchase) {
+            eligible = false; reason = `Add ₹${(c.minPurchase - subtotal).toLocaleString('en-IN')} more to use`;
+        }
+        return {
+            code: c.code,
+            description: c.description || '',
+            discountType: c.discountType,
+            discountValue: c.discountValue,
+            minPurchase: c.minPurchase || 0,
+            maxDiscount: c.maxDiscount || 0,
+            expiresAt: c.expiresAt,
+            eligible,
+            reason,
+            discount: eligible ? calculateCouponDiscount(c, subtotal) : 0
+        };
+    });
+};
+
 export const recordUsage = async (couponId, userId, orderId) =>
     couponRepository.recordCouponUsage(couponId, userId, orderId);
 

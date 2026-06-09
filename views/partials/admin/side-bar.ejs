@@ -1,107 +1,143 @@
 <aside class="w-64 bg-brand-bg1 border-r border-white/5 hidden md:flex flex-col h-full sticky top-0 flex-shrink-0">
 
-    <nav class="flex-grow px-3 py-4 space-y-1 overflow-y-auto custom-scrollbar">
+    <!-- Studio Header -->
+    <div class="px-5 py-5 border-b border-white/5 flex items-center justify-between">
+        <div>
+            <p class="font-display uppercase text-xl leading-none">Studio</p>
+            <p class="font-mono text-[9px] uppercase tracking-[0.3em] text-brand-muted mt-1">Control · v01</p>
+        </div>
+        <span class="w-2 h-2 rounded-full bg-neon animate-pulse"></span>
+    </div>
 
-        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-2">Core</p>
+    <nav class="flex-grow px-3 py-5 space-y-1 overflow-y-auto custom-scrollbar">
+
+        <p class="font-mono text-[9px] font-bold text-brand-muted/70 uppercase tracking-[0.3em] px-3 mb-3 mt-1 flex items-center gap-2">
+            <span class="text-neon">// 00</span> Core
+        </p>
         <a href="/admin/dashboard"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/dashboard">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📊</span>
-            Dashboard
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">📊</span>
+            <span class="flex-1">Dashboard</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">01</span>
         </a>
 
-        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-5">Management</p>
+        <p class="font-mono text-[9px] font-bold text-brand-muted/70 uppercase tracking-[0.3em] px-3 mb-3 mt-6 flex items-center gap-2">
+            <span class="text-neon">// 01</span> Management
+        </p>
         <a href="/admin/products"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/products">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📦</span>
-            Products
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">📦</span>
+            <span class="flex-1">Products</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">02</span>
         </a>
         <a href="/admin/inventory"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/inventory">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📊</span>
-            Inventory
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">📊</span>
+            <span class="flex-1">Inventory</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">03</span>
         </a>
         <a href="/admin/orders"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/orders">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📜</span>
-            Orders
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">📜</span>
+            <span class="flex-1">Orders</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">04</span>
         </a>
         <a href="/admin/customers"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/customers">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">👥</span>
-            Customers
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">👥</span>
+            <span class="flex-1">Customers</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">05</span>
         </a>
         <a href="/admin/categories"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/categories">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🗂️</span>
-            Categories
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">🗂️</span>
+            <span class="flex-1">Categories</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">06</span>
         </a>
 
-        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-5">Marketing</p>
+        <p class="font-mono text-[9px] font-bold text-brand-muted/70 uppercase tracking-[0.3em] px-3 mb-3 mt-6 flex items-center gap-2">
+            <span class="text-neon">// 02</span> Marketing
+        </p>
         <a href="/admin/coupons"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/coupons">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🎫</span>
-            Coupons
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">🎫</span>
+            <span class="flex-1">Coupons</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">07</span>
         </a>
         <a href="/admin/banners"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/banners">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🖼️</span>
-            Banners
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">🖼️</span>
+            <span class="flex-1">Banners</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">08</span>
         </a>
         <a href="/admin/rooms"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/rooms">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🛋️</span>
-            Rooms
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">🛋️</span>
+            <span class="flex-1">Rooms</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">09</span>
         </a>
         <a href="/admin/offers"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/offers">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">🏷️</span>
-            Offers
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">🏷️</span>
+            <span class="flex-1">Offers</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">10</span>
         </a>
 
-        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-5">Reports</p>
+        <p class="font-mono text-[9px] font-bold text-brand-muted/70 uppercase tracking-[0.3em] px-3 mb-3 mt-6 flex items-center gap-2">
+            <span class="text-neon">// 03</span> Reports
+        </p>
         <a href="/admin/sales-report"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/sales-report">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">📈</span>
-            Sales Report
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">📈</span>
+            <span class="flex-1">Sales Report</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">11</span>
         </a>
 
-        <p class="text-[10px] font-bold text-brand-muted/60 uppercase tracking-[0.15em] px-3 mb-2 mt-5">System</p>
+        <p class="font-mono text-[9px] font-bold text-brand-muted/70 uppercase tracking-[0.3em] px-3 mb-3 mt-6 flex items-center gap-2">
+            <span class="text-neon">// 04</span> System
+        </p>
         <a href="/admin/settings"
-            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                   text-brand-muted hover:text-brand-light hover:bg-white/5"
+            class="sidebar-link group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200
+                   text-brand-muted hover:text-brand-light hover:bg-white/5 border border-transparent"
             data-path="/admin/settings">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-base">⚙️</span>
-            Settings
+            <span class="w-8 h-8 flex items-center justify-center bg-white/5 text-base sidebar-icon">⚙️</span>
+            <span class="flex-1">Settings</span>
+            <span class="font-mono text-[9px] text-brand-muted/50 group-hover:text-neon transition-colors">12</span>
         </a>
     </nav>
 
     <div class="px-3 py-4 border-t border-white/5">
+        <div class="flex items-center justify-between mb-3 px-3 font-mono text-[9px] uppercase tracking-[0.25em] text-brand-muted">
+            <span>SYS · ONLINE</span>
+            <span class="text-neon">●</span>
+        </div>
         <button onclick="handleAdminLogout()"
-            class="flex items-center gap-3 px-3 py-2.5 text-red-400/80 hover:text-red-400 hover:bg-red-500/10 w-full rounded-xl transition-all duration-200 text-sm font-medium">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/10 text-base">🚪</span>
-            Logout
+            class="flex items-center gap-3 px-3 py-2.5 text-red-400/80 hover:text-red-400 hover:bg-red-500/10 w-full transition-all duration-200 text-sm font-medium border border-transparent hover:border-red-500/20">
+            <span class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-base">🚪</span>
+            <span class="flex-1 text-left">Logout</span>
+            <span class="font-mono text-[9px] text-red-500/50">EXIT</span>
         </button>
     </div>
 
@@ -114,13 +150,19 @@
     document.querySelectorAll('.sidebar-link').forEach(link => {
         const linkPath = link.getAttribute('data-path');
         if (path === linkPath || path.startsWith(linkPath + '/')) {
-            link.classList.remove('text-brand-muted', 'hover:text-brand-light', 'hover:bg-white/5');
-            link.classList.add('text-brand-accent', 'bg-brand-accent/10', 'border', 'border-brand-accent/20');
-            const icon = link.querySelector('span');
+            link.classList.remove('text-brand-muted', 'hover:text-brand-light', 'hover:bg-white/5', 'border-transparent');
+            link.classList.add('text-brand-light', 'bg-white/[0.03]');
+            link.style.borderLeft = '2px solid #D8FF3E';
+            link.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+            link.style.borderRight = '1px solid rgba(255,255,255,0.05)';
+            link.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+            const icon = link.querySelector('.sidebar-icon');
             if (icon) {
                 icon.classList.remove('bg-white/5');
-                icon.classList.add('bg-brand-accent/20');
+                icon.style.backgroundColor = 'rgba(216, 255, 62, 0.12)';
             }
+            const num = link.querySelector('.font-mono');
+            if (num) num.classList.add('text-neon');
         }
     });
 })();

@@ -76,7 +76,7 @@ function updateStockUI(stock) {
 }
 
 function selectVariant(btn, price, imageUrl, variantIndex, stock) {
- 
+
   document.querySelectorAll('.variant-btn').forEach(b => {
     b.classList.remove('border-brand-accent');
     b.classList.add('border-white/10');
@@ -84,10 +84,35 @@ function selectVariant(btn, price, imageUrl, variantIndex, stock) {
   btn.classList.add('border-brand-accent');
   btn.classList.remove('border-white/10');
 
- 
-  const priceEl = document.getElementById('product-price');
-  if (priceEl) priceEl.innerText = '₹' + price;
+  // Pull real offer data from the variant button's data-* attributes — the
+  // server only emits these when an active offer applies, so the strikethrough
+  // and % OFF badge only appear when there's a genuine discount.
+  const effectivePrice = btn.dataset.effectivePrice || price;
+  const originalPrice = btn.dataset.originalPrice || price;
+  const percentOff = parseInt(btn.dataset.percentOff, 10) || 0;
+  const offerName = btn.dataset.offerName || '';
 
+  const priceEl = document.getElementById('product-price');
+  if (priceEl) priceEl.innerText = '₹' + effectivePrice;
+
+  const origEl = document.getElementById('product-original-price');
+  const badgeEl = document.getElementById('product-discount-badge');
+  const offerNameEl = document.getElementById('product-offer-name');
+  const hasOffer = percentOff > 0 && originalPrice !== effectivePrice;
+
+  if (origEl) {
+    origEl.innerText = hasOffer ? '₹' + originalPrice : '';
+    origEl.classList.toggle('hidden', !hasOffer);
+  }
+  if (badgeEl) {
+    badgeEl.innerText = hasOffer ? percentOff + '% Off' : '';
+    badgeEl.classList.toggle('hidden', !hasOffer);
+  }
+  if (offerNameEl) {
+    const span = offerNameEl.querySelector('span');
+    if (span) span.innerText = offerName;
+    offerNameEl.classList.toggle('hidden', !hasOffer);
+  }
 
   const mainImg = document.getElementById('mainImage');
   if (mainImg && imageUrl && imageUrl !== '') {
@@ -144,6 +169,7 @@ async function addToCart(productId) {
 
     if (response.data.success) {
       showToast('Added to cart!', 'success');
+      if (window.refreshNavBadges) window.refreshNavBadges();
     } else {
       showToast(response.data.message || 'Error adding to cart', 'error');
     }
@@ -197,7 +223,8 @@ async function toggleWishlist(productId) {
     const response = await axios.post('/user/wishlist/toggle', { productId, variantIndex: currentVariantIndex });
     if (response.data.success) {
       showToast(response.data.message, 'success');
-      
+      if (window.refreshNavBadges) window.refreshNavBadges();
+
       // Update UI if button exists
       const btn = document.getElementById('wishlistBtn');
       if (btn) {
@@ -263,7 +290,7 @@ function initAmazonZoom() {
   host.classList.add('relative');
   const result = document.createElement('div');
   result.id = 'zoomResult';
-  result.className = 'hidden absolute top-0 left-full ml-6 w-[480px] h-[480px] bg-brand-bg2 border border-white/10 rounded-2xl shadow-2xl bg-no-repeat z-50 pointer-events-none hidden lg:block';
+  result.className = 'hidden absolute top-0 left-full ml-6 w-[480px] h-[480px] bg-brand-bg2 border border-white/10 rounded-2xl shadow-2xl bg-no-repeat z-50 pointer-events-none';
   result.style.backgroundColor = '#111';
   host.appendChild(result);
 
@@ -271,6 +298,11 @@ function initAmazonZoom() {
     const rect = img.getBoundingClientRect();
     result.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
     result.style.backgroundSize = `${rect.width * ZOOM_LEVEL}px ${rect.height * ZOOM_LEVEL}px`;
+  };
+
+  const hidePanels = () => {
+    lens.classList.add('hidden');
+    result.classList.add('hidden');
   };
 
   const move = (e) => {
@@ -285,19 +317,14 @@ function initAmazonZoom() {
     const cx = rect.width === LENS_PX ? 0 : (x / (rect.width - LENS_PX)) * 100;
     const cy = rect.height === LENS_PX ? 0 : (y / (rect.height - LENS_PX)) * 100;
     result.style.backgroundPosition = `${cx}% ${cy}%`;
-  };
 
-  wrapper.addEventListener('mouseenter', () => {
-    setBg();
     lens.classList.remove('hidden');
     result.classList.remove('hidden');
-  });
-  wrapper.addEventListener('mouseleave', () => {
-    lens.classList.add('hidden');
-    result.classList.add('hidden');
-  });
+  };
+
+  wrapper.addEventListener('mouseenter', setBg);
+  wrapper.addEventListener('mouseleave', hidePanels);
   wrapper.addEventListener('mousemove', move);
-  // refresh background when variant swap changes src
   img.addEventListener('load', setBg);
 }
 
